@@ -17,6 +17,7 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         fire = Fire.shared
     }
     func applicationDidFinishLaunching(_ aNotification: Notification) {
+        NSLog("lanched")
         // Insert code here to initialize your application
 //        server = IMKServer.init(name: kConnectionName, bundleIdentifier: Bundle.main.bundleIdentifier)
 //        var candidate = IMKCandidates(server: server, panelType: kIMKSingleRowSteppingCandidatePanel, styleType:kIMKMain)

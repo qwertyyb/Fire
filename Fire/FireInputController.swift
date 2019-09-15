@@ -10,7 +10,14 @@ import Cocoa
 import InputMethodKit
 
 class FireInputController: IMKInputController {
-    var charstr = ""
+    var charstr:String {
+        set (val) {
+            Fire.shared.inputstr = val
+        }
+        get {
+            return Fire.shared.inputstr
+        }
+    }
     var selected:String = ""
     let condidate = Fire.shared.candidates
     
@@ -27,7 +34,7 @@ class FireInputController: IMKInputController {
         if (match != nil) {
             charstr += string
             candidate.update()
-            candidate.show()
+            candidate.show(sender: client())
             return true
         }
         
@@ -35,7 +42,7 @@ class FireInputController: IMKInputController {
             charstr = String(charstr.dropLast())
             if charstr.count >  0 {
                 candidate.update()
-                candidate.show()
+                candidate.show(sender: client())
             } else {
                 candidate.hide()
             }
@@ -78,7 +85,7 @@ class FireInputController: IMKInputController {
             candidate.pageDownAndModifySelection(sender)
             return true
         }
-        candidate.update()
+//        candidate.update()
         return false
     }
     
@@ -106,6 +113,10 @@ class FireInputController: IMKInputController {
     override func annotationSelected(_ annotationString: NSAttributedString!, forCandidate candidateString: NSAttributedString!) {
         
         NSLog("annotation selected: %@", annotationString)
+    }
+    
+    override func deactivateServer(_ sender: Any!) {
+//        condidate.hide()
     }
     
 

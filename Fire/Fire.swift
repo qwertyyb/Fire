@@ -15,9 +15,12 @@ let kConnectionName = "Fire_1_Connection"
 class Fire: NSObject {
     var server: IMKServer = IMKServer.init(name: kConnectionName, bundleIdentifier: Bundle.main.bundleIdentifier)
     
-    let candidates: FireCondidates
+    let candidates: FireCandidatesWindow = FireCandidatesWindow()
+    
+    var inputstr: String = ""
+    var candidatesTexts: [String] = ["我", "J", "W", "W", "Q","Q"]
     override init() {
-        candidates = FireCondidates(server: server, panelType: kIMKSingleRowSteppingCandidatePanel, styleType:kIMKSubList)
+//        candidates = FireCondidates(server: server, panelType: kIMKSingleRowSteppingCandidatePanel, styleType:kIMKSubList)
 //        candidate.setDismissesAutomatically(false)
     }
 

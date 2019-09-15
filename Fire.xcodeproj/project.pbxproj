@@ -15,6 +15,8 @@
 		451E605D232E3A3C007B0463 /* MainMenu.xib in Resources */ = {isa = PBXBuildFile; fileRef = 451E605C232E3A3C007B0463 /* MainMenu.xib */; };
 		451E605F232E400B007B0463 /* Fire.swift in Sources */ = {isa = PBXBuildFile; fileRef = 451E605E232E400B007B0463 /* Fire.swift */; };
 		4554584A232E94A2000AE31D /* FireCondidates.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45545849232E94A2000AE31D /* FireCondidates.swift */; };
+		459DE990232EB26600A3ACD1 /* FireCandidatesView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 459DE98E232EB26500A3ACD1 /* FireCandidatesView.swift */; };
+		459DE991232EB26600A3ACD1 /* FireCandidatesWindow.swift in Sources */ = {isa = PBXBuildFile; fileRef = 459DE98F232EB26500A3ACD1 /* FireCandidatesWindow.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -29,6 +31,8 @@
 		451E605C232E3A3C007B0463 /* MainMenu.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = MainMenu.xib; sourceTree = "<group>"; };
 		451E605E232E400B007B0463 /* Fire.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Fire.swift; sourceTree = "<group>"; };
 		45545849232E94A2000AE31D /* FireCondidates.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FireCondidates.swift; sourceTree = "<group>"; };
+		459DE98E232EB26500A3ACD1 /* FireCandidatesView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FireCandidatesView.swift; sourceTree = "<group>"; };
+		459DE98F232EB26500A3ACD1 /* FireCandidatesWindow.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FireCandidatesWindow.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -63,6 +67,8 @@
 		451E6046232E227B007B0463 /* Fire */ = {
 			isa = PBXGroup;
 			children = (
+				459DE98E232EB26500A3ACD1 /* FireCandidatesView.swift */,
+				459DE98F232EB26500A3ACD1 /* FireCandidatesWindow.swift */,
 				451E6047232E227B007B0463 /* AppDelegate.swift */,
 				451E6049232E227C007B0463 /* Assets.xcassets */,
 				451E604E232E227C007B0463 /* Info.plist */,
@@ -163,7 +169,9 @@
 				451E6056232E24A5007B0463 /* FireInputController.swift in Sources */,
 				451E605F232E400B007B0463 /* Fire.swift in Sources */,
 				451E6048232E227B007B0463 /* AppDelegate.swift in Sources */,
+				459DE991232EB26600A3ACD1 /* FireCandidatesWindow.swift in Sources */,
 				4554584A232E94A2000AE31D /* FireCondidates.swift in Sources */,
+				459DE990232EB26600A3ACD1 /* FireCandidatesView.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
