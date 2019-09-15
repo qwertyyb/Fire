@@ -11,7 +11,6 @@ import InputMethodKit
 
 let kConnectionName = "Fire_1_Connection"
 
-
 class Fire: NSObject {
     var server: IMKServer = IMKServer.init(name: kConnectionName, bundleIdentifier: Bundle.main.bundleIdentifier)
     

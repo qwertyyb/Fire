@@ -17,10 +17,9 @@ class FireCandidatesWindow: NSWindow {
         level = .floating
 //        self.titleVisibility = .hidden
         self.viewsNeedDisplay = true
+        isReleasedWhenClosed = false
         self.contentView = view
-        self.setIsVisible(false)
         styleMask = .init(arrayLiteral: .borderless, .fullSizeContentView)
-        orderFront(nil)
         
     }
     func show(sender: IMKTextInput & NSObjectProtocol) {
@@ -35,8 +34,9 @@ class FireCandidatesWindow: NSWindow {
         
         setFrame(NSRect(x: rect.origin.x, y: rect.origin.y - 60, width: 300, height: 60), display: true)
         view.needsDisplay = true
+        orderFront(nil)
     }
     func hide() {
-        setIsVisible(false)
+        close()
     }
 }

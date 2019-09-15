@@ -19,7 +19,7 @@ class FireInputController: IMKInputController {
         }
     }
     var selected:String = ""
-    let condidate = Fire.shared.candidates
+    let candidate = Fire.shared.candidates
     
     override func inputText(_ string: String!, key keyCode: Int, modifiers flags: Int, client sender: Any!) -> Bool {
         NSLog("%@", charstr)
@@ -33,7 +33,6 @@ class FireInputController: IMKInputController {
         let candidate = Fire.shared.candidates
         if (match != nil) {
             charstr += string
-            candidate.update()
             candidate.show(sender: client())
             return true
         }
@@ -41,7 +40,6 @@ class FireInputController: IMKInputController {
         if keyCode == kVK_Delete && charstr.count > 0 {
             charstr = String(charstr.dropLast())
             if charstr.count >  0 {
-                candidate.update()
                 candidate.show(sender: client())
             } else {
                 candidate.hide()
@@ -55,12 +53,21 @@ class FireInputController: IMKInputController {
             candidate.hide()
             return true
         }
-        
-        if keyCode == kVK_Return || keyCode == kVK_Space {
+        if keyCode == kVK_Return {
+            // 插入原字符
             NSLog("compose  str: %@", charstr)
-            commitComposition(sender)
-            charstr = ""
-            candidate.hide()
+            insertText(charstr)
+            return true
+        }
+        if keyCode == kVK_Space {
+            // 插入转换后字符
+            let first = Fire.shared.candidatesTexts.first
+            if first != nil {
+                NSLog("compose  str: %@", first!)
+                insertText(first!)
+                charstr = ""
+                candidate.hide()
+            }
             return true
         }
         if keyCode == kVK_Delete {
@@ -85,7 +92,6 @@ class FireInputController: IMKInputController {
             candidate.pageDownAndModifySelection(sender)
             return true
         }
-//        candidate.update()
         return false
     }
     
@@ -107,6 +113,12 @@ class FireInputController: IMKInputController {
         return selected
     }
     
+    func insertText(_ string: String) {
+        client().insertText(string, replacementRange: NSMakeRange(NSNotFound, NSNotFound))
+        self.charstr = ""
+        self.candidate.hide()
+    }
+    
     override func candidates(_ sender: Any!) -> [Any]! {
         return ["我", "b", "c", "d", "e", "f", "g", "h", "l", "m", "n", "i", "j", "k", "o", "p", "q"]
     }
@@ -116,7 +128,7 @@ class FireInputController: IMKInputController {
     }
     
     override func deactivateServer(_ sender: Any!) {
-//        condidate.hide()
+        candidate.hide()
     }
     
 
