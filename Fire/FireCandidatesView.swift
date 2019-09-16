@@ -50,6 +50,9 @@ class FireCandidatesView: NSView {
     
     func drawCandidateTexts () {
         let texts = Fire.shared.candidatesTexts
+        if texts.count <= 0 {
+            return
+        }
         var prevText = ""
         for index in 1...texts.count {
             let text = NSMutableString(string: "\(index).\(texts[index - 1])")

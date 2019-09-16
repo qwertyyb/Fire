@@ -39,4 +39,8 @@ class FireCandidatesWindow: NSWindow {
     func hide() {
         close()
     }
+    func updateCondidates() {
+        view.needsDisplay = true
+        orderFront(nil)
+    }
 }
