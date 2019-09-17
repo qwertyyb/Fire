@@ -12,17 +12,13 @@ import InputMethodKit
 @NSApplicationMain
 class AppDelegate: NSObject, NSApplicationDelegate {
 
+    @IBOutlet weak var menu: NSMenu!
     let fire: Fire
     override init() {
         fire = Fire.shared
     }
     func applicationDidFinishLaunching(_ aNotification: Notification) {
         NSLog("lanched")
-        // Insert code here to initialize your application
-//        server = IMKServer.init(name: kConnectionName, bundleIdentifier: Bundle.main.bundleIdentifier)
-//        var candidate = IMKCandidates(server: server, panelType: kIMKSingleRowSteppingCandidatePanel, styleType:kIMKMain)
-//        let identifier = Bundle.main.bundleIdentifier;
-//        server = IMKServer.init(name: kConnectionName, bundleIdentifier: identifier)
     }
     
     func applicationWillTerminate(_ aNotification: Notification) {

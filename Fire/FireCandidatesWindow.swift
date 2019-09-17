@@ -10,37 +10,36 @@ import Cocoa
 import InputMethodKit
 
 class FireCandidatesWindow: NSWindow {
-    var view: FireCandidatesView
+    private var view: FireCandidatesView
+    private var client: Any?
+    let height = 54
+    var origin: NSPoint {
+        get {
+            let ptr = UnsafeMutablePointer<NSRect>.allocate(capacity: 1)
+            ptr.pointee = NSRect()
+            (client as! IMKTextInput & NSObjectProtocol).attributes(forCharacterIndex: 0, lineHeightRectangle: ptr)
+            let rect = ptr.pointee
+            return NSPoint(x: rect.origin.x, y: rect.origin.y - CGFloat(height))
+        }
+    }
     override init(contentRect: NSRect, styleMask style: NSWindow.StyleMask, backing backingStoreType: NSWindow.BackingStoreType, defer flag: Bool) {
         view = FireCandidatesView()
         super.init(contentRect: contentRect, styleMask: style, backing: backingStoreType, defer: flag)
-        level = .floating
-//        self.titleVisibility = .hidden
+        level = NSWindow.Level(rawValue: NSWindow.Level.RawValue(CGShieldingWindowLevel()))
         self.viewsNeedDisplay = true
         isReleasedWhenClosed = false
         self.contentView = view
-        styleMask = .init(arrayLiteral: .borderless, .fullSizeContentView)
+        styleMask = .init(arrayLiteral: .borderless)
         
     }
-    func show(sender: IMKTextInput & NSObjectProtocol) {
-//        var rect = NSRect()
-        let ptr = UnsafeMutablePointer<NSRect>.allocate(capacity: 1)
-        ptr.pointee = NSRect()
-        sender.attributes(forCharacterIndex: 0, lineHeightRectangle: ptr)
-        var rect = ptr.pointee
-        if Fire.shared.inputstr == "" {
-            rect = NSZeroRect
-        }
-        
-        setFrame(NSRect(x: rect.origin.x, y: rect.origin.y - 60, width: 300, height: 60), display: true)
-        view.needsDisplay = true
-        orderFront(nil)
+    func setClient(_ client: Any!) {
+        self.client = client
     }
     func hide() {
         close()
     }
     func updateCondidates() {
-        view.needsDisplay = true
+        view.updateCandidateViews()
         orderFront(nil)
     }
 }

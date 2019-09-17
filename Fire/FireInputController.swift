@@ -18,37 +18,44 @@ class FireInputController: IMKInputController {
             return Fire.shared.inputstr
         }
     }
-    var selected:String = ""
     let candidate = Fire.shared.candidates
+    
+    override init!(server: IMKServer!, delegate: Any!, client inputClient: Any!) {
+        NSLog("init controller")
+        super.init(server: server, delegate: delegate, client: inputClient)
+        candidate.setClient(inputClient);
+    }
     
     override func inputText(_ string: String!, key keyCode: Int, modifiers flags: Int, client sender: Any!) -> Bool {
         NSLog("%@", charstr)
         let reg = try! NSRegularExpression(pattern: "^[a-zA-Z]+$")
         let match = reg.firstMatch(in: string, options: [], range: NSRange(location: 0, length: string.utf16.count))
         
+        // 当前没有输入非字符并且之前没有输入字符,不做处理
         if  charstr.count <= 0 && match == nil {
             return false
         }
-        
+        // 当前输入的是英文字符,附加到之前
         let candidate = Fire.shared.candidates
         if (match != nil) {
             charstr += string
-            candidate.show(sender: client())
             return true
         }
         
+        // 删除最后一个字符
         if keyCode == kVK_Delete && charstr.count > 0 {
             charstr = String(charstr.dropLast())
             if charstr.count >  0 {
-                candidate.show(sender: client())
             } else {
                 candidate.hide()
             }
             return true
         }
+        
+        // 当前输入的是数字,选择当前候选列表中的第N个字符
         if try! NSRegularExpression(pattern: "^[1-9]+$").firstMatch(in: string, options: [], range: NSMakeRange(0, string.count)) != nil {
-            selected = (candidates(sender) as! [String])[Int(string)!]
-            commitComposition(sender)
+            let selected = Fire.shared.candidatesTexts[Int(string)!]
+            insertText(selected)
             charstr = ""
             candidate.hide()
             return true
@@ -70,47 +77,15 @@ class FireInputController: IMKInputController {
             }
             return true
         }
-        if keyCode == kVK_Delete {
-            charstr = String(charstr.dropLast())
-            return true
-        }
-        if keyCode == kVK_RightArrow {
-//            candidate.selectCandidate(2)
+        if keyCode == kVK_ANSI_Equal {
             candidate.moveRightAndModifySelection(sender)
             return true
         }
-        if keyCode == kVK_LeftArrow {
+        if keyCode == kVK_ANSI_Minus {
             candidate.moveLeftAndModifySelection(sender)
             return true
         }
-        if keyCode == kVK_UpArrow {
-            
-            candidate.pageUpAndModifySelection(sender)
-            return true
-        }
-        if keyCode == kVK_DownArrow {
-            candidate.pageDownAndModifySelection(sender)
-            return true
-        }
         return false
-    }
-    
-    override func candidateSelectionChanged(_ candidateString: NSAttributedString!) {
-        NSLog("changed: %@", candidateString.string)
-        selected = candidateString.string
-    }
-    override func candidateSelected(_ candidateString: NSAttributedString!) {
-        NSLog("selected: %@", candidateString)
-    }
-    
-    override func commitComposition(_ sender: Any!) {
-        if charstr.count > 0 {
-            client().insertText(composedString(sender), replacementRange: NSMakeRange(NSNotFound, NSNotFound))
-        }
-    }
-    
-    override func composedString(_ sender: Any!) -> Any! {
-        return selected
     }
     
     func insertText(_ string: String) {
@@ -119,22 +94,18 @@ class FireInputController: IMKInputController {
         self.candidate.hide()
     }
     
-    override func candidates(_ sender: Any!) -> [Any]! {
-        return ["我", "b", "c", "d", "e", "f", "g", "h", "l", "m", "n", "i", "j", "k", "o", "p", "q"]
+    override func recognizedEvents(_ sender: Any!) -> Int {
+        NSLog("recognizedEvents")
+        return super.recognizedEvents(sender)
     }
-    override func annotationSelected(_ annotationString: NSAttributedString!, forCandidate candidateString: NSAttributedString!) {
-        
-        NSLog("annotation selected: %@", annotationString)
+    
+    override func activateServer(_ sender: Any!) {
+        print(sender)
+        NSLog("active server")
     }
     
     override func deactivateServer(_ sender: Any!) {
         candidate.hide()
     }
-    
-
-//    override func candidateSelectionChanged(_ candidateString: NSAttributedString!) {
-//        Fire.shared.candidate.showAnnotation(NSAttributedString(string: charstr))
-//    }
-
     
 }

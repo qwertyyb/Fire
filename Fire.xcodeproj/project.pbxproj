@@ -14,7 +14,6 @@
 		451E605B232E2F91007B0463 /* fire.tiff in Resources */ = {isa = PBXBuildFile; fileRef = 451E605A232E2F91007B0463 /* fire.tiff */; };
 		451E605D232E3A3C007B0463 /* MainMenu.xib in Resources */ = {isa = PBXBuildFile; fileRef = 451E605C232E3A3C007B0463 /* MainMenu.xib */; };
 		451E605F232E400B007B0463 /* Fire.swift in Sources */ = {isa = PBXBuildFile; fileRef = 451E605E232E400B007B0463 /* Fire.swift */; };
-		4554584A232E94A2000AE31D /* FireCondidates.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45545849232E94A2000AE31D /* FireCondidates.swift */; };
 		459DE990232EB26600A3ACD1 /* FireCandidatesView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 459DE98E232EB26500A3ACD1 /* FireCandidatesView.swift */; };
 		459DE991232EB26600A3ACD1 /* FireCandidatesWindow.swift in Sources */ = {isa = PBXBuildFile; fileRef = 459DE98F232EB26500A3ACD1 /* FireCandidatesWindow.swift */; };
 /* End PBXBuildFile section */
@@ -23,16 +22,16 @@
 		451E6044232E227B007B0463 /* Fire.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Fire.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		451E6047232E227B007B0463 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		451E6049232E227C007B0463 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
-		451E604E232E227C007B0463 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		451E604F232E227C007B0463 /* Fire.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = Fire.entitlements; sourceTree = "<group>"; };
 		451E6055232E24A5007B0463 /* FireInputController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FireInputController.swift; sourceTree = "<group>"; };
 		451E6058232E2787007B0463 /* InputMethodKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = InputMethodKit.framework; path = System/Library/Frameworks/InputMethodKit.framework; sourceTree = SDKROOT; };
 		451E605A232E2F91007B0463 /* fire.tiff */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = fire.tiff; sourceTree = "<group>"; };
 		451E605C232E3A3C007B0463 /* MainMenu.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = MainMenu.xib; sourceTree = "<group>"; };
 		451E605E232E400B007B0463 /* Fire.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Fire.swift; sourceTree = "<group>"; };
-		45545849232E94A2000AE31D /* FireCondidates.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FireCondidates.swift; sourceTree = "<group>"; };
 		459DE98E232EB26500A3ACD1 /* FireCandidatesView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FireCandidatesView.swift; sourceTree = "<group>"; };
 		459DE98F232EB26500A3ACD1 /* FireCandidatesWindow.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FireCandidatesWindow.swift; sourceTree = "<group>"; };
+		672A86F023311712005038B1 /* Fire copy-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; name = "Fire copy-Info.plist"; path = "/Users/marchyang/mine/FireWubi/Fire copy-Info.plist"; sourceTree = "<absolute>"; };
+		672A86F823311E8C005038B1 /* Base */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; name = Base; path = Base.lproj/Info.plist; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -53,6 +52,7 @@
 				451E6046232E227B007B0463 /* Fire */,
 				451E6045232E227B007B0463 /* Products */,
 				451E6057232E2786007B0463 /* Frameworks */,
+				672A86F023311712005038B1 /* Fire copy-Info.plist */,
 			);
 			sourceTree = "<group>";
 		};
@@ -71,13 +71,12 @@
 				459DE98F232EB26500A3ACD1 /* FireCandidatesWindow.swift */,
 				451E6047232E227B007B0463 /* AppDelegate.swift */,
 				451E6049232E227C007B0463 /* Assets.xcassets */,
-				451E604E232E227C007B0463 /* Info.plist */,
+				672A86F423311DBD005038B1 /* Info.plist */,
 				451E605A232E2F91007B0463 /* fire.tiff */,
 				451E605C232E3A3C007B0463 /* MainMenu.xib */,
 				451E604F232E227C007B0463 /* Fire.entitlements */,
 				451E6055232E24A5007B0463 /* FireInputController.swift */,
 				451E605E232E400B007B0463 /* Fire.swift */,
-				45545849232E94A2000AE31D /* FireCondidates.swift */,
 			);
 			path = Fire;
 			sourceTree = "<group>";
@@ -170,12 +169,22 @@
 				451E605F232E400B007B0463 /* Fire.swift in Sources */,
 				451E6048232E227B007B0463 /* AppDelegate.swift in Sources */,
 				459DE991232EB26600A3ACD1 /* FireCandidatesWindow.swift in Sources */,
-				4554584A232E94A2000AE31D /* FireCondidates.swift in Sources */,
 				459DE990232EB26600A3ACD1 /* FireCandidatesView.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXSourcesBuildPhase section */
+
+/* Begin PBXVariantGroup section */
+		672A86F423311DBD005038B1 /* Info.plist */ = {
+			isa = PBXVariantGroup;
+			children = (
+				672A86F823311E8C005038B1 /* Base */,
+			);
+			name = Info.plist;
+			sourceTree = "<group>";
+		};
+/* End PBXVariantGroup section */
 
 /* Begin XCBuildConfiguration section */
 		451E6050232E227C007B0463 /* Debug */ = {
