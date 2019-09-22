@@ -9,103 +9,141 @@
 import Cocoa
 import InputMethodKit
 
+var set = false
+
 class FireInputController: IMKInputController {
-    var charstr:String {
-        set (val) {
-            Fire.shared.inputstr = val
-        }
-        get {
-            return Fire.shared.inputstr
+    private var _originalString = "" { 
+        didSet (val) {
+            let value = originalString(client())
+            NSLog("original string: \(value!), \(value!.length)")
+//            updateComposition()
+//            client()?.setMarkedText(originalString(client()), selectionRange: selectionRange(), replacementRange: replacementRange())
+            candidatesWindow.updateCondidatesView()
         }
     }
-    let candidate = Fire.shared.candidates
+    private var  _composedString = ""
+    private let candidatesWindow: FireCandidatesWindow
     
     override init!(server: IMKServer!, delegate: Any!, client inputClient: Any!) {
-        NSLog("init controller")
+        candidatesWindow = FireCandidatesWindow()
         super.init(server: server, delegate: delegate, client: inputClient)
-        candidate.setClient(inputClient);
+        candidatesWindow.updateInputController(inputController: self)
+        NSLog("init controller \(client()?.bundleIdentifier() ?? "client")")
+        candidatesWindow.setClient(inputClient);
     }
     
     override func inputText(_ string: String!, key keyCode: Int, modifiers flags: Int, client sender: Any!) -> Bool {
-        NSLog("%@", charstr)
         let reg = try! NSRegularExpression(pattern: "^[a-zA-Z]+$")
         let match = reg.firstMatch(in: string, options: [], range: NSRange(location: 0, length: string.utf16.count))
         
         // 当前没有输入非字符并且之前没有输入字符,不做处理
-        if  charstr.count <= 0 && match == nil {
+        if  _originalString.count <= 0 && match == nil {
             return false
         }
         // 当前输入的是英文字符,附加到之前
-        let candidate = Fire.shared.candidates
         if (match != nil) {
-            charstr += string
+            _originalString += string
             return true
         }
         
         // 删除最后一个字符
-        if keyCode == kVK_Delete && charstr.count > 0 {
-            charstr = String(charstr.dropLast())
-            if charstr.count >  0 {
+        if keyCode == kVK_Delete && _originalString.count > 0 {
+            _originalString = String(_originalString.dropLast())
+            if _originalString.count >  0 {
             } else {
-                candidate.hide()
+                candidatesWindow.close()
             }
             return true
         }
         
         // 当前输入的是数字,选择当前候选列表中的第N个字符
         if try! NSRegularExpression(pattern: "^[1-9]+$").firstMatch(in: string, options: [], range: NSMakeRange(0, string.count)) != nil {
-            let selected = Fire.shared.candidatesTexts[Int(string)!]
-            insertText(selected)
-            charstr = ""
-            candidate.hide()
+            _composedString = self.candidates(sender)[Int(string)! - 1] as! String
+            NSLog("number key hit")
+            commitComposition(sender)
+            _originalString = ""
+            candidatesWindow.close()
             return true
         }
         if keyCode == kVK_Return {
             // 插入原字符
-            NSLog("compose  str: %@", charstr)
-            insertText(charstr)
+            NSLog("return key hit")
+            _composedString = _originalString
+            commitComposition(sender)
             return true
         }
         if keyCode == kVK_Space {
+            NSLog("space key hit")
             // 插入转换后字符
-            let first = Fire.shared.candidatesTexts.first
+            let first = self.candidates(sender).first
             if first != nil {
-                NSLog("compose  str: %@", first!)
-                insertText(first!)
-                charstr = ""
-                candidate.hide()
+                _composedString = first as! String
+                commitComposition(sender)
+                _originalString = ""
+                candidatesWindow.close()
             }
             return true
         }
         if keyCode == kVK_ANSI_Equal {
-            candidate.moveRightAndModifySelection(sender)
+            candidatesWindow.moveRightAndModifySelection(sender)
             return true
         }
         if keyCode == kVK_ANSI_Minus {
-            candidate.moveLeftAndModifySelection(sender)
+            candidatesWindow.moveLeftAndModifySelection(sender)
             return true
         }
         return false
     }
     
-    func insertText(_ string: String) {
-        client().insertText(string, replacementRange: NSMakeRange(NSNotFound, NSNotFound))
-        self.charstr = ""
-        self.candidate.hide()
+    override func selectionRange() -> NSRange {
+        return NSMakeRange(NSNotFound, originalString(client()).length)
     }
     
-    override func recognizedEvents(_ sender: Any!) -> Int {
-        NSLog("recognizedEvents")
-        return super.recognizedEvents(sender)
+    override func commitComposition(_ sender: Any!) {
+        NSLog("commitComposition: %@", composedString(sender) as! NSString)
+        client().insertText(composedString(sender), replacementRange: replacementRange())
+        self._originalString = ""
+        self.candidatesWindow.close()
+    }
+    
+    override func originalString(_ sender: Any!) -> NSAttributedString! {
+        print("originString called: \(_originalString)")
+        return NSAttributedString(string: _originalString)
+    }
+    
+    override func replacementRange() -> NSRange {
+        return NSMakeRange(NSNotFound, NSNotFound)
     }
     
     override func activateServer(_ sender: Any!) {
-        print(sender)
+        print(client()!.bundleIdentifier()!)
+        client()?.overrideKeyboard(withKeyboardNamed: "com.apple.keylayout.US")
         NSLog("active server")
     }
     
+//    override func recognizedEvents(_ sender: Any!) -> Int {
+//        return Int(NSEvent.EventType.keyDown.rawValue | NSEvent.EventType.keyUp.rawValue | NSEvent.EventType.flagsChanged.rawValue)
+//    }
+    
     override func deactivateServer(_ sender: Any!) {
-        candidate.hide()
+        NSLog("deactivate server")
+        candidatesWindow.close()
     }
     
+    override func menu() -> NSMenu! {
+        let menu = NSMenu(title: "Fire")
+        menu.addItem(NSMenuItem.init(title: "首选项", action: nil, keyEquivalent: ""))
+        return menu
+    }
+    
+    override func candidates(_ sender: Any!) -> [Any]! {
+        return Fire.shared.getCandidates(origin: self.originalString(sender)!)
+    }
+    
+    override func composedString(_ sender: Any!) -> Any! {
+        return NSString(string: _composedString)
+    }
+    override func inputControllerWillClose() {
+        _originalString = ""
+    }
 }

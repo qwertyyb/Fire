@@ -12,9 +12,13 @@ import InputMethodKit
 @NSApplicationMain
 class AppDelegate: NSObject, NSApplicationDelegate {
 
-    @IBOutlet weak var menu: NSMenu!
     let fire: Fire
     override init() {
+        NSLog("terminate runing")
+//        let running = NSRunningApplication.runningApplications(withBundleIdentifier: NSRunningApplication.current.bundleIdentifier!).first
+//        if (running != nil && NSRunningApplication.current != running) {
+//            running?.forceTerminate()
+//        }
         fire = Fire.shared
     }
     func applicationDidFinishLaunching(_ aNotification: Notification) {

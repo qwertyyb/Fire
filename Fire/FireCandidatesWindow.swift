@@ -10,35 +10,40 @@ import Cocoa
 import InputMethodKit
 
 class FireCandidatesWindow: NSWindow {
-    private var view: FireCandidatesView
+    private var view: FireCandidatesView = FireCandidatesView()
+    var inputController: FireInputController?
     private var client: Any?
     let height = 54
     var origin: NSPoint {
         get {
+//            if inputController == nil 
             let ptr = UnsafeMutablePointer<NSRect>.allocate(capacity: 1)
             ptr.pointee = NSRect()
             (client as! IMKTextInput & NSObjectProtocol).attributes(forCharacterIndex: 0, lineHeightRectangle: ptr)
             let rect = ptr.pointee
-            return NSPoint(x: rect.origin.x, y: rect.origin.y - CGFloat(height))
+            return NSPoint(x: rect.origin.x + 2, y: rect.origin.y - CGFloat(height) - 2)
         }
     }
     override init(contentRect: NSRect, styleMask style: NSWindow.StyleMask, backing backingStoreType: NSWindow.BackingStoreType, defer flag: Bool) {
-        view = FireCandidatesView()
         super.init(contentRect: contentRect, styleMask: style, backing: backingStoreType, defer: flag)
+        
         level = NSWindow.Level(rawValue: NSWindow.Level.RawValue(CGShieldingWindowLevel()))
         self.viewsNeedDisplay = true
-        isReleasedWhenClosed = false
         self.contentView = view
         styleMask = .init(arrayLiteral: .borderless)
-        
+        isReleasedWhenClosed = false
+//        view.setFrameOrigin(NSMakePoint(6.0, 0))
+        backgroundColor = .white
+    }
+    func updateInputController(inputController controller: FireInputController) {
+        if (self.inputController == nil) {
+            self.inputController = controller
+        }
     }
     func setClient(_ client: Any!) {
         self.client = client
     }
-    func hide() {
-        close()
-    }
-    func updateCondidates() {
+    func updateCondidatesView() {
         view.updateCandidateViews()
         orderFront(nil)
     }
