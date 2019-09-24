@@ -19,7 +19,7 @@ class FireCandidatesWindow: NSWindow {
             ptr.pointee = NSRect()
             (client as! IMKTextInput & NSObjectProtocol).attributes(forCharacterIndex: 0, lineHeightRectangle: ptr)
             let rect = ptr.pointee
-            return NSPoint(x: rect.origin.x, y: rect.origin.y - CGFloat(height))
+            return NSPoint(x: rect.origin.x, y: rect.origin.y - CGFloat(height) - 10)
         }
     }
     override init(contentRect: NSRect, styleMask style: NSWindow.StyleMask, backing backingStoreType: NSWindow.BackingStoreType, defer flag: Bool) {
