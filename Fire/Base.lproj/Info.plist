@@ -47,5 +47,34 @@
 	</array>
 	<key>tsInputMethodIconFileKey</key>
 	<string>fire.tiff</string>
+	<key>ComponentInputModeDict</key>
+	<dict>
+		<key>tsInputModeListKey</key>
+		<dict>
+			<key>com.qwertyyb.inputmethod.Fire</key>
+			<dict>
+				<key>tsInputModeDefaultStateKey</key>
+				<true/>
+				<key>tsInputModeIsVisibleKey</key>
+				<true/>
+				<key>tsInputModeKeyEquivalentKey</key>
+				<string>F</string>
+				<key>tsInputModeKeyEquivalentModifiersKey</key>
+				<integer>4608</integer>
+				<key>tsInputModeMenuIconFileKey</key>
+				<string>fire.icns</string>
+				<key>tsInputModeAlternateMenuIconFileKey</key>
+				<string>fire.icns</string>
+				<key>tsInputModeScriptKey</key>
+				<string>smUnicodeScript</string>
+				<key>tsInputModePrimaryInScriptKey</key>
+				<true/>
+			</dict>
+		</dict>
+		<key>tsVisibleInputModeOrderedArrayKey</key>
+		<array>
+			<string>com.qwertyyb.inputmethod.Fire</string>
+		</array>
+	</dict>
 </dict>
 </plist>

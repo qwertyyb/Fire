@@ -1,0 +1,8 @@
+/* Localized versions of Info.plist keys */
+
+NSHumanReadableCopyright = "qwertyyb";
+
+com.qwertyyb.inputmethod.Fire = "业火";
+
+CFBundleName = "业火";
+CFBundleDisplayName = "业火";
