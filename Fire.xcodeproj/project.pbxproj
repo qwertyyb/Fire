@@ -16,6 +16,7 @@
 		451E605F232E400B007B0463 /* Fire.swift in Sources */ = {isa = PBXBuildFile; fileRef = 451E605E232E400B007B0463 /* Fire.swift */; };
 		459DE990232EB26600A3ACD1 /* FireCandidatesView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 459DE98E232EB26500A3ACD1 /* FireCandidatesView.swift */; };
 		459DE991232EB26600A3ACD1 /* FireCandidatesWindow.swift in Sources */ = {isa = PBXBuildFile; fileRef = 459DE98F232EB26500A3ACD1 /* FireCandidatesWindow.swift */; };
+		45E34DC42337C70A00CA7E72 /* wubi98.sqlite in Resources */ = {isa = PBXBuildFile; fileRef = 45E34DC32337C70A00CA7E72 /* wubi98.sqlite */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -30,7 +31,7 @@
 		451E605E232E400B007B0463 /* Fire.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Fire.swift; sourceTree = "<group>"; };
 		459DE98E232EB26500A3ACD1 /* FireCandidatesView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FireCandidatesView.swift; sourceTree = "<group>"; };
 		459DE98F232EB26500A3ACD1 /* FireCandidatesWindow.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FireCandidatesWindow.swift; sourceTree = "<group>"; };
-		672A86F023311712005038B1 /* Fire copy-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; name = "Fire copy-Info.plist"; path = "/Users/marchyang/mine/FireWubi/Fire copy-Info.plist"; sourceTree = "<absolute>"; };
+		45E34DC32337C70A00CA7E72 /* wubi98.sqlite */ = {isa = PBXFileReference; lastKnownFileType = file; path = wubi98.sqlite; sourceTree = "<group>"; };
 		672A86F823311E8C005038B1 /* Base */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; name = Base; path = Base.lproj/Info.plist; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -52,7 +53,6 @@
 				451E6046232E227B007B0463 /* Fire */,
 				451E6045232E227B007B0463 /* Products */,
 				451E6057232E2786007B0463 /* Frameworks */,
-				672A86F023311712005038B1 /* Fire copy-Info.plist */,
 			);
 			sourceTree = "<group>";
 		};
@@ -67,6 +67,7 @@
 		451E6046232E227B007B0463 /* Fire */ = {
 			isa = PBXGroup;
 			children = (
+				45E34DC52337C98900CA7E72 /* data */,
 				459DE98E232EB26500A3ACD1 /* FireCandidatesView.swift */,
 				459DE98F232EB26500A3ACD1 /* FireCandidatesWindow.swift */,
 				451E6047232E227B007B0463 /* AppDelegate.swift */,
@@ -87,6 +88,14 @@
 				451E6058232E2787007B0463 /* InputMethodKit.framework */,
 			);
 			name = Frameworks;
+			sourceTree = "<group>";
+		};
+		45E34DC52337C98900CA7E72 /* data */ = {
+			isa = PBXGroup;
+			children = (
+				45E34DC32337C70A00CA7E72 /* wubi98.sqlite */,
+			);
+			path = data;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -155,6 +164,7 @@
 				451E605B232E2F91007B0463 /* fire.tiff in Resources */,
 				451E604A232E227C007B0463 /* Assets.xcassets in Resources */,
 				451E605D232E3A3C007B0463 /* MainMenu.xib in Resources */,
+				45E34DC42337C70A00CA7E72 /* wubi98.sqlite in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
