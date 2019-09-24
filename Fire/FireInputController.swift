@@ -58,7 +58,7 @@ class FireInputController: IMKInputController {
         
         // 当前输入的是数字,选择当前候选列表中的第N个字符
         if try! NSRegularExpression(pattern: "^[1-9]+$").firstMatch(in: string, options: [], range: NSMakeRange(0, string.count)) != nil {
-            _composedString = self.candidates(sender)[Int(string)! - 1] as! String
+            _composedString = (self.candidates(sender)[Int(string)! - 1] as! Candidate).text
             NSLog("number key hit")
             commitComposition(sender)
             _originalString = ""
@@ -77,7 +77,7 @@ class FireInputController: IMKInputController {
             // 插入转换后字符
             let first = self.candidates(sender).first
             if first != nil {
-                _composedString = first as! String
+                _composedString = (first as! Candidate).text
                 commitComposition(sender)
                 _originalString = ""
                 candidatesWindow.close()
