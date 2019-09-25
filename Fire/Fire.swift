@@ -10,7 +10,7 @@ import Cocoa
 import InputMethodKit
 import SQLite3
 
-let kConnectionName = "Fire_2_Connection"
+let kConnectionName = "Fire_1_Connection"
 
 struct Candidate {
     let code: String

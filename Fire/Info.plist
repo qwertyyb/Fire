@@ -29,7 +29,7 @@
 	<key>LSApplicationCategoryType</key>
 	<string>public.app-category.utilities</string>
 	<key>LSBackgroundOnly</key>
-	<true/>
+	<false/>
 	<key>LSHasLocalizedDisplayName</key>
 	<true/>
 	<key>LSMinimumSystemVersion</key>
@@ -56,12 +56,12 @@
 				<string>com.qwertyyb.inputmethod.Fire.Wubi</string>
 				<key>TISIntendedLanguage</key>
 				<string>zh</string>
-				<key>tsInputModeDefaultStateKey</key>
-				<true/>
 				<key>tsInputModeCharacterRepertoireKey</key>
 				<array>
 					<string>zh-Hans</string>
 				</array>
+				<key>tsInputModeDefaultStateKey</key>
+				<true/>
 				<key>tsInputModeIsVisibleKey</key>
 				<true/>
 				<key>tsInputModeKeyEquivalentKey</key>

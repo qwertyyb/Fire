@@ -22,6 +22,38 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         fire = Fire.shared
     }
     func applicationDidFinishLaunching(_ aNotification: Notification) {
+        let installedLocationURL = CFURLCreateFromFileSystemRepresentation(nil, "/Library/Input Methods/Fire.app", "/Library/Input Methods/Fire.app".count, false)
+        let kSourceID = "com.qwertyyb.inputmethod.Fire.Wubi";
+
+        let kInputModeID = "com.qwertyyb.inputmethod.Fire.Wubi";
+        
+        if (installedLocationURL != nil) {
+            TISRegisterInputSource(installedLocationURL)
+        }
+        
+
+        let sourceList = TISCreateInputSourceList(nil, true);
+        
+        for i in 0...CFArrayGetCount(sourceList!.takeUnretainedValue())-1 {
+//            sourceList?.takeUnretainedValue()
+            let inputSource = Unmanaged<TISInputSource>.fromOpaque(CFArrayGetValueAtIndex(
+                sourceList?.takeUnretainedValue(), i)).takeUnretainedValue();
+            let ptr = TISGetInputSourceProperty(inputSource, kTISPropertyInputSourceID)
+            let sourceID = Unmanaged<CFString>.fromOpaque(ptr!).takeUnretainedValue() as NSString
+//            NSLog("examining input source '%@", sourceID);
+            if (sourceID.isEqual(to: kSourceID) ) || sourceID.isEqual(to: kInputModeID) {
+                TISEnableInputSource(inputSource);
+                NSLog("Enabled input source: %@", sourceID);
+                let isSelectable = Unmanaged<CFBoolean>.fromOpaque(TISGetInputSourceProperty(
+                    inputSource, kTISPropertyInputSourceIsSelectCapable)).takeUnretainedValue();
+                if (CFBooleanGetValue(isSelectable)) {
+                  TISSelectInputSource(inputSource);
+                  NSLog("Selected input source: %@", sourceID);
+                }
+          }
+        }
+        
+//        TISRegisterInputSource(CFURL)
         NSLog("lanched")
     }
     
