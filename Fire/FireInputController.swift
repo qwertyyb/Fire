@@ -15,9 +15,8 @@ class FireInputController: IMKInputController {
     private var _originalString = "" { 
         didSet (val) {
             let value = originalString(client())
-            NSLog("original string: \(value!), \(value!.length)")
-//            updateComposition()
-//            client()?.setMarkedText(originalString(client()), selectionRange: selectionRange(), replacementRange: replacementRange())
+            NSLog("original string: \(_originalString), \(value!.length)")
+//            client()?.setMarkedText(NSAttributedString.init(string: String.init(), selectionRange: NSMakeRange(0, 1), replacementRange: replacementRange())
             candidatesWindow.updateCondidatesView()
         }
     }
@@ -25,7 +24,7 @@ class FireInputController: IMKInputController {
     private let candidatesWindow: FireCandidatesWindow
     
 //    override func originalString(_ sender: Any!) -> NSAttributedString! {
-//        return NSAttributedString(string: charstr)
+//        return NSAttributedString(string: charstr)
 //    }
     
     override init!(server: IMKServer!, delegate: Any!, client inputClient: Any!) {
@@ -37,6 +36,9 @@ class FireInputController: IMKInputController {
     }
     
     override func inputText(_ string: String!, key keyCode: Int, modifiers flags: Int, client sender: Any!) -> Bool {
+        if flags == Int(NSEvent.ModifierFlags.command.rawValue) {
+            return false
+        }
         let reg = try! NSRegularExpression(pattern: "^[a-zA-Z]+$")
         let match = reg.firstMatch(in: string, options: [], range: NSRange(location: 0, length: string.utf16.count))
         
@@ -65,7 +67,6 @@ class FireInputController: IMKInputController {
             _composedString = (self.candidates(sender)[Int(string)! - 1] as! Candidate).text
             NSLog("number key hit")
             commitComposition(sender)
-            _originalString = ""
             candidatesWindow.close()
             return true
         }
@@ -83,30 +84,22 @@ class FireInputController: IMKInputController {
             if first != nil {
                 _composedString = (first as! Candidate).text
                 commitComposition(sender)
-                _originalString = ""
                 candidatesWindow.close()
             }
-            return true
-        }
-        if keyCode == kVK_ANSI_Equal {
-            candidatesWindow.moveRightAndModifySelection(sender)
-            return true
-        }
-        if keyCode == kVK_ANSI_Minus {
-            candidatesWindow.moveLeftAndModifySelection(sender)
             return true
         }
         return false
     }
     
     override func selectionRange() -> NSRange {
-        return NSMakeRange(NSNotFound, originalString(client()).length)
+        return NSMakeRange(0, originalString(client()).length)
     }
     
     override func commitComposition(_ sender: Any!) {
         NSLog("commitComposition: %@", composedString(sender) as! NSString)
         client().insertText(composedString(sender), replacementRange: replacementRange())
         self._originalString = ""
+        self._composedString = ""
         self.candidatesWindow.close()
     }
     

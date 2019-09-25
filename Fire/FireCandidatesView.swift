@@ -8,57 +8,6 @@
 
 import Cocoa
 
-//class CandidateView: NSSplitView {
-//    private var candidate: Candidate
-////    override init(frame frameRect: NSRect) {
-////        super.init(frame: frameRect)
-////    }
-//    init(_ candidateItem: Candidate, index: Int) {
-//        candidate = candidateItem
-//        super.init(frame: NSRect())
-//        self.addArrangedSubview(NSTextField(labelWithAttributedString: NSAttributedString())
-//        self.addSubview(NSTextField(labelWithString: candidate.text))
-//        self.addSubview(NSTextField(labelWithString: candidate.code))
-//        self.isVertical = false
-//    }
-//
-//    required init?(coder decoder: NSCoder) {
-//        fatalError("init(coder:) has not been implemented")
-////        super.init(coder: decoder)
-//    }
-//}
-
-class CandidateText: NSAttributedString {
-    private let candidate: Candidate
-    private let index: Int
-    init(candidate candidateItem: Candidate, index indexItem: Int) {
-        candidate = candidateItem
-        index = indexItem
-        super.init(string: "124")
-    }
-    
-    required init?(coder aDecoder: NSCoder) {
-        fatalError("init(coder:) has not been implemented")
-    }
-    
-    required init?(pasteboardPropertyList propertyList: Any, ofType type: NSPasteboard.PasteboardType) {
-        fatalError("init(pasteboardPropertyList:ofType:) has not been implemented")
-    }
-    
-    override func attributes(at location: Int, effectiveRange range: NSRangePointer?) -> [NSAttributedString.Key : Any] {
-        if (location < candidate.text.count + candidate.code.count) {
-            return [
-                NSAttributedString.Key.foregroundColor: index == 0 ? NSColor.red : NSColor.init(red: 0.23, green: 0.23, blue: 0.23, alpha: 1),
-                NSAttributedString.Key.font: NSFont.userFont(ofSize: 20)!
-            ]
-        }
-        return [
-            NSAttributedString.Key.foregroundColor: index == 0 ? NSColor.red : NSColor.init(red: 0.4, green: 0.4, blue: 0.4, alpha: 1),
-            NSAttributedString.Key.font: NSFont.userFont(ofSize: 16)!
-        ]
-    }
-}
-
 class FireCandidatesView: NSStackView {
     
     var inputLabel: NSTextField = NSTextField(labelWithString: "")
@@ -76,13 +25,14 @@ class FireCandidatesView: NSStackView {
         orientation = .vertical
         alignment = .left
         
-        inputLabel.font = NSFont.userFont(ofSize: 18)
+        inputLabel.font = NSFont.userFont(ofSize: 20)
         inputLabel.textColor = NSColor.init(red: 0.3, green: 0.3, blue: 0.3, alpha: 1)
         addView(inputLabel, in: .leading)
+        spacing = 3.0
         
         candidatesView.orientation = .horizontal
         addView(candidatesView, in: .trailing)
-        edgeInsets = NSEdgeInsets.init(top: 0, left: 3.0, bottom: 0, right: 3.0)
+        edgeInsets = NSEdgeInsets.init(top: 1.5, left: 3.0, bottom: 1.5, right: 3.0)
     }
     
     required init?(coder decoder: NSCoder) {
@@ -96,6 +46,20 @@ class FireCandidatesView: NSStackView {
     override func clippingResistancePriority(for orientation: NSLayoutConstraint.Orientation) -> NSLayoutConstraint.Priority {
         return .defaultLow
     }
+    private func getCandidateView(candidate: Candidate, index: Int) -> NSTextField {
+        let string = NSMutableAttributedString(string: "\(index+1).\(candidate.text)\(candidate.code)", attributes: [
+                NSAttributedString.Key.foregroundColor: index == 0 ? NSColor.red : NSColor.init(red: 0.23, green: 0.23, blue: 0.23, alpha: 1),
+            NSAttributedString.Key.font: NSFont.userFont(ofSize: 20)!
+            ])
+        string.setAttributes([
+            NSAttributedString.Key.foregroundColor: NSColor.init(red: 0.3, green: 0.3, blue: 0.3, alpha: 0.8),
+                NSAttributedString.Key.font: NSFont.userFont(ofSize: 18)!,
+                NSAttributedString.Key.baselineOffset: 1
+            ],
+            range: NSMakeRange("\(index+1).\(candidate.text)".count, candidate.code.count)
+        )
+        return NSTextField(labelWithAttributedString: string)
+    }
     func updateCandidateViews () {
         let candidates = inputController?.candidates(inputController?.client()) as! [Candidate]
         if (self.window != nil) {
@@ -107,20 +71,8 @@ class FireCandidatesView: NSStackView {
         var index = -1
         let views = candidates.map({ (candidate) -> NSTextField in
             index += 1
-            let string = NSMutableAttributedString(string: "\(index+1).\(candidate.text)\(candidate.code)", attributes: [
-                    NSAttributedString.Key.foregroundColor: index == 0 ? NSColor.red : NSColor.init(red: 0.23, green: 0.23, blue: 0.23, alpha: 1),
-                NSAttributedString.Key.font: NSFont.userFont(ofSize: 20)!
-                ])
-            string.setAttributes([
-                NSAttributedString.Key.foregroundColor: index == 0 ? NSColor.red : NSColor.init(red: 0.3, green: 0.3, blue: 0.3, alpha: 1),
-                NSAttributedString.Key.font: NSFont.userFont(ofSize: 16)!
-                ],
-                 range: NSMakeRange("\(index+1).\(candidate.text)".count, candidate.code.count)
-            )
-            return NSTextField(
-                labelWithAttributedString: string
-            )
-//            text
+            return getCandidateView(candidate: candidate, index: index)
+//            tex
 //            return CandidateView.init(candidate, index: index)
         })
         updateInputLabel()
