@@ -14,18 +14,15 @@ var set = false
 class FireInputController: IMKInputController {
     private var _originalString = "" { 
         didSet (val) {
-            let value = originalString(client())
-            NSLog("original string: \(_originalString), \(value!.length)")
-//            client()?.setMarkedText(NSAttributedString.init(string: String.init(), selectionRange: NSMakeRange(0, 1), replacementRange: replacementRange())
+            let value = originalString(client())!
+            NSLog("original string changed: \(value ), \(value.length )")
+//            updateComposition()
+            client()?.setMarkedText(value.length > 0 ? " ":"", selectionRange: NSMakeRange(NSNotFound, value.length > 0 ? 1 : 0), replacementRange: replacementRange())
             candidatesWindow.updateCondidatesView()
         }
     }
     private var  _composedString = ""
     private let candidatesWindow: FireCandidatesWindow
-    
-//    override func originalString(_ sender: Any!) -> NSAttributedString! {
-//        return NSAttributedString(string: charstr)
-//    }
     
     override init!(server: IMKServer!, delegate: Any!, client inputClient: Any!) {
         candidatesWindow = FireCandidatesWindow()
