@@ -7,7 +7,7 @@
 	<key>CFBundleExecutable</key>
 	<string>$(EXECUTABLE_NAME)</string>
 	<key>CFBundleIconFile</key>
-	<string></string>
+	<string>fire.icns</string>
 	<key>CFBundleIdentifier</key>
 	<string>$(PRODUCT_BUNDLE_IDENTIFIER)</string>
 	<key>CFBundleInfoDictionaryVersion</key>
@@ -45,7 +45,7 @@
 		<string>zh-Hans</string>
 	</array>
 	<key>tsInputMethodIconFileKey</key>
-	<string>fire.tiff</string>
+	<string>fire.pdf</string>
 	<key>ComponentInputModeDict</key>
 	<dict>
 		<key>tsInputModeListKey</key>
@@ -53,9 +53,9 @@
 			<key>com.qwertyyb.inputmethod.Fire</key>
 			<dict>
 				<key>TISInputSourceID</key>
-				<string>com.qwertyyb.inputmethod.Fire.Wubi</string>
+				<string>com.qwertyyb.inputmethod.Fire</string>
 				<key>TISIntendedLanguage</key>
-				<string>zh</string>
+				<string>zh-Hans</string>
 				<key>tsInputModeCharacterRepertoireKey</key>
 				<array>
 					<string>zh-Hans</string>
@@ -69,9 +69,9 @@
 				<key>tsInputModeKeyEquivalentModifiersKey</key>
 				<integer>4608</integer>
 				<key>tsInputModeMenuIconFileKey</key>
-				<string>fire.icns</string>
+				<string>fire.pdf</string>
 				<key>tsInputModeAlternateMenuIconFileKey</key>
-				<string>fire.icns</string>
+				<string>fire.pdf</string>
 				<key>tsInputModeScriptKey</key>
 				<string>smUnicodeScript</string>
 				<key>tsInputModePrimaryInScriptKey</key>
@@ -80,7 +80,7 @@
 		</dict>
 		<key>tsVisibleInputModeOrderedArrayKey</key>
 		<array>
-			<string>com.qwertyyb.inputmethod.Fire.Wubi</string>
+			<string>com.qwertyyb.inputmethod.Fire</string>
 		</array>
 	</dict>
 </dict>

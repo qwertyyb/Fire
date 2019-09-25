@@ -1,12 +1,5 @@
-/* 
-  InfoPlist.strings
-  Fire
+/* Localized versions of Info.plist keys */
 
-  Created by marchyang on 2019/9/25.
-  Copyright © 2019 qwertyyb. All rights reserved.
-*/
-
-com.qwertyyb.inputmethod.Fire = "Fire";
-com.qwertyyb.inputmethod.Fire.Wubi = "Fire";
-CFBundleName = "Fire";
-CFBundleDisplayName = "Fire";
+"com.qwertyyb.inputmethod.Fire" = "业火输入法";
+"CFBundleName" = "Fire";
+"CFBundleDisplayName" = "业火";

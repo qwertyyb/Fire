@@ -23,9 +23,9 @@ class AppDelegate: NSObject, NSApplicationDelegate {
     }
     func applicationDidFinishLaunching(_ aNotification: Notification) {
         let installedLocationURL = CFURLCreateFromFileSystemRepresentation(nil, "/Library/Input Methods/Fire.app", "/Library/Input Methods/Fire.app".count, false)
-        let kSourceID = "com.qwertyyb.inputmethod.Fire.Wubi";
+        let kSourceID = "com.qwertyyb.inputmethod.Fire";
 
-        let kInputModeID = "com.qwertyyb.inputmethod.Fire.Wubi";
+        let kInputModeID = "com.qwertyyb.inputmethod.Fire";
         
         if (installedLocationURL != nil) {
             TISRegisterInputSource(installedLocationURL)
