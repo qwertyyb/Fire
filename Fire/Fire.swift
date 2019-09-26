@@ -22,9 +22,9 @@ class Fire: NSObject {
     func getCandidates(origin: NSAttributedString = NSAttributedString()) -> [Candidate] {
         var db: OpaquePointer?
         var candidates: [Candidate] = []
-        let dbPath = Bundle.main.path(forResource: "wubi98", ofType: "sqlite")
+        let dbPath = Bundle.main.path(forResource: "dict", ofType: "sqlite")
         if sqlite3_open(dbPath, &db) == SQLITE_OK {
-            let sql = "select distinct full, text from dict where simple like '\(origin.string)%' or full like '\(origin.string)%' order by weight desc limit 0, 10"
+            let sql = "select distinct code, text from wb_dict_86 where code like '\(origin.string)%' order by id asc limit 0, 10"
             //            NSLog("sql: %@", sql)
             var queryStatement: OpaquePointer?
             if sqlite3_prepare_v2(db, sql, -1, &queryStatement, nil) == SQLITE_OK {

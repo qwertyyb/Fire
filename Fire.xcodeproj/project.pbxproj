@@ -11,15 +11,17 @@
 		451E604A232E227C007B0463 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 451E6049232E227C007B0463 /* Assets.xcassets */; };
 		451E6056232E24A5007B0463 /* FireInputController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 451E6055232E24A5007B0463 /* FireInputController.swift */; };
 		451E6059232E2787007B0463 /* InputMethodKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 451E6058232E2787007B0463 /* InputMethodKit.framework */; };
-		451E605B232E2F91007B0463 /* fire.tiff in Resources */ = {isa = PBXBuildFile; fileRef = 451E605A232E2F91007B0463 /* fire.tiff */; };
 		451E605D232E3A3C007B0463 /* MainMenu.xib in Resources */ = {isa = PBXBuildFile; fileRef = 451E605C232E3A3C007B0463 /* MainMenu.xib */; };
 		451E605F232E400B007B0463 /* Fire.swift in Sources */ = {isa = PBXBuildFile; fileRef = 451E605E232E400B007B0463 /* Fire.swift */; };
 		459DE990232EB26600A3ACD1 /* FireCandidatesView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 459DE98E232EB26500A3ACD1 /* FireCandidatesView.swift */; };
 		459DE991232EB26600A3ACD1 /* FireCandidatesWindow.swift in Sources */ = {isa = PBXBuildFile; fileRef = 459DE98F232EB26500A3ACD1 /* FireCandidatesWindow.swift */; };
 		45E34DC42337C70A00CA7E72 /* wubi98.sqlite in Resources */ = {isa = PBXBuildFile; fileRef = 45E34DC32337C70A00CA7E72 /* wubi98.sqlite */; };
+		676AE4FE233C7CE50077310A /* dict.sqlite in Resources */ = {isa = PBXBuildFile; fileRef = 676AE4FD233C7CE50077310A /* dict.sqlite */; };
 		67E8B512233B978E00D7CE80 /* Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 67E8B511233B978E00D7CE80 /* Info.plist */; };
 		67E8B515233B97FD00D7CE80 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 67E8B517233B97FD00D7CE80 /* InfoPlist.strings */; };
-		67E8B51A233BAFF700D7CE80 /* fire.icns in Resources */ = {isa = PBXBuildFile; fileRef = 67E8B519233BAFF700D7CE80 /* fire.icns */; };
+		67E8B520233C537B00D7CE80 /* fire.icns in Resources */ = {isa = PBXBuildFile; fileRef = 67E8B51D233C537B00D7CE80 /* fire.icns */; };
+		67E8B521233C537B00D7CE80 /* fire.pdf in Resources */ = {isa = PBXBuildFile; fileRef = 67E8B51E233C537B00D7CE80 /* fire.pdf */; };
+		67E8B522233C537B00D7CE80 /* fire.tiff in Resources */ = {isa = PBXBuildFile; fileRef = 67E8B51F233C537B00D7CE80 /* fire.tiff */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -29,16 +31,18 @@
 		451E604F232E227C007B0463 /* Fire.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = Fire.entitlements; sourceTree = "<group>"; };
 		451E6055232E24A5007B0463 /* FireInputController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FireInputController.swift; sourceTree = "<group>"; };
 		451E6058232E2787007B0463 /* InputMethodKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = InputMethodKit.framework; path = System/Library/Frameworks/InputMethodKit.framework; sourceTree = SDKROOT; };
-		451E605A232E2F91007B0463 /* fire.tiff */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = fire.tiff; sourceTree = "<group>"; };
 		451E605C232E3A3C007B0463 /* MainMenu.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = MainMenu.xib; sourceTree = "<group>"; };
 		451E605E232E400B007B0463 /* Fire.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Fire.swift; sourceTree = "<group>"; };
 		459DE98E232EB26500A3ACD1 /* FireCandidatesView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FireCandidatesView.swift; sourceTree = "<group>"; };
 		459DE98F232EB26500A3ACD1 /* FireCandidatesWindow.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FireCandidatesWindow.swift; sourceTree = "<group>"; };
 		45E34DC32337C70A00CA7E72 /* wubi98.sqlite */ = {isa = PBXFileReference; lastKnownFileType = file; path = wubi98.sqlite; sourceTree = "<group>"; };
+		676AE4FD233C7CE50077310A /* dict.sqlite */ = {isa = PBXFileReference; lastKnownFileType = file; path = dict.sqlite; sourceTree = "<group>"; };
 		67E8B511233B978E00D7CE80 /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		67E8B516233B97FD00D7CE80 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/InfoPlist.strings; sourceTree = "<group>"; };
 		67E8B518233B994000D7CE80 /* zh-Hans */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "zh-Hans"; path = "zh-Hans.lproj/InfoPlist.strings"; sourceTree = "<group>"; };
-		67E8B519233BAFF700D7CE80 /* fire.icns */ = {isa = PBXFileReference; lastKnownFileType = image.icns; path = fire.icns; sourceTree = "<group>"; };
+		67E8B51D233C537B00D7CE80 /* fire.icns */ = {isa = PBXFileReference; lastKnownFileType = image.icns; path = fire.icns; sourceTree = "<group>"; };
+		67E8B51E233C537B00D7CE80 /* fire.pdf */ = {isa = PBXFileReference; lastKnownFileType = image.pdf; path = fire.pdf; sourceTree = "<group>"; };
+		67E8B51F233C537B00D7CE80 /* fire.tiff */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = fire.tiff; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -56,7 +60,6 @@
 		451E603B232E227B007B0463 = {
 			isa = PBXGroup;
 			children = (
-				67E8B51C233BB1C500D7CE80 /* Resources */,
 				451E6046232E227B007B0463 /* Fire */,
 				451E6045232E227B007B0463 /* Products */,
 				451E6057232E2786007B0463 /* Frameworks */,
@@ -74,6 +77,9 @@
 		451E6046232E227B007B0463 /* Fire */ = {
 			isa = PBXGroup;
 			children = (
+				67E8B51D233C537B00D7CE80 /* fire.icns */,
+				67E8B51E233C537B00D7CE80 /* fire.pdf */,
+				67E8B51F233C537B00D7CE80 /* fire.tiff */,
 				67E8B511233B978E00D7CE80 /* Info.plist */,
 				67E8B517233B97FD00D7CE80 /* InfoPlist.strings */,
 				45E34DC52337C98900CA7E72 /* data */,
@@ -100,18 +106,10 @@
 		45E34DC52337C98900CA7E72 /* data */ = {
 			isa = PBXGroup;
 			children = (
+				676AE4FD233C7CE50077310A /* dict.sqlite */,
 				45E34DC32337C70A00CA7E72 /* wubi98.sqlite */,
 			);
 			path = data;
-			sourceTree = "<group>";
-		};
-		67E8B51C233BB1C500D7CE80 /* Resources */ = {
-			isa = PBXGroup;
-			children = (
-				67E8B519233BAFF700D7CE80 /* fire.icns */,
-				451E605A232E2F91007B0463 /* fire.tiff */,
-			);
-			path = Resources;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -177,12 +175,14 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				67E8B51A233BAFF700D7CE80 /* fire.icns in Resources */,
-				451E605B232E2F91007B0463 /* fire.tiff in Resources */,
+				67E8B520233C537B00D7CE80 /* fire.icns in Resources */,
 				67E8B515233B97FD00D7CE80 /* InfoPlist.strings in Resources */,
+				676AE4FE233C7CE50077310A /* dict.sqlite in Resources */,
 				451E604A232E227C007B0463 /* Assets.xcassets in Resources */,
 				451E605D232E3A3C007B0463 /* MainMenu.xib in Resources */,
+				67E8B521233C537B00D7CE80 /* fire.pdf in Resources */,
 				67E8B512233B978E00D7CE80 /* Info.plist in Resources */,
+				67E8B522233C537B00D7CE80 /* fire.tiff in Resources */,
 				45E34DC42337C70A00CA7E72 /* wubi98.sqlite in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

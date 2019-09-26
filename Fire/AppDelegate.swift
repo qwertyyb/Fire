@@ -12,6 +12,7 @@ import InputMethodKit
 @NSApplicationMain
 class AppDelegate: NSObject, NSApplicationDelegate {
 
+    @IBOutlet weak var menu: NSMenu!
     let fire: Fire
     override init() {
         NSLog("terminate runing")

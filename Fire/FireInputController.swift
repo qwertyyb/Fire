@@ -11,6 +11,11 @@ import InputMethodKit
 
 var set = false
 
+enum InputMode {
+    case ZhHans
+    case En
+}
+
 class FireInputController: IMKInputController {
     private var _originalString = "" { 
         didSet (val) {
@@ -23,19 +28,82 @@ class FireInputController: IMKInputController {
     }
     private var  _composedString = ""
     private let candidatesWindow: FireCandidatesWindow
+    private var _mode: InputMode = .ZhHans
+    private var _modeWindow: NSWindow
     
     override init!(server: IMKServer!, delegate: Any!, client inputClient: Any!) {
         candidatesWindow = FireCandidatesWindow()
+        
+        let window = NSWindow()
+        window.styleMask = .init(arrayLiteral: .borderless, .fullSizeContentView)
+        window.contentView = NSTextField(labelWithString: "中")
+        window.level = NSWindow.Level(rawValue: NSWindow.Level.RawValue(CGShieldingWindowLevel()))
+        _modeWindow = window
+        
         super.init(server: server, delegate: delegate, client: inputClient)
         candidatesWindow.updateInputController(inputController: self)
-        NSLog("init controller \(client()?.bundleIdentifier() ?? "client")")
         candidatesWindow.setClient(inputClient);
     }
     
-    override func inputText(_ string: String!, key keyCode: Int, modifiers flags: Int, client sender: Any!) -> Bool {
-        if flags == Int(NSEvent.ModifierFlags.command.rawValue) {
+    override func selectionRange() -> NSRange {
+        return NSMakeRange(0, originalString(client()).length)
+    }
+    
+    override func commitComposition(_ sender: Any!) {
+        NSLog("commitComposition: %@", composedString(sender) as! NSString)
+        client().insertText(composedString(sender), replacementRange: replacementRange())
+        self._originalString = ""
+        self._composedString = ""
+        self.candidatesWindow.close()
+    }
+    
+    override func originalString(_ sender: Any!) -> NSAttributedString! {
+        return NSAttributedString(string: _originalString)
+    }
+    
+    override func replacementRange() -> NSRange {
+        return NSMakeRange(NSNotFound, NSNotFound)
+    }
+    
+    override func activateServer(_ sender: Any!) {
+        client()?.overrideKeyboard(withKeyboardNamed: "com.apple.keylayout.US")
+        NSLog("active server: \(client()!.bundleIdentifier()!)")
+    }
+    
+    func toggleMode() {
+        _mode = _mode == .ZhHans ? InputMode.En : InputMode.ZhHans
+        if self._modeWindow.isVisible ?? false {
+            self._modeWindow.close()
+        }
+        let ptr = UnsafeMutablePointer<NSRect>.allocate(capacity: 1)
+        ptr.pointee = NSRect()
+        client().attributes(forCharacterIndex: 0, lineHeightRectangle: ptr)
+        let rect = ptr.pointee
+        let origin = NSPoint(x: rect.origin.x + 2, y: rect.origin.y - 20)
+        self._modeWindow.setFrame(NSMakeRect(origin.x, origin.y, 20, 20), display: true)
+        self._modeWindow.orderFront(nil)
+        Timer.scheduledTimer(withTimeInterval: 1, repeats: false) { (timer) in
+            self._modeWindow.close()
+//            self._modeWindow = nil
+        }
+        NSLog("toggle mode: \(_mode)")
+    }
+    
+    override func handle(_ event: NSEvent!, client sender: Any!) -> Bool {
+        // 切换中英文输入
+        if event.type == .flagsChanged {
+            if event.modifierFlags == .shift {
+                toggleMode()
+            }
             return false
         }
+        if _mode == .En || event.characters == nil {
+            return false
+        }
+        let string = event.characters!
+        let keyCode = event.keyCode
+        
+        NSLog("string: \(string), keyCode: \(keyCode)")
         let reg = try! NSRegularExpression(pattern: "^[a-zA-Z]+$")
         let match = reg.firstMatch(in: string, options: [], range: NSRange(location: 0, length: string.utf16.count))
         
@@ -62,20 +130,17 @@ class FireInputController: IMKInputController {
         // 当前输入的是数字,选择当前候选列表中的第N个字符
         if try! NSRegularExpression(pattern: "^[1-9]+$").firstMatch(in: string, options: [], range: NSMakeRange(0, string.count)) != nil {
             _composedString = (self.candidates(sender)[Int(string)! - 1] as! Candidate).text
-            NSLog("number key hit")
             commitComposition(sender)
             candidatesWindow.close()
             return true
         }
         if keyCode == kVK_Return {
             // 插入原字符
-            NSLog("return key hit")
             _composedString = _originalString
             commitComposition(sender)
             return true
         }
         if keyCode == kVK_Space {
-            NSLog("space key hit")
             // 插入转换后字符
             let first = self.candidates(sender).first
             if first != nil {
@@ -88,46 +153,20 @@ class FireInputController: IMKInputController {
         return false
     }
     
-    override func selectionRange() -> NSRange {
-        return NSMakeRange(0, originalString(client()).length)
-    }
-    
-    override func commitComposition(_ sender: Any!) {
-        NSLog("commitComposition: %@", composedString(sender) as! NSString)
-        client().insertText(composedString(sender), replacementRange: replacementRange())
-        self._originalString = ""
-        self._composedString = ""
-        self.candidatesWindow.close()
-    }
-    
-    override func originalString(_ sender: Any!) -> NSAttributedString! {
-        print("originString called: \(_originalString)")
-        return NSAttributedString(string: _originalString)
-    }
-    
-    override func replacementRange() -> NSRange {
-        return NSMakeRange(NSNotFound, NSNotFound)
-    }
-    
-    override func activateServer(_ sender: Any!) {
-        print(client()!.bundleIdentifier()!)
-        client()?.overrideKeyboard(withKeyboardNamed: "com.apple.keylayout.US")
-        NSLog("active server")
-    }
-    
-//    override func recognizedEvents(_ sender: Any!) -> Int {
+    override func recognizedEvents(_ sender: Any!) -> Int {
+        return Int(NSEvent.EventTypeMask.keyDown.rawValue | NSEvent.EventTypeMask.flagsChanged.rawValue)
 //        return Int(NSEvent.EventType.keyDown.rawValue | NSEvent.EventType.keyUp.rawValue | NSEvent.EventType.flagsChanged.rawValue)
-//    }
+    }
     
     override func deactivateServer(_ sender: Any!) {
-        NSLog("deactivate server")
+        NSLog("deactivate server: \(client()!.bundleIdentifier()!)")
         candidatesWindow.close()
     }
     
     override func menu() -> NSMenu! {
-        let menu = NSMenu(title: "Fire")
-        menu.addItem(NSMenuItem.init(title: "首选项", action: nil, keyEquivalent: ""))
-        return menu
+//        let menu = NSMenu(title: "Fire")
+//        menu.addItem(NSMenuItem.init(title: "首选项", action: nil, keyEquivalent: ""))
+        return (NSApp.delegate as! AppDelegate).menu
     }
     
     override func candidates(_ sender: Any!) -> [Any]! {
