@@ -24,7 +24,11 @@ class FireInputController: IMKInputController {
 //            updateComposition()
             let text = NSAttributedString(string: value.count > 0 ? " " : "")
             client()?.setMarkedText(text, selectionRange: NSMakeRange(NSNotFound, value.count > 0 ? 1 : 0), replacementRange: replacementRange())
-            _candidatesWindow.updateWindow(origin: getOriginPoint(), code: value, candidates: self.candidates(client()) as! [Candidate])
+            if value.count > 0 {
+                _candidatesWindow.updateWindow(origin: getOriginPoint(), code: value, candidates: self.candidates(client()) as! [Candidate])
+            } else {
+                _candidatesWindow.close()
+            }
         }
     }
     private var  _composedString = ""
@@ -118,6 +122,9 @@ class FireInputController: IMKInputController {
             return false
         }
         _lastModifier = .init(rawValue: 0)
+        if event.modifierFlags != .init(rawValue: 0) && event.modifierFlags != .shift {
+            return false
+        }
         if _lastModifier != .init(rawValue: 0) {
             return false
         }
@@ -144,10 +151,6 @@ class FireInputController: IMKInputController {
         // 删除最后一个字符
         if keyCode == kVK_Delete && _originalString.count > 0 {
             _originalString = String(_originalString.dropLast())
-            if _originalString.count >  0 {
-            } else {
-                _candidatesWindow.close()
-            }
             return true
         }
         
