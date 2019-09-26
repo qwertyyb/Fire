@@ -19,30 +19,31 @@ enum InputMode {
 class FireInputController: IMKInputController {
     private var _originalString = "" { 
         didSet (val) {
-            let value = originalString(client())!
-            NSLog("original string changed: \(value ), \(value.length )")
+            let value = originalString(client())!.string
+            NSLog("original string changed: \(value )")
 //            updateComposition()
-            client()?.setMarkedText(value.length > 0 ? " ":"", selectionRange: NSMakeRange(NSNotFound, value.length > 0 ? 1 : 0), replacementRange: replacementRange())
-            candidatesWindow.updateCondidatesView()
+            let text = NSAttributedString(string: value.count > 0 ? " " : "")
+            client()?.setMarkedText(text, selectionRange: NSMakeRange(NSNotFound, value.count > 0 ? 1 : 0), replacementRange: replacementRange())
+            _candidatesWindow.updateWindow(origin: getOriginPoint(), code: value, candidates: self.candidates(client()) as! [Candidate])
         }
     }
     private var  _composedString = ""
-    private let candidatesWindow: FireCandidatesWindow
+    private let _candidatesWindow = FireCandidatesWindow.shared
     private var _mode: InputMode = .ZhHans
     private var _modeWindow: NSWindow
+    private var _closeModeWindowTimer: Timer? = nil
+    private var _lastModifier: NSEvent.ModifierFlags = .init(rawValue: 0)
     
     override init!(server: IMKServer!, delegate: Any!, client inputClient: Any!) {
-        candidatesWindow = FireCandidatesWindow()
         
         let window = NSWindow()
         window.styleMask = .init(arrayLiteral: .borderless, .fullSizeContentView)
         window.contentView = NSTextField(labelWithString: "中")
+        window.isReleasedWhenClosed = false
         window.level = NSWindow.Level(rawValue: NSWindow.Level.RawValue(CGShieldingWindowLevel()))
         _modeWindow = window
         
         super.init(server: server, delegate: delegate, client: inputClient)
-        candidatesWindow.updateInputController(inputController: self)
-        candidatesWindow.setClient(inputClient);
     }
     
     override func selectionRange() -> NSRange {
@@ -54,7 +55,7 @@ class FireInputController: IMKInputController {
         client().insertText(composedString(sender), replacementRange: replacementRange())
         self._originalString = ""
         self._composedString = ""
-        self.candidatesWindow.close()
+        self._candidatesWindow.close()
     }
     
     override func originalString(_ sender: Any!) -> NSAttributedString! {
@@ -70,20 +71,37 @@ class FireInputController: IMKInputController {
         NSLog("active server: \(client()!.bundleIdentifier()!)")
     }
     
-    func toggleMode() {
-        _mode = _mode == .ZhHans ? InputMode.En : InputMode.ZhHans
-        if self._modeWindow.isVisible ?? false {
-            self._modeWindow.close()
-        }
+    private func getOriginPoint() -> NSPoint {
         let ptr = UnsafeMutablePointer<NSRect>.allocate(capacity: 1)
         ptr.pointee = NSRect()
         client().attributes(forCharacterIndex: 0, lineHeightRectangle: ptr)
         let rect = ptr.pointee
-        let origin = NSPoint(x: rect.origin.x + 2, y: rect.origin.y - 20)
-        self._modeWindow.setFrame(NSMakeRect(origin.x, origin.y, 20, 20), display: true)
-        self._modeWindow.orderFront(nil)
-        Timer.scheduledTimer(withTimeInterval: 1, repeats: false) { (timer) in
+        let origin = NSPoint(x: rect.origin.x, y: rect.origin.y)
+        return origin
+    }
+    
+    func toggleMode() {
+        if self._closeModeWindowTimer != nil {
+            self._closeModeWindowTimer!.invalidate()
+            self._closeModeWindowTimer = nil
+        }
+        _mode = _mode == .ZhHans ? InputMode.En : InputMode.ZhHans
+        if self._modeWindow.isVisible {
             self._modeWindow.close()
+        }
+        let text = _mode == .ZhHans ? "中" : "A"
+        (self._modeWindow.contentView as! NSTextField).attributedStringValue = NSAttributedString(
+            string: text,
+            attributes: [
+                NSAttributedString.Key.font: NSFont.userFont(ofSize: 20)!,
+            ]
+        )
+        let origin = getOriginPoint()
+        self._modeWindow.setFrame(NSMakeRect(origin.x + 2, origin.y - 26, _mode == .ZhHans ? 24 : 18, 24), display: true)
+        self._modeWindow.orderFront(nil)
+        self._closeModeWindowTimer = Timer.scheduledTimer(withTimeInterval: 1, repeats: false) { (timer) in
+            self._modeWindow.close()
+            self._closeModeWindowTimer = nil
 //            self._modeWindow = nil
         }
         NSLog("toggle mode: \(_mode)")
@@ -91,10 +109,16 @@ class FireInputController: IMKInputController {
     
     override func handle(_ event: NSEvent!, client sender: Any!) -> Bool {
         // 切换中英文输入
-        if event.type == .flagsChanged {
-            if event.modifierFlags == .shift {
-                toggleMode()
+        if event.type == .flagsChanged  {
+            if event.modifierFlags == .init(rawValue: 0) && _lastModifier == .shift {  // shift键抬起
+                self.toggleMode()
             }
+            
+            _lastModifier = event.modifierFlags
+            return false
+        }
+        _lastModifier = .init(rawValue: 0)
+        if _lastModifier != .init(rawValue: 0) {
             return false
         }
         if _mode == .En || event.characters == nil {
@@ -122,7 +146,7 @@ class FireInputController: IMKInputController {
             _originalString = String(_originalString.dropLast())
             if _originalString.count >  0 {
             } else {
-                candidatesWindow.close()
+                _candidatesWindow.close()
             }
             return true
         }
@@ -131,7 +155,7 @@ class FireInputController: IMKInputController {
         if try! NSRegularExpression(pattern: "^[1-9]+$").firstMatch(in: string, options: [], range: NSMakeRange(0, string.count)) != nil {
             _composedString = (self.candidates(sender)[Int(string)! - 1] as! Candidate).text
             commitComposition(sender)
-            candidatesWindow.close()
+            _candidatesWindow.close()
             return true
         }
         if keyCode == kVK_Return {
@@ -146,7 +170,7 @@ class FireInputController: IMKInputController {
             if first != nil {
                 _composedString = (first as! Candidate).text
                 commitComposition(sender)
-                candidatesWindow.close()
+                _candidatesWindow.close()
             }
             return true
         }
@@ -155,17 +179,14 @@ class FireInputController: IMKInputController {
     
     override func recognizedEvents(_ sender: Any!) -> Int {
         return Int(NSEvent.EventTypeMask.keyDown.rawValue | NSEvent.EventTypeMask.flagsChanged.rawValue)
-//        return Int(NSEvent.EventType.keyDown.rawValue | NSEvent.EventType.keyUp.rawValue | NSEvent.EventType.flagsChanged.rawValue)
     }
     
     override func deactivateServer(_ sender: Any!) {
         NSLog("deactivate server: \(client()!.bundleIdentifier()!)")
-        candidatesWindow.close()
+        _candidatesWindow.close()
     }
     
     override func menu() -> NSMenu! {
-//        let menu = NSMenu(title: "Fire")
-//        menu.addItem(NSMenuItem.init(title: "首选项", action: nil, keyEquivalent: ""))
         return (NSApp.delegate as! AppDelegate).menu
     }
     

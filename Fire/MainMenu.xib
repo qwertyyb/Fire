@@ -20,14 +20,14 @@
         <customObject id="YLy-65-1bz" customClass="NSFontManager"/>
         <menu title="fire" systemMenu="apple" id="uQy-DD-JDr" userLabel="Main Menu">
             <items>
-                <menuItem title="About fire" id="5kV-Vb-QxS">
+                <menuItem title="关于业火输入法" id="5kV-Vb-QxS">
                     <modifierMask key="keyEquivalentModifierMask"/>
                     <connections>
                         <action selector="orderFrontStandardAboutPanel:" target="-1" id="Exp-CZ-Vem"/>
                     </connections>
                 </menuItem>
                 <menuItem isSeparatorItem="YES" id="VOq-y0-SEH"/>
-                <menuItem title="Preferences…" keyEquivalent="," id="BOF-NM-1cW"/>
+                <menuItem title="首选项…" keyEquivalent="," id="BOF-NM-1cW"/>
             </items>
             <point key="canvasLocation" x="189" y="432"/>
         </menu>

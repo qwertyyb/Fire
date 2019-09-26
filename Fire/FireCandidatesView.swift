@@ -13,13 +13,6 @@ class FireCandidatesView: NSStackView {
     var inputLabel: NSTextField = NSTextField(labelWithString: "")
     var candidatesView: NSStackView = NSStackView()
     
-    var inputController: FireInputController? {
-        get {
-            if (self.window == nil) { return nil }
-            return (self.window as! FireCandidatesWindow).inputController
-        }
-    }
-    
     override init(frame frameRect: NSRect) {
         super.init(frame: frameRect)
         orientation = .vertical
@@ -39,9 +32,9 @@ class FireCandidatesView: NSStackView {
         super.init(coder: decoder)
     }
     
-    func updateInputLabel () {
-        print("label: \((inputController?.originalString(inputController?.client()))!)");
-        inputLabel.attributedStringValue = (inputController?.originalString(inputController?.client()))!
+    func updateCode (code: String) {
+        print("label: \(code)");
+        inputLabel.stringValue = code
     }
     override func clippingResistancePriority(for orientation: NSLayoutConstraint.Orientation) -> NSLayoutConstraint.Priority {
         return .defaultLow
@@ -60,22 +53,23 @@ class FireCandidatesView: NSStackView {
         )
         return NSTextField(labelWithAttributedString: string)
     }
-    func updateCandidateViews () {
-        let candidates = inputController?.candidates(inputController?.client()) as! [Candidate]
+    func updateView(code: String, candidates: [Candidate]) {
+        updateCode(code: code)
+        updateCandidateViews(candidates: candidates)
+    }
+    func updateCandidateViews (candidates: [Candidate]) {
         if (self.window != nil) {
             let window = self.window as! FireCandidatesWindow
             var width = self.getWidth(candidates: candidates)
             width = width > 300 ? width : 300
-            window.setFrame(NSRect(x: window.origin.x, y: window.origin.y, width: CGFloat(width), height: CGFloat(window.height)), display: true)
+            let frame = window.frame
+            window.setFrame(NSRect(x: frame.origin.x, y: frame.origin.y, width: CGFloat(width), height: CGFloat(window.height)), display: true)
         }
         var index = -1
         let views = candidates.map({ (candidate) -> NSTextField in
             index += 1
             return getCandidateView(candidate: candidate, index: index)
-//            tex
-//            return CandidateView.init(candidate, index: index)
         })
-        updateInputLabel()
         candidatesView.setViews(views, in: .leading)
     }
     
