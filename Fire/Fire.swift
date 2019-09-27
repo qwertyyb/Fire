@@ -15,23 +15,34 @@ let kConnectionName = "Fire_1_Connection"
 struct Candidate {
     let code: String
     let text: String
+    let type: String  // wb | pyg
+}
+
+enum CodeMode {
+    case Wubi
+    case Pinyin
+    case WubiPinyin
 }
 
 class Fire: NSObject {
+    var codeMode: CodeMode = .WubiPinyin
+    
     var server: IMKServer = IMKServer.init(name: kConnectionName, bundleIdentifier: Bundle.main.bundleIdentifier)
     func getCandidates(origin: NSAttributedString = NSAttributedString()) -> [Candidate] {
         var db: OpaquePointer?
         var candidates: [Candidate] = []
-        let dbPath = Bundle.main.path(forResource: "dict", ofType: "sqlite")
+        let dbPath = Bundle.main.path(forResource: "table", ofType: "sqlite")
         if sqlite3_open(dbPath, &db) == SQLITE_OK {
-            let sql = "select distinct code, text from wb_dict_86 where code like '\(origin.string)%' order by id asc limit 0, 10"
-            //            NSLog("sql: %@", sql)gggg
+            let tableType = codeMode == .WubiPinyin ? "" : "type = '\(codeMode == .Pinyin ? "py" : "wb")' and "
+            let sql = "select t1.code, t1.text, t2.type from dict_default t1 inner join (select * from dict_default where (code like '\(origin.string)%' and type = 'wb') or (code like '\(origin.string)%' and type = 'py') order by case when code = '\(origin.string)' then id when code like '\(origin.string)%' then 100000000 + id end limit 0, 10) t2 on t1.text = t2.text and t1.type = 'wb' group by t1.text order by case when t2.code = '\(origin.string)' then t2.id when t2.code like '\(origin.string)%' then 10000000000 + t2.id end"
+            //            NSLog("sql: %@", sql)gg
             var queryStatement: OpaquePointer?
             if sqlite3_prepare_v2(db, sql, -1, &queryStatement, nil) == SQLITE_OK {
                 while(sqlite3_step(queryStatement) == SQLITE_ROW) {
                     let code = String.init(cString: sqlite3_column_text(queryStatement, 0))
                     let text = String.init(cString: sqlite3_column_text(queryStatement, 1))
-                    let candidate = Candidate(code: code, text: text)
+                    let type = String.init(cString: sqlite3_column_text(queryStatement, 2))
+                    let candidate = Candidate(code: code, text: text, type: type)
                     candidates.append(candidate)
                 }
                 sqlite3_finalize(queryStatement)

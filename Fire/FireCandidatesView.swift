@@ -39,11 +39,16 @@ class FireCandidatesView: NSStackView {
     override func clippingResistancePriority(for orientation: NSLayoutConstraint.Orientation) -> NSLayoutConstraint.Priority {
         return .defaultLow
     }
+    private func getShownCode(candidate: Candidate, origin: String) -> String {
+        if candidate.type == "py" {
+            return "(\(candidate.code))"
+        }
+        return candidate.code.hasPrefix(origin) && candidate.code.count > origin.count ? "~\(String(candidate.code.suffix(candidate.code.count - origin.count)))" : ""
+    }
     private func getCandidateView(candidate: Candidate, index: Int) -> NSTextField {
-        let count = inputLabel.stringValue.count
+        let origin = inputLabel.stringValue
         let code = candidate.code
-        NSLog("origin count: \(count), code count: \(code.count)")
-        let shownCode = code.count > count ? String(code.suffix(code.count - count)) : ""
+        let shownCode = getShownCode(candidate: candidate, origin: origin)
         let string = NSMutableAttributedString(string: "\(index+1).\(candidate.text)\(shownCode)", attributes: [
                 NSAttributedString.Key.foregroundColor: index == 0 ? NSColor.red : NSColor.init(red: 0.23, green: 0.23, blue: 0.23, alpha: 1),
             NSAttributedString.Key.font: NSFont.userFont(ofSize: 20)!
@@ -79,11 +84,10 @@ class FireCandidatesView: NSStackView {
     
     private func getWidth(candidates: [Candidate]) -> Int {
         
-        let count = inputLabel.stringValue.count
+        let origin = inputLabel.stringValue
         let width = candidates.reduce(0) { (result: Int, item: Candidate) -> Int in
-            let code = item.code
-            let shownCode = code.count > count ? String(code.suffix(code.count - count)) : ""
-            return result + (item.text.count + 1) * 20 +  shownCode.count * 10 + 8;
+            let shownCode = getShownCode(candidate: item, origin: origin)
+            return result + (item.text.count + 1) * 20 +  shownCode.count * 10 + 10;
         }
         NSLog("width: \(width)")
         return width

@@ -19,13 +19,21 @@ enum InputMode {
 class FireInputController: IMKInputController {
     private var _originalString = "" { 
         didSet (val) {
+            if _updateCandidateTimer != nil {
+                _updateCandidateTimer?.invalidate()
+                _updateCandidateTimer = nil
+            }
             let value = originalString(client())!.string
             NSLog("original string changed: \(value )")
 //            updateComposition()
-            let text = NSAttributedString(string: value.count > 0 ? " " : "")
-            client()?.setMarkedText(text, selectionRange: NSMakeRange(NSNotFound, value.count > 0 ? 1 : 0), replacementRange: replacementRange())
+            let attrs = mark(forStyle: kTSMHiliteConvertedText, at: NSMakeRange(NSNotFound,0))
+            let text = NSAttributedString(string: value.count > 0 ? " " : "", attributes: (attrs as! [NSAttributedString.Key : Any]))
+            client()?.setMarkedText(text, selectionRange: NSMakeRange(NSNotFound, text.length), replacementRange: replacementRange())
             if value.count > 0 {
-                _candidatesWindow.updateWindow(origin: getOriginPoint(), code: value, candidates: self.candidates(client()) as! [Candidate])
+//                _updateCandidateTimer = Timer.scheduledTimer(withTimeInterval: 0.1, repeats: false, block: { (timer) in
+                    self.self._candidatesWindow.updateWindow(origin: self.getOriginPoint(), code: value, candidates: self.candidates(self.client()) as! [Candidate])
+                    self._updateCandidateTimer = nil
+//                })
             } else {
                 _candidatesWindow.close()
             }
@@ -37,6 +45,7 @@ class FireInputController: IMKInputController {
     private var _modeWindow: NSWindow
     private var _closeModeWindowTimer: Timer? = nil
     private var _lastModifier: NSEvent.ModifierFlags = .init(rawValue: 0)
+    private var _updateCandidateTimer: Timer? = nil
     
     override init!(server: IMKServer!, delegate: Any!, client inputClient: Any!) {
         
@@ -55,11 +64,9 @@ class FireInputController: IMKInputController {
     }
     
     override func commitComposition(_ sender: Any!) {
-        NSLog("commitComposition: %@", composedString(sender) as! NSString)
+        NSLog("commitComposition: %@", composedString(sender) as! NSAttributedString)
         client().insertText(composedString(sender), replacementRange: replacementRange())
-        self._originalString = ""
-        self._composedString = ""
-        self._candidatesWindow.close()
+        clean()
     }
     
     override func originalString(_ sender: Any!) -> NSAttributedString! {
@@ -89,7 +96,12 @@ class FireInputController: IMKInputController {
             self._closeModeWindowTimer!.invalidate()
             self._closeModeWindowTimer = nil
         }
+        
         _mode = _mode == .ZhHans ? InputMode.En : InputMode.ZhHans
+        _originalString = ""
+        _composedString = ""
+        
+        
         if self._modeWindow.isVisible {
             self._modeWindow.close()
         }
@@ -131,26 +143,31 @@ class FireInputController: IMKInputController {
         if _mode == .En || event.characters == nil {
             return false
         }
-        let string = event.characters!
         let keyCode = event.keyCode
         
+        // 删除最后一个字符
+        if keyCode == kVK_Delete  {
+            if _originalString.count > 0 {
+                _originalString = String(_originalString.dropLast())
+                return true
+            }
+            return false
+        }
+        
+        let string = event.characters!
         NSLog("string: \(string), keyCode: \(keyCode)")
         let reg = try! NSRegularExpression(pattern: "^[a-zA-Z]+$")
-        let match = reg.firstMatch(in: string, options: [], range: NSRange(location: 0, length: string.utf16.count))
+        let match = reg.firstMatch(in: string, options: [], range: NSRange(location: 0, length: string.count))
         
         // 当前没有输入非字符并且之前没有输入字符,不做处理
         if  _originalString.count <= 0 && match == nil {
+            NSLog("非字符,不做处理,直接返回")
             return false
         }
         // 当前输入的是英文字符,附加到之前
         if (match != nil) {
+//            NSLog("输入了英文字符,附加到之前: \(string)")
             _originalString += string
-            return true
-        }
-        
-        // 删除最后一个字符
-        if keyCode == kVK_Delete && _originalString.count > 0 {
-            _originalString = String(_originalString.dropLast())
             return true
         }
         
@@ -186,7 +203,7 @@ class FireInputController: IMKInputController {
     
     override func deactivateServer(_ sender: Any!) {
         NSLog("deactivate server: \(client()!.bundleIdentifier()!)")
-        _candidatesWindow.close()
+        clean()
     }
     
     override func menu() -> NSMenu! {
@@ -198,9 +215,15 @@ class FireInputController: IMKInputController {
     }
     
     override func composedString(_ sender: Any!) -> Any! {
-        return NSString(string: _composedString)
+        return NSAttributedString(string: _composedString)
+    }
+    
+    func clean() {
+        _originalString = ""
+        _composedString = ""
+        _candidatesWindow.close()
     }
     override func inputControllerWillClose() {
-        _originalString = ""
+        clean()
     }
 }

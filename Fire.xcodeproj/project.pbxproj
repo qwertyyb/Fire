@@ -15,7 +15,7 @@
 		451E605F232E400B007B0463 /* Fire.swift in Sources */ = {isa = PBXBuildFile; fileRef = 451E605E232E400B007B0463 /* Fire.swift */; };
 		459DE990232EB26600A3ACD1 /* FireCandidatesView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 459DE98E232EB26500A3ACD1 /* FireCandidatesView.swift */; };
 		459DE991232EB26600A3ACD1 /* FireCandidatesWindow.swift in Sources */ = {isa = PBXBuildFile; fileRef = 459DE98F232EB26500A3ACD1 /* FireCandidatesWindow.swift */; };
-		676AE4FE233C7CE50077310A /* dict.sqlite in Resources */ = {isa = PBXBuildFile; fileRef = 676AE4FD233C7CE50077310A /* dict.sqlite */; };
+		673CD81C233DCF14006538B8 /* table.sqlite in Resources */ = {isa = PBXBuildFile; fileRef = 673CD81B233DCF14006538B8 /* table.sqlite */; };
 		67E8B512233B978E00D7CE80 /* Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 67E8B511233B978E00D7CE80 /* Info.plist */; };
 		67E8B515233B97FD00D7CE80 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 67E8B517233B97FD00D7CE80 /* InfoPlist.strings */; };
 		67E8B520233C537B00D7CE80 /* fire.icns in Resources */ = {isa = PBXBuildFile; fileRef = 67E8B51D233C537B00D7CE80 /* fire.icns */; };
@@ -34,7 +34,7 @@
 		451E605E232E400B007B0463 /* Fire.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Fire.swift; sourceTree = "<group>"; };
 		459DE98E232EB26500A3ACD1 /* FireCandidatesView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FireCandidatesView.swift; sourceTree = "<group>"; };
 		459DE98F232EB26500A3ACD1 /* FireCandidatesWindow.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FireCandidatesWindow.swift; sourceTree = "<group>"; };
-		676AE4FD233C7CE50077310A /* dict.sqlite */ = {isa = PBXFileReference; lastKnownFileType = file; path = dict.sqlite; sourceTree = "<group>"; };
+		673CD81B233DCF14006538B8 /* table.sqlite */ = {isa = PBXFileReference; lastKnownFileType = file; path = table.sqlite; sourceTree = "<group>"; };
 		67E8B511233B978E00D7CE80 /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		67E8B516233B97FD00D7CE80 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/InfoPlist.strings; sourceTree = "<group>"; };
 		67E8B518233B994000D7CE80 /* zh-Hans */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "zh-Hans"; path = "zh-Hans.lproj/InfoPlist.strings"; sourceTree = "<group>"; };
@@ -104,7 +104,7 @@
 		45E34DC52337C98900CA7E72 /* data */ = {
 			isa = PBXGroup;
 			children = (
-				676AE4FD233C7CE50077310A /* dict.sqlite */,
+				673CD81B233DCF14006538B8 /* table.sqlite */,
 			);
 			path = data;
 			sourceTree = "<group>";
@@ -174,9 +174,9 @@
 			files = (
 				67E8B520233C537B00D7CE80 /* fire.icns in Resources */,
 				67E8B515233B97FD00D7CE80 /* InfoPlist.strings in Resources */,
-				676AE4FE233C7CE50077310A /* dict.sqlite in Resources */,
 				451E604A232E227C007B0463 /* Assets.xcassets in Resources */,
 				451E605D232E3A3C007B0463 /* MainMenu.xib in Resources */,
+				673CD81C233DCF14006538B8 /* table.sqlite in Resources */,
 				67E8B521233C537B00D7CE80 /* fire.pdf in Resources */,
 				67E8B512233B978E00D7CE80 /* Info.plist in Resources */,
 				67E8B522233C537B00D7CE80 /* fire.tiff in Resources */,
