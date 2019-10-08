@@ -18,25 +18,72 @@ struct Candidate {
     let type: String  // wb | pyg
 }
 
-enum CodeMode {
+enum CodeMode: Int {
     case Wubi
     case Pinyin
     case WubiPinyin
+}
+
+struct NetCandidate: Codable {
+    let wbcode: String
+    let text: String
+    let weight: Int
+}
+
+struct CandidatesResponse: Codable {
+    let errcode: Int
+    let errmsg: String
+    let list: [NetCandidate]
+}
+
+extension UserDefaults
+{
+    @objc dynamic var codeMode: Int
+    {
+        get {
+            return integer(forKey: "codeMode")
+        }
+        set {
+            set(newValue, forKey: "codeMode")
+        }
+    }
 }
 
 class Fire: NSObject {
     var codeMode: CodeMode = .WubiPinyin
     var candidateCount: Int = 5
     
+    override init() {
+        UserDefaults.standard.register(defaults: ["codeMode": 2, "candidateCount": 5])
+        codeMode = CodeMode(rawValue: UserDefaults.standard.integer(forKey: "codeMode"))!
+        candidateCount = UserDefaults.standard.integer(forKey: "candidateCount")
+        super.init()
+        UserDefaults.standard.addObserver(self, forKeyPath: "codeMode", options: [.new, .old, .initial], context: nil)
+        UserDefaults.standard.addObserver(self, forKeyPath: "candidateCount", options: [.new, .old, .initial], context: nil)
+    }
+    override func observeValue(forKeyPath keyPath: String?, of object: Any?, change: [NSKeyValueChangeKey : Any]?, context: UnsafeMutableRawPointer?) {
+        let newVal = change![NSKeyValueChangeKey.newKey]
+        if keyPath == "codeMode" {
+            codeMode = CodeMode.init(rawValue: newVal as! Int)!
+        } else if keyPath == "candidateCount" {
+            candidateCount = newVal as! Int
+        }
+    }
+    
+    private func getQuerySql(code: String = "") -> String {
+        let tableType = codeMode == .WubiPinyin ? "" : "type = '\(codeMode == .Pinyin ? "py" : "wb")' and "
+        let sql = "select case when t2.type = 'wb' then min(t1.code) else max(t1.code) end as code, t1.text, t2.type from dict_default t1 inner join (select * from dict_default where \(tableType)code like '\(code)%' order by case when code = '\(code)' then id when code like '\(code)%' then 100000000 + id end limit 0, \(3 * candidateCount)) t2 on t1.text = t2.text and t1.type = 'wb' group by t1.text order by case when t2.code = '\(code)' then t2.id when t2.code like '\(code)%' then 10000000 + t2.id end limit 0, \(candidateCount)"
+        return sql
+    }
+    
     var server: IMKServer = IMKServer.init(name: kConnectionName, bundleIdentifier: Bundle.main.bundleIdentifier)
     func getCandidates(origin: NSAttributedString = NSAttributedString()) -> [Candidate] {
+        NSLog("get local candidate, origin: \(origin.string)")
         var db: OpaquePointer?
         var candidates: [Candidate] = []
         let dbPath = Bundle.main.path(forResource: "table", ofType: "sqlite")
         if sqlite3_open(dbPath, &db) == SQLITE_OK {
-            let tableType = codeMode == .WubiPinyin ? "" : "type = '\(codeMode == .Pinyin ? "py" : "wb")' and "
-            let sql = "select case when t2.type = 'wb' then min(t1.code) else max(t1.code) end as code, t1.text, t2.type from dict_default t1 inner join (select * from dict_default where code like '\(origin.string)%' order by case when code = '\(origin.string)' then id when code like '\(origin.string)%' then 100000000 + id end limit 0, \(candidateCount)) t2 on t1.text = t2.text and t1.type = 'wb' group by t1.text order by case when t2.code = '\(origin.string)' then t2.id when t2.code like '\(origin.string)%' then 10000000 + t2.id end"
-            //            NSLog("sql: %@", sql)
+            let sql = getQuerySql(code: origin.string)
             var queryStatement: OpaquePointer?
             if sqlite3_prepare_v2(db, sql, -1, &queryStatement, nil) == SQLITE_OK {
                 NSLog("list")
@@ -53,6 +100,33 @@ class Fire: NSObject {
         }
         sqlite3_close(db)
         return candidates
+    }
+    
+    @objc func openAbout (_ sender: Any!) {
+        NSApp.orderFrontStandardAboutPanel(nil)
+    }
+    
+
+    @objc func showPreferences(_ sender: Any!) {
+        let preferencesWindowController = PreferencesController(windowNibName: "Preferences")
+        preferencesWindowController.showWindow(nil)
+        preferencesWindowController.window?.orderFront(nil)
+    }
+    
+    func getCandidateFromNetwork(origin: String, sender: (IMKTextInput & NSObjectProtocol)!) {
+        if origin.count != 4 { return }
+        URLSession.shared.dataTask(with: URL.init(string: "http://localhost:8000/dict/candidates?origin=" + origin)!) { (data, response, error) in
+            if error != nil {
+                print(error!)
+                return
+            }
+            let res = try! JSONDecoder().decode(CandidatesResponse.self, from: data!)
+            let candidates = res.list.map { (netCandidate) -> Candidate in
+                return Candidate(code: netCandidate.wbcode, text: netCandidate.text, type: "wb")
+            }
+//            print(res.list)
+            NotificationCenter.default.post(Notification.init(name: Notification.Name(rawValue: "NetCandidatesUpdate-\(sender.bundleIdentifier() ?? "Fire")"), object: candidates, userInfo: nil))
+        }.resume()
     }
 
     static let shared = Fire()

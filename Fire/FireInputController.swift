@@ -16,13 +16,44 @@ enum InputMode {
     case En
 }
 
+let punctution: [String: String] = [
+    ",": "，",
+    ".": "。",
+    "/": "、",
+    ";": "；",
+    "'": "‘",
+    "[": "［",
+    "]": "］",
+    "`": "｀",
+    "!": "！",
+    "@": "‧",
+    "#": "＃",
+    "$": "￥",
+    "%": "％",
+    "^": "……",
+    "&": "＆",
+    "*": "×",
+    "(": "（",
+    ")": "）",
+    "-": "－",
+    "_": "——",
+    "+": "＋",
+    "=": "＝",
+    "~": "～",
+    "{": "｛",
+    "\\": "、",
+    "|": "｜",
+    "}": "｝",
+    ":": "：",
+    "\"": "“",
+    "<": "《",
+    ">": "》",
+    "?": "？"
+]
+
 class FireInputController: IMKInputController {
     private var _originalString = "" { 
         didSet (val) {
-            if _updateCandidateTimer != nil {
-                _updateCandidateTimer?.invalidate()
-                _updateCandidateTimer = nil
-            }
             let value = originalString(client())!.string
             NSLog("original string changed: \(value )")
 //            updateComposition()
@@ -30,10 +61,8 @@ class FireInputController: IMKInputController {
             let text = NSAttributedString(string: value.count > 0 ? " " : "", attributes: (attrs as! [NSAttributedString.Key : Any]))
             client()?.setMarkedText(text, selectionRange: NSMakeRange(NSNotFound, text.length), replacementRange: replacementRange())
             if value.count > 0 {
-//                _updateCandidateTimer = Timer.scheduledTimer(withTimeInterval: 0.1, repeats: false, block: { (timer) in
-                    self.self._candidatesWindow.updateWindow(origin: self.getOriginPoint(), code: value, candidates: self.candidates(self.client()) as! [Candidate])
-                    self._updateCandidateTimer = nil
-//                })
+                self.self._candidatesWindow.updateWindow(origin: self.getOriginPoint(), code: value, candidates: self.candidates(self.client()) as! [Candidate])
+                Fire.shared.getCandidateFromNetwork(origin: value, sender: client())
             } else {
                 _candidatesWindow.close()
             }
@@ -45,7 +74,6 @@ class FireInputController: IMKInputController {
     private var _modeWindow: NSWindow
     private var _closeModeWindowTimer: Timer? = nil
     private var _lastModifier: NSEvent.ModifierFlags = .init(rawValue: 0)
-    private var _updateCandidateTimer: Timer? = nil
     
     override init!(server: IMKServer!, delegate: Any!, client inputClient: Any!) {
         
@@ -57,6 +85,14 @@ class FireInputController: IMKInputController {
         _modeWindow = window
         
         super.init(server: server, delegate: delegate, client: inputClient)
+        
+        NSLog("observer: NetCandidatesUpdate-\(client().bundleIdentifier() ?? "Fire")")
+        NotificationCenter.default.addObserver(forName: NSNotification.Name(rawValue: "NetCandidatesUpdate-\(client().bundleIdentifier() ?? "Fire")"), object: nil, queue: nil) { (notification) in
+            let list = notification.object as! [Candidate]
+            DispatchQueue.main.async {
+                self._candidatesWindow.updateNetCandidateView(candidate: list.count > 0 ? list.first! : nil)
+            }
+        }
     }
     
     override func selectionRange() -> NSRange {
@@ -88,6 +124,7 @@ class FireInputController: IMKInputController {
         client().attributes(forCharacterIndex: 0, lineHeightRectangle: ptr)
         let rect = ptr.pointee
         let origin = NSPoint(x: rect.origin.x, y: rect.origin.y)
+        ptr.deallocate()
         return origin
     }
     
@@ -118,7 +155,6 @@ class FireInputController: IMKInputController {
         self._closeModeWindowTimer = Timer.scheduledTimer(withTimeInterval: 1, repeats: false) { (timer) in
             self._modeWindow.close()
             self._closeModeWindowTimer = nil
-//            self._modeWindow = nil
         }
         NSLog("toggle mode: \(_mode)")
     }
@@ -156,6 +192,14 @@ class FireInputController: IMKInputController {
         
         let string = event.characters!
         NSLog("string: \(string), keyCode: \(keyCode)")
+        
+        if _mode == .ZhHans && punctution.keys.contains(string) {
+            _composedString = punctution[string]!
+            commitComposition(sender)
+            return true
+        }
+        
+        
         let reg = try! NSRegularExpression(pattern: "^[a-zA-Z]+$")
         let match = reg.firstMatch(in: string, options: [], range: NSRange(location: 0, length: string.count))
         
@@ -173,9 +217,15 @@ class FireInputController: IMKInputController {
         
         // 当前输入的是数字,选择当前候选列表中的第N个字符
         if try! NSRegularExpression(pattern: "^[1-9]+$").firstMatch(in: string, options: [], range: NSMakeRange(0, string.count)) != nil {
-            _composedString = (self.candidates(sender)[Int(string)! - 1] as! Candidate).text
-            commitComposition(sender)
-            _candidatesWindow.close()
+            let index = Int(string)! - 1
+            let candidates = self.candidates(sender)
+            if index < candidates!.count {
+                _composedString = (candidates![index] as! Candidate).text
+                commitComposition(sender)
+                _candidatesWindow.close()
+            } else {
+                _originalString += string
+            }
             return true
         }
         if keyCode == kVK_Return {
@@ -226,4 +276,5 @@ class FireInputController: IMKInputController {
     override func inputControllerWillClose() {
         clean()
     }
+    
 }
