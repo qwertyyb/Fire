@@ -34,7 +34,6 @@ class Fire: NSObject {
         var candidates: [Candidate] = []
         let dbPath = Bundle.main.path(forResource: "table", ofType: "sqlite")
         if sqlite3_open(dbPath, &db) == SQLITE_OK {
-            let tableType = codeMode == .WubiPinyin ? "" : "type = '\(codeMode == .Pinyin ? "py" : "wb")' and "
             let sql = "select case when t2.type = 'wb' then min(t1.code) else max(t1.code) end as code, t1.text, t2.type from dict_default t1 inner join (select * from dict_default where code like '\(origin.string)%' order by case when code = '\(origin.string)' then id when code like '\(origin.string)%' then 100000000 + id end limit 0, \(candidateCount)) t2 on t1.text = t2.text and t1.type = 'wb' group by t1.text order by case when t2.code = '\(origin.string)' then t2.id when t2.code like '\(origin.string)%' then 10000000 + t2.id end"
             //            NSLog("sql: %@", sql)
             var queryStatement: OpaquePointer?
