@@ -11,17 +11,17 @@
 		451E6048232E227B007B0463 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 451E6047232E227B007B0463 /* AppDelegate.swift */; };
 		451E604A232E227C007B0463 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 451E6049232E227C007B0463 /* Assets.xcassets */; };
 		451E6056232E24A5007B0463 /* FireInputController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 451E6055232E24A5007B0463 /* FireInputController.swift */; };
-		451E6059232E2787007B0463 /* InputMethodKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 451E6058232E2787007B0463 /* InputMethodKit.framework */; };
 		451E605D232E3A3C007B0463 /* MainMenu.xib in Resources */ = {isa = PBXBuildFile; fileRef = 451E605C232E3A3C007B0463 /* MainMenu.xib */; };
 		451E605F232E400B007B0463 /* Fire.swift in Sources */ = {isa = PBXBuildFile; fileRef = 451E605E232E400B007B0463 /* Fire.swift */; };
 		4543349923425C39000950E1 /* PreferencesController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4543349823425C39000950E1 /* PreferencesController.swift */; };
+		45449B4C23535ED000C9EFEF /* InputMethodKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 451E6058232E2787007B0463 /* InputMethodKit.framework */; };
+		45449B512353627500C9EFEF /* fire.tiff in Resources */ = {isa = PBXBuildFile; fileRef = 45449B502353627500C9EFEF /* fire.tiff */; };
 		459DE990232EB26600A3ACD1 /* FireCandidatesView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 459DE98E232EB26500A3ACD1 /* FireCandidatesView.swift */; };
 		459DE991232EB26600A3ACD1 /* FireCandidatesWindow.swift in Sources */ = {isa = PBXBuildFile; fileRef = 459DE98F232EB26500A3ACD1 /* FireCandidatesWindow.swift */; };
 		673CD81C233DCF14006538B8 /* table.sqlite in Resources */ = {isa = PBXBuildFile; fileRef = 673CD81B233DCF14006538B8 /* table.sqlite */; };
 		67E8B515233B97FD00D7CE80 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 67E8B517233B97FD00D7CE80 /* InfoPlist.strings */; };
 		67E8B520233C537B00D7CE80 /* fire.icns in Resources */ = {isa = PBXBuildFile; fileRef = 67E8B51D233C537B00D7CE80 /* fire.icns */; };
 		67E8B521233C537B00D7CE80 /* fire.pdf in Resources */ = {isa = PBXBuildFile; fileRef = 67E8B51E233C537B00D7CE80 /* fire.pdf */; };
-		9E252D51914D447968DD20C7 /* libPods-Fire.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 59F80EA93E8AE7885721524F /* libPods-Fire.a */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -35,6 +35,7 @@
 		451E605C232E3A3C007B0463 /* MainMenu.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = MainMenu.xib; sourceTree = "<group>"; };
 		451E605E232E400B007B0463 /* Fire.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Fire.swift; sourceTree = "<group>"; };
 		4543349823425C39000950E1 /* PreferencesController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PreferencesController.swift; sourceTree = "<group>"; };
+		45449B502353627500C9EFEF /* fire.tiff */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = fire.tiff; sourceTree = "<group>"; };
 		459DE98E232EB26500A3ACD1 /* FireCandidatesView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FireCandidatesView.swift; sourceTree = "<group>"; };
 		459DE98F232EB26500A3ACD1 /* FireCandidatesWindow.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FireCandidatesWindow.swift; sourceTree = "<group>"; };
 		497E90F13FA9A943AC0BE3DB /* Pods-Fire.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Fire.release.xcconfig"; path = "Target Support Files/Pods-Fire/Pods-Fire.release.xcconfig"; sourceTree = "<group>"; };
@@ -53,8 +54,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				451E6059232E2787007B0463 /* InputMethodKit.framework in Frameworks */,
-				9E252D51914D447968DD20C7 /* libPods-Fire.a in Frameworks */,
+				45449B4C23535ED000C9EFEF /* InputMethodKit.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -93,6 +93,7 @@
 			children = (
 				67E8B51D233C537B00D7CE80 /* fire.icns */,
 				67E8B51E233C537B00D7CE80 /* fire.pdf */,
+				45449B502353627500C9EFEF /* fire.tiff */,
 				67E8B511233B978E00D7CE80 /* Info.plist */,
 				67E8B517233B97FD00D7CE80 /* InfoPlist.strings */,
 				45E34DC52337C98900CA7E72 /* data */,
@@ -139,6 +140,7 @@
 				451E6041232E227B007B0463 /* Frameworks */,
 				451E6042232E227B007B0463 /* Resources */,
 				CC4E3CB56A41B3947C0BFEC1 /* [CP] Embed Pods Frameworks */,
+				45449B4D235360B900C9EFEF /* update version */,
 			);
 			buildRules = (
 			);
@@ -198,14 +200,32 @@
 				451E605D232E3A3C007B0463 /* MainMenu.xib in Resources */,
 				673CD81C233DCF14006538B8 /* table.sqlite in Resources */,
 				67E8B521233C537B00D7CE80 /* fire.pdf in Resources */,
-				67E8B512233B978E00D7CE80 /* Info.plist in Resources */,
 				4514F6DF2343468000410EC2 /* preferences.xib in Resources */,
+				45449B512353627500C9EFEF /* fire.tiff in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXShellScriptBuildPhase section */
+		45449B4D235360B900C9EFEF /* update version */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+			);
+			name = "update version";
+			outputFileListPaths = (
+			);
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "version=`/usr/libexec/PlistBuddy -c \"Print CFBundleVersion\" $PRODUCT_SETTINGS_PATH`\nversion=`expr $version + 1`\n/usr/libexec/PlistBuddy -c \"Set :CFBundleVersion $version\" $PRODUCT_SETTINGS_PATH\n";
+		};
 		B7AF3759D9701C095D62024C /* [CP] Check Pods Manifest.lock */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
@@ -310,6 +330,7 @@
 				CLANG_WARN_UNREACHABLE_CODE = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
 				CODE_SIGN_IDENTITY = "Mac Developer";
+				CONFIGURATION_BUILD_DIR = "/Library/Input Methods";
 				COPY_PHASE_STRIP = NO;
 				DEBUG_INFORMATION_FORMAT = dwarf;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
@@ -401,15 +422,18 @@
 				CODE_SIGN_IDENTITY = "-";
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
+				CONFIGURATION_BUILD_DIR = "/Library/Input Methods";
 				DEVELOPMENT_TEAM = T68XK6867P;
 				INFOPLIST_FILE = Fire/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/../Frameworks",
 				);
+				PODS_CONFIGURATION_BUILD_DIR = "${PODS_BUILD_DIR}/$(CONFIGURATION)$(EFFECTIVE_PLATFORM_NAME)";
 				PRODUCT_BUNDLE_IDENTIFIER = com.qwertyyb.inputmethod.Fire;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_VERSION = 5.0;
+				SYMROOT = build;
 			};
 			name = Debug;
 		};
@@ -430,6 +454,7 @@
 				PRODUCT_BUNDLE_IDENTIFIER = com.qwertyyb.inputmethod.Fire;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_VERSION = 5.0;
+				SYMROOT = build;
 			};
 			name = Release;
 		};

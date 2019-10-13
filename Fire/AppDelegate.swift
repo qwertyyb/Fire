@@ -8,12 +8,12 @@
 
 import Cocoa
 import InputMethodKit
+import Sparkle
 
 @NSApplicationMain
 class AppDelegate: NSObject, NSApplicationDelegate {
     
     let fire: Fire
-    let menu = NSMenu(title: "业火输入法")
     override init() {
         NSLog("terminate runing")
 //        let running = NSRunningApplication.runningApplications(withBundleIdentifier: NSRunningApplication.current.bundleIdentifier!).first
@@ -21,8 +21,6 @@ class AppDelegate: NSObject, NSApplicationDelegate {
 //            running?.forceTerminate()
 //        }
         fire = Fire.shared
-        menu.addItem(NSMenuItem(title: "关于业火输入法", action: #selector(Fire.openAbout(_:)), keyEquivalent: ""))
-        menu.addItem(NSMenuItem(title: "首选项", action: #selector(fire.showPreferences(_:)), keyEquivalent: ""))
     }
     func applicationDidFinishLaunching(_ aNotification: Notification) {
         let installedLocationURL = CFURLCreateFromFileSystemRepresentation(nil, "/Library/Input Methods/Fire.app", "/Library/Input Methods/Fire.app".count, false)
@@ -33,7 +31,6 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         if (installedLocationURL != nil) {
             TISRegisterInputSource(installedLocationURL)
         }
-        
 
         let sourceList = TISCreateInputSourceList(nil, true);
         

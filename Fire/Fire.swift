@@ -9,6 +9,7 @@
 import Cocoa
 import InputMethodKit
 import SQLite3
+import Sparkle
 
 let kConnectionName = "Fire_1_Connection"
 
@@ -86,13 +87,13 @@ class Fire: NSObject {
             let sql = getQuerySql(code: origin.string)
             var queryStatement: OpaquePointer?
             if sqlite3_prepare_v2(db, sql, -1, &queryStatement, nil) == SQLITE_OK {
-                NSLog("list")
+//                NSLog("list")
                 while(sqlite3_step(queryStatement) == SQLITE_ROW) {
                     let code = String.init(cString: sqlite3_column_text(queryStatement, 0))
                     let text = String.init(cString: sqlite3_column_text(queryStatement, 1))
                     let type = String.init(cString: sqlite3_column_text(queryStatement, 2))
                     let candidate = Candidate(code: code, text: text, type: type)
-                    NSLog("text \(text)")
+//                    NSLog("text \(text)")
                     candidates.append(candidate)
                 }
                 sqlite3_finalize(queryStatement)
@@ -102,16 +103,6 @@ class Fire: NSObject {
         return candidates
     }
     
-    @objc func openAbout (_ sender: Any!) {
-        NSApp.orderFrontStandardAboutPanel(nil)
-    }
-    
-
-    @objc func showPreferences(_ sender: Any!) {
-        let preferencesWindowController = PreferencesController(windowNibName: "Preferences")
-        preferencesWindowController.showWindow(nil)
-        preferencesWindowController.window?.orderFront(nil)
-    }
     
     func getCandidateFromNetwork(origin: String, sender: (IMKTextInput & NSObjectProtocol)!) {
         if origin.count != 4 { return }

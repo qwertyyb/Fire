@@ -8,6 +8,7 @@
 
 import Cocoa
 import InputMethodKit
+import Sparkle
 
 var set = false
 
@@ -256,8 +257,30 @@ class FireInputController: IMKInputController {
         clean()
     }
     
+    
+    /* -- menu actions start -- */
+    
+    @objc func openAbout (_ sender: Any!) {
+        NSLog("open about")
+        DispatchQueue.main.async {
+            NSLog("check updates")
+                NSApp.orderFrontStandardAboutPanel(sender)
+        }
+    }
+    
+    @objc func checkForUpdates(_ sender: Any!) {
+        SUUpdater.shared()?.checkForUpdates(sender)
+    }
+    
+    /* -- menu actions start -- */
+    
     override func menu() -> NSMenu! {
-        return (NSApp.delegate as! AppDelegate).menu
+        let menu = NSMenu()
+        menu.addItem(NSMenuItem(title: "关于业火输入法", action: #selector(openAbout(_:)), keyEquivalent: ""))
+        menu.addItem(NSMenuItem(title: "检查更新", action: #selector(checkForUpdates(_:)), keyEquivalent: ""))
+        menu.addItem(NSMenuItem(title: "首选项", action: #selector(showPreferences(_:)), keyEquivalent: ""))
+//        return (NSApp.delegate as! AppDelegate).menu
+        return menu
     }
     
     override func candidates(_ sender: Any!) -> [Any]! {

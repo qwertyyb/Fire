@@ -1,6 +1,9 @@
 name: CI
 
-on: [push]
+on:
+  push:
+    branches:
+      - master
 
 jobs:
   build:
@@ -9,14 +12,27 @@ jobs:
     
     steps:
     - uses: actions/checkout@v1
+    - name: install depencies
+      run: pod install
     - name: archive
-      run: xcodebuild -project Fire.xcodeproj
+      run: xcodebuild archive -workspace Fire.xcworkspace -scheme Fire -archivePath ./archive-Fire -configuration Release
     - name: copy app && zip app && generate appcast
       env:
         sparkle_key: ${{ secrets.sparkle_key }}
       run: |
         mkdir apps
-        cp -a ./build/Release/*.app apps
+        cp -a ./archive-Fire.xcarchive/Products/Applications/*.app apps
         ditto -c -k --sequesterRsrc --keepParent apps/Fire.app apps/Fire.zip
         # rm -r ~/Library/Caches/Sparkle_generate_appcast/*
         ./bin/generate_appcast -s $sparkle_key ./apps/
+    - name: install & config coscmd
+      env:
+        oss_appid: ${{ secrets.oss_appid }}
+        oss_secret: ${{ secrets.oss_secret }}
+      run: |
+        pip install pip==9.0.0 && pip install coscmd
+        coscmd config -a $oss_appid -s $oss_secret -b person-1253524658 -r ap-beijing
+    - name: upload app and appcast
+      run: |
+        coscmd upload ./apps/Fire.zip cloudfn/apps/fire/Fire.zip
+        coscmd upload ./apps/appcast.xml cloudfn/apps/fire/appcast.xml
