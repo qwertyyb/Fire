@@ -7,12 +7,14 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		4514F6DF2343468000410EC2 /* preferences.xib in Resources */ = {isa = PBXBuildFile; fileRef = 4514F6DE2343468000410EC2 /* preferences.xib */; };
 		451E6048232E227B007B0463 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 451E6047232E227B007B0463 /* AppDelegate.swift */; };
 		451E604A232E227C007B0463 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 451E6049232E227C007B0463 /* Assets.xcassets */; };
 		451E6056232E24A5007B0463 /* FireInputController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 451E6055232E24A5007B0463 /* FireInputController.swift */; };
 		451E6059232E2787007B0463 /* InputMethodKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 451E6058232E2787007B0463 /* InputMethodKit.framework */; };
 		451E605D232E3A3C007B0463 /* MainMenu.xib in Resources */ = {isa = PBXBuildFile; fileRef = 451E605C232E3A3C007B0463 /* MainMenu.xib */; };
 		451E605F232E400B007B0463 /* Fire.swift in Sources */ = {isa = PBXBuildFile; fileRef = 451E605E232E400B007B0463 /* Fire.swift */; };
+		4543349923425C39000950E1 /* PreferencesController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4543349823425C39000950E1 /* PreferencesController.swift */; };
 		459DE990232EB26600A3ACD1 /* FireCandidatesView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 459DE98E232EB26500A3ACD1 /* FireCandidatesView.swift */; };
 		459DE991232EB26600A3ACD1 /* FireCandidatesWindow.swift in Sources */ = {isa = PBXBuildFile; fileRef = 459DE98F232EB26500A3ACD1 /* FireCandidatesWindow.swift */; };
 		673CD81C233DCF14006538B8 /* table.sqlite in Resources */ = {isa = PBXBuildFile; fileRef = 673CD81B233DCF14006538B8 /* table.sqlite */; };
@@ -23,6 +25,7 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		4514F6DE2343468000410EC2 /* preferences.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = preferences.xib; sourceTree = "<group>"; };
 		451E6044232E227B007B0463 /* Fire.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Fire.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		451E6047232E227B007B0463 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		451E6049232E227C007B0463 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
@@ -31,6 +34,7 @@
 		451E6058232E2787007B0463 /* InputMethodKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = InputMethodKit.framework; path = System/Library/Frameworks/InputMethodKit.framework; sourceTree = SDKROOT; };
 		451E605C232E3A3C007B0463 /* MainMenu.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = MainMenu.xib; sourceTree = "<group>"; };
 		451E605E232E400B007B0463 /* Fire.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Fire.swift; sourceTree = "<group>"; };
+		4543349823425C39000950E1 /* PreferencesController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PreferencesController.swift; sourceTree = "<group>"; };
 		459DE98E232EB26500A3ACD1 /* FireCandidatesView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FireCandidatesView.swift; sourceTree = "<group>"; };
 		459DE98F232EB26500A3ACD1 /* FireCandidatesWindow.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FireCandidatesWindow.swift; sourceTree = "<group>"; };
 		497E90F13FA9A943AC0BE3DB /* Pods-Fire.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Fire.release.xcconfig"; path = "Target Support Files/Pods-Fire/Pods-Fire.release.xcconfig"; sourceTree = "<group>"; };
@@ -100,6 +104,8 @@
 				451E604F232E227C007B0463 /* Fire.entitlements */,
 				451E6055232E24A5007B0463 /* FireInputController.swift */,
 				451E605E232E400B007B0463 /* Fire.swift */,
+				4543349823425C39000950E1 /* PreferencesController.swift */,
+				4514F6DE2343468000410EC2 /* preferences.xib */,
 			);
 			path = Fire;
 			sourceTree = "<group>";
@@ -192,6 +198,8 @@
 				451E605D232E3A3C007B0463 /* MainMenu.xib in Resources */,
 				673CD81C233DCF14006538B8 /* table.sqlite in Resources */,
 				67E8B521233C537B00D7CE80 /* fire.pdf in Resources */,
+				67E8B512233B978E00D7CE80 /* Info.plist in Resources */,
+				4514F6DF2343468000410EC2 /* preferences.xib in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -244,6 +252,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				4543349923425C39000950E1 /* PreferencesController.swift in Sources */,
 				451E6056232E24A5007B0463 /* FireInputController.swift in Sources */,
 				451E605F232E400B007B0463 /* Fire.swift in Sources */,
 				451E6048232E227B007B0463 /* AppDelegate.swift in Sources */,
