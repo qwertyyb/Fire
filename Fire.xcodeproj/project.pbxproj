@@ -3,7 +3,7 @@
 	archiveVersion = 1;
 	classes = {
 	};
-	objectVersion = 50;
+	objectVersion = 51;
 	objects = {
 
 /* Begin PBXBuildFile section */
@@ -19,7 +19,7 @@
 		67E8B515233B97FD00D7CE80 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 67E8B517233B97FD00D7CE80 /* InfoPlist.strings */; };
 		67E8B520233C537B00D7CE80 /* fire.icns in Resources */ = {isa = PBXBuildFile; fileRef = 67E8B51D233C537B00D7CE80 /* fire.icns */; };
 		67E8B521233C537B00D7CE80 /* fire.pdf in Resources */ = {isa = PBXBuildFile; fileRef = 67E8B51E233C537B00D7CE80 /* fire.pdf */; };
-		67E8B522233C537B00D7CE80 /* fire.tiff in Resources */ = {isa = PBXBuildFile; fileRef = 67E8B51F233C537B00D7CE80 /* fire.tiff */; };
+		9E252D51914D447968DD20C7 /* libPods-Fire.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 59F80EA93E8AE7885721524F /* libPods-Fire.a */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -33,13 +33,15 @@
 		451E605E232E400B007B0463 /* Fire.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Fire.swift; sourceTree = "<group>"; };
 		459DE98E232EB26500A3ACD1 /* FireCandidatesView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FireCandidatesView.swift; sourceTree = "<group>"; };
 		459DE98F232EB26500A3ACD1 /* FireCandidatesWindow.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FireCandidatesWindow.swift; sourceTree = "<group>"; };
+		497E90F13FA9A943AC0BE3DB /* Pods-Fire.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Fire.release.xcconfig"; path = "Target Support Files/Pods-Fire/Pods-Fire.release.xcconfig"; sourceTree = "<group>"; };
+		59F80EA93E8AE7885721524F /* libPods-Fire.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-Fire.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		673CD81B233DCF14006538B8 /* table.sqlite */ = {isa = PBXFileReference; lastKnownFileType = file; path = table.sqlite; sourceTree = "<group>"; };
 		67E8B511233B978E00D7CE80 /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		67E8B516233B97FD00D7CE80 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/InfoPlist.strings; sourceTree = "<group>"; };
 		67E8B518233B994000D7CE80 /* zh-Hans */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "zh-Hans"; path = "zh-Hans.lproj/InfoPlist.strings"; sourceTree = "<group>"; };
 		67E8B51D233C537B00D7CE80 /* fire.icns */ = {isa = PBXFileReference; lastKnownFileType = image.icns; path = fire.icns; sourceTree = "<group>"; };
 		67E8B51E233C537B00D7CE80 /* fire.pdf */ = {isa = PBXFileReference; lastKnownFileType = image.pdf; path = fire.pdf; sourceTree = "<group>"; };
-		67E8B51F233C537B00D7CE80 /* fire.tiff */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = fire.tiff; sourceTree = "<group>"; };
+		ADD2AD3F7D485FFF4784CBC3 /* Pods-Fire.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Fire.debug.xcconfig"; path = "Target Support Files/Pods-Fire/Pods-Fire.debug.xcconfig"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -48,18 +50,29 @@
 			buildActionMask = 2147483647;
 			files = (
 				451E6059232E2787007B0463 /* InputMethodKit.framework in Frameworks */,
+				9E252D51914D447968DD20C7 /* libPods-Fire.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		2361C68F9ECE84E0CA0822C3 /* Pods */ = {
+			isa = PBXGroup;
+			children = (
+				ADD2AD3F7D485FFF4784CBC3 /* Pods-Fire.debug.xcconfig */,
+				497E90F13FA9A943AC0BE3DB /* Pods-Fire.release.xcconfig */,
+			);
+			path = Pods;
+			sourceTree = "<group>";
+		};
 		451E603B232E227B007B0463 = {
 			isa = PBXGroup;
 			children = (
 				451E6046232E227B007B0463 /* Fire */,
 				451E6045232E227B007B0463 /* Products */,
 				451E6057232E2786007B0463 /* Frameworks */,
+				2361C68F9ECE84E0CA0822C3 /* Pods */,
 			);
 			sourceTree = "<group>";
 		};
@@ -76,7 +89,6 @@
 			children = (
 				67E8B51D233C537B00D7CE80 /* fire.icns */,
 				67E8B51E233C537B00D7CE80 /* fire.pdf */,
-				67E8B51F233C537B00D7CE80 /* fire.tiff */,
 				67E8B511233B978E00D7CE80 /* Info.plist */,
 				67E8B517233B97FD00D7CE80 /* InfoPlist.strings */,
 				45E34DC52337C98900CA7E72 /* data */,
@@ -96,6 +108,7 @@
 			isa = PBXGroup;
 			children = (
 				451E6058232E2787007B0463 /* InputMethodKit.framework */,
+				59F80EA93E8AE7885721524F /* libPods-Fire.a */,
 			);
 			name = Frameworks;
 			sourceTree = "<group>";
@@ -115,9 +128,11 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = 451E6052232E227C007B0463 /* Build configuration list for PBXNativeTarget "Fire" */;
 			buildPhases = (
+				B7AF3759D9701C095D62024C /* [CP] Check Pods Manifest.lock */,
 				451E6040232E227B007B0463 /* Sources */,
 				451E6041232E227B007B0463 /* Frameworks */,
 				451E6042232E227B007B0463 /* Resources */,
+				CC4E3CB56A41B3947C0BFEC1 /* [CP] Embed Pods Frameworks */,
 			);
 			buildRules = (
 			);
@@ -177,11 +192,52 @@
 				451E605D232E3A3C007B0463 /* MainMenu.xib in Resources */,
 				673CD81C233DCF14006538B8 /* table.sqlite in Resources */,
 				67E8B521233C537B00D7CE80 /* fire.pdf in Resources */,
-				67E8B522233C537B00D7CE80 /* fire.tiff in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXResourcesBuildPhase section */
+
+/* Begin PBXShellScriptBuildPhase section */
+		B7AF3759D9701C095D62024C /* [CP] Check Pods Manifest.lock */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+				"${PODS_PODFILE_DIR_PATH}/Podfile.lock",
+				"${PODS_ROOT}/Manifest.lock",
+			);
+			name = "[CP] Check Pods Manifest.lock";
+			outputFileListPaths = (
+			);
+			outputPaths = (
+				"$(DERIVED_FILE_DIR)/Pods-Fire-checkManifestLockResult.txt",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
+			showEnvVarsInLog = 0;
+		};
+		CC4E3CB56A41B3947C0BFEC1 /* [CP] Embed Pods Frameworks */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+				"${PODS_ROOT}/Target Support Files/Pods-Fire/Pods-Fire-frameworks-${CONFIGURATION}-input-files.xcfilelist",
+			);
+			name = "[CP] Embed Pods Frameworks";
+			outputFileListPaths = (
+				"${PODS_ROOT}/Target Support Files/Pods-Fire/Pods-Fire-frameworks-${CONFIGURATION}-output-files.xcfilelist",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-Fire/Pods-Fire-frameworks.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
+/* End PBXShellScriptBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
 		451E6040232E227B007B0463 /* Sources */ = {
@@ -245,7 +301,6 @@
 				CLANG_WARN_UNREACHABLE_CODE = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
 				CODE_SIGN_IDENTITY = "Mac Developer";
-				CONFIGURATION_BUILD_DIR = "/Library/Input Methods";
 				COPY_PHASE_STRIP = NO;
 				DEBUG_INFORMATION_FORMAT = dwarf;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
@@ -331,12 +386,12 @@
 		};
 		451E6053232E227C007B0463 /* Debug */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = ADD2AD3F7D485FFF4784CBC3 /* Pods-Fire.debug.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_IDENTITY = "-";
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
-				CONFIGURATION_BUILD_DIR = "/Library/Input Methods";
 				DEVELOPMENT_TEAM = T68XK6867P;
 				INFOPLIST_FILE = Fire/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
@@ -351,6 +406,7 @@
 		};
 		451E6054232E227C007B0463 /* Release */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = 497E90F13FA9A943AC0BE3DB /* Pods-Fire.release.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_IDENTITY = "-";
