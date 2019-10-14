@@ -77,7 +77,7 @@ class FireCandidatesView: NSStackView {
         originView.stringValue = code
         let candidateViews = getCandidateViews(candidates: candidates, origin: code)
         var width = getCandidatesWidth(candidateViews: candidateViews)
-        if code.count == 4 {
+        if Fire.shared.cloudinput && code.count == 4 {
             topStackView.setViews([spinView], in: .center)
         } else {
             topStackView.setViews([], in: .center)
