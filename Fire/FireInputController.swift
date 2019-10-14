@@ -63,7 +63,9 @@ class FireInputController: IMKInputController {
             client()?.setMarkedText(text, selectionRange: NSMakeRange(NSNotFound, text.length), replacementRange: replacementRange())
             if value.count > 0 {
                 self.self._candidatesWindow.updateWindow(origin: self.getOriginPoint(), code: value, candidates: self.candidates(self.client()) as! [Candidate])
-                Fire.shared.getCandidateFromNetwork(origin: value, sender: client())
+                if Fire.shared.cloudinput {
+                    Fire.shared.getCandidateFromNetwork(origin: value, sender: client())
+                }
             } else {
                 _candidatesWindow.close()
             }

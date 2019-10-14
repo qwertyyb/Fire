@@ -53,21 +53,27 @@ extension UserDefaults
 class Fire: NSObject {
     var codeMode: CodeMode = .WubiPinyin
     var candidateCount: Int = 5
+    var cloudinput: Bool = false
     
     override init() {
-        UserDefaults.standard.register(defaults: ["codeMode": 2, "candidateCount": 5])
+        UserDefaults.standard.register(defaults: ["codeMode": 2, "candidateCount": 5, "cloudinput": false])
         codeMode = CodeMode(rawValue: UserDefaults.standard.integer(forKey: "codeMode"))!
         candidateCount = UserDefaults.standard.integer(forKey: "candidateCount")
+        cloudinput = UserDefaults.standard.bool(forKey: "cloudinput")
         super.init()
         UserDefaults.standard.addObserver(self, forKeyPath: "codeMode", options: [.new, .old, .initial], context: nil)
         UserDefaults.standard.addObserver(self, forKeyPath: "candidateCount", options: [.new, .old, .initial], context: nil)
+        UserDefaults.standard.addObserver(self, forKeyPath: "cloudinput", options: [.new, .old, .initial], context: nil)
     }
     override func observeValue(forKeyPath keyPath: String?, of object: Any?, change: [NSKeyValueChangeKey : Any]?, context: UnsafeMutableRawPointer?) {
         let newVal = change![NSKeyValueChangeKey.newKey]
+        print(newVal)
         if keyPath == "codeMode" {
             codeMode = CodeMode.init(rawValue: newVal as! Int)!
         } else if keyPath == "candidateCount" {
             candidateCount = newVal as! Int
+        } else if keyPath == "cloudinput" {
+            cloudinput = newVal as! Bool
         }
     }
     
