@@ -67,7 +67,7 @@ class Fire: NSObject {
     }
     override func observeValue(forKeyPath keyPath: String?, of object: Any?, change: [NSKeyValueChangeKey : Any]?, context: UnsafeMutableRawPointer?) {
         let newVal = change![NSKeyValueChangeKey.newKey]
-        print(newVal)
+//        print(newVal)
         if keyPath == "codeMode" {
             codeMode = CodeMode.init(rawValue: newVal as! Int)!
         } else if keyPath == "candidateCount" {
@@ -77,23 +77,27 @@ class Fire: NSObject {
         }
     }
     
-    private func getQuerySql(code: String = "") -> String {
+    private func getQuerySql(code: String = "", page: Int = 1) -> String {
         let tableType = codeMode == .WubiPinyin ? "" : "type = '\(codeMode == .Pinyin ? "py" : "wb")' and "
-        let sql = "select case when t2.type = 'wb' then min(t1.code) else max(t1.code) end as code, t1.text, t2.type from dict_default t1 inner join (select * from dict_default where \(tableType)code like '\(code)%' order by case when code = '\(code)' then id when code like '\(code)%' then 100000000 + id end limit 0, \(3 * candidateCount)) t2 on t1.text = t2.text and t1.type = 'wb' group by t1.text order by case when t2.code = '\(code)' then t2.id when t2.code like '\(code)%' then 10000000 + t2.id end limit 0, \(candidateCount)"
+        let sql = "select case when t2.type = 'wb' then min(t1.code) else max(t1.code) end as code, t1.text, t2.type from dict_default t1 inner join (select * from dict_default where \(tableType)code like '\(code)%' group by id, text order by length(code)) t2 on t1.text = t2.text and t1.type = 'wb' group by t1.text order by case when t2.code = '\(code)' then t2.id when t2.code like '\(code)%' then 10000000 + t2.id end limit \((page - 1) * candidateCount), \(candidateCount)"
+        print(sql)
         return sql
     }
     
     var server: IMKServer = IMKServer.init(name: kConnectionName, bundleIdentifier: Bundle.main.bundleIdentifier)
-    func getCandidates(origin: NSAttributedString = NSAttributedString()) -> [Candidate] {
+    func getCandidates(origin: NSAttributedString = NSAttributedString(), page: Int = 1) -> [Candidate] {
+        if origin.length <= 0 {
+            return []
+        }
         NSLog("get local candidate, origin: \(origin.string)")
         var db: OpaquePointer?
         var candidates: [Candidate] = []
         let dbPath = Bundle.main.path(forResource: "table", ofType: "sqlite")
         if sqlite3_open(dbPath, &db) == SQLITE_OK {
-            let sql = getQuerySql(code: origin.string)
+            let sql = getQuerySql(code: origin.string, page: page)
             var queryStatement: OpaquePointer?
             if sqlite3_prepare_v2(db, sql, -1, &queryStatement, nil) == SQLITE_OK {
-//                NSLog("list")
+//                NSLog("list")
                 while(sqlite3_step(queryStatement) == SQLITE_ROW) {
                     let code = String.init(cString: sqlite3_column_text(queryStatement, 0))
                     let text = String.init(cString: sqlite3_column_text(queryStatement, 1))

@@ -54,7 +54,11 @@ let punctution: [String: String] = [
 
 class FireInputController: IMKInputController {
     private var _originalString = "" { 
-        didSet (val) {
+        didSet {
+            if self._page != 1 {
+                self._page = 1
+                return
+            }
             let value = originalString(client())!.string
             NSLog("original string changed: \(value )")
 //            updateComposition()
@@ -62,7 +66,7 @@ class FireInputController: IMKInputController {
             let text = NSAttributedString(string: value.count > 0 ? " " : "", attributes: (attrs as! [NSAttributedString.Key : Any]))
             client()?.setMarkedText(text, selectionRange: NSMakeRange(NSNotFound, text.length), replacementRange: replacementRange())
             if value.count > 0 {
-                self.self._candidatesWindow.updateWindow(origin: self.getOriginPoint(), code: value, candidates: self.candidates(self.client()) as! [Candidate])
+                self._candidatesWindow.updateWindow(origin: self.getOriginPoint(), code: value, candidates: self.candidates(self.client()) as! [Candidate])
                 if Fire.shared.cloudinput {
                     Fire.shared.getCandidateFromNetwork(origin: value, sender: client())
                 }
@@ -77,6 +81,17 @@ class FireInputController: IMKInputController {
     private var _modeWindow: NSWindow
     private var _closeModeWindowTimer: Timer? = nil
     private var _lastModifier: NSEvent.ModifierFlags = .init(rawValue: 0)
+    private var _page: Int = 1 {
+        didSet(old) {
+            guard old == self._page else {
+                self._candidatesWindow.updateWindow(origin: self.getOriginPoint(), code: self._originalString, candidates: self.candidates(self.client()) as! [Candidate])
+                if Fire.shared.cloudinput {
+                    Fire.shared.getCandidateFromNetwork(origin: self._originalString, sender: client())
+                }
+                return
+            }
+        }
+    }
     
     override init!(server: IMKServer!, delegate: Any!, client inputClient: Any!) {
         
@@ -184,6 +199,17 @@ class FireInputController: IMKInputController {
         }
         let keyCode = event.keyCode
         
+        if _mode == .ZhHans && _originalString.count > 0 {
+            if keyCode == kVK_ANSI_Equal {
+                _page += 1
+                return true
+            }
+            if keyCode == kVK_ANSI_Minus && _page > 1 {
+                _page -= 1
+                return true
+            }
+        }
+        
         // 删除最后一个字符
         if keyCode == kVK_Delete  {
             if _originalString.count > 0 {
@@ -274,19 +300,16 @@ class FireInputController: IMKInputController {
         SUUpdater.shared()?.checkForUpdates(sender)
     }
     
-    /* -- menu actions start -- */
-    
     override func menu() -> NSMenu! {
         let menu = NSMenu()
         menu.addItem(NSMenuItem(title: "关于业火输入法", action: #selector(openAbout(_:)), keyEquivalent: ""))
         menu.addItem(NSMenuItem(title: "检查更新", action: #selector(checkForUpdates(_:)), keyEquivalent: ""))
         menu.addItem(NSMenuItem(title: "首选项", action: #selector(showPreferences(_:)), keyEquivalent: ""))
-//        return (NSApp.delegate as! AppDelegate).menu
         return menu
     }
     
     override func candidates(_ sender: Any!) -> [Any]! {
-        return Fire.shared.getCandidates(origin: self.originalString(sender)!)
+        return Fire.shared.getCandidates(origin: self.originalString(sender)!, page: _page)
     }
     
     override func composedString(_ sender: Any!) -> Any! {
@@ -296,6 +319,7 @@ class FireInputController: IMKInputController {
     func clean() {
         _originalString = ""
         _composedString = ""
+        _page = 1
         _candidatesWindow.close()
     }
     override func inputControllerWillClose() {
