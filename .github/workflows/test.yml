@@ -4,7 +4,7 @@ on:
   push:
     branch:
       - '**'
-  pull-request:
+  pull_request:
     branch:
       - '**'
 
