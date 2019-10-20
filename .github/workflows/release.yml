@@ -39,7 +39,7 @@ jobs:
     - name: release
       uses: AButler/upload-release-assets@v1.0
       with:
-        files: 'apps/Fire.zip, apps/FireInstaller.pkg'
+        files: 'apps/Fire.zip,apps/FireInstaller.pkg'
         repo-token: ${{ secrets.GITHUB_TOKEN }}
 
     - name: install & config coscmd
