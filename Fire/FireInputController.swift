@@ -66,7 +66,7 @@ class FireInputController: IMKInputController {
             let text = NSAttributedString(string: value.count > 0 ? " " : "", attributes: (attrs as! [NSAttributedString.Key : Any]))
             client()?.setMarkedText(text, selectionRange: NSMakeRange(NSNotFound, text.length), replacementRange: replacementRange())
             if value.count > 0 {
-                self._candidatesWindow.updateWindow(origin: self.getOriginPoint(), code: value, candidates: self.candidates(self.client()) as! [Candidate])
+                self._candidatesWindow.updateWindow(cursorRect: self.getOriginRect(), code: value, candidates: self.candidates(self.client()) as! [Candidate])
                 if Fire.shared.cloudinput {
                     Fire.shared.getCandidateFromNetwork(origin: value, sender: client())
                 }
@@ -84,7 +84,7 @@ class FireInputController: IMKInputController {
     private var _page: Int = 1 {
         didSet(old) {
             guard old == self._page else {
-                self._candidatesWindow.updateWindow(origin: self.getOriginPoint(), code: self._originalString, candidates: self.candidates(self.client()) as! [Candidate])
+                self._candidatesWindow.updateWindow(cursorRect: self.getOriginRect(), code: self._originalString, candidates: self.candidates(self.client()) as! [Candidate])
                 if Fire.shared.cloudinput {
                     Fire.shared.getCandidateFromNetwork(origin: self._originalString, sender: client())
                 }
@@ -136,12 +136,13 @@ class FireInputController: IMKInputController {
         NSLog("active server: \(client()!.bundleIdentifier()!)")
     }
     
-    private func getOriginPoint() -> NSPoint {
+    private func getOriginRect() -> NSRect {
         let ptr = UnsafeMutablePointer<NSRect>.allocate(capacity: 1)
         ptr.pointee = NSRect()
         client().attributes(forCharacterIndex: 0, lineHeightRectangle: ptr)
         let rect = ptr.pointee
-        let origin = NSPoint(x: rect.origin.x, y: rect.origin.y)
+        print(rect)
+        let origin = NSMakeRect(rect.origin.x, rect.origin.y, rect.width, rect.height)
         ptr.deallocate()
         return origin
     }
@@ -167,8 +168,8 @@ class FireInputController: IMKInputController {
                 NSAttributedString.Key.font: NSFont.userFont(ofSize: 20)!,
             ]
         )
-        let origin = getOriginPoint()
-        self._modeWindow.setFrame(NSMakeRect(origin.x + 2, origin.y - 26, _mode == .ZhHans ? 24 : 18, 24), display: true)
+        let rect = getOriginRect()
+        self._modeWindow.setFrame(NSMakeRect(rect.origin.x + 2, rect.origin.y - 26, _mode == .ZhHans ? 24 : 18, 24), display: true)
         self._modeWindow.orderFront(nil)
         self._closeModeWindowTimer = Timer.scheduledTimer(withTimeInterval: 1, repeats: false) { (timer) in
             self._modeWindow.close()

@@ -1,13 +1,11 @@
-name: CI
+name: release
 
 on:
-  push:
-    branches:
-      - master
+  release:
+    types: ['published']
 
 jobs:
-  build:
-
+  release:
     runs-on: macOS-latest
     
     steps:
@@ -25,6 +23,13 @@ jobs:
         ditto -c -k --sequesterRsrc --keepParent apps/Fire.app apps/Fire.zip
         # rm -r ~/Library/Caches/Sparkle_generate_appcast/*
         ./bin/generate_appcast -s $sparkle_key ./apps/
+
+    - name: release
+      uses: AButler/upload-release-assets@v1.0
+      with:
+        files: 'apps/Fire.zip'
+        repo-token: ${{ secrets.GITHUB_TOKEN }}
+
     - name: install & config coscmd
       env:
         oss_appid: ${{ secrets.oss_appid }}
