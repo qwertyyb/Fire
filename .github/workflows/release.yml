@@ -10,6 +10,13 @@ jobs:
     
     steps:
     - uses: actions/checkout@v1
+
+    - name: update version
+      run: |
+        PRODUCT_SETTINGS_PATH=./Fire/Info.plist
+        version=$(git describe --tags `git rev-list --tags --max-count=1`)
+        /usr/libexec/PlistBuddy -c "Set :CFBundleShortVersionString $version" $PRODUCT_SETTINGS_PATH
+
     - name: install depencies
       run: pod install
     - name: archive
@@ -24,10 +31,15 @@ jobs:
         # rm -r ~/Library/Caches/Sparkle_generate_appcast/*
         ./bin/generate_appcast -s $sparkle_key ./apps/
 
+    - name: package to .pkg file
+      run: |
+        version=$(git describe --tags `git rev-list --tags --max-count=1`)
+        pkgbuild --component ./apps/Fire.app --install-location /Library/Input\ Methods --identifier com.qwertyyb.pkg.FireInstaller --version $version ./apps/FireInstaller.pkg
+
     - name: release
       uses: AButler/upload-release-assets@v1.0
       with:
-        files: 'apps/Fire.zip'
+        files: 'apps/Fire.zip, apps/FireInstaller.pkg'
         repo-token: ${{ secrets.GITHUB_TOKEN }}
 
     - name: install & config coscmd
