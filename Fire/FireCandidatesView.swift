@@ -85,13 +85,11 @@ class FireCandidatesView: NSStackView {
         if (self.window != nil) {
             let window = self.window as! FireCandidatesWindow
             width = width > CGFloat(300) ? width : CGFloat(300)
-            let frame = window.frame
-            window.setFrame(NSRect(x: frame.origin.x, y: frame.origin.y, width: width, height: CGFloat(window.height)), display: true)
+            window.updateFrame(viewWidth: width, viewHeight: CGFloat(window.height))
         }
         candidatesView.setViews(candidateViews, in: .leading)
     }
     func updateNetCandidateView (candidate: Candidate?) {
-        NSLog("net candidate: \(candidate)")
         if (candidate == nil) {
             topStackView.setViews([], in: .center)
             return
