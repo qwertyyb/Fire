@@ -79,7 +79,7 @@ class Fire: NSObject {
     
     private func getQuerySql(code: String = "", page: Int = 1) -> String {
         let tableType = codeMode == .WubiPinyin ? "" : "type = '\(codeMode == .Pinyin ? "py" : "wb")' and "
-        let sql = "select case when t2.type = 'wb' then min(t1.code) else max(t1.code) end as code, t1.text, t2.type from dict_default t1 inner join (select * from dict_default where \(tableType)code like '\(code)%' group by id, text order by length(code)) t2 on t1.text = t2.text and t1.type = 'wb' group by t1.text order by case when t2.code = '\(code)' then t2.id when t2.code like '\(code)%' then 10000000 + t2.id end limit \((page - 1) * candidateCount), \(candidateCount)"
+        let sql = "select case when t2.type = 'wb' then min(t1.code) else max(t1.code) end as code, t1.text, t2.type from dict_default t1 inner join (select * from dict_default where \(tableType)code like '\(code)%' group by id, text order by length(code)) t2 on t1.text = t2.text and t1.type = 'wb' group by t1.text order by case when t2.code = '\(code)' then t2.id when t2.code like '\(code)_' then 10000000 + t2.id when t2.code like '\(code)__' then 30000000 + t2.id when t2.code like '\(code)___' then 60000000 + t2.id when t2.code like '\(code)___%' then 90000000 + t2.id end limit \((page - 1) * candidateCount), \(candidateCount)"
         print(sql)
         return sql
     }
