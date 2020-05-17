@@ -5,7 +5,9 @@
 
 ![](https://github.com/qwertyyb/FireWubi/workflows/CI/badge.svg)
 
+### Install
 
+将编译好的App放到目录/Library/Input Methods，并在系统内设置此输入法
 
 ### Usage
 中文模式下输入
