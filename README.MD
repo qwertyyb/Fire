@@ -4,3 +4,9 @@
 
 
 ![](https://github.com/qwertyyb/FireWubi/workflows/CI/badge.svg)
+
+
+
+### Usage
+中文模式下输入
+- zdt 为当前日期，如2020-05-19
