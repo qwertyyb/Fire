@@ -75,6 +75,10 @@ class FireCandidatesView: NSStackView {
     }
     func updateView(code: String, candidates: [Candidate]) {
         originView.stringValue = code
+        #if DEBUG
+        print("code", code)
+        print("candidates", candidates)
+        #endif
         let candidateViews = getCandidateViews(candidates: candidates, origin: code)
         var width = getCandidatesWidth(candidateViews: candidateViews)
         if Fire.shared.cloudinput && code.count == 4 {

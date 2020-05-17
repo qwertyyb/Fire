@@ -61,16 +61,25 @@ class FireInputController: IMKInputController {
             }
             let value = originalString(client())!.string
             NSLog("original string changed: \(value )")
-//            updateComposition()
+            //updateComposition()
             let attrs = mark(forStyle: kTSMHiliteConvertedText, at: NSMakeRange(NSNotFound,0))
             let text = NSAttributedString(string: value.count > 0 ? " " : "", attributes: (attrs as! [NSAttributedString.Key : Any]))
             client()?.setMarkedText(text, selectionRange: NSMakeRange(NSNotFound, text.length), replacementRange: replacementRange())
             if value.count > 0 {
-                self._candidatesWindow.updateWindow(cursorRect: self.getOriginRect(), code: value, candidates: self.candidates(self.client()) as! [Candidate])
-                if Fire.shared.cloudinput {
-                    Fire.shared.getCandidateFromNetwork(origin: value, sender: client())
+                let candidates = self.candidates(self.client()) as! [Candidate]
+                // Insert the candidate directly if only one candidate
+                if candidates.count == 1 {
+                    let sender = client()
+                    _composedString = candidates.first!.text
+                    commitComposition(sender)
+                }else{
+                    self._candidatesWindow.updateWindow(cursorRect: self.getOriginRect(), code: value, candidates: candidates)
+                    if Fire.shared.cloudinput {
+                        Fire.shared.getCandidateFromNetwork(origin: value, sender: client())
+                    }
                 }
             } else {
+                NSLog("close candidate window")
                 _candidatesWindow.close()
             }
         }
@@ -219,7 +228,6 @@ class FireInputController: IMKInputController {
             }
             return false
         }
-        
         let string = event.characters!
         NSLog("string: \(string), keyCode: \(keyCode)")
         
@@ -252,7 +260,6 @@ class FireInputController: IMKInputController {
             if index < candidates!.count {
                 _composedString = (candidates![index] as! Candidate).text
                 commitComposition(sender)
-                _candidatesWindow.close()
             } else {
                 _originalString += string
             }
@@ -270,7 +277,6 @@ class FireInputController: IMKInputController {
             if first != nil {
                 _composedString = (first as! Candidate).text
                 commitComposition(sender)
-                _candidatesWindow.close()
             }
             return true
         }

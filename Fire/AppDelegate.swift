@@ -14,12 +14,14 @@ import Sparkle
 class AppDelegate: NSObject, NSApplicationDelegate {
     
     let fire: Fire
-    override init() {
+    override init() {        
+        #if DEBUG
         NSLog("terminate runing")
-//        let running = NSRunningApplication.runningApplications(withBundleIdentifier: NSRunningApplication.current.bundleIdentifier!).first
-//        if (running != nil && NSRunningApplication.current != running) {
-//            running?.forceTerminate()
-//        }
+        let running = NSRunningApplication.runningApplications(withBundleIdentifier: NSRunningApplication.current.bundleIdentifier!).first
+        if (running != nil && NSRunningApplication.current != running) {
+            running?.forceTerminate()
+        }
+        #endif
         fire = Fire.shared
     }
     func applicationDidFinishLaunching(_ aNotification: Notification) {
