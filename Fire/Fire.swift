@@ -92,6 +92,16 @@ class Fire: NSObject {
         NSLog("get local candidate, origin: \(origin.string)")
         var db: OpaquePointer?
         var candidates: [Candidate] = []
+        if(origin.string == "zdt"){
+            let date = Date()
+            let calendar = Calendar.current
+            let year = calendar.component(.year, from: date)
+            let month = calendar.component(.month, from: date)
+            let day = calendar.component(.day, from: date)
+            let text = String(format:"%04d-%02d-%02d", year, month, day)
+            let candidate = Candidate(code: "zdt", text: text, type: "wb")
+            candidates.append(candidate)
+        }
         let dbPath = Bundle.main.path(forResource: "table", ofType: "sqlite")
         if sqlite3_open(dbPath, &db) == SQLITE_OK {
             let sql = getQuerySql(code: origin.string, page: page)
