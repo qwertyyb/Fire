@@ -18,3 +18,4 @@
 - 英文模式下的自动字符替换
 - 用户测试
 - 集成测试自动化UI功能测试
+- Bring auto complete like tabNine into input method
