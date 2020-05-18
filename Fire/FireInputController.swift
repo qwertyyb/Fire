@@ -84,7 +84,7 @@ class FireInputController: IMKInputController {
             }
         }
     }
-    private var  _composedString = ""
+    private var _composedString = ""
     private let _candidatesWindow = FireCandidatesWindow.shared
     private var _mode: InputMode = .ZhHans
     private var _modeWindow: NSWindow
@@ -161,11 +161,7 @@ class FireInputController: IMKInputController {
             self._closeModeWindowTimer!.invalidate()
             self._closeModeWindowTimer = nil
         }
-        
         _mode = _mode == .ZhHans ? InputMode.En : InputMode.ZhHans
-        _originalString = ""
-        _composedString = ""
-        
         
         if self._modeWindow.isVisible {
             self._modeWindow.close()
@@ -191,6 +187,11 @@ class FireInputController: IMKInputController {
         // 切换中英文输入
         if event.type == .flagsChanged  {
             if event.modifierFlags == .init(rawValue: 0) && _lastModifier == .shift {  // shift键抬起
+                // deliver the original string, when switch from zh hans to en
+                if _mode == .ZhHans{
+                    _composedString = _originalString
+                    commitComposition(sender)
+                }
                 self.toggleMode()
             }
             
@@ -240,7 +241,6 @@ class FireInputController: IMKInputController {
         
         let reg = try! NSRegularExpression(pattern: "^[a-zA-Z]+$")
         let match = reg.firstMatch(in: string, options: [], range: NSRange(location: 0, length: string.count))
-        
         // 当前没有输入非字符并且之前没有输入字符,不做处理
         if  _originalString.count <= 0 && match == nil {
             NSLog("非字符,不做处理,直接返回")
@@ -248,7 +248,7 @@ class FireInputController: IMKInputController {
         }
         // 当前输入的是英文字符,附加到之前
         if (match != nil) {
-//            NSLog("输入了英文字符,附加到之前: \(string)")
+//          NSLog("输入了英文字符,附加到之前: \(string)")
             _originalString += string
             return true
         }
