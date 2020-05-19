@@ -98,7 +98,6 @@ class FireInputController: IMKInputController {
     }
     private var _composedString = ""
     private var _inputStringEn = ""
-    private var _insertBefore = 0
     private let _candidatesWindow = FireCandidatesWindow.shared
     private var _mode: InputMode = .ZhHans
     private var _modeWindow: NSWindow
@@ -152,7 +151,7 @@ class FireInputController: IMKInputController {
     }
     
     override func replacementRange() -> NSRange {
-        return NSMakeRange((client()?.length())! - _insertBefore, NSNotFound)
+        return NSMakeRange(NSNotFound, NSNotFound)
     }
     
     override func activateServer(_ sender: Any!) {
@@ -362,7 +361,6 @@ class FireInputController: IMKInputController {
         _originalString = ""
         _composedString = ""
         _inputStringEn = ""
-        _insertBefore = 0
         _page = 1
         _candidatesWindow.close()
     }
