@@ -52,6 +52,18 @@ let punctution: [String: String] = [
     "?": "？"
 ]
 
+func deleteCharacters(num: Int!) {
+    for _ in 1...num {
+        print("delete characters")
+        let eventSource = CGEventSource(stateID: CGEventSourceStateID.hidSystemState)
+        let key: CGKeyCode = 51     // virtual key for 'a'
+        let eventDown = CGEvent(keyboardEventSource: eventSource, virtualKey: key, keyDown: true)
+        let eventUp = CGEvent(keyboardEventSource: eventSource, virtualKey: key, keyDown: false)
+        let location = CGEventTapLocation.cghidEventTap
+        eventDown!.post(tap: location)
+        eventUp!.post(tap: location)
+    }
+}
 class FireInputController: IMKInputController {
     private var _originalString = "" { 
         didSet {
@@ -85,6 +97,8 @@ class FireInputController: IMKInputController {
         }
     }
     private var _composedString = ""
+    private var _inputStringEn = ""
+    private var _insertBefore = 0
     private let _candidatesWindow = FireCandidatesWindow.shared
     private var _mode: InputMode = .ZhHans
     private var _modeWindow: NSWindow
@@ -128,6 +142,7 @@ class FireInputController: IMKInputController {
     
     override func commitComposition(_ sender: Any!) {
         NSLog("commitComposition: %@", composedString(sender) as! NSAttributedString)
+
         client().insertText(composedString(sender), replacementRange: replacementRange())
         clean()
     }
@@ -137,7 +152,7 @@ class FireInputController: IMKInputController {
     }
     
     override func replacementRange() -> NSRange {
-        return NSMakeRange(NSNotFound, NSNotFound)
+        return NSMakeRange((client()?.length())! - _insertBefore, NSNotFound)
     }
     
     override func activateServer(_ sender: Any!) {
@@ -182,8 +197,28 @@ class FireInputController: IMKInputController {
         }
         NSLog("toggle mode: \(_mode)")
     }
-    
+    // aadtdt dt  dt  dt a  ff
     override func handle(_ event: NSEvent!, client sender: Any!) -> Bool {
+        if _mode == .En && event.type == .keyDown {
+            let keyCode = event.keyCode
+            let string = event.characters ?? ""
+            let reg = try! NSRegularExpression(pattern: "^[a-zA-Z]+$")
+            let match = reg.firstMatch(in: string, options: [], range: NSRange(location: 0, length: string.count))
+            if match != nil {
+                _inputStringEn += string
+                NSLog("string: \(_inputStringEn), keyCode: \(keyCode)")
+                let maxLen = 5
+                _inputStringEn = String(_inputStringEn.suffix(maxLen))
+                if _inputStringEn.suffix(2) == "dt" {
+                    deleteCharacters(num: 1)
+                    DispatchQueue.main.asyncAfter(deadline: .now() + .milliseconds(10), execute: {
+                        self._composedString = getCurrentDate()
+                        self.commitComposition(sender)
+                    })
+                    return true
+                }
+            }
+        }
         // 切换中英文输入
         if event.type == .flagsChanged  {
             if event.modifierFlags == .init(rawValue: 0) && _lastModifier == .shift {  // shift键抬起
@@ -326,6 +361,8 @@ class FireInputController: IMKInputController {
     func clean() {
         _originalString = ""
         _composedString = ""
+        _inputStringEn = ""
+        _insertBefore = 0
         _page = 1
         _candidatesWindow.close()
     }
