@@ -156,12 +156,15 @@ class FireInputController: IMKInputController {
     }
     
     override func handle(_ event: NSEvent!, client sender: Any!) -> Bool {
-        // 切换中英文输入
+        NSLog("[FireInputController] handle: \(event.debugDescription)")
+        // 只有在shift keyup时，才切换中英文输入, 否则会导致shift+[a-z]大写的功能失效
         if checkShiftKeyUp(event) {
             self.toggleMode()
             return true
         }
-        if event.type == .flagsChanged {
+        // 监听.flagsChanged事件只为切换中英文，其它情况不处理
+        // 当用户已经按下了非shift的修饰键时，不处理
+        if event.type == .flagsChanged || (event.modifierFlags != .init(rawValue: 0) && event.modifierFlags != .shift) {
             return false
         }
         
