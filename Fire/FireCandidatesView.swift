@@ -9,52 +9,57 @@
 import Cocoa
 
 class FireCandidatesView: NSStackView {
-    
+
     var originView: NSTextField = NSTextField(labelWithString: "")
     var candidatesView: NSStackView = NSStackView()
     var spinView: NSProgressIndicator = NSProgressIndicator()
     var topStackView = NSStackView()
     var netCandidate = NSTextField()
-    
+
     override init(frame frameRect: NSRect) {
         super.init(frame: frameRect)
         orientation = .vertical
         alignment = .left
         spacing = 3.0
-        
+
         topStackView.alignment = .centerY
-        
+
         originView.font = NSFont.labelFont(ofSize: 20)
         originView.textColor = NSColor.init(red: 0.3, green: 0.3, blue: 0.3, alpha: 1)
         topStackView.addView(originView, in: .leading)
-        
+
         spinView.style = .spinning
         spinView.controlSize = .small
         topStackView.addView(spinView, in: .center)
-        
+
         addView(topStackView, in: .leading)
-        
+
         candidatesView.orientation = .horizontal
         addView(candidatesView, in: .trailing)
         edgeInsets = NSEdgeInsets.init(top: 3, left: 12, bottom: 6, right: 12)
     }
-    
+
     required init?(coder decoder: NSCoder) {
         super.init(coder: decoder)
     }
-    override func clippingResistancePriority(for orientation: NSLayoutConstraint.Orientation) -> NSLayoutConstraint.Priority {
+    override func clippingResistancePriority(
+        for orientation: NSLayoutConstraint.Orientation
+    ) -> NSLayoutConstraint.Priority {
         return .defaultLow
     }
     private func getShownCode(candidate: Candidate, origin: String) -> String {
         if candidate.type == "py" {
             return "(\(candidate.code))"
         }
-        return candidate.code.hasPrefix(origin) && candidate.code.count > origin.count ? "~\(String(candidate.code.suffix(candidate.code.count - origin.count)))" : ""
+        return candidate.code.hasPrefix(origin) && candidate.code.count > origin.count
+            ? "~\(String(candidate.code.suffix(candidate.code.count - origin.count)))" : ""
     }
     private func getCandidateView(candidate: Candidate, index: Int, origin: String) -> NSTextField {
         let shownCode = getShownCode(candidate: candidate, origin: origin)
         let string = NSMutableAttributedString(string: "\(index+1).\(candidate.text)\(shownCode)", attributes: [
-            NSAttributedString.Key.foregroundColor: index == 0 ? NSColor(red: 0.863, green: 0.078, blue: 0.235, alpha: 1) : NSColor.init(red: 0.23, green: 0.23, blue: 0.23, alpha: 1),
+            NSAttributedString.Key.foregroundColor: index == 0
+                ? NSColor(red: 0.863, green: 0.078, blue: 0.235, alpha: 1)
+                : NSColor.init(red: 0.23, green: 0.23, blue: 0.23, alpha: 1),
                 NSAttributedString.Key.font: NSFont.labelFont(ofSize: 20)
             ])
         string.setAttributes([
@@ -62,7 +67,7 @@ class FireCandidatesView: NSStackView {
                 NSAttributedString.Key.font: NSFont.userFont(ofSize: 18)!,
                 NSAttributedString.Key.baselineOffset: 1
             ],
-            range: NSMakeRange("\(index+1).\(candidate.text)".count, shownCode.count)
+            range: NSRange(location: "\(index+1).\(candidate.text)".count, length: shownCode.count)
         )
         return NSTextField(labelWithAttributedString: string)
     }
@@ -82,15 +87,14 @@ class FireCandidatesView: NSStackView {
         } else {
             topStackView.setViews([], in: .center)
         }
-        if (self.window != nil) {
-            let window = self.window as! FireCandidatesWindow
+        if let window = self.window as? FireCandidatesWindow {
             width = width > CGFloat(200) ? width : CGFloat(200)
-            window.resizeRectFitContentView(NSMakeRect(0, 0, width, window.height))
+            window.resizeRectFitContentView(NSRect(x: 0, y: 0, width: width, height: window.height))
         }
         candidatesView.setViews(candidateViews, in: .leading)
     }
     func updateNetCandidateView (candidate: Candidate?) {
-        if (candidate == nil) {
+        if candidate == nil {
             topStackView.setViews([], in: .center)
             return
         }
@@ -101,12 +105,12 @@ class FireCandidatesView: NSStackView {
         let view = NSTextField(labelWithAttributedString: string)
         topStackView.setViews([view], in: .center)
     }
-    
+
     private func getCandidatesWidth(candidateViews: [NSTextField]) -> CGFloat {
         let width = candidateViews.reduce(0) { (total: CGFloat, candidateView) -> CGFloat in
             return total + ceil(candidateView.attributedStringValue.size().width) + 12
         }
         return width
     }
-    
+
 }

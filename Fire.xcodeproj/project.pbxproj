@@ -16,11 +16,9 @@
 		4543349923425C39000950E1 /* PreferencesController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4543349823425C39000950E1 /* PreferencesController.swift */; };
 		45449B4C23535ED000C9EFEF /* InputMethodKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 451E6058232E2787007B0463 /* InputMethodKit.framework */; };
 		45449B512353627500C9EFEF /* fire.tiff in Resources */ = {isa = PBXBuildFile; fileRef = 45449B502353627500C9EFEF /* fire.tiff */; };
-		45587F2924E7D3E6005F291B /* showModeTip.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45587F2824E7D3E6005F291B /* showModeTip.swift */; };
-		45587F2B24E7E694005F291B /* checkShiftKeyUp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45587F2A24E7E694005F291B /* checkShiftKeyUp.swift */; };
+		45587F2D24E8FBFB005F291B /* Utils.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45587F2C24E8FBFB005F291B /* Utils.swift */; };
 		459DE990232EB26600A3ACD1 /* FireCandidatesView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 459DE98E232EB26500A3ACD1 /* FireCandidatesView.swift */; };
 		459DE991232EB26600A3ACD1 /* FireCandidatesWindow.swift in Sources */ = {isa = PBXBuildFile; fileRef = 459DE98F232EB26500A3ACD1 /* FireCandidatesWindow.swift */; };
-		45A0A81824E7B92900ACFFD7 /* toast.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45A0A81724E7B92900ACFFD7 /* toast.swift */; };
 		673CD81C233DCF14006538B8 /* table.sqlite in Resources */ = {isa = PBXBuildFile; fileRef = 673CD81B233DCF14006538B8 /* table.sqlite */; };
 		67E8B515233B97FD00D7CE80 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 67E8B517233B97FD00D7CE80 /* InfoPlist.strings */; };
 		67E8B520233C537B00D7CE80 /* fire.icns in Resources */ = {isa = PBXBuildFile; fileRef = 67E8B51D233C537B00D7CE80 /* fire.icns */; };
@@ -39,11 +37,9 @@
 		451E605E232E400B007B0463 /* Fire.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Fire.swift; sourceTree = "<group>"; };
 		4543349823425C39000950E1 /* PreferencesController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PreferencesController.swift; sourceTree = "<group>"; };
 		45449B502353627500C9EFEF /* fire.tiff */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = fire.tiff; sourceTree = "<group>"; };
-		45587F2824E7D3E6005F291B /* showModeTip.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = showModeTip.swift; sourceTree = "<group>"; };
-		45587F2A24E7E694005F291B /* checkShiftKeyUp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = checkShiftKeyUp.swift; sourceTree = "<group>"; };
+		45587F2C24E8FBFB005F291B /* Utils.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Utils.swift; sourceTree = "<group>"; };
 		459DE98E232EB26500A3ACD1 /* FireCandidatesView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FireCandidatesView.swift; sourceTree = "<group>"; };
 		459DE98F232EB26500A3ACD1 /* FireCandidatesWindow.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FireCandidatesWindow.swift; sourceTree = "<group>"; };
-		45A0A81724E7B92900ACFFD7 /* toast.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = toast.swift; sourceTree = "<group>"; };
 		497E90F13FA9A943AC0BE3DB /* Pods-Fire.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Fire.release.xcconfig"; path = "Target Support Files/Pods-Fire/Pods-Fire.release.xcconfig"; sourceTree = "<group>"; };
 		59F80EA93E8AE7885721524F /* libPods-Fire.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-Fire.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		673CD81B233DCF14006538B8 /* table.sqlite */ = {isa = PBXFileReference; lastKnownFileType = file; path = table.sqlite; sourceTree = "<group>"; };
@@ -97,7 +93,6 @@
 		451E6046232E227B007B0463 /* Fire */ = {
 			isa = PBXGroup;
 			children = (
-				45A0A81624E7B8E700ACFFD7 /* utils */,
 				67E8B51D233C537B00D7CE80 /* fire.icns */,
 				67E8B51E233C537B00D7CE80 /* fire.pdf */,
 				45449B502353627500C9EFEF /* fire.tiff */,
@@ -114,6 +109,7 @@
 				451E605E232E400B007B0463 /* Fire.swift */,
 				4543349823425C39000950E1 /* PreferencesController.swift */,
 				4514F6DE2343468000410EC2 /* preferences.xib */,
+				45587F2C24E8FBFB005F291B /* Utils.swift */,
 			);
 			path = Fire;
 			sourceTree = "<group>";
@@ -125,16 +121,6 @@
 				59F80EA93E8AE7885721524F /* libPods-Fire.a */,
 			);
 			name = Frameworks;
-			sourceTree = "<group>";
-		};
-		45A0A81624E7B8E700ACFFD7 /* utils */ = {
-			isa = PBXGroup;
-			children = (
-				45A0A81724E7B92900ACFFD7 /* toast.swift */,
-				45587F2824E7D3E6005F291B /* showModeTip.swift */,
-				45587F2A24E7E694005F291B /* checkShiftKeyUp.swift */,
-			);
-			path = utils;
 			sourceTree = "<group>";
 		};
 		45E34DC52337C98900CA7E72 /* data */ = {
@@ -158,6 +144,7 @@
 				451E6042232E227B007B0463 /* Resources */,
 				CC4E3CB56A41B3947C0BFEC1 /* [CP] Embed Pods Frameworks */,
 				45449B4D235360B900C9EFEF /* update version */,
+				45587F2E24E91513005F291B /* lint */,
 			);
 			buildRules = (
 			);
@@ -243,6 +230,24 @@
 			shellPath = /bin/sh;
 			shellScript = "version=`/usr/libexec/PlistBuddy -c \"Print CFBundleVersion\" $PRODUCT_SETTINGS_PATH`\nversion=`expr $version + 1`\n/usr/libexec/PlistBuddy -c \"Set :CFBundleVersion $version\" $PRODUCT_SETTINGS_PATH\n";
 		};
+		45587F2E24E91513005F291B /* lint */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+			);
+			name = lint;
+			outputFileListPaths = (
+			);
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "# Type a script or drag a script file from your workspace to insert its path.\n\"${PODS_ROOT}/SwiftLint/swiftlint\"\n";
+		};
 		B7AF3759D9701C095D62024C /* [CP] Check Pods Manifest.lock */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
@@ -291,10 +296,8 @@
 			files = (
 				4543349923425C39000950E1 /* PreferencesController.swift in Sources */,
 				451E6056232E24A5007B0463 /* FireInputController.swift in Sources */,
-				45587F2924E7D3E6005F291B /* showModeTip.swift in Sources */,
-				45A0A81824E7B92900ACFFD7 /* toast.swift in Sources */,
 				451E605F232E400B007B0463 /* Fire.swift in Sources */,
-				45587F2B24E7E694005F291B /* checkShiftKeyUp.swift in Sources */,
+				45587F2D24E8FBFB005F291B /* Utils.swift in Sources */,
 				451E6048232E227B007B0463 /* AppDelegate.swift in Sources */,
 				459DE991232EB26600A3ACD1 /* FireCandidatesWindow.swift in Sources */,
 				459DE990232EB26600A3ACD1 /* FireCandidatesView.swift in Sources */,
