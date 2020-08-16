@@ -13,8 +13,8 @@ import Sparkle
 var set = false
 
 enum InputMode {
-    case ZhHans
-    case En
+    case zhhans
+    case enUS
 }
 
 let punctution: [String: String] = [
@@ -55,27 +55,28 @@ let punctution: [String: String] = [
 class FireInputController: IMKInputController {
     private var  _composedString = ""
     private let _candidatesWindow = FireCandidatesWindow.shared
-    private var _mode: InputMode = .ZhHans
+    private var _mode: InputMode = .zhhans
     private var _lastModifier: NSEvent.ModifierFlags = .init(rawValue: 0)
-    private var _originalString = "" { 
+    private var _originalString = "" {
         didSet {
             if self._page != 1 {
                 // code被重新设置时，还原页码为1
                 self._page = 1
                 return
             }
-            let value = originalString(client())!.string
-            NSLog("original string changed: \(value )")
-            
-            // 在输入框中mark一个空格，防止删除输入code的最后一个字符时，把输入框最后面的一个字符删除
-            let attrs = mark(forStyle: kTSMHiliteConvertedText, at: NSMakeRange(NSNotFound,0))
-            let text = NSAttributedString(string: value.count > 0 ? " " : "", attributes: (attrs as! [NSAttributedString.Key : Any]))
-            client()?.setMarkedText(text, selectionRange: NSMakeRange(NSNotFound, text.length), replacementRange: replacementRange())
+            NSLog("[FireInputController] original changed: \(self._originalString), refresh window")
 
-            if value.count > 0 {
-                self._candidatesWindow.refresh()
+            // 必须要mark originalString, 否则在某些APP中会有问题
+            let attrs = mark(forStyle: kTSMHiliteConvertedText, at: NSRange(location: NSNotFound, length: 0))
+            if let attributes = attrs as? [NSAttributedString.Key: Any] {
+                let text = NSAttributedString(string: _originalString, attributes: attributes)
+                client()?.setMarkedText(text, selectionRange: selectionRange(), replacementRange: replacementRange())
+            }
+
+            if self._originalString.count > 0 {
+                self.refreshCandidatesWindow()
                 if Fire.shared.cloudinput {
-                    Fire.shared.getCandidateFromNetwork(origin: value, sender: client())
+                    Fire.shared.getCandidateFromNetwork(origin: self._originalString, sender: client())
                 }
             } else {
                 // 没有输入code时，关闭候选框
@@ -86,79 +87,42 @@ class FireInputController: IMKInputController {
     private var _page: Int = 1 {
         didSet(old) {
             guard old == self._page else {
-                self._candidatesWindow.refresh()
+                NSLog("[FireInputHandler] page changed")
+                self.refreshCandidatesWindow()
                 return
             }
         }
     }
-    
+
     override init!(server: IMKServer!, delegate: Any!, client inputClient: Any!) {
         NSLog("[FireInputController] init")
-        
+
         super.init(server: server, delegate: delegate, client: inputClient)
-        
-        _candidatesWindow.setInputController(self)
-        
-        NSLog("observer: NetCandidatesUpdate-\(client().bundleIdentifier() ?? "Fire")")
-        NotificationCenter.default.addObserver(forName: NSNotification.Name(rawValue: "NetCandidatesUpdate-\(client().bundleIdentifier() ?? "Fire")"), object: nil, queue: nil) { (notification) in
-            let list = notification.object as! [Candidate]
+
+        /* NSLog("observer: NetCandidatesUpdate-\(client().bundleIdentifier() ?? "Fire")")
+        let notificationName = NSNotification.Name(
+            rawValue: "NetCandidatesUpdate-\(client().bundleIdentifier() ?? "Fire")")
+        NotificationCenter.default.addObserver(
+            forName: notificationName,
+            object: nil,
+            queue: nil
+        ) { (notification) in
+            guard let list = notification.object as? [Candidate] else { return }
             DispatchQueue.main.async {
-                self._candidatesWindow.updateNetCandidateView(candidate: list.count > 0 ? list.first! : nil)
+                let candidate = list.count > 0 ? list.first! : nil
+                self._candidatesWindow.updateNetCandidateView(candidate: candidate)
             }
-        }
+        } */
     }
-    
-    override func selectionRange() -> NSRange {
-        return NSMakeRange(0, originalString(client()).length)
+
+    override func recognizedEvents(_ sender: Any!) -> Int {
+        return Int(NSEvent.EventTypeMask.keyDown.rawValue | NSEvent.EventTypeMask.flagsChanged.rawValue)
     }
-    
-    override func commitComposition(_ sender: Any!) {
-        NSLog("commitComposition: %@", composedString(sender) as! NSAttributedString)
-        client().insertText(composedString(sender), replacementRange: replacementRange())
-        clean()
-    }
-    
-    override func originalString(_ sender: Any!) -> NSAttributedString! {
-        return NSAttributedString(string: _originalString)
-    }
-    
-    override func replacementRange() -> NSRange {
-        return NSMakeRange(NSNotFound, NSNotFound)
-    }
-    
-    private func getOriginRect() -> NSRect {
-        let ptr = UnsafeMutablePointer<NSRect>.allocate(capacity: 1)
-        ptr.pointee = NSRect()
-        client().attributes(forCharacterIndex: 0, lineHeightRectangle: ptr)
-        let rect = ptr.pointee
-        let origin = NSMakeRect(rect.origin.x, rect.origin.y - rect.height - 6, rect.width, rect.height)
-        ptr.deallocate()
-        return origin
-    }
-    
-    func toggleMode() {
-        NSLog("[FireInputController]toggle mode: \(_mode)")
-        
-        // 把当前未上屏的原始code上屏处理
-        _composedString = _originalString
-        commitComposition(nil)
-        
-        _mode = _mode == .ZhHans ? InputMode.En : InputMode.ZhHans
-        
-        let text = _mode == .ZhHans ? "中" : "A"
-        
-        // 在输入坐标处，显示中英切换提示
-        showTips(text, frame: getOriginRect())
-    }
-    
-    func flagChangeHandler(_ event: NSEvent) {
-        
-    }
-    
+    // swiftlint:disable:next cyclomatic_complexity function_body_length
     override func handle(_ event: NSEvent!, client sender: Any!) -> Bool {
         NSLog("[FireInputController] handle: \(event.debugDescription)")
         // 只有在shift keyup时，才切换中英文输入, 否则会导致shift+[a-z]大写的功能失效
-        if checkShiftKeyUp(event) {
+        if Utils.shared.checkShiftKeyUp(event)! {
             self.toggleMode()
             return true
         }
@@ -167,15 +131,15 @@ class FireInputController: IMKInputController {
         if event.type == .flagsChanged || (event.modifierFlags != .init(rawValue: 0) && event.modifierFlags != .shift) {
             return false
         }
-        
+
         // 英文输入模式, 不做任何处理
-        if _mode == .En {
+        if _mode == .enUS {
             return false
         }
-        
+
         // +/-/arrowdown/arrowup翻页
         let keyCode = event.keyCode
-        if _mode == .ZhHans && _originalString.count > 0 {
+        if _mode == .zhhans && _originalString.count > 0 {
             if keyCode == kVK_ANSI_Equal || keyCode == kVK_DownArrow {
                 _page += 1
                 return true
@@ -185,121 +149,162 @@ class FireInputController: IMKInputController {
                 return true
             }
         }
-        
+
         // 删除键删除字符
-        if keyCode == kVK_Delete  {
+        if keyCode == kVK_Delete {
             if _originalString.count > 0 {
                 _originalString = String(_originalString.dropLast())
                 return true
             }
             return false
         }
-        
+
         // 获取输入的字符
         let string = event.characters!
-        NSLog("string: \(string), keyCode: \(keyCode)")
-        
+
         // 如果输入的字符是标点符号，转换标点符号为中文符号
-        if _mode == .ZhHans && punctution.keys.contains(string) {
+        if _mode == .zhhans && punctution.keys.contains(string) {
             _composedString = punctution[string]!
-            commitComposition(sender)
+            insertText(sender)
             return true
         }
-        
-        
-        let reg = try! NSRegularExpression(pattern: "^[a-zA-Z]+$")
+
+        guard let reg = try? NSRegularExpression(pattern: "^[a-zA-Z]+$") else {
+            return true
+        }
         let match = reg.firstMatch(
             in: string,
             options: [],
             range: NSRange(location: 0, length: string.count)
         )
-        
+
         // 当前没有输入非字符并且之前没有输入字符,不做处理
         if  _originalString.count <= 0 && match == nil {
             NSLog("非字符,不做处理,直接返回")
             return false
         }
         // 当前输入的是英文字符,附加到之前
-        if (match != nil) {
+        if match != nil {
             _originalString += string
+
             return true
         }
-        
-        // 当前输入的是数字,选择当前候选列表中的第N个字符
-        if try! NSRegularExpression(
-            pattern: "^[1-9]+$").firstMatch(
-                in: string,
-                options: [],
-                range: NSMakeRange(0, string.count)
-            ) != nil {
-            let index = Int(string)! - 1
-            let candidates = self.candidates(sender)
-            if index < candidates!.count {
-                _composedString = (candidates![index] as! Candidate).text
-                commitComposition(sender)
+
+        // 当前输入的是数字,选择当前候选列表中的第N个字符 v
+        if let pos = Int(string) {
+            let index = pos - 1
+            let candidates = self.getCandidates(sender)
+            if index < candidates.count {
+                _composedString = candidates[index].text
+                insertText(sender)
             } else {
                 _originalString += string
             }
             return true
         }
-        
+
         // 回车键输入原字符
         if keyCode == kVK_Return {
             // 插入原字符
             _composedString = _originalString
-            commitComposition(sender)
+            insertText(sender)
             return true
         }
-        
+
         // 空格键输入转换后的中文字符
         if keyCode == kVK_Space {
-            let first = self.candidates(sender).first
+            let first = self.getCandidates(sender).first
             if first != nil {
-                _composedString = (first as! Candidate).text
-                commitComposition(sender)
+                _composedString = first!.text
+                insertText(sender)
                 _candidatesWindow.close()
             }
             return true
         }
         return false
     }
-    
-    override func recognizedEvents(_ sender: Any!) -> Int {
-        return Int(NSEvent.EventTypeMask.keyDown.rawValue | NSEvent.EventTypeMask.flagsChanged.rawValue)
+
+    func getCandidates(_ sender: Any!) -> [Candidate] {
+        let candidates = Fire.shared.getCandidates(origin: self._originalString, page: _page)
+        return candidates
     }
-    
-    override func candidates(_ sender: Any!) -> [Any]! {
-        return Fire.shared.getCandidates(origin: self.originalString(sender)!, page: _page)
+
+    // 更新候选窗口
+    func refreshCandidatesWindow() {
+        let candidates = getCandidates(client())
+        _candidatesWindow.setFrameOrigin(getOriginPoint())
+        _candidatesWindow.setCandidates(candidates: candidates, originalString: _originalString)
     }
-    
+
+    override func selectionRange() -> NSRange {
+        return NSRange(location: 0, length: _originalString.count)
+    }
+
+    override func replacementRange() -> NSRange {
+        return NSRange(location: NSNotFound, length: NSNotFound)
+    }
+
+    // 往输入框插入当前字符
+    func insertText(_ sender: Any!) {
+        NSLog("insertText: %@", _composedString)
+        let value = NSAttributedString(string: _composedString)
+        client().insertText(value, replacementRange: replacementRange())
+        clean()
+    }
+
+    // 获取当前输入的光标位置
+    func getOriginPoint() -> NSPoint {
+        var rect = NSRect()
+        client().attributes(forCharacterIndex: 0, lineHeightRectangle: &rect)
+        return rect.origin
+    }
+
+    func toggleMode() {
+        NSLog("[FireInputController]toggle mode: \(_mode)")
+
+        // 把当前未上屏的原始code上屏处理
+        _composedString = _originalString
+        insertText(nil)
+
+        _mode = _mode == .zhhans ? InputMode.enUS : InputMode.zhhans
+
+        let text = _mode == .zhhans ? "中" : "A"
+
+        // 在输入坐标处，显示中英切换提示
+        Utils.shared.showTips(text, origin: getOriginPoint())
+    }
+
     override func composedString(_ sender: Any!) -> Any! {
         return NSAttributedString(string: _composedString)
     }
-    
+
     func clean() {
+        NSLog("[FireInputController] clean")
         _originalString = ""
         _composedString = ""
         _page = 1
         _candidatesWindow.close()
     }
-    
+
     override func inputControllerWillClose() {
         clean()
     }
-    
-    override func activateServer(_ sender: Any!) {
-        NSLog("active server: \(client()!.bundleIdentifier()!)")
-        client()?.overrideKeyboard(withKeyboardNamed: "com.apple.keylayout.US")
-        _candidatesWindow.setInputController(self)
+
+    override func hidePalettes() {
+        clean()
     }
-    
+
+    override func activateServer(_ sender: Any!) {
+        NSLog("[FireInputController] active server: \(client()!.bundleIdentifier()!)")
+    }
+
     override func deactivateServer(_ sender: Any!) {
         NSLog("[FireInputController] deactivate server: \(client()!.bundleIdentifier()!)")
         clean()
     }
-    
+
     /* -- menu actions start -- */
-    
+
     @objc func openAbout (_ sender: Any!) {
         NSLog("open about")
         DispatchQueue.main.async {
@@ -307,11 +312,11 @@ class FireInputController: IMKInputController {
             NSApp.orderFrontStandardAboutPanel(sender)
         }
     }
-    
+
     @objc func checkForUpdates(_ sender: Any!) {
         SUUpdater.shared()?.checkForUpdates(sender)
     }
-    
+
     override func menu() -> NSMenu! {
         let menu = NSMenu()
         menu.addItem(NSMenuItem(title: "关于业火输入法", action: #selector(openAbout(_:)), keyEquivalent: ""))
@@ -319,5 +324,5 @@ class FireInputController: IMKInputController {
         menu.addItem(NSMenuItem(title: "首选项", action: #selector(showPreferences(_:)), keyEquivalent: ""))
         return menu
     }
-    
+
 }
