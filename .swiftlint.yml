@@ -1,3 +1,7 @@
 disabled_rules: # 禁用指定的规则
   - identifier_name
   - block_based_kvo
+
+excluded: # paths to ignore during linting. Takes precedence over `included`.
+  - Carthage
+  - Pods

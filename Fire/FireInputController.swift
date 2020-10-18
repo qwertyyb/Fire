@@ -6,9 +6,10 @@
 //  Copyright © 2019 qwertyyb. All rights reserved.
 //
 
-import Cocoa
+import SwiftUI
 import InputMethodKit
 import Sparkle
+import Preferences
 
 var set = false
 
@@ -53,8 +54,28 @@ let punctution: [String: String] = [
 ]
 
 class FireInputController: IMKInputController {
+
+    lazy var preferencesWindowController = PreferencesWindowController(
+        panes: [
+            Preferences.Pane(
+                identifier: Preferences.PaneIdentifier(rawValue: "基本"),
+                 title: "基本",
+                toolbarIcon: NSImage(named: "general")!
+            ) {
+                GeneralPane()
+            },
+            Preferences.Pane(
+                identifier: Preferences.PaneIdentifier(rawValue: "高级"),
+                 title: "高级",
+                toolbarIcon: NSImage(named: "advanced")!
+            ) {
+                AdvancedPane()
+            }
+        ]
+    )
+
     private var  _composedString = ""
-    private let _candidatesWindow = FireCandidatesWindow.shared
+    private let _candidatesWindow = CandidatesWindow.shared
     private var _mode: InputMode = .zhhans
     private var _lastModifier: NSEvent.ModifierFlags = .init(rawValue: 0)
     private var _originalString = "" {
@@ -75,9 +96,6 @@ class FireInputController: IMKInputController {
 
             if self._originalString.count > 0 {
                 self.refreshCandidatesWindow()
-                if Fire.shared.cloudinput {
-                    Fire.shared.getCandidateFromNetwork(origin: self._originalString, sender: client())
-                }
             } else {
                 // 没有输入code时，关闭候选框
                 _candidatesWindow.close()
@@ -232,8 +250,11 @@ class FireInputController: IMKInputController {
     // 更新候选窗口
     func refreshCandidatesWindow() {
         let candidates = getCandidates(client())
-        _candidatesWindow.setFrameOrigin(getOriginPoint())
-        _candidatesWindow.setCandidates(candidates: candidates, originalString: _originalString)
+        _candidatesWindow.setCandidates(
+            candidates: candidates,
+            originalString: _originalString,
+            topLeft: getOriginPoint()
+        )
     }
 
     override func selectionRange() -> NSRange {
@@ -315,6 +336,10 @@ class FireInputController: IMKInputController {
 
     @objc func checkForUpdates(_ sender: Any!) {
         SUUpdater.shared()?.checkForUpdates(sender)
+    }
+
+    override func showPreferences(_ sender: Any!) {
+        preferencesWindowController.show()
     }
 
     override func menu() -> NSMenu! {

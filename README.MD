@@ -8,7 +8,6 @@
 ## 介绍
 使用 `swift` 基于 `InputMethodKit` 实现的Mac平台五笔输入法, `InputMethodKit` 真是巨坑
 
-
 ## 安装
 > [下载地址](https://github.com/qwertyyb/Fire/releases)
 

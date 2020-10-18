@@ -7,7 +7,7 @@
 	<key>CFBundleExecutable</key>
 	<string>$(EXECUTABLE_NAME)</string>
 	<key>CFBundleIconFile</key>
-	<string>fire.icns</string>
+	<string>AppIcon.icns</string>
 	<key>CFBundleIdentifier</key>
 	<string>$(PRODUCT_BUNDLE_IDENTIFIER)</string>
 	<key>CFBundleInfoDictionaryVersion</key>
@@ -23,7 +23,7 @@
 		<dict/>
 	</array>
 	<key>CFBundleVersion</key>
-	<string>427</string>
+	<string>742</string>
 	<key>ComponentInputModeDict</key>
 	<dict>
 		<key>tsInputModeListKey</key>
@@ -67,8 +67,6 @@
 	<string>$(PRODUCT_MODULE_NAME).FireInputController</string>
 	<key>InputMethodServerDelegateClass</key>
 	<string>$(PRODUCT_MODULE_NAME).FireInputController</string>
-	<key>InputMethodServerPreferencesWindowControllerClass</key>
-	<string>$(PRODUCT_MODULE_NAME).PreferencesController</string>
 	<key>LSApplicationCategoryType</key>
 	<string>public.app-category.utilities</string>
 	<key>LSBackgroundOnly</key>
