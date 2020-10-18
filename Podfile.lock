@@ -1,8 +1,12 @@
 PODS:
+  - Defaults (4.1.0)
+  - Preferences (2.0.1)
   - Sparkle (1.22.0)
   - SwiftLint (0.40.0)
 
 DEPENDENCIES:
+  - Defaults
+  - Preferences
   - Sparkle
   - SwiftLint
 
@@ -10,12 +14,16 @@ SPEC REPOS:
   https://github.com/CocoaPods/Specs.git:
     - Sparkle
   trunk:
+    - Defaults
+    - Preferences
     - SwiftLint
 
 SPEC CHECKSUMS:
+  Defaults: 2198ac20a65633de273110b5e9954f0a252f275b
+  Preferences: 1ce41315ecadd28a9a4dd92ccd5dea7ca3437f92
   Sparkle: 593ac2e677c07bcb6c3b22d621240e7cbedaab57
   SwiftLint: 4154893c73a4c52d6240195507eb7a3e3c64087e
 
-PODFILE CHECKSUM: d03563621267b9908612fd56143705fe4d0b8398
+PODFILE CHECKSUM: 9c0c701878eaf310764a7aa7954d737b4d230d55
 
-COCOAPODS: 1.8.3
+COCOAPODS: 1.9.3

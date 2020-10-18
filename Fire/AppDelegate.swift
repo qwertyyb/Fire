@@ -8,7 +8,16 @@
 
 import Cocoa
 import InputMethodKit
-import Sparkle
+import Defaults
+
+extension Defaults.Keys {
+    static let wubiCodeTip = Key<Bool>("wubiCodeTip", default: true)
+    static let wubiAutoCommit = Key<Bool>("wubiAutoCommit", default: false)
+    static let candidateCount = Key<Int>("candidateCount", default: 5)
+    static let codeMode = Key<CodeMode>("codeMode", default: CodeMode.wubiPinyin)
+    //            ^            ^         ^                ^
+    //           Key          Type   UserDefaults name   Default value
+}
 
 @NSApplicationMain
 class AppDelegate: NSObject, NSApplicationDelegate {

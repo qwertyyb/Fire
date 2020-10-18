@@ -10,4 +10,8 @@ target 'Fire' do
   
   # Pods for lint
   pod 'SwiftLint'
+  
+  pod 'Preferences'
+  
+  pod 'Defaults'
 end
