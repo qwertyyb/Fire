@@ -17,6 +17,7 @@
 		459DE990232EB26600A3ACD1 /* CandidatesView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 459DE98E232EB26500A3ACD1 /* CandidatesView.swift */; };
 		459DE991232EB26600A3ACD1 /* CandidatesWindow.swift in Sources */ = {isa = PBXBuildFile; fileRef = 459DE98F232EB26500A3ACD1 /* CandidatesWindow.swift */; };
 		45D996AA253C5232001460A8 /* PreferencesView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45D996A9253C5232001460A8 /* PreferencesView.swift */; };
+		673A400C253D9FE70003901E /* InputSource.swift in Sources */ = {isa = PBXBuildFile; fileRef = 673A400B253D9FE70003901E /* InputSource.swift */; };
 		673CD81C233DCF14006538B8 /* table.sqlite in Resources */ = {isa = PBXBuildFile; fileRef = 673CD81B233DCF14006538B8 /* table.sqlite */; };
 		67E8B515233B97FD00D7CE80 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 67E8B517233B97FD00D7CE80 /* InfoPlist.strings */; };
 		67E8B521233C537B00D7CE80 /* fire.pdf in Resources */ = {isa = PBXBuildFile; fileRef = 67E8B51E233C537B00D7CE80 /* fire.pdf */; };
@@ -36,7 +37,7 @@
 		459DE98F232EB26500A3ACD1 /* CandidatesWindow.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CandidatesWindow.swift; sourceTree = "<group>"; };
 		45D996A9253C5232001460A8 /* PreferencesView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PreferencesView.swift; sourceTree = "<group>"; };
 		497E90F13FA9A943AC0BE3DB /* Pods-Fire.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Fire.release.xcconfig"; path = "Target Support Files/Pods-Fire/Pods-Fire.release.xcconfig"; sourceTree = "<group>"; };
-		59F80EA93E8AE7885721524F /* libPods-Fire.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-Fire.a"; sourceTree = BUILT_PRODUCTS_DIR; };
+		673A400B253D9FE70003901E /* InputSource.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InputSource.swift; sourceTree = "<group>"; };
 		673CD81B233DCF14006538B8 /* table.sqlite */ = {isa = PBXFileReference; lastKnownFileType = file; path = table.sqlite; sourceTree = "<group>"; };
 		67E8B511233B978E00D7CE80 /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		67E8B516233B97FD00D7CE80 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/InfoPlist.strings; sourceTree = "<group>"; };
@@ -101,6 +102,7 @@
 				451E605E232E400B007B0463 /* Fire.swift */,
 				45587F2C24E8FBFB005F291B /* Utils.swift */,
 				45D996A9253C5232001460A8 /* PreferencesView.swift */,
+				673A400B253D9FE70003901E /* InputSource.swift */,
 			);
 			path = Fire;
 			sourceTree = "<group>";
@@ -109,7 +111,6 @@
 			isa = PBXGroup;
 			children = (
 				451E6058232E2787007B0463 /* InputMethodKit.framework */,
-				59F80EA93E8AE7885721524F /* libPods-Fire.a */,
 			);
 			name = Frameworks;
 			sourceTree = "<group>";
@@ -288,6 +289,7 @@
 				45587F2D24E8FBFB005F291B /* Utils.swift in Sources */,
 				45D996AA253C5232001460A8 /* PreferencesView.swift in Sources */,
 				451E6048232E227B007B0463 /* AppDelegate.swift in Sources */,
+				673A400C253D9FE70003901E /* InputSource.swift in Sources */,
 				459DE991232EB26600A3ACD1 /* CandidatesWindow.swift in Sources */,
 				459DE990232EB26600A3ACD1 /* CandidatesView.swift in Sources */,
 			);
@@ -436,7 +438,7 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				BUILD_LIBRARY_FOR_DISTRIBUTION = NO;
-				CODE_SIGN_IDENTITY = "-";
+				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
 				CONFIGURATION_BUILD_DIR = "/Library/Input Methods";
@@ -461,7 +463,7 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				BUILD_LIBRARY_FOR_DISTRIBUTION = NO;
-				CODE_SIGN_IDENTITY = "-";
+				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
 				DEVELOPMENT_TEAM = T68XK6867P;
