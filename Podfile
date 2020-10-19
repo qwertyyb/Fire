@@ -7,4 +7,11 @@ target 'Fire' do
 
   # Pods for Fire
   pod 'Sparkle'
+  
+  # Pods for lint
+  pod 'SwiftLint'
+  
+  pod 'Preferences'
+  
+  pod 'Defaults'
 end
