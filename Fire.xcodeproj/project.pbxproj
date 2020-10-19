@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		242B087AF0F071E3EE2F594B /* libPods-Fire.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 060E0C2FC1C04AEFD80DD621 /* libPods-Fire.a */; };
 		451E6048232E227B007B0463 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 451E6047232E227B007B0463 /* AppDelegate.swift */; };
 		451E6056232E24A5007B0463 /* FireInputController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 451E6055232E24A5007B0463 /* FireInputController.swift */; };
 		451E605D232E3A3C007B0463 /* MainMenu.xib in Resources */ = {isa = PBXBuildFile; fileRef = 451E605C232E3A3C007B0463 /* MainMenu.xib */; };
@@ -24,6 +25,7 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		060E0C2FC1C04AEFD80DD621 /* libPods-Fire.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-Fire.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		451E6044232E227B007B0463 /* Fire.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Fire.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		451E6047232E227B007B0463 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		451E604F232E227C007B0463 /* Fire.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = Fire.entitlements; sourceTree = "<group>"; };
@@ -52,6 +54,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				45449B4C23535ED000C9EFEF /* InputMethodKit.framework in Frameworks */,
+				242B087AF0F071E3EE2F594B /* libPods-Fire.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -111,6 +114,7 @@
 			isa = PBXGroup;
 			children = (
 				451E6058232E2787007B0463 /* InputMethodKit.framework */,
+				060E0C2FC1C04AEFD80DD621 /* libPods-Fire.a */,
 			);
 			name = Frameworks;
 			sourceTree = "<group>";

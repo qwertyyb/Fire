@@ -19,22 +19,15 @@ jobs:
 
     - name: install depencies
       run: pod install
-    - name: archive
-      run: xcodebuild archive -workspace Fire.xcworkspace -scheme Fire -archivePath ./archive-Fire -configuration Release
-    - name: copy app && zip app && generate appcast
+    - name: build
+      run: ./build_app.sh
+    - name: make FireInstaller.pkg
       env:
         sparkle_key: ${{ secrets.sparkle_key }}
-      run: |
-        mkdir apps
-        cp -a ./archive-Fire.xcarchive/Products/Applications/*.app apps
-        ditto -c -k --sequesterRsrc --keepParent apps/Fire.app apps/Fire.zip
-        # rm -r ~/Library/Caches/Sparkle_generate_appcast/*
-        ./bin/generate_appcast -s $sparkle_key ./apps/
+      run: ./package/make_package.sh
 
-    - name: package to .pkg file
-      run: |
-        version=$(git describe --tags `git rev-list --tags --max-count=1`)
-        pkgbuild --component ./apps/Fire.app --install-location /Library/Input\ Methods --identifier com.qwertyyb.pkg.FireInstaller --version $version ./apps/FireInstaller.pkg
+    - name: sign update
+      run: echo "sign update"
 
     - name: release
       uses: AButler/upload-release-assets@v1.0

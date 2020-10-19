@@ -17,4 +17,6 @@ xcodebuild archive -workspace Fire.xcworkspace -scheme Fire -archivePath ./archi
 
 cp -a ./archive.xcarchive/Products/Applications/*.app "${BUILD_DIR}"
 
+ditto -c -k --sequesterRsrc --keepParent "${BUILD_DIR}/Fire.app" "${BUILD_DIR}/Fire.zip"
+
 rm -rf ./archive.xcarchive

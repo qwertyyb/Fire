@@ -23,4 +23,8 @@ pkgbuild \
     --version "${Version}" \
     --install-location "${INSTALL_LOCATION}" \
     --scripts "${PROJECT_ROOT}/package/scripts" \
-    FireInstaller.pkg
+    "${PROJECT_ROOT}/apps/FireInstaller.pkg"
+
+# clean
+
+rm -rf "${ROOT_DIR}"
