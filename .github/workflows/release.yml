@@ -5,51 +5,69 @@ on:
     types: ['published']
 
 jobs:
-  release:
+  build:
     runs-on: macOS-latest
     
     steps:
-    - uses: actions/checkout@v1
+    - uses: actions/checkout@v2
 
-    - name: update version
-      run: |
-        PRODUCT_SETTINGS_PATH=./Fire/Info.plist
-        version=$(git describe --tags `git rev-list --tags --max-count=1`)
-        /usr/libexec/PlistBuddy -c "Set :CFBundleShortVersionString $version" $PRODUCT_SETTINGS_PATH
-
+    - name: switch xcode version
+      run: sudo xcode-select --switch /Applications/Xcode_12.app
+  
     - name: install depencies
       run: pod install
-    - name: archive
-      run: xcodebuild archive -workspace Fire.xcworkspace -scheme Fire -archivePath ./archive-Fire -configuration Release
-    - name: copy app && zip app && generate appcast
+
+    - name: build
+      run: ./build_app.sh
+
+    - name: make FireInstaller.pkg
+      run: ./package/make_package.sh
+
+    - name: generate appcast.xml
       env:
         sparkle_key: ${{ secrets.sparkle_key }}
-      run: |
-        mkdir apps
-        cp -a ./archive-Fire.xcarchive/Products/Applications/*.app apps
-        ditto -c -k --sequesterRsrc --keepParent apps/Fire.app apps/Fire.zip
-        # rm -r ~/Library/Caches/Sparkle_generate_appcast/*
-        ./bin/generate_appcast -s $sparkle_key ./apps/
+      run: ./build_appcast.sh
 
-    - name: package to .pkg file
-      run: |
-        version=$(git describe --tags `git rev-list --tags --max-count=1`)
-        pkgbuild --component ./apps/Fire.app --install-location /Library/Input\ Methods --identifier com.qwertyyb.pkg.FireInstaller --version $version ./apps/FireInstaller.pkg
+    - name: gather artifact
+      run: cp ./Fire/Info.plist ./apps/
 
-    - name: release
+    - uses: actions/upload-artifact@v2
+      with:
+        name: apps
+        path: ./apps/
+
+  publish:
+    runs-on: ubuntu-latest
+    needs: build
+    steps:
+    - uses: actions/checkout@v2
+
+    - uses: actions/download-artifact@v2
+      with:
+        name: apps
+        path: ./apps
+
+
+    - name: upload release assets
       uses: AButler/upload-release-assets@v1.0
       with:
         files: 'apps/Fire.zip,apps/FireInstaller.pkg'
         repo-token: ${{ secrets.GITHUB_TOKEN }}
 
-    - name: install & config coscmd
-      env:
-        oss_appid: ${{ secrets.oss_appid }}
-        oss_secret: ${{ secrets.oss_secret }}
+
+    - name: move artifact
       run: |
-        pip install pip==9.0.0 && pip install coscmd
-        coscmd config -a $oss_appid -s $oss_secret -b person-1253524658 -r ap-beijing
-    - name: upload app and appcast
+        mv apps/appcast.xml ./appcast.xml
+        mv apps/Info.plist  ./Fire/
+    
+    - name: remove useless file
+      run: rm -rf ./apps
+
+    - name: commit appcast.xml
       run: |
-        coscmd upload ./apps/Fire.zip cloudfn/apps/fire/Fire.zip
-        coscmd upload ./apps/appcast.xml cloudfn/apps/fire/appcast.xml
+        git config --local user.email "action@github.com"
+        git config --local user.name "GitHub Action"
+        git pull origin master
+        git add .
+        git commit -m "chore: update version"
+        git push origin HEAD:master
