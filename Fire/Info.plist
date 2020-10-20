@@ -23,7 +23,7 @@
 		<dict/>
 	</array>
 	<key>CFBundleVersion</key>
-	<string>773</string>
+	<string>777</string>
 	<key>ComponentInputModeDict</key>
 	<dict>
 		<key>tsInputModeListKey</key>
@@ -87,7 +87,7 @@
 	<key>NSPrincipalClass</key>
 	<string>NSApplication</string>
 	<key>SUFeedURL</key>
-	<string>https://cdn.qwertyyb.cn/cloudfn/apps/fire/appcast.xml</string>
+	<string>https://raw.githubusercontent.com/qwertyyb/Fire/master/appcast.xml</string>
 	<key>SUPublicEDKey</key>
 	<string>tR/BZ1M7WhteABLgJDf3f/bsxUHYMPABoY9PuPvI0TE=</string>
 	<key>tsInputMethodCharacterRepertoireKey</key>

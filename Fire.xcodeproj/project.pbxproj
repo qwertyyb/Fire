@@ -137,7 +137,6 @@
 				451E6041232E227B007B0463 /* Frameworks */,
 				451E6042232E227B007B0463 /* Resources */,
 				CC4E3CB56A41B3947C0BFEC1 /* [CP] Embed Pods Frameworks */,
-				45449B4D235360B900C9EFEF /* update version */,
 				45587F2E24E91513005F291B /* lint */,
 			);
 			buildRules = (
@@ -204,24 +203,6 @@
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXShellScriptBuildPhase section */
-		45449B4D235360B900C9EFEF /* update version */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputFileListPaths = (
-			);
-			inputPaths = (
-			);
-			name = "update version";
-			outputFileListPaths = (
-			);
-			outputPaths = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "version=`/usr/libexec/PlistBuddy -c \"Print CFBundleVersion\" $PRODUCT_SETTINGS_PATH`\nversion=`expr $version + 1`\n/usr/libexec/PlistBuddy -c \"Set :CFBundleVersion $version\" $PRODUCT_SETTINGS_PATH\n";
-		};
 		45587F2E24E91513005F291B /* lint */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;

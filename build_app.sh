@@ -13,6 +13,16 @@ rm -rf ./archive.xcarchive
 
 xcodebuild clean -workspace "${WORKSPACE}" -scheme "${TARGET}"
 
+
+PRODUCT_SETTINGS_PATH='./Fire/Info.plist'
+version=$(git describe --tags `git rev-list --tags --max-count=1`)
+/usr/libexec/PlistBuddy -c "Set :CFBundleShortVersionString $version" $PRODUCT_SETTINGS_PATH
+vv=`date "+%Y%m%d%H%M%S"`
+/usr/libexec/PlistBuddy -c "Set :CFBundleVersion $vv" $PRODUCT_SETTINGS_PATH
+
+echo $version
+echo $vv
+
 xcodebuild archive -workspace Fire.xcworkspace -scheme Fire -archivePath ./archive -configuration Release
 
 cp -a ./archive.xcarchive/Products/Applications/*.app "${BUILD_DIR}"

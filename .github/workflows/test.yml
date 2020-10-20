@@ -9,18 +9,30 @@ on:
       - '**'
 
 jobs:
-  test:
+  build-test:
     runs-on: macOS-latest
     
     steps:
     - uses: actions/checkout@v1
+
+    - name: switch xcode version
+      run: sudo xcode-select --switch /Applications/Xcode_12.app
+
     - name: install depencies
       run: pod install
-    - name: archive
+
+    - name: build
       run: ./build_app.sh
-    - name: generate appcast
+
+    - name: make FireInstaller.pkg
+      run: ./package/make_package.sh
+
+    - name: generate appcast.xml
       env:
         sparkle_key: ${{ secrets.sparkle_key }}
-      run: |
-        rm -r ~/Library/Caches/Sparkle_generate_appcast/*
-        ./bin/generate_appcast -s $sparkle_key ./apps/
+      run: ./build_appcast.sh
+
+    - uses: actions/upload-artifact@v2
+      with:
+        name: apps
+        path: ./apps/
