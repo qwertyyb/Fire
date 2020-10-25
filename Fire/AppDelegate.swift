@@ -8,47 +8,30 @@
 
 import Cocoa
 import InputMethodKit
-import Defaults
-
-enum CandidatesDirection: Int, Decodable, Encodable {
-    case vertical
-    case horizontal
-}
-
-extension Defaults.Keys {
-    static let candidatesDirection = Key<CandidatesDirection>(
-        "candidatesDirection",
-        default: CandidatesDirection.horizontal
-    )
-    static let showCodeInWindow = Key<Bool>("showCodeInWindow", default: true)
-    static let wubiCodeTip = Key<Bool>("wubiCodeTip", default: true)
-    static let wubiAutoCommit = Key<Bool>("wubiAutoCommit", default: false)
-    static let candidateCount = Key<Int>("candidateCount", default: 5)
-    static let codeMode = Key<CodeMode>("codeMode", default: CodeMode.wubiPinyin)
-    //            ^            ^         ^                ^
-    //           Key          Type   UserDefaults name   Default value
-}
 
 @NSApplicationMain
 class AppDelegate: NSObject, NSApplicationDelegate {
 
     var fire: Fire!
 
+    func installInputSource() {
+        print("install input source")
+        InputSource.shared.registerInputSource()
+        InputSource.shared.activateInputSource()
+        NSApp.terminate(nil)
+    }
+
     func applicationDidFinishLaunching(_ aNotification: Notification) {
         if CommandLine.arguments.count > 1 {
             print("[Fire] launch argument: \(CommandLine.arguments[1])")
-            if CommandLine.arguments[1] == "--install" {
-                print("install input source")
-                registerInputSource()
-                deactivateInputSource()
-                activateInputSource()
-                NSApp.terminate(nil)
-                return
+            let command = CommandLine.arguments[1]
+            if command == "--install" {
+                return installInputSource()
             }
-            if CommandLine.arguments[1] == "--build-dict" {
+            if command == "--build-dict" {
+                print("[Fire] build dict")
                 buildDict()
-                NSApp.terminate(nil)
-                return
+                return NSApp.terminate(nil)
             }
         }
 //        buildDict()

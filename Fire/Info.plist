@@ -17,13 +17,13 @@
 	<key>CFBundlePackageType</key>
 	<string>APPL</string>
 	<key>CFBundleShortVersionString</key>
-	<string>v0.1.0</string>
+	<string>v0.2.0</string>
 	<key>CFBundleURLTypes</key>
 	<array>
 		<dict/>
 	</array>
 	<key>CFBundleVersion</key>
-	<string>20201020120741</string>
+	<string>20201025150558</string>
 	<key>ComponentInputModeDict</key>
 	<dict>
 		<key>tsInputModeListKey</key>
