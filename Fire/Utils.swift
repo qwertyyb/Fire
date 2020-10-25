@@ -81,6 +81,16 @@ class Utils {
         }
         return handleFn
     }
+    
+    func getScreenFromPoint(_ point: NSPoint) -> NSScreen? {
+        // find current screen
+        for screen in NSScreen.screens {
+            if screen.frame.contains(point) {
+                return screen
+            }
+        }
+        return NSScreen.main
+    }
 
     static let shared = Utils()
 }

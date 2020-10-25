@@ -42,19 +42,11 @@ class CandidatesWindow: NSWindow {
         let screenPadding: CGFloat = 6
         let xdistance: CGFloat = 0
         let ydistance: CGFloat = 4
-
-        var curScreen = NSScreen.main
-        // find current screen
-        for screen in NSScreen.screens {
-            if screen.frame.contains(originalTopLeft) {
-                curScreen = screen
-                break
-            }
-        }
+        
         var left = originalTopLeft.x + xdistance
         var top = originalTopLeft.y - ydistance
-        if curScreen != nil {
-            let screen = curScreen!.frame
+        if let curScreen = Utils.shared.getScreenFromPoint(originalTopLeft) {
+            let screen = curScreen.frame
 
             if originalTopLeft.x + frame.width > screen.maxX - screenPadding {
                 left = screen.maxX - frame.width - screenPadding
