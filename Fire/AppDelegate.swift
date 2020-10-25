@@ -10,7 +10,17 @@ import Cocoa
 import InputMethodKit
 import Defaults
 
+enum CandidatesDirection: Int, Decodable, Encodable {
+    case vertical
+    case horizontal
+}
+
 extension Defaults.Keys {
+    static let candidatesDirection = Key<CandidatesDirection>(
+        "candidatesDirection",
+        default: CandidatesDirection.horizontal
+    )
+    static let showCodeInWindow = Key<Bool>("showCodeInWindow", default: true)
     static let wubiCodeTip = Key<Bool>("wubiCodeTip", default: true)
     static let wubiAutoCommit = Key<Bool>("wubiAutoCommit", default: false)
     static let candidateCount = Key<Int>("candidateCount", default: 5)
@@ -22,10 +32,8 @@ extension Defaults.Keys {
 @NSApplicationMain
 class AppDelegate: NSObject, NSApplicationDelegate {
 
-    let fire: Fire
-    override init() {
-        fire = Fire.shared
-    }
+    var fire: Fire!
+
     func applicationDidFinishLaunching(_ aNotification: Notification) {
         if CommandLine.arguments.count > 1 {
             print("[Fire] launch argument: \(CommandLine.arguments[1])")
@@ -37,8 +45,15 @@ class AppDelegate: NSObject, NSApplicationDelegate {
                 NSApp.terminate(nil)
                 return
             }
+            if CommandLine.arguments[1] == "--build-dict" {
+                buildDict()
+                NSApp.terminate(nil)
+                return
+            }
         }
-        NSLog("launch input source")
+//        buildDict()
+        NSLog("app is running")
+        fire = Fire.shared
     }
 
     func applicationWillTerminate(_ aNotification: Notification) {

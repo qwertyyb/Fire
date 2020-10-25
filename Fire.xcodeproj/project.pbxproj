@@ -12,16 +12,56 @@
 		451E605D232E3A3C007B0463 /* MainMenu.xib in Resources */ = {isa = PBXBuildFile; fileRef = 451E605C232E3A3C007B0463 /* MainMenu.xib */; };
 		451E605F232E400B007B0463 /* Fire.swift in Sources */ = {isa = PBXBuildFile; fileRef = 451E605E232E400B007B0463 /* Fire.swift */; };
 		45449B4C23535ED000C9EFEF /* InputMethodKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 451E6058232E2787007B0463 /* InputMethodKit.framework */; };
+		45577E502543F03F0064325B /* build.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45577E4F2543F03F0064325B /* build.swift */; };
+		45577E562543F4060064325B /* wb_table.txt in Resources */ = {isa = PBXBuildFile; fileRef = 45577E552543F4060064325B /* wb_table.txt */; };
+		45577E6225442E240064325B /* main.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 45577E6125442E240064325B /* main.cpp */; };
+		45577E6925442EED0064325B /* libsqlite3.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = 45577E6825442EED0064325B /* libsqlite3.tbd */; };
+		45577E8425443E290064325B /* TableBuilder in CopyFiles */ = {isa = PBXBuildFile; fileRef = 45577E5F25442E240064325B /* TableBuilder */; settings = {ATTRIBUTES = (CodeSignOnCopy, ); }; };
+		45577E92254448B80064325B /* py_table.txt in Resources */ = {isa = PBXBuildFile; fileRef = 45577E91254448B80064325B /* py_table.txt */; };
+		45577EA1254552110064325B /* ThesaurusPane.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45577EA0254552110064325B /* ThesaurusPane.swift */; };
 		45587F2D24E8FBFB005F291B /* Utils.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45587F2C24E8FBFB005F291B /* Utils.swift */; };
 		45752EBE253C98AB0009F2F0 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 45752EBD253C98AB0009F2F0 /* Assets.xcassets */; };
 		459DE990232EB26600A3ACD1 /* CandidatesView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 459DE98E232EB26500A3ACD1 /* CandidatesView.swift */; };
 		459DE991232EB26600A3ACD1 /* CandidatesWindow.swift in Sources */ = {isa = PBXBuildFile; fileRef = 459DE98F232EB26500A3ACD1 /* CandidatesWindow.swift */; };
-		45D996AA253C5232001460A8 /* PreferencesView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45D996A9253C5232001460A8 /* PreferencesView.swift */; };
+		45D996AA253C5232001460A8 /* GeneralPane.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45D996A9253C5232001460A8 /* GeneralPane.swift */; };
 		673A400C253D9FE70003901E /* InputSource.swift in Sources */ = {isa = PBXBuildFile; fileRef = 673A400B253D9FE70003901E /* InputSource.swift */; };
 		673CD81C233DCF14006538B8 /* table.sqlite in Resources */ = {isa = PBXBuildFile; fileRef = 673CD81B233DCF14006538B8 /* table.sqlite */; };
 		67E8B515233B97FD00D7CE80 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 67E8B517233B97FD00D7CE80 /* InfoPlist.strings */; };
 		67E8B521233C537B00D7CE80 /* fire.pdf in Resources */ = {isa = PBXBuildFile; fileRef = 67E8B51E233C537B00D7CE80 /* fire.pdf */; };
+		D05FCA8CD2A09691E2E18621 /* libPods-Fire.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 060E0C2FC1C04AEFD80DD621 /* libPods-Fire.a */; };
 /* End PBXBuildFile section */
+
+/* Begin PBXContainerItemProxy section */
+		45577E6C254438F60064325B /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 451E603C232E227B007B0463 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 45577E5E25442E240064325B;
+			remoteInfo = TableBuilder;
+		};
+/* End PBXContainerItemProxy section */
+
+/* Begin PBXCopyFilesBuildPhase section */
+		45577E5D25442E240064325B /* CopyFiles */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = /usr/share/man/man1/;
+			dstSubfolderSpec = 0;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 1;
+		};
+		45577E8325443E080064325B /* CopyFiles */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 6;
+			files = (
+				45577E8425443E290064325B /* TableBuilder in CopyFiles */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
 		060E0C2FC1C04AEFD80DD621 /* libPods-Fire.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-Fire.a"; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -32,11 +72,18 @@
 		451E6058232E2787007B0463 /* InputMethodKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = InputMethodKit.framework; path = System/Library/Frameworks/InputMethodKit.framework; sourceTree = SDKROOT; };
 		451E605C232E3A3C007B0463 /* MainMenu.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = MainMenu.xib; sourceTree = "<group>"; };
 		451E605E232E400B007B0463 /* Fire.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Fire.swift; sourceTree = "<group>"; };
+		45577E4F2543F03F0064325B /* build.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = build.swift; sourceTree = "<group>"; };
+		45577E552543F4060064325B /* wb_table.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = wb_table.txt; sourceTree = "<group>"; };
+		45577E5F25442E240064325B /* TableBuilder */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = TableBuilder; sourceTree = BUILT_PRODUCTS_DIR; };
+		45577E6125442E240064325B /* main.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = main.cpp; sourceTree = "<group>"; };
+		45577E6825442EED0064325B /* libsqlite3.tbd */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = libsqlite3.tbd; path = usr/lib/libsqlite3.tbd; sourceTree = SDKROOT; };
+		45577E91254448B80064325B /* py_table.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = py_table.txt; sourceTree = "<group>"; };
+		45577EA0254552110064325B /* ThesaurusPane.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ThesaurusPane.swift; sourceTree = "<group>"; };
 		45587F2C24E8FBFB005F291B /* Utils.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Utils.swift; sourceTree = "<group>"; };
 		45752EBD253C98AB0009F2F0 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		459DE98E232EB26500A3ACD1 /* CandidatesView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CandidatesView.swift; sourceTree = "<group>"; };
 		459DE98F232EB26500A3ACD1 /* CandidatesWindow.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CandidatesWindow.swift; sourceTree = "<group>"; };
-		45D996A9253C5232001460A8 /* PreferencesView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PreferencesView.swift; sourceTree = "<group>"; };
+		45D996A9253C5232001460A8 /* GeneralPane.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GeneralPane.swift; sourceTree = "<group>"; };
 		497E90F13FA9A943AC0BE3DB /* Pods-Fire.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Fire.release.xcconfig"; path = "Target Support Files/Pods-Fire/Pods-Fire.release.xcconfig"; sourceTree = "<group>"; };
 		673A400B253D9FE70003901E /* InputSource.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InputSource.swift; sourceTree = "<group>"; };
 		673CD81B233DCF14006538B8 /* table.sqlite */ = {isa = PBXFileReference; lastKnownFileType = file; path = table.sqlite; sourceTree = "<group>"; };
@@ -53,6 +100,15 @@
 			buildActionMask = 2147483647;
 			files = (
 				45449B4C23535ED000C9EFEF /* InputMethodKit.framework in Frameworks */,
+				D05FCA8CD2A09691E2E18621 /* libPods-Fire.a in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		45577E5C25442E240064325B /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				45577E6925442EED0064325B /* libsqlite3.tbd in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -72,6 +128,7 @@
 			isa = PBXGroup;
 			children = (
 				451E6046232E227B007B0463 /* Fire */,
+				45577E6025442E240064325B /* TableBuilder */,
 				451E6045232E227B007B0463 /* Products */,
 				451E6057232E2786007B0463 /* Frameworks */,
 				2361C68F9ECE84E0CA0822C3 /* Pods */,
@@ -82,6 +139,7 @@
 			isa = PBXGroup;
 			children = (
 				451E6044232E227B007B0463 /* Fire.app */,
+				45577E5F25442E240064325B /* TableBuilder */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -89,11 +147,13 @@
 		451E6046232E227B007B0463 /* Fire */ = {
 			isa = PBXGroup;
 			children = (
+				45577E952545505D0064325B /* Preferences */,
+				45577E522543F1000064325B /* Resources */,
+				45577E472543EC060064325B /* Table */,
 				45752EBD253C98AB0009F2F0 /* Assets.xcassets */,
 				67E8B51E233C537B00D7CE80 /* fire.pdf */,
 				67E8B511233B978E00D7CE80 /* Info.plist */,
 				67E8B517233B97FD00D7CE80 /* InfoPlist.strings */,
-				45E34DC52337C98900CA7E72 /* data */,
 				459DE98E232EB26500A3ACD1 /* CandidatesView.swift */,
 				459DE98F232EB26500A3ACD1 /* CandidatesWindow.swift */,
 				451E6047232E227B007B0463 /* AppDelegate.swift */,
@@ -102,7 +162,6 @@
 				451E6055232E24A5007B0463 /* FireInputController.swift */,
 				451E605E232E400B007B0463 /* Fire.swift */,
 				45587F2C24E8FBFB005F291B /* Utils.swift */,
-				45D996A9253C5232001460A8 /* PreferencesView.swift */,
 				673A400B253D9FE70003901E /* InputSource.swift */,
 			);
 			path = Fire;
@@ -111,18 +170,46 @@
 		451E6057232E2786007B0463 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				45577E6825442EED0064325B /* libsqlite3.tbd */,
 				451E6058232E2787007B0463 /* InputMethodKit.framework */,
 				060E0C2FC1C04AEFD80DD621 /* libPods-Fire.a */,
 			);
 			name = Frameworks;
 			sourceTree = "<group>";
 		};
-		45E34DC52337C98900CA7E72 /* data */ = {
+		45577E472543EC060064325B /* Table */ = {
 			isa = PBXGroup;
 			children = (
+				45577E4F2543F03F0064325B /* build.swift */,
+			);
+			path = Table;
+			sourceTree = "<group>";
+		};
+		45577E522543F1000064325B /* Resources */ = {
+			isa = PBXGroup;
+			children = (
+				45577E552543F4060064325B /* wb_table.txt */,
+				45577E91254448B80064325B /* py_table.txt */,
 				673CD81B233DCF14006538B8 /* table.sqlite */,
 			);
-			path = data;
+			path = Resources;
+			sourceTree = "<group>";
+		};
+		45577E6025442E240064325B /* TableBuilder */ = {
+			isa = PBXGroup;
+			children = (
+				45577E6125442E240064325B /* main.cpp */,
+			);
+			path = TableBuilder;
+			sourceTree = "<group>";
+		};
+		45577E952545505D0064325B /* Preferences */ = {
+			isa = PBXGroup;
+			children = (
+				45D996A9253C5232001460A8 /* GeneralPane.swift */,
+				45577EA0254552110064325B /* ThesaurusPane.swift */,
+			);
+			path = Preferences;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -138,15 +225,34 @@
 				451E6042232E227B007B0463 /* Resources */,
 				CC4E3CB56A41B3947C0BFEC1 /* [CP] Embed Pods Frameworks */,
 				45587F2E24E91513005F291B /* lint */,
+				45577E8325443E080064325B /* CopyFiles */,
 			);
 			buildRules = (
 			);
 			dependencies = (
+				45577E6D254438F60064325B /* PBXTargetDependency */,
 			);
 			name = Fire;
 			productName = Fire;
 			productReference = 451E6044232E227B007B0463 /* Fire.app */;
 			productType = "com.apple.product-type.application";
+		};
+		45577E5E25442E240064325B /* TableBuilder */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 45577E6325442E240064325B /* Build configuration list for PBXNativeTarget "TableBuilder" */;
+			buildPhases = (
+				45577E5B25442E240064325B /* Sources */,
+				45577E5C25442E240064325B /* Frameworks */,
+				45577E5D25442E240064325B /* CopyFiles */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = TableBuilder;
+			productName = TableBuilder;
+			productReference = 45577E5F25442E240064325B /* TableBuilder */;
+			productType = "com.apple.product-type.tool";
 		};
 /* End PBXNativeTarget section */
 
@@ -154,6 +260,7 @@
 		451E603C232E227B007B0463 /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
+				DefaultBuildSystemTypeForWorkspace = Latest;
 				LastSwiftUpdateCheck = 1030;
 				LastUpgradeCheck = 1200;
 				ORGANIZATIONNAME = qwertyyb;
@@ -165,6 +272,9 @@
 								enabled = 0;
 							};
 						};
+					};
+					45577E5E25442E240064325B = {
+						CreatedOnToolsVersion = 12.0.1;
 					};
 				};
 			};
@@ -183,6 +293,7 @@
 			projectRoot = "";
 			targets = (
 				451E6043232E227B007B0463 /* Fire */,
+				45577E5E25442E240064325B /* TableBuilder */,
 			);
 		};
 /* End PBXProject section */
@@ -194,6 +305,8 @@
 			files = (
 				67E8B515233B97FD00D7CE80 /* InfoPlist.strings in Resources */,
 				451E605D232E3A3C007B0463 /* MainMenu.xib in Resources */,
+				45577E92254448B80064325B /* py_table.txt in Resources */,
+				45577E562543F4060064325B /* wb_table.txt in Resources */,
 				673CD81C233DCF14006538B8 /* table.sqlite in Resources */,
 				67E8B521233C537B00D7CE80 /* fire.pdf in Resources */,
 				45752EBE253C98AB0009F2F0 /* Assets.xcassets in Resources */,
@@ -267,10 +380,12 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				45577EA1254552110064325B /* ThesaurusPane.swift in Sources */,
 				451E6056232E24A5007B0463 /* FireInputController.swift in Sources */,
 				451E605F232E400B007B0463 /* Fire.swift in Sources */,
 				45587F2D24E8FBFB005F291B /* Utils.swift in Sources */,
-				45D996AA253C5232001460A8 /* PreferencesView.swift in Sources */,
+				45577E502543F03F0064325B /* build.swift in Sources */,
+				45D996AA253C5232001460A8 /* GeneralPane.swift in Sources */,
 				451E6048232E227B007B0463 /* AppDelegate.swift in Sources */,
 				673A400C253D9FE70003901E /* InputSource.swift in Sources */,
 				459DE991232EB26600A3ACD1 /* CandidatesWindow.swift in Sources */,
@@ -278,7 +393,23 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		45577E5B25442E240064325B /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				45577E6225442E240064325B /* main.cpp in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 /* End PBXSourcesBuildPhase section */
+
+/* Begin PBXTargetDependency section */
+		45577E6D254438F60064325B /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 45577E5E25442E240064325B /* TableBuilder */;
+			targetProxy = 45577E6C254438F60064325B /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
 
 /* Begin PBXVariantGroup section */
 		67E8B517233B97FD00D7CE80 /* InfoPlist.strings */ = {
@@ -463,6 +594,28 @@
 			};
 			name = Release;
 		};
+		45577E6425442E240064325B /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_STYLE = Automatic;
+				DEVELOPMENT_TEAM = T68XK6867P;
+				ENABLE_HARDENED_RUNTIME = YES;
+				MACH_O_TYPE = mh_execute;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+			};
+			name = Debug;
+		};
+		45577E6525442E240064325B /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_STYLE = Automatic;
+				DEVELOPMENT_TEAM = T68XK6867P;
+				ENABLE_HARDENED_RUNTIME = YES;
+				MACH_O_TYPE = mh_execute;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+			};
+			name = Release;
+		};
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
@@ -480,6 +633,15 @@
 			buildConfigurations = (
 				451E6053232E227C007B0463 /* Debug */,
 				451E6054232E227C007B0463 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		45577E6325442E240064325B /* Build configuration list for PBXNativeTarget "TableBuilder" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				45577E6425442E240064325B /* Debug */,
+				45577E6525442E240064325B /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;

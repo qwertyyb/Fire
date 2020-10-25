@@ -10,6 +10,7 @@ import SwiftUI
 import InputMethodKit
 import Sparkle
 import Preferences
+import Defaults
 
 var set = false
 
@@ -69,7 +70,7 @@ class FireInputController: IMKInputController {
                  title: "高级",
                 toolbarIcon: NSImage(named: "advanced")!
             ) {
-                AdvancedPane()
+                ThesaurusPane()
             }
         ]
     )
@@ -87,10 +88,14 @@ class FireInputController: IMKInputController {
             }
             NSLog("[FireInputController] original changed: \(self._originalString), refresh window")
 
-            // 必须要mark originalString, 否则在某些APP中会有问题
+            // 建议mark originalString, 否则在某些APP中会有问题
             let attrs = mark(forStyle: kTSMHiliteConvertedText, at: NSRange(location: NSNotFound, length: 0))
             if let attributes = attrs as? [NSAttributedString.Key: Any] {
-                let text = NSAttributedString(string: _originalString, attributes: attributes)
+                var selected = self._originalString
+                if Defaults[.showCodeInWindow] {
+                    selected = self._originalString.count > 1 ? " " : ""
+                }
+                let text = NSAttributedString(string: selected, attributes: attributes)
                 client()?.setMarkedText(text, selectionRange: selectionRange(), replacementRange: replacementRange())
             }
 
@@ -116,21 +121,6 @@ class FireInputController: IMKInputController {
         NSLog("[FireInputController] init")
 
         super.init(server: server, delegate: delegate, client: inputClient)
-
-        /* NSLog("observer: NetCandidatesUpdate-\(client().bundleIdentifier() ?? "Fire")")
-        let notificationName = NSNotification.Name(
-            rawValue: "NetCandidatesUpdate-\(client().bundleIdentifier() ?? "Fire")")
-        NotificationCenter.default.addObserver(
-            forName: notificationName,
-            object: nil,
-            queue: nil
-        ) { (notification) in
-            guard let list = notification.object as? [Candidate] else { return }
-            DispatchQueue.main.async {
-                let candidate = list.count > 0 ? list.first! : nil
-                self._candidatesWindow.updateNetCandidateView(candidate: candidate)
-            }
-        } */
     }
 
     override func recognizedEvents(_ sender: Any!) -> Int {
@@ -250,6 +240,19 @@ class FireInputController: IMKInputController {
     // 更新候选窗口
     func refreshCandidatesWindow() {
         let candidates = getCandidates(client())
+        if Defaults[.wubiAutoCommit] && candidates.count == 1 && _originalString.count >= 4 {
+            // 满4码唯一候选词自动上屏
+            if let candidate = candidates.first {
+                _composedString = candidate.text
+                insertText(self)
+                return
+            }
+        }
+        if !Defaults[.showCodeInWindow] && candidates.count <= 0 {
+            // 不在候选框显示输入码时，如果候选词为空，则不显示候选框
+            _candidatesWindow.close()
+            return
+        }
         _candidatesWindow.setCandidates(
             candidates: candidates,
             originalString: _originalString,
@@ -258,6 +261,9 @@ class FireInputController: IMKInputController {
     }
 
     override func selectionRange() -> NSRange {
+        if Defaults[.showCodeInWindow] {
+            return NSRange(location: 0, length: min(1, _originalString.count))
+        }
         return NSRange(location: 0, length: _originalString.count)
     }
 
