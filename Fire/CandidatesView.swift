@@ -87,6 +87,7 @@ struct CandidatesView: View {
         })
         .padding(.horizontal, 10.0)
         .padding(.vertical, 6)
+        .background(Color.white)
     }
 }
 
@@ -99,5 +100,6 @@ struct ContentView_Previews: PreviewProvider {
             Candidate(code: "abcg", text: "阿", type: "wb"),
             Candidate(code: "addd", text: "吖", type: "wb")
         ], origin: "a")
+        .shadow(color: .red, radius: 6, x: 6, y: 6)
     }
 }

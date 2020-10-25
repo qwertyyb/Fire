@@ -74,7 +74,7 @@ class FireInputController: IMKInputController {
 
             inputMode = inputMode == .zhhans ? InputMode.enUS : InputMode.zhhans
 
-            let text = inputMode == .zhhans ? "中" : "A"
+            let text = inputMode == .zhhans ? "中" : "英"
 
             // 在输入坐标处，显示中英切换提示
             Utils.shared.showTips(text, origin: getOriginPoint())
