@@ -8,37 +8,36 @@
 
 import Cocoa
 import InputMethodKit
-import Defaults
-
-extension Defaults.Keys {
-    static let wubiCodeTip = Key<Bool>("wubiCodeTip", default: true)
-    static let wubiAutoCommit = Key<Bool>("wubiAutoCommit", default: false)
-    static let candidateCount = Key<Int>("candidateCount", default: 5)
-    static let codeMode = Key<CodeMode>("codeMode", default: CodeMode.wubiPinyin)
-    //            ^            ^         ^                ^
-    //           Key          Type   UserDefaults name   Default value
-}
 
 @NSApplicationMain
 class AppDelegate: NSObject, NSApplicationDelegate {
 
-    let fire: Fire
-    override init() {
-        fire = Fire.shared
+    var fire: Fire!
+
+    func installInputSource() {
+        print("install input source")
+        registerInputSource()
+        deactivateInputSource()
+        activateInputSource()
+        NSApp.terminate(nil)
     }
+
     func applicationDidFinishLaunching(_ aNotification: Notification) {
         if CommandLine.arguments.count > 1 {
             print("[Fire] launch argument: \(CommandLine.arguments[1])")
-            if CommandLine.arguments[1] == "--install" {
-                print("install input source")
-                registerInputSource()
-                deactivateInputSource()
-                activateInputSource()
-                NSApp.terminate(nil)
-                return
+            let command = CommandLine.arguments[1]
+            if command == "--install" {
+                return installInputSource()
+            }
+            if command == "--build-dict" {
+                print("[Fire] build dict")
+                buildDict()
+                return NSApp.terminate(nil)
             }
         }
-        NSLog("launch input source")
+//        buildDict()
+        NSLog("app is running")
+        fire = Fire.shared
     }
 
     func applicationWillTerminate(_ aNotification: Notification) {

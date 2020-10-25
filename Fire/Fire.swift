@@ -14,30 +14,6 @@ import Defaults
 
 let kConnectionName = "Fire_1_Connection"
 
-struct Candidate: Hashable {
-    let code: String
-    let text: String
-    let type: String  // wb | pyg
-}
-
-enum CodeMode: Int, CaseIterable, Decodable, Encodable {
-    case wubi
-    case pinyin
-    case wubiPinyin
-}
-
-struct NetCandidate: Codable {
-    let wbcode: String
-    let text: String
-    let weight: Int
-}
-
-struct CandidatesResponse: Codable {
-    let errcode: Int
-    let errmsg: String
-    let list: [NetCandidate]
-}
-
 extension UserDefaults {
     @objc dynamic var codeMode: Int {
         get {
@@ -58,8 +34,6 @@ class Fire: NSObject {
 
     override init() {
         super.init()
-
-        sqlite3_open(Bundle.main.path(forResource: "table", ofType: "sqlite"), &database)
         self.prepareStatement()
 
         preferencesObserver = Defaults.observe(keys: .codeMode, .candidateCount) { () in
@@ -72,38 +46,47 @@ class Fire: NSObject {
     }
 
     private func getStatementSql() -> String {
-        let codeMode = Defaults[.codeMode]
-        let tableType = codeMode == .wubiPinyin ? "" : "type = '\(codeMode == .pinyin ? "py" : "wb")' and "
         let candidateCount = Defaults[.candidateCount]
-        let sql = """
-        select
-            case when t2.type = 'wb' then min(t1.code) else max(t1.code) end as code,
-            t1.text,
-            t2.type
-        from
-            dict_default t1
-            inner join
-                (select min(id) as id,
-                code, text, type
-                from dict_default
-                where \(tableType)code like :query
-                group by id, text
-                order by length(code)) t2
-            on t1.text = t2.text and t1.type = 'wb'
-        group by t1.text
-        order by case when t2.code = :code then t2.id
-             when t2.code like :query then 10000000 + t2.id end
-        limit :offset, \(candidateCount)
+        var sql = """
+            select
+                max(wbcode), text, type, min(query) as query
+                from wb_py_dict
+                where query like :query
+                group by text
+                order by query, id
+                limit :offset, \(candidateCount)
         """
+        let codeMode = Defaults[.codeMode]
+        if codeMode != .wubiPinyin {
+            sql = """
+                select
+                  min(code) as wbcode,
+                  text,
+                  '\(codeMode == .wubi ? "wb" : "py")' as type,
+                  min(code) as query
+                from \(codeMode == .wubi ? "wb_dict" : "py_dict")
+                where code like :query
+                group by text
+                order by query
+                limit :offset, \(candidateCount)
+            """
+        }
         print(sql)
         return sql
     }
 
-    private func prepareStatement() {
+    func close() {
+        sqlite3_close(database)
+    }
+
+    func prepareStatement() {
+        sqlite3_open(getDatabaseURL().path, &database)
         if sqlite3_prepare_v2(database, getStatementSql(), -1, &queryStatement, nil) == SQLITE_OK {
             print("prepare ok")
             print(sqlite3_bind_parameter_index(queryStatement, ":code"))
             print(sqlite3_bind_parameter_count(queryStatement))
+        } else if let err = sqlite3_errmsg(database) {
+            print("prepare fail: \(err)")
         }
     }
 
@@ -113,7 +96,6 @@ class Fire: NSObject {
             return []
         }
         NSLog("get local candidate, origin: \(origin)")
-//        var db: OpaquePointer?
         var candidates: [Candidate] = []
         sqlite3_reset(queryStatement)
         sqlite3_clear_bindings(queryStatement)

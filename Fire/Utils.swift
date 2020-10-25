@@ -9,6 +9,11 @@
 import Cocoa
 import InputMethodKit
 
+enum HandlerStatus {
+    case next
+    case stop
+}
+
 class Utils {
 
     var checkShiftKeyUp: (NSEvent) -> Bool?
@@ -65,6 +70,20 @@ class Utils {
             return  checkShiftKeyUp
         }
         self.checkShiftKeyUp = createCheckShiftKeyUpFn()
+    }
+
+    func processHandlers<T>(
+        handlers: [(NSEvent) -> T?]
+    ) -> ((NSEvent) -> T?) {
+        func handleFn(event: NSEvent) -> T? {
+            for handler in handlers {
+                if let result = handler(event) {
+                    return result
+                }
+            }
+            return nil
+        }
+        return handleFn
     }
 
     static let shared = Utils()

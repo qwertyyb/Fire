@@ -17,7 +17,8 @@ class CandidatesWindow: NSWindow {
         topLeft: NSPoint
     ) {
         self.contentView = NSHostingView(rootView: CandidatesView(candidates: candidates, origin: originalString))
-        self.setFrameTopLeftPoint(topLeft)
+        let origin = self.transformTopLeft(originalTopLeft: topLeft)
+        self.setFrameTopLeftPoint(origin)
         self.orderFront(nil)
     }
 
