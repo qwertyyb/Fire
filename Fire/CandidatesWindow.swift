@@ -42,7 +42,7 @@ class CandidatesWindow: NSWindow {
         let screenPadding: CGFloat = 6
         let xdistance: CGFloat = 0
         let ydistance: CGFloat = 4
-        
+
         var left = originalTopLeft.x + xdistance
         var top = originalTopLeft.y - ydistance
         if let curScreen = Utils.shared.getScreenFromPoint(originalTopLeft) {
