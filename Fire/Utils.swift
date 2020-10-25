@@ -7,6 +7,7 @@
 //
 
 import Cocoa
+import SwiftUI
 import InputMethodKit
 
 enum HandlerStatus {
@@ -23,30 +24,25 @@ class Utils {
         hideTipsWindowTimer?.invalidate()
         if tipsWindow?.isVisible ?? false {
             tipsWindow?.close()
+            self.tipsWindow = nil
         }
         let window = NSWindow()
         window.styleMask = .init(arrayLiteral: .borderless, .fullSizeContentView)
 
-        let paragraphStyle: NSMutableParagraphStyle = NSMutableParagraphStyle()
-        paragraphStyle.alignment = NSTextAlignment.center
-        let textField = NSTextField(labelWithAttributedString: NSAttributedString(
-            string: text,
-            attributes: [
-                NSAttributedString.Key.font: NSFont.userFont(ofSize: 20)!,
-                NSAttributedString.Key.paragraphStyle: paragraphStyle
-            ]
-        ))
-        textField.setFrameSize(NSSize(width: 30, height: 24))
-        textField.alignment = .center
-        window.contentView?.addSubview(textField)
+        window.contentView = NSHostingView(
+            rootView: Text(text)
+                .font(.body)
+                .padding(6)
+        )
         window.isReleasedWhenClosed = false
         window.level = NSWindow.Level(rawValue: NSWindow.Level.RawValue(CGShieldingWindowLevel() + 2))
 
-        window.setFrame(NSRect(x: origin.x, y: origin.y - 24, width: 30, height: 24), display: true)
+        window.setFrameTopLeftPoint(origin)
         window.orderFront(nil)
         tipsWindow = window
         hideTipsWindowTimer = Timer.scheduledTimer(withTimeInterval: 1, repeats: false) { (_) in
             self.tipsWindow?.close()
+            self.tipsWindow = nil
         }
     }
 

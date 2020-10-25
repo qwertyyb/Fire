@@ -40,7 +40,8 @@ class CandidatesWindow: NSWindow {
         NSLog("[FireCandidatesWindow] transformTopLeft: \(frame)")
 
         let screenPadding: CGFloat = 6
-        let distance: CGFloat = 3
+        let xdistance: CGFloat = 0
+        let ydistance: CGFloat = 4
 
         var curScreen = NSScreen.main
         // find current screen
@@ -50,8 +51,8 @@ class CandidatesWindow: NSWindow {
                 break
             }
         }
-        var left = originalTopLeft.x
-        var top = originalTopLeft.y - distance
+        var left = originalTopLeft.x + xdistance
+        var top = originalTopLeft.y - ydistance
         if curScreen != nil {
             let screen = curScreen!.frame
 
