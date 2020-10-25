@@ -19,16 +19,16 @@
 		45577E8425443E290064325B /* TableBuilder in CopyFiles */ = {isa = PBXBuildFile; fileRef = 45577E5F25442E240064325B /* TableBuilder */; settings = {ATTRIBUTES = (CodeSignOnCopy, ); }; };
 		45577E92254448B80064325B /* py_table.txt in Resources */ = {isa = PBXBuildFile; fileRef = 45577E91254448B80064325B /* py_table.txt */; };
 		45577EA1254552110064325B /* ThesaurusPane.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45577EA0254552110064325B /* ThesaurusPane.swift */; };
+		45577EB0254575480064325B /* types.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45577EAF254575480064325B /* types.swift */; };
+		45577EB4254576720064325B /* FirePreferencesController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45577EB3254576720064325B /* FirePreferencesController.swift */; };
 		45587F2D24E8FBFB005F291B /* Utils.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45587F2C24E8FBFB005F291B /* Utils.swift */; };
 		45752EBE253C98AB0009F2F0 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 45752EBD253C98AB0009F2F0 /* Assets.xcassets */; };
 		459DE990232EB26600A3ACD1 /* CandidatesView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 459DE98E232EB26500A3ACD1 /* CandidatesView.swift */; };
 		459DE991232EB26600A3ACD1 /* CandidatesWindow.swift in Sources */ = {isa = PBXBuildFile; fileRef = 459DE98F232EB26500A3ACD1 /* CandidatesWindow.swift */; };
 		45D996AA253C5232001460A8 /* GeneralPane.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45D996A9253C5232001460A8 /* GeneralPane.swift */; };
 		673A400C253D9FE70003901E /* InputSource.swift in Sources */ = {isa = PBXBuildFile; fileRef = 673A400B253D9FE70003901E /* InputSource.swift */; };
-		673CD81C233DCF14006538B8 /* table.sqlite in Resources */ = {isa = PBXBuildFile; fileRef = 673CD81B233DCF14006538B8 /* table.sqlite */; };
 		67E8B515233B97FD00D7CE80 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 67E8B517233B97FD00D7CE80 /* InfoPlist.strings */; };
 		67E8B521233C537B00D7CE80 /* fire.pdf in Resources */ = {isa = PBXBuildFile; fileRef = 67E8B51E233C537B00D7CE80 /* fire.pdf */; };
-		D05FCA8CD2A09691E2E18621 /* libPods-Fire.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 060E0C2FC1C04AEFD80DD621 /* libPods-Fire.a */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -79,6 +79,8 @@
 		45577E6825442EED0064325B /* libsqlite3.tbd */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = libsqlite3.tbd; path = usr/lib/libsqlite3.tbd; sourceTree = SDKROOT; };
 		45577E91254448B80064325B /* py_table.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = py_table.txt; sourceTree = "<group>"; };
 		45577EA0254552110064325B /* ThesaurusPane.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ThesaurusPane.swift; sourceTree = "<group>"; };
+		45577EAF254575480064325B /* types.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = types.swift; sourceTree = "<group>"; };
+		45577EB3254576720064325B /* FirePreferencesController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FirePreferencesController.swift; sourceTree = "<group>"; };
 		45587F2C24E8FBFB005F291B /* Utils.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Utils.swift; sourceTree = "<group>"; };
 		45752EBD253C98AB0009F2F0 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		459DE98E232EB26500A3ACD1 /* CandidatesView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CandidatesView.swift; sourceTree = "<group>"; };
@@ -86,7 +88,6 @@
 		45D996A9253C5232001460A8 /* GeneralPane.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GeneralPane.swift; sourceTree = "<group>"; };
 		497E90F13FA9A943AC0BE3DB /* Pods-Fire.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Fire.release.xcconfig"; path = "Target Support Files/Pods-Fire/Pods-Fire.release.xcconfig"; sourceTree = "<group>"; };
 		673A400B253D9FE70003901E /* InputSource.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InputSource.swift; sourceTree = "<group>"; };
-		673CD81B233DCF14006538B8 /* table.sqlite */ = {isa = PBXFileReference; lastKnownFileType = file; path = table.sqlite; sourceTree = "<group>"; };
 		67E8B511233B978E00D7CE80 /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		67E8B516233B97FD00D7CE80 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/InfoPlist.strings; sourceTree = "<group>"; };
 		67E8B518233B994000D7CE80 /* zh-Hans */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "zh-Hans"; path = "zh-Hans.lproj/InfoPlist.strings"; sourceTree = "<group>"; };
@@ -100,7 +101,6 @@
 			buildActionMask = 2147483647;
 			files = (
 				45449B4C23535ED000C9EFEF /* InputMethodKit.framework in Frameworks */,
-				D05FCA8CD2A09691E2E18621 /* libPods-Fire.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -163,6 +163,7 @@
 				451E605E232E400B007B0463 /* Fire.swift */,
 				45587F2C24E8FBFB005F291B /* Utils.swift */,
 				673A400B253D9FE70003901E /* InputSource.swift */,
+				45577EAF254575480064325B /* types.swift */,
 			);
 			path = Fire;
 			sourceTree = "<group>";
@@ -190,7 +191,6 @@
 			children = (
 				45577E552543F4060064325B /* wb_table.txt */,
 				45577E91254448B80064325B /* py_table.txt */,
-				673CD81B233DCF14006538B8 /* table.sqlite */,
 			);
 			path = Resources;
 			sourceTree = "<group>";
@@ -208,6 +208,7 @@
 			children = (
 				45D996A9253C5232001460A8 /* GeneralPane.swift */,
 				45577EA0254552110064325B /* ThesaurusPane.swift */,
+				45577EB3254576720064325B /* FirePreferencesController.swift */,
 			);
 			path = Preferences;
 			sourceTree = "<group>";
@@ -307,7 +308,6 @@
 				451E605D232E3A3C007B0463 /* MainMenu.xib in Resources */,
 				45577E92254448B80064325B /* py_table.txt in Resources */,
 				45577E562543F4060064325B /* wb_table.txt in Resources */,
-				673CD81C233DCF14006538B8 /* table.sqlite in Resources */,
 				67E8B521233C537B00D7CE80 /* fire.pdf in Resources */,
 				45752EBE253C98AB0009F2F0 /* Assets.xcassets in Resources */,
 			);
@@ -389,6 +389,8 @@
 				451E6048232E227B007B0463 /* AppDelegate.swift in Sources */,
 				673A400C253D9FE70003901E /* InputSource.swift in Sources */,
 				459DE991232EB26600A3ACD1 /* CandidatesWindow.swift in Sources */,
+				45577EB0254575480064325B /* types.swift in Sources */,
+				45577EB4254576720064325B /* FirePreferencesController.swift in Sources */,
 				459DE990232EB26600A3ACD1 /* CandidatesView.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
