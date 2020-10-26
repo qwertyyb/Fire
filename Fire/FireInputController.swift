@@ -49,7 +49,7 @@ class FireInputController: IMKInputController {
         if let attributes = attrs as? [NSAttributedString.Key: Any] {
             var selected = self._originalString
             if Defaults[.showCodeInWindow] {
-                selected = self._originalString.count > 1 ? " " : ""
+                selected = self._originalString.count > 0 ? " " : ""
             }
             let text = NSAttributedString(string: selected, attributes: attributes)
             client()?.setMarkedText(text, selectionRange: selectionRange(), replacementRange: replacementRange())
@@ -164,7 +164,7 @@ class FireInputController: IMKInputController {
         // 获取输入的字符
         let string = event.characters!
         // 当前输入的是数字,选择当前候选列表中的第N个字符 v
-        if let pos = Int(string) {
+        if let pos = Int(string), _originalString.count > 0 {
             let index = pos - 1
             let candidates = self.getCandidates(self)
             if index < candidates.count {
@@ -180,7 +180,7 @@ class FireInputController: IMKInputController {
 
     private func enterKeyHandler(event: NSEvent) -> Bool? {
         // 回车键输入原字符
-        if event.keyCode == kVK_Return {
+        if event.keyCode == kVK_Return && _originalString.count > 0 {
             // 插入原字符
             _composedString = _originalString
             insertText(self)
@@ -191,7 +191,7 @@ class FireInputController: IMKInputController {
 
     private func spaceKeyHandler(event: NSEvent) -> Bool? {
         // 空格键输入转换后的中文字符
-        if event.keyCode == kVK_Space {
+        if event.keyCode == kVK_Space && _originalString.count > 0 {
             if let first = self.getCandidates(self).first {
                 _composedString = first.text
                 insertText(self)
