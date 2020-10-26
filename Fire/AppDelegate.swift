@@ -20,8 +20,8 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         InputSource.shared.activateInputSource()
         NSApp.terminate(nil)
     }
-
-    func applicationDidFinishLaunching(_ aNotification: Notification) {
+    
+    private func commandHandler() {
         if CommandLine.arguments.count > 1 {
             print("[Fire] launch argument: \(CommandLine.arguments[1])")
             let command = CommandLine.arguments[1]
@@ -34,6 +34,10 @@ class AppDelegate: NSObject, NSApplicationDelegate {
                 return NSApp.terminate(nil)
             }
         }
+    }
+
+    func applicationDidFinishLaunching(_ aNotification: Notification) {
+        commandHandler()
         if !hasDict() {
             NSLog("[Fire] first run，build dict")
             buildDict()
