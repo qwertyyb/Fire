@@ -34,8 +34,11 @@ class AppDelegate: NSObject, NSApplicationDelegate {
                 return NSApp.terminate(nil)
             }
         }
-//        buildDict()
-        NSLog("app is running")
+        if !hasDict() {
+            NSLog("[Fire] first run，build dict")
+            buildDict()
+        }
+        NSLog("[Fire] app is running")
         fire = Fire.shared
     }
 
