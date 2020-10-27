@@ -2,7 +2,7 @@ name: build installer.pkg
 
 on:
   release:
-    types: ['published']
+    types: ['released', 'created']
 
 jobs:
   build:
