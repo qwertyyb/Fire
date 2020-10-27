@@ -1,0 +1,73 @@
+name: build installer.pkg
+
+on:
+  release:
+    types: ['published']
+
+jobs:
+  build:
+    runs-on: macOS-latest
+
+    steps:
+    - uses: actions/checkout@v2
+
+    - name: switch xcode version
+      run: sudo xcode-select --switch /Applications/Xcode_12.app
+  
+    - name: install depencies
+      run: pod install
+
+    - name: build
+      run: ./build_app.sh
+
+    - name: make FireInstaller.pkg
+      run: ./package/make_package.sh
+
+    - name: generate appcast.xml
+      env:
+        sparkle_key: ${{ secrets.sparkle_key }}
+      run: ./build_appcast.sh
+
+    - name: gather artifact
+      run: cp ./Fire/Info.plist ./apps/
+
+    - uses: actions/upload-artifact@v2
+      with:
+        name: apps
+        path: ./apps/
+
+  publish:
+    runs-on: ubuntu-latest
+    needs: build
+    steps:
+    - uses: actions/checkout@v2
+
+    - uses: actions/download-artifact@v2
+      with:
+        name: apps
+        path: ./apps
+
+
+    - name: upload release assets
+      uses: AButler/upload-release-assets@v1.0
+      with:
+        files: 'apps/Fire.zip,apps/FireInstaller.pkg'
+        repo-token: ${{ secrets.GITHUB_TOKEN }}
+
+
+    - name: move artifact
+      run: |
+        mv apps/appcast.xml ./appcast.xml
+        mv apps/Info.plist  ./Fire/
+    
+    - name: remove useless file
+      run: rm -rf ./apps
+
+    - name: commit appcast.xml
+      run: |
+        git config --local user.email "action@github.com"
+        git config --local user.name "GitHub Action"
+        git pull origin master
+        git add .
+        git commit -m "chore: update version"
+        git push origin HEAD:master
