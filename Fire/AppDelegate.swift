@@ -20,7 +20,7 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         InputSource.shared.activateInputSource()
         NSApp.terminate(nil)
     }
-    
+
     private func commandHandler() {
         if CommandLine.arguments.count > 1 {
             print("[Fire] launch argument: \(CommandLine.arguments[1])")
