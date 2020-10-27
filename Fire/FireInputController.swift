@@ -26,9 +26,21 @@ class FireInputController: IMKInputController {
             NSLog("[FireInputController] original changed: \(self._originalString), refresh window")
 
             // 建议mark originalString, 否则在某些APP中会有问题
-            self.markText()
-
-            self._originalString.count > 0 ? self.refreshCandidatesWindow() : candidatesWindow.close()
+            let attrs = mark(forStyle: kTSMHiliteConvertedText, at: NSRange(location: NSNotFound, length: 0))
+            if let attributes = attrs as? [NSAttributedString.Key: Any] {
+                var selected = self._originalString
+                if Defaults[.showCodeInWindow] {
+                    selected = self._originalString.count > 1 ? " " : ""
+                }
+                let text = NSAttributedString(string: selected, attributes: attributes)
+                client()?.setMarkedText(text, selectionRange: selectionRange(), replacementRange: replacementRange())
+            }
+            if self._originalString.count > 0 {
+                self.refreshCandidatesWindow()
+            } else {
+                // 没有输入code时，关闭候选框
+                candidatesWindow.close()
+            }
         }
     }
     private var curPage: Int = 1 {
@@ -40,27 +52,20 @@ class FireInputController: IMKInputController {
             }
         }
     }
+    override init!(server: IMKServer!, delegate: Any!, client inputClient: Any!) {
+        NSLog("[FireInputController] init")
+
+        super.init(server: server, delegate: delegate, client: inputClient)
+    }
     override func recognizedEvents(_ sender: Any!) -> Int {
         return Int(NSEvent.EventTypeMask.keyDown.rawValue | NSEvent.EventTypeMask.flagsChanged.rawValue)
     }
 
-    private func markText() {
-        let attrs = mark(forStyle: kTSMHiliteConvertedText, at: NSRange(location: NSNotFound, length: 0))
-        if let attributes = attrs as? [NSAttributedString.Key: Any] {
-            var selected = self._originalString
-            if Defaults[.showCodeInWindow] {
-                selected = self._originalString.count > 0 ? " " : ""
-            }
-            let text = NSAttributedString(string: selected, attributes: attributes)
-            client()?.setMarkedText(text, selectionRange: selectionRange(), replacementRange: replacementRange())
-        }
-    }
-
     // ---- handlers begin -----
 
-    private func flagChangedHandler(event: NSEvent) -> Bool? {
+    func flagChangedHandler(event: NSEvent) -> Bool? {
         // 只有在shift keyup时，才切换中英文输入, 否则会导致shift+[a-z]大写的功能失效
-        if Utils.shared.shiftKeyUpChecker.check(event) {
+        if Utils.shared.checkShiftKeyUp(event)! {
             NSLog("[FireInputController]toggle mode: \(inputMode)")
 
             // 把当前未上屏的原始code上屏处理
@@ -72,7 +77,7 @@ class FireInputController: IMKInputController {
             let text = inputMode == .zhhans ? "中" : "英"
 
             // 在输入坐标处，显示中英切换提示
-            Utils.shared.tipsWindow.showTips(text, origin: getOriginPoint())
+            Utils.shared.showTips(text, origin: getOriginPoint())
             return true
         }
         // 监听.flagsChanged事件只为切换中英文，其它情况不处理
@@ -83,7 +88,7 @@ class FireInputController: IMKInputController {
         return nil
     }
 
-    private func enModeHandler(event: NSEvent) -> Bool? {
+    func enModeHandler(event: NSEvent) -> Bool? {
         // 英文输入模式, 不做任何处理
         if inputMode == .enUS {
             return false
@@ -91,7 +96,7 @@ class FireInputController: IMKInputController {
         return nil
     }
 
-    private func pageKeyHandler(event: NSEvent) -> Bool? {
+    func pageKeyHandler(event: NSEvent) -> Bool? {
         // +/-/arrowdown/arrowup翻页
         let keyCode = event.keyCode
         if inputMode == .zhhans && _originalString.count > 0 {
@@ -107,7 +112,7 @@ class FireInputController: IMKInputController {
         return nil
     }
 
-    private func deleteKeyHandler(event: NSEvent) -> Bool? {
+    func deleteKeyHandler(event: NSEvent) -> Bool? {
         let keyCode = event.keyCode
         // 删除键删除字符
         if keyCode == kVK_Delete {
@@ -120,7 +125,7 @@ class FireInputController: IMKInputController {
         return nil
     }
 
-    private func punctutionKeyHandler(event: NSEvent) -> Bool? {
+    func punctutionKeyHandler(event: NSEvent) -> Bool? {
         // 获取输入的字符
         let string = event.characters!
 
@@ -133,12 +138,12 @@ class FireInputController: IMKInputController {
         return nil
     }
 
-    private func charKeyHandler(event: NSEvent) -> Bool? {
+    func charKeyHandler(event: NSEvent) -> Bool? {
         // 获取输入的字符
         let string = event.characters!
 
         guard let reg = try? NSRegularExpression(pattern: "^[a-zA-Z]+$") else {
-            return nil
+            return true
         }
         let match = reg.firstMatch(
             in: string,
@@ -148,8 +153,8 @@ class FireInputController: IMKInputController {
 
         // 当前没有输入非字符并且之前没有输入字符,不做处理
         if  _originalString.count <= 0 && match == nil {
-            NSLog("非字符,不做处理")
-            return nil
+            NSLog("非字符,不做处理,直接返回")
+            return false
         }
         // 当前输入的是英文字符,附加到之前
         if match != nil {
@@ -160,11 +165,11 @@ class FireInputController: IMKInputController {
         return nil
     }
 
-    private func numberKeyHandlder(event: NSEvent) -> Bool? {
+    func numberKeyHandlder(event: NSEvent) -> Bool? {
         // 获取输入的字符
         let string = event.characters!
         // 当前输入的是数字,选择当前候选列表中的第N个字符 v
-        if let pos = Int(string), _originalString.count > 0 {
+        if let pos = Int(string) {
             let index = pos - 1
             let candidates = self.getCandidates(self)
             if index < candidates.count {
@@ -178,9 +183,9 @@ class FireInputController: IMKInputController {
         return nil
     }
 
-    private func enterKeyHandler(event: NSEvent) -> Bool? {
+    func enterKeyHandler(event: NSEvent) -> Bool? {
         // 回车键输入原字符
-        if event.keyCode == kVK_Return && _originalString.count > 0 {
+        if event.keyCode == kVK_Return {
             // 插入原字符
             _composedString = _originalString
             insertText(self)
@@ -189,11 +194,12 @@ class FireInputController: IMKInputController {
         return nil
     }
 
-    private func spaceKeyHandler(event: NSEvent) -> Bool? {
+    func spaceKeyHandler(event: NSEvent) -> Bool? {
         // 空格键输入转换后的中文字符
-        if event.keyCode == kVK_Space && _originalString.count > 0 {
-            if let first = self.getCandidates(self).first {
-                _composedString = first.text
+        if event.keyCode == kVK_Space {
+            let first = self.getCandidates(self).first
+            if first != nil {
+                _composedString = first!.text
                 insertText(self)
                 candidatesWindow.close()
             }
@@ -214,7 +220,6 @@ class FireInputController: IMKInputController {
             deleteKeyHandler,
             charKeyHandler,
             numberKeyHandlder,
-            punctutionKeyHandler,
             enterKeyHandler,
             spaceKeyHandler
         ])
@@ -256,6 +261,10 @@ class FireInputController: IMKInputController {
         return NSRange(location: 0, length: _originalString.count)
     }
 
+    override func replacementRange() -> NSRange {
+        return NSRange(location: NSNotFound, length: NSNotFound)
+    }
+
     // 往输入框插入当前字符
     func insertText(_ sender: Any!) {
         NSLog("insertText: %@", _composedString)
@@ -265,7 +274,7 @@ class FireInputController: IMKInputController {
     }
 
     // 获取当前输入的光标位置
-    private func getOriginPoint() -> NSPoint {
+    func getOriginPoint() -> NSPoint {
         var rect = NSRect()
         client().attributes(forCharacterIndex: 0, lineHeightRectangle: &rect)
         return rect.origin
@@ -279,12 +288,34 @@ class FireInputController: IMKInputController {
         candidatesWindow.close()
     }
 
-//    override func activateServer(_ sender: Any!) {
-//        NSLog("[FireInputController] active server: \(client()!.bundleIdentifier()!)")
-//    }
+    override func activateServer(_ sender: Any!) {
+        NSLog("[FireInputController] active server: \(client()!.bundleIdentifier()!)")
+    }
 
     override func deactivateServer(_ sender: Any!) {
         NSLog("[FireInputController] deactivate server: \(client()!.bundleIdentifier()!)")
         clean()
+    }
+
+    /* -- menu actions start -- */
+    @objc func openAbout (_ sender: Any!) {
+        NSLog("open about")
+        DispatchQueue.main.async {
+            NSLog("check updates")
+            NSApp.orderFrontStandardAboutPanel(sender)
+        }
+    }
+    @objc func checkForUpdates(_ sender: Any!) {
+        SUUpdater.shared()?.checkForUpdates(sender)
+    }
+    override func showPreferences(_ sender: Any!) {
+        FirePreferencesController.shared.controller.show()
+    }
+    override func menu() -> NSMenu! {
+        let menu = NSMenu()
+        menu.addItem(NSMenuItem(title: "关于业火输入法", action: #selector(openAbout(_:)), keyEquivalent: ""))
+        menu.addItem(NSMenuItem(title: "检查更新", action: #selector(checkForUpdates(_:)), keyEquivalent: ""))
+        menu.addItem(NSMenuItem(title: "首选项", action: #selector(showPreferences(_:)), keyEquivalent: ""))
+        return menu
     }
 }

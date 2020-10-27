@@ -27,9 +27,6 @@
 		459DE991232EB26600A3ACD1 /* CandidatesWindow.swift in Sources */ = {isa = PBXBuildFile; fileRef = 459DE98F232EB26500A3ACD1 /* CandidatesWindow.swift */; };
 		45D996AA253C5232001460A8 /* GeneralPane.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45D996A9253C5232001460A8 /* GeneralPane.swift */; };
 		673A400C253D9FE70003901E /* InputSource.swift in Sources */ = {isa = PBXBuildFile; fileRef = 673A400B253D9FE70003901E /* InputSource.swift */; };
-		673C416925468A4800F462A3 /* FireMenu.swift in Sources */ = {isa = PBXBuildFile; fileRef = 673C416825468A4800F462A3 /* FireMenu.swift */; };
-		673C417225468FFA00F462A3 /* ModifierKeyUpChecker.swift in Sources */ = {isa = PBXBuildFile; fileRef = 673C417125468FFA00F462A3 /* ModifierKeyUpChecker.swift */; };
-		673C4178254697E400F462A3 /* TipsWindow.swift in Sources */ = {isa = PBXBuildFile; fileRef = 673C4177254697E400F462A3 /* TipsWindow.swift */; };
 		67E8B515233B97FD00D7CE80 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 67E8B517233B97FD00D7CE80 /* InfoPlist.strings */; };
 		67E8B521233C537B00D7CE80 /* fire.pdf in Resources */ = {isa = PBXBuildFile; fileRef = 67E8B51E233C537B00D7CE80 /* fire.pdf */; };
 /* End PBXBuildFile section */
@@ -91,9 +88,6 @@
 		45D996A9253C5232001460A8 /* GeneralPane.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GeneralPane.swift; sourceTree = "<group>"; };
 		497E90F13FA9A943AC0BE3DB /* Pods-Fire.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Fire.release.xcconfig"; path = "Target Support Files/Pods-Fire/Pods-Fire.release.xcconfig"; sourceTree = "<group>"; };
 		673A400B253D9FE70003901E /* InputSource.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InputSource.swift; sourceTree = "<group>"; };
-		673C416825468A4800F462A3 /* FireMenu.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FireMenu.swift; sourceTree = "<group>"; };
-		673C417125468FFA00F462A3 /* ModifierKeyUpChecker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ModifierKeyUpChecker.swift; sourceTree = "<group>"; };
-		673C4177254697E400F462A3 /* TipsWindow.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TipsWindow.swift; sourceTree = "<group>"; };
 		67E8B511233B978E00D7CE80 /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		67E8B516233B97FD00D7CE80 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/InfoPlist.strings; sourceTree = "<group>"; };
 		67E8B518233B994000D7CE80 /* zh-Hans */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "zh-Hans"; path = "zh-Hans.lproj/InfoPlist.strings"; sourceTree = "<group>"; };
@@ -153,7 +147,6 @@
 		451E6046232E227B007B0463 /* Fire */ = {
 			isa = PBXGroup;
 			children = (
-				673C417025468FD400F462A3 /* Utils */,
 				45577E952545505D0064325B /* Preferences */,
 				45577E522543F1000064325B /* Resources */,
 				45577E472543EC060064325B /* Table */,
@@ -167,7 +160,6 @@
 				451E605C232E3A3C007B0463 /* MainMenu.xib */,
 				451E604F232E227C007B0463 /* Fire.entitlements */,
 				451E6055232E24A5007B0463 /* FireInputController.swift */,
-				673C416825468A4800F462A3 /* FireMenu.swift */,
 				451E605E232E400B007B0463 /* Fire.swift */,
 				45587F2C24E8FBFB005F291B /* Utils.swift */,
 				673A400B253D9FE70003901E /* InputSource.swift */,
@@ -219,15 +211,6 @@
 				45577EB3254576720064325B /* FirePreferencesController.swift */,
 			);
 			path = Preferences;
-			sourceTree = "<group>";
-		};
-		673C417025468FD400F462A3 /* Utils */ = {
-			isa = PBXGroup;
-			children = (
-				673C417125468FFA00F462A3 /* ModifierKeyUpChecker.swift */,
-				673C4177254697E400F462A3 /* TipsWindow.swift */,
-			);
-			path = Utils;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -397,21 +380,18 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				673C417225468FFA00F462A3 /* ModifierKeyUpChecker.swift in Sources */,
 				45577EA1254552110064325B /* ThesaurusPane.swift in Sources */,
 				451E6056232E24A5007B0463 /* FireInputController.swift in Sources */,
 				451E605F232E400B007B0463 /* Fire.swift in Sources */,
 				45587F2D24E8FBFB005F291B /* Utils.swift in Sources */,
 				45577E502543F03F0064325B /* build.swift in Sources */,
 				45D996AA253C5232001460A8 /* GeneralPane.swift in Sources */,
-				673C416925468A4800F462A3 /* FireMenu.swift in Sources */,
 				451E6048232E227B007B0463 /* AppDelegate.swift in Sources */,
 				673A400C253D9FE70003901E /* InputSource.swift in Sources */,
 				459DE991232EB26600A3ACD1 /* CandidatesWindow.swift in Sources */,
 				45577EB0254575480064325B /* types.swift in Sources */,
 				45577EB4254576720064325B /* FirePreferencesController.swift in Sources */,
 				459DE990232EB26600A3ACD1 /* CandidatesView.swift in Sources */,
-				673C4178254697E400F462A3 /* TipsWindow.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

@@ -8,7 +8,6 @@
 
 import Foundation
 import Defaults
-import Sparkle
 
 enum CandidatesDirection: Int, Decodable, Encodable {
     case vertical

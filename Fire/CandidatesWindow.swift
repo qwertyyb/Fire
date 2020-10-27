@@ -9,18 +9,14 @@
 import SwiftUI
 import InputMethodKit
 
-var set = false
-
 class CandidatesWindow: NSWindow {
-    let hostingView = NSHostingView(rootView: CandidatesView(candidates: [], origin: ""))
 
     func setCandidates(
         candidates: [Candidate],
         originalString: String,
         topLeft: NSPoint
     ) {
-        hostingView.rootView.candidates = candidates
-        hostingView.rootView.origin = originalString
+        self.contentView = NSHostingView(rootView: CandidatesView(candidates: candidates, origin: originalString))
         let origin = self.transformTopLeft(originalTopLeft: topLeft)
         self.setFrameTopLeftPoint(origin)
         self.orderFront(nil)
@@ -35,23 +31,9 @@ class CandidatesWindow: NSWindow {
         super.init(contentRect: contentRect, styleMask: style, backing: backingStoreType, defer: flag)
 
         level = NSWindow.Level(rawValue: NSWindow.Level.RawValue(CGShieldingWindowLevel()))
-        styleMask = .init(arrayLiteral: .fullSizeContentView, .borderless)
+        self.viewsNeedDisplay = true
+        styleMask = .init(arrayLiteral: .borderless, .fullSizeContentView)
         isReleasedWhenClosed = false
-        backgroundColor = NSColor.clear
-        setSizePolicy()
-    }
-
-    private func setSizePolicy() {
-        // 窗口大小可根据内容变化
-        hostingView.translatesAutoresizingMaskIntoConstraints = false
-        guard self.contentView != nil else {
-            return
-        }
-        self.contentView?.addSubview(hostingView)
-        self.contentView?.leftAnchor.constraint(equalTo: hostingView.leftAnchor).isActive = true
-        self.contentView?.rightAnchor.constraint(equalTo: hostingView.rightAnchor).isActive = true
-        self.contentView?.topAnchor.constraint(equalTo: hostingView.topAnchor).isActive = true
-        self.contentView?.bottomAnchor.constraint(equalTo: hostingView.bottomAnchor).isActive = true
     }
 
     private func transformTopLeft(originalTopLeft: NSPoint) -> NSPoint {
@@ -60,7 +42,7 @@ class CandidatesWindow: NSWindow {
         let screenPadding: CGFloat = 6
         let xdistance: CGFloat = 0
         let ydistance: CGFloat = 4
-
+        
         var left = originalTopLeft.x + xdistance
         var top = originalTopLeft.y - ydistance
         if let curScreen = Utils.shared.getScreenFromPoint(originalTopLeft) {
