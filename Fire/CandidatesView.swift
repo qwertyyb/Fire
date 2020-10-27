@@ -87,6 +87,7 @@ struct CandidatesView: View {
         })
         .padding(.horizontal, 10.0)
         .padding(.vertical, 6)
+        .fixedSize()
         .background(Color.white)
     }
 }
