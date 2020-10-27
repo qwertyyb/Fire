@@ -95,11 +95,15 @@ func buildDict() {
     let wbPath = Bundle.main.path(forResource: "wb_table", ofType: "txt") ?? ""
     let pyPath = Bundle.main.path(forResource: "py_table", ofType: "txt") ?? ""
 
-    let wb = buildTable(txtPath: wbPath, tableName: "wb_table")
-    let py = buildTable(txtPath: pyPath, tableName: "py_table")
+    let wb = buildTable(txtPath: wbPath, tableName: "wb_dict")
+    let py = buildTable(txtPath: pyPath, tableName: "py_dict")
     let cb = combineTableList(wbTable: "wb_dict", pyTable: "py_dict")
 
     print(wb, py, cb)
 
     afterBuildDict()
+}
+
+func hasDict() -> Bool {
+    return FileManager.default.fileExists(atPath: getDatabaseURL().path)
 }

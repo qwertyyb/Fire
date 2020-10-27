@@ -16,56 +16,11 @@ enum HandlerStatus {
 }
 
 class Utils {
+    let shiftKeyUpChecker = ModifierKeyUpChecker(.shift)
 
-    var checkShiftKeyUp: (NSEvent) -> Bool?
-
-    func showTips(_ text: String, origin: NSPoint) {
-        NSLog("[utils] showTips: \(origin)")
-        hideTipsWindowTimer?.invalidate()
-        if tipsWindow?.isVisible ?? false {
-            tipsWindow?.close()
-            self.tipsWindow = nil
-        }
-        let window = NSWindow()
-        window.styleMask = .init(arrayLiteral: .borderless, .fullSizeContentView)
-
-        window.contentView = NSHostingView(
-            rootView: Text(text)
-                .font(.body)
-                .padding(6)
-        )
-        window.isReleasedWhenClosed = false
-        window.level = NSWindow.Level(rawValue: NSWindow.Level.RawValue(CGShieldingWindowLevel() + 2))
-
-        window.setFrameTopLeftPoint(origin)
-        window.orderFront(nil)
-        tipsWindow = window
-        hideTipsWindowTimer = Timer.scheduledTimer(withTimeInterval: 1, repeats: false) { (_) in
-            self.tipsWindow?.close()
-            self.tipsWindow = nil
-        }
-    }
-
-    private var tipsWindow: NSWindow?
-    private var hideTipsWindowTimer: Timer?
+    let tipsWindow = TipsWindow()
 
     init() {
-        // 检查shift键被抬起
-        func createCheckShiftKeyUpFn() -> (NSEvent) -> Bool {
-            var lastModifier: NSEvent.ModifierFlags = .init(rawValue: 0)
-            func checkShiftKeyUp(_ event: NSEvent) -> Bool {
-                if event.type == .flagsChanged
-                    && event.modifierFlags == .init(rawValue: 0)
-                    && lastModifier == .shift {  // shift键抬起
-                    lastModifier = event.modifierFlags
-                    return true
-                }
-                lastModifier = event.type == .flagsChanged ? event.modifierFlags : .init(rawValue: 0)
-                return false
-            }
-            return  checkShiftKeyUp
-        }
-        self.checkShiftKeyUp = createCheckShiftKeyUpFn()
     }
 
     func processHandlers<T>(
@@ -81,7 +36,7 @@ class Utils {
         }
         return handleFn
     }
-    
+
     func getScreenFromPoint(_ point: NSPoint) -> NSScreen? {
         // find current screen
         for screen in NSScreen.screens {
