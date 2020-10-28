@@ -1,23 +1,69 @@
 name: build installer.pkg
 
 on:
-  release:
-    types:
-      - published
-  workflow_run:
-    workflows: ["create github release"]
-    types:
-      - completed
+  pull_request:
+    types: [closed]
 
 jobs:
+  release:
+    runs-on: ubuntu-latest
+    if: github.event.pull_request.merged == true && github.event.pull_request.base.ref == 'master'
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Conventional Changelog Action
+        id: changelog
+        uses: TriPSs/conventional-changelog-action@v3
+        with:
+          github-token: ${{ secrets.github_token }}
+          skip-commit: "true"
+          output-file: "false"
+      
+      - name: Create Release
+        uses: actions/create-release@v1
+        id: create_release
+        if: steps.changelog.outputs.skipped == 'false'
+        env:
+          GITHUB_TOKEN: ${{ secrets.github_token }}
+        with:
+          tag_name: ${{ steps.changelog.outputs.tag }}
+          release_name: ${{ steps.changelog.outputs.tag }}
+          body: ${{ steps.changelog.outputs.clean_changelog }}
+
+      - name: Write Changelog variable
+        env:
+          upload_url: ${{ steps.create_release.outputs.upload_url }}
+        run: |
+          mkdir tmp
+          echo "${upload_url}" > tmp/upload_url
+
+      - uses: actions/upload-artifact@v2
+        with:
+          name: tmp
+          path: ./tmp/
+          retention-days: 2
+
   build:
     runs-on: macOS-latest
+    needs: release
 
     steps:
     - uses: actions/checkout@v2
 
+    - name: checkout tag
+      run: |
+        version=$(git describe --tags `git rev-list --tags --max-count=1`)
+        git checkout ${version}
+
     - name: switch xcode version
       run: sudo xcode-select --switch /Applications/Xcode_12.app
+    
+    - uses: actions/cache@v2
+      with:
+        path: Pods
+        key: ${{ runner.os }}-pods-${{ hashFiles('**/Podfile.lock') }}
+        restore-keys: |
+          ${{ runner.os }}-pods-
   
     - name: install depencies
       run: pod install
@@ -40,6 +86,7 @@ jobs:
       with:
         name: apps
         path: ./apps/
+        retention-days: 7
 
   publish:
     runs-on: ubuntu-latest
@@ -52,12 +99,36 @@ jobs:
         name: apps
         path: ./apps
 
-
-    - name: upload release assets
-      uses: AButler/upload-release-assets@v1.0
+    - uses: actions/download-artifact@v2
       with:
-        files: 'apps/Fire.zip,apps/FireInstaller.pkg'
-        repo-token: ${{ secrets.GITHUB_TOKEN }}
+        name: tmp
+        path: ./tmp
+    
+    - name: 'Load UploadURL'
+      id: get_upload_url
+      run: |
+        value=`cat tmp/upload_url`
+        echo "::set-output name=upload_url::${value}"
+
+    - name: Upload Release Asset(installer.pkg)
+      uses: actions/upload-release-asset@v1
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      with:
+        upload_url: ${{ steps.create_release.outputs.upload_url }}
+        asset_path: ./apps/FireInstaller.pkg
+        asset_name: FireInstaller.pkg
+        asset_content_type: application/octet-stream
+
+    - name: Upload Release Asset(Fire.zip)
+      uses: actions/upload-release-asset@v1
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      with:
+        upload_url: ${{ steps.create_release.outputs.upload_url }}
+        asset_path: ./apps/Fire.zip
+        asset_name: Fire.zip
+        asset_content_type: application/zip
 
 
     - name: move artifact
