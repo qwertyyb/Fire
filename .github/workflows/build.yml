@@ -2,7 +2,12 @@ name: build installer.pkg
 
 on:
   release:
-    types: ['released', 'created']
+    types:
+      - published
+  workflow_run:
+    workflows: ["create github release"]
+    types:
+      - completed
 
 jobs:
   build:
