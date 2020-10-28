@@ -34,6 +34,7 @@ jobs:
         env:
           upload_url: ${{ steps.create_release.outputs.upload_url }}
         run: |
+          mkdir tmp
           echo "${upload_url}" > tmp/upload_url
 
       - uses: actions/upload-artifact@v2
