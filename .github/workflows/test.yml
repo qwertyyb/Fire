@@ -14,6 +14,13 @@ jobs:
 
     - name: switch xcode version
       run: sudo xcode-select --switch /Applications/Xcode_12.app
+    
+    - uses: actions/cache@v2
+      with:
+        path: Pods
+        key: ${{ runner.os }}-pods-${{ hashFiles('**/Podfile.lock') }}
+        restore-keys: |
+          ${{ runner.os }}-pods-
 
     - name: install depencies
       run: pod install
@@ -33,3 +40,4 @@ jobs:
       with:
         name: apps
         path: ./apps/
+        retention-days: 3

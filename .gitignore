@@ -3,6 +3,8 @@
 /*.xcarchive
 /*.log
 /package/*.pkg
+/tmp
+
 
 # Created by https://www.gitignore.io/api/swift,macos
 # Edit at https://www.gitignore.io/?templates=swift,macos
