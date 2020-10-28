@@ -53,14 +53,12 @@ struct CandidatesView: View {
     let direction = Defaults[.candidatesDirection]
 
     var _candidatesView: some View {
-        var index = 0
-        return ForEach(candidates, id: \.self) { (candidate) -> CandidateView in
-            index += 1
-            return CandidateView(
+        ForEach(Array(candidates.enumerated()), id: \.element) { (index, candidate) -> CandidateView in
+            CandidateView(
                 candidate: candidate,
-                index: index,
+                index: index + 1,
                 origin: origin,
-                selected: index == 1
+                selected: index == 0
             )
         }
     }
@@ -101,6 +99,5 @@ struct ContentView_Previews: PreviewProvider {
             Candidate(code: "abcg", text: "阿", type: "wb"),
             Candidate(code: "addd", text: "吖", type: "wb")
         ], origin: "a")
-        .shadow(color: .red, radius: 6, x: 6, y: 6)
     }
 }

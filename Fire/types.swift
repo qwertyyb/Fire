@@ -37,7 +37,7 @@ enum InputMode {
 struct Candidate: Hashable {
     let code: String
     let text: String
-    let type: String  // wb | pyg
+    let type: String  // wb | py
 }
 
 enum CodeMode: Int, CaseIterable, Decodable, Encodable {
