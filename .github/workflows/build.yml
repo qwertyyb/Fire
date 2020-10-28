@@ -52,8 +52,12 @@ jobs:
 
     - name: checkout tag
       run: |
+        git checkout master
+        git pull
+        git status
         version=$(git describe --tags `git rev-list --tags --max-count=1`)
-        git checkout ${version}
+        echo $version
+        git checkout $version
 
     - name: switch xcode version
       run: sudo xcode-select --switch /Applications/Xcode_12.app
