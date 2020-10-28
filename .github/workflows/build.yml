@@ -45,7 +45,7 @@ jobs:
 
   build_binary:
     runs-on: macOS-latest
-    needs: release
+    needs: create_release
 
     steps:
     - uses: actions/checkout@v2
@@ -94,7 +94,7 @@ jobs:
 
   upload_publish:
     runs-on: ubuntu-latest
-    needs: build
+    needs: build_binary
     steps:
     - uses: actions/checkout@v2
 
