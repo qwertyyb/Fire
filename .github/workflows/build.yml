@@ -134,20 +134,14 @@ jobs:
         asset_name: Fire.zip
         asset_content_type: application/zip
 
-
-    - name: move artifact
-      run: |
-        mv apps/appcast.xml ./appcast.xml
-        mv apps/Info.plist  ./Fire/
-    
-    - name: remove useless file
-      run: rm -rf ./apps
-
-    - name: commit appcast.xml
+    - name: commit appcast.xml to gh-pages branch
       run: |
         git config --local user.email "action@github.com"
         git config --local user.name "GitHub Action"
-        git pull origin master
-        git add .
-        git commit -m "chore: update version"
-        git push origin HEAD:master
+        git checkout .
+        git fetch
+        git checkout gh-pages
+        mv apps/appcast.xml ./appcast.xml
+        git add appcast.xml
+        git commit -m "feat: 更新appcast.xml"
+        git push origin gh-pages
