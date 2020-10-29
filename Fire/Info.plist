@@ -87,7 +87,7 @@
 	<key>NSPrincipalClass</key>
 	<string>NSApplication</string>
 	<key>SUFeedURL</key>
-	<string>https://raw.githubusercontent.com/qwertyyb/Fire/master/appcast.xml</string>
+	<string>https://qwertyyb.github.io/Fire/appcast.xml</string>
 	<key>SUPublicEDKey</key>
 	<string>tR/BZ1M7WhteABLgJDf3f/bsxUHYMPABoY9PuPvI0TE=</string>
 	<key>tsInputMethodCharacterRepertoireKey</key>
