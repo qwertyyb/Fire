@@ -1,0 +1,17 @@
+<?xml version="1.0" standalone="yes"?>
+<rss xmlns:sparkle="http://www.andymatuschak.org/xml-namespaces/sparkle" version="2.0">
+    <channel>
+        <title>Fire</title>
+        <item>
+            <title>v0.1.0</title>
+            <pubDate>Wed, 28 Oct 2020 16:21:31 +0000</pubDate>
+            <sparkle:minimumSystemVersion>10.15</sparkle:minimumSystemVersion>
+            <enclosure url="https://github.com/qwertyyb/Fire/releases/latest/download/FireInstaller.pkg"
+              sparkle:version="20201028162045"
+              sparkle:shortVersionString="v0.1.0"
+              length="2625023"
+              sparkle:edSignature="c8j9nBaDbGj32jmQMjl9DKqpJe+KPQO/8Nrc/TU3j2SmNNqTKzS+dPRItXrKPvYqwfDxLdMm3qgV0xszlspIBQ=="
+              type="application/octet-stream"/>
+        </item>
+    </channel>
+</rss>
