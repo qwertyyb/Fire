@@ -43,7 +43,7 @@ class TipsWindow {
         tipsWindow?.orderFront(nil)
     }
 
-    func showTips(_ text: String, origin: NSPoint) {
+    func show(_ text: String, origin: NSPoint) {
         NSLog("[utils] showTips: \(origin)")
         self.clearTimer()
         self.createTipsWindow()

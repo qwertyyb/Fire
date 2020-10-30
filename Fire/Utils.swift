@@ -18,7 +18,7 @@ enum HandlerStatus {
 class Utils {
     let shiftKeyUpChecker = ModifierKeyUpChecker(.shift)
 
-    let tipsWindow = TipsWindow()
+    let toast = ToastWindow()
 
     init() {
     }
