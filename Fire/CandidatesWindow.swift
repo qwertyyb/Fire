@@ -11,8 +11,14 @@ import InputMethodKit
 
 var set = false
 
-class CandidatesWindow: NSWindow {
+class CandidatesWindow: NSWindow, NSWindowDelegate {
     let hostingView = NSHostingView(rootView: CandidatesView(candidates: [], origin: ""))
+
+    func windowDidResize(_ notification: Notification) {
+        // 窗口大小变化时，确保不会超出当前屏幕范围
+        let origin = self.transformTopLeft(originalTopLeft: NSPoint(x: self.frame.minX, y: self.frame.maxY))
+        self.setFrameTopLeftPoint(origin)
+    }
 
     func setCandidates(
         candidates: [Candidate],
@@ -21,8 +27,7 @@ class CandidatesWindow: NSWindow {
     ) {
         hostingView.rootView.candidates = candidates
         hostingView.rootView.origin = originalString
-        let origin = self.transformTopLeft(originalTopLeft: topLeft)
-        self.setFrameTopLeftPoint(origin)
+        self.setFrameTopLeftPoint(topLeft)
         self.orderFront(nil)
     }
 
@@ -38,6 +43,7 @@ class CandidatesWindow: NSWindow {
         styleMask = .init(arrayLiteral: .fullSizeContentView, .borderless)
         isReleasedWhenClosed = false
         backgroundColor = NSColor.clear
+        delegate = self
         setSizePolicy()
     }
 
