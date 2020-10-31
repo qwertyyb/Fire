@@ -14,10 +14,20 @@ var set = false
 class CandidatesWindow: NSWindow, NSWindowDelegate {
     let hostingView = NSHostingView(rootView: CandidatesView(candidates: [], origin: ""))
 
+    func windowDidMove(_ notification: Notification) {
+        /* windowDidMove会先于windowDidResize调用，所以需要
+         * 在DispatchQueue.main.async中调用，以便能拿到最新的窗口大小
+         **/
+        DispatchQueue.main.async {
+            self.limitFrameInScreen()
+        }
+    }
+
     func windowDidResize(_ notification: Notification) {
-        // 窗口大小变化时，确保不会超出当前屏幕范围
-        let origin = self.transformTopLeft(originalTopLeft: NSPoint(x: self.frame.minX, y: self.frame.maxY))
-        self.setFrameTopLeftPoint(origin)
+        /* 窗口大小变化时，确保不会超出当前屏幕范围，
+         * 但是输入第一个字符时，也即窗口初次显示时，不会触发此事件, 所以需要配合windowDidMove方法一起使用
+         */
+        limitFrameInScreen()
     }
 
     func setCandidates(
@@ -27,6 +37,7 @@ class CandidatesWindow: NSWindow, NSWindowDelegate {
     ) {
         hostingView.rootView.candidates = candidates
         hostingView.rootView.origin = originalString
+        print("origin top left: \(topLeft)")
         self.setFrameTopLeftPoint(topLeft)
         self.orderFront(nil)
     }
@@ -47,6 +58,11 @@ class CandidatesWindow: NSWindow, NSWindowDelegate {
         setSizePolicy()
     }
 
+    private func limitFrameInScreen() {
+       let origin = self.transformTopLeft(originalTopLeft: NSPoint(x: self.frame.minX, y: self.frame.maxY))
+       self.setFrameTopLeftPoint(origin)
+    }
+
     private func setSizePolicy() {
         // 窗口大小可根据内容变化
         hostingView.translatesAutoresizingMaskIntoConstraints = false
@@ -64,11 +80,9 @@ class CandidatesWindow: NSWindow, NSWindowDelegate {
         NSLog("[FireCandidatesWindow] transformTopLeft: \(frame)")
 
         let screenPadding: CGFloat = 6
-        let xdistance: CGFloat = 0
-        let ydistance: CGFloat = 4
 
-        var left = originalTopLeft.x + xdistance
-        var top = originalTopLeft.y - ydistance
+        var left = originalTopLeft.x
+        var top = originalTopLeft.y
         if let curScreen = Utils.shared.getScreenFromPoint(originalTopLeft) {
             let screen = curScreen.frame
 

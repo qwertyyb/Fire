@@ -266,9 +266,11 @@ class FireInputController: IMKInputController {
 
     // 获取当前输入的光标位置
     private func getOriginPoint() -> NSPoint {
+        let xd: CGFloat = 0
+        let yd: CGFloat = 4
         var rect = NSRect()
         client().attributes(forCharacterIndex: 0, lineHeightRectangle: &rect)
-        return rect.origin
+        return NSPoint(x: rect.minX + xd, y: rect.minY - yd)
     }
 
     func clean() {
