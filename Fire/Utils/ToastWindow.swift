@@ -9,7 +9,7 @@
 import Cocoa
 import SwiftUI
 
-class ToastWindow: NSWindow {
+class ToastWindow: NSWindow, ToastWindowProtocol {
     struct ToastView: View {
         var text: String
         var body: some View {
@@ -59,7 +59,7 @@ class ToastWindow: NSWindow {
         contentView = hostingView
     }
 
-    private func position() {
+    private func positionWindow() {
         guard let screen = Utils.shared.getScreenFromPoint(NSEvent.mouseLocation) else {
             return
         }
@@ -68,10 +68,10 @@ class ToastWindow: NSWindow {
         self.setFrameOrigin(NSPoint(x: cx, y: cy))
     }
 
-    func show(_ text: String, origin: NSPoint) {
+    func show(_ text: String, position: NSPoint) {
         timer?.invalidate()
         hostingView.rootView.text = text
-        position()
+        positionWindow()
         orderFront(nil)
         timer = Timer.scheduledTimer(withTimeInterval: 1, repeats: false, block: { (_) in
             self.close()

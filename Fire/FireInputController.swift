@@ -72,7 +72,7 @@ class FireInputController: IMKInputController {
             let text = inputMode == .zhhans ? "中" : "英"
 
             // 在输入坐标处，显示中英切换提示
-            Utils.shared.toast.show(text, origin: getOriginPoint())
+            Utils.shared.toast?.show(text, position: getOriginPoint())
             return true
         }
         // 监听.flagsChanged事件只为切换中英文，其它情况不处理

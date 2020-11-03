@@ -13,21 +13,30 @@ import Cocoa
 class ModifierKeyUpChecker {
     init(_ modifier: NSEvent.ModifierFlags) {
         checkModifier = modifier
-        lastModifier = .init(rawValue: 0)
     }
     private let checkModifier: NSEvent.ModifierFlags
 
-    private var lastModifier: NSEvent.ModifierFlags
+    // 上上步按下的键
+    private var lastLastModifier: NSEvent.ModifierFlags = .init(rawValue: 0)
 
-    // 检查shift键被抬起
+    // 上步按下的键
+    private var lastModifier: NSEvent.ModifierFlags = .init(rawValue: 0)
+
+    private func isKeyPress(_ event: NSEvent) -> Bool {
+        return event.type == .flagsChanged
+            && event.modifierFlags == .init(rawValue: 0) // 当前flags为0
+            && lastModifier == checkModifier    // 上次按键的flags为checkModifier
+            && lastLastModifier == .init(rawValue: 0) // 上上次的按键flags为0
+    }
+
+    // 检查shift键被按下并抬起
     func check(_ event: NSEvent) -> Bool {
-        if event.type == .flagsChanged
-            && event.modifierFlags == .init(rawValue: 0)
-            && lastModifier == checkModifier {  // shift键抬起
-            lastModifier = event.modifierFlags
-            return true
+        var flag = false
+        if isKeyPress(event) {  // shift键按下抬起，flags序列: 0, shift, 0
+            flag = true
         }
+        lastLastModifier = lastModifier
         lastModifier = event.type == .flagsChanged ? event.modifierFlags : .init(rawValue: 0)
-        return false
+        return flag
     }
 }

@@ -10,7 +10,7 @@ import Foundation
 import Cocoa
 import SwiftUI
 
-class TipsWindow {
+class TipsWindow: ToastWindowProtocol {
     private func createTipsWindow() {
         let window = NSWindow()
         window.styleMask = .init(arrayLiteral: .borderless, .fullSizeContentView)
@@ -43,12 +43,12 @@ class TipsWindow {
         tipsWindow?.orderFront(nil)
     }
 
-    func show(_ text: String, origin: NSPoint) {
-        NSLog("[utils] showTips: \(origin)")
+    func show(_ text: String, position: NSPoint) {
+        NSLog("[utils] showTips: \(position)")
         self.clearTimer()
         self.createTipsWindow()
         self.updateText(text: text)
-        self.showWindow(origin)
+        self.showWindow(position)
         self.resetTimer()
     }
     private func resetTimer() {
