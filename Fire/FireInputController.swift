@@ -278,13 +278,8 @@ class FireInputController: IMKInputController {
         curPage = 1
         candidatesWindow.close()
     }
-
-//    override func activateServer(_ sender: Any!) {
-//        NSLog("[FireInputController] active server: \(client()!.bundleIdentifier()!)")
-//    }
-
     override func deactivateServer(_ sender: Any!) {
-        NSLog("[FireInputController] deactivate server: \(client()!.bundleIdentifier()!)")
+        NSLog("[FireInputController] deactivate server: \(client().bundleIdentifier() ?? "no client deactivate")")
         clean()
     }
 }

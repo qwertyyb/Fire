@@ -10,33 +10,40 @@ import Foundation
 import Carbon
 import Cocoa
 
+extension Date {
+    static func - (lhs: Date, rhs: Date) -> TimeInterval {
+        return lhs.timeIntervalSinceReferenceDate - rhs.timeIntervalSinceReferenceDate
+    }
+
+}
+
 class ModifierKeyUpChecker {
-    init(_ modifier: NSEvent.ModifierFlags) {
+    init(_ modifier: NSEvent.ModifierFlags, keyCode: Int) {
         checkModifier = modifier
+        checkKeyCode = keyCode
     }
-    private let checkModifier: NSEvent.ModifierFlags
+    let checkModifier: NSEvent.ModifierFlags
+    let checkKeyCode: Int
 
-    // 上上步按下的键
-    private var lastLastModifier: NSEvent.ModifierFlags = .init(rawValue: 0)
+    private let delayInterval = 0.3
 
-    // 上步按下的键
-    private var lastModifier: NSEvent.ModifierFlags = .init(rawValue: 0)
+    private var lastTime: Date = Date()
 
-    private func isKeyPress(_ event: NSEvent) -> Bool {
-        return event.type == .flagsChanged
-            && event.modifierFlags == .init(rawValue: 0) // 当前flags为0
-            && lastModifier == checkModifier    // 上次按键的flags为checkModifier
-            && lastLastModifier == .init(rawValue: 0) // 上上次的按键flags为0
-    }
-
-    // 检查shift键被按下并抬起
+    // 检查修饰键被按下并抬起
     func check(_ event: NSEvent) -> Bool {
-        var flag = false
-        if isKeyPress(event) {  // shift键按下抬起，flags序列: 0, shift, 0
-            flag = true
+        if event.type == .flagsChanged
+            && event.modifierFlags == .init(rawValue: 0)
+            && Date() - lastTime <= delayInterval {
+            // modifier keyup event
+            lastTime = Date(timeInterval: -3600*4, since: Date())
+            return true
         }
-        lastLastModifier = lastModifier
-        lastModifier = event.type == .flagsChanged ? event.modifierFlags : .init(rawValue: 0)
-        return flag
+        if event.type == .flagsChanged && event.modifierFlags == checkModifier && event.keyCode == checkKeyCode {
+            // modifier keydown event
+            lastTime = Date()
+        } else {
+            lastTime = Date(timeInterval: -3600*4, since: Date())
+        }
+        return false
     }
 }

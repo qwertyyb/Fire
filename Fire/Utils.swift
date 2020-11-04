@@ -17,7 +17,7 @@ enum HandlerStatus {
 }
 
 class Utils {
-    let shiftKeyUpChecker = ModifierKeyUpChecker(.shift)
+    let shiftKeyUpChecker = ModifierKeyUpChecker(.shift, keyCode: kVK_Shift)
 
     var toast: ToastWindowProtocol?
 
