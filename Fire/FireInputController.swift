@@ -72,7 +72,7 @@ class FireInputController: IMKInputController {
             let text = inputMode == .zhhans ? "中" : "英"
 
             // 在输入坐标处，显示中英切换提示
-            Utils.shared.tipsWindow.showTips(text, origin: getOriginPoint())
+            Utils.shared.toast?.show(text, position: getOriginPoint())
             return true
         }
         // 监听.flagsChanged事件只为切换中英文，其它情况不处理
@@ -266,9 +266,11 @@ class FireInputController: IMKInputController {
 
     // 获取当前输入的光标位置
     private func getOriginPoint() -> NSPoint {
+        let xd: CGFloat = 0
+        let yd: CGFloat = 4
         var rect = NSRect()
         client().attributes(forCharacterIndex: 0, lineHeightRectangle: &rect)
-        return rect.origin
+        return NSPoint(x: rect.minX + xd, y: rect.minY - yd)
     }
 
     func clean() {
@@ -278,13 +280,8 @@ class FireInputController: IMKInputController {
         curPage = 1
         candidatesWindow.close()
     }
-
-//    override func activateServer(_ sender: Any!) {
-//        NSLog("[FireInputController] active server: \(client()!.bundleIdentifier()!)")
-//    }
-
     override func deactivateServer(_ sender: Any!) {
-        NSLog("[FireInputController] deactivate server: \(client()!.bundleIdentifier()!)")
+        NSLog("[FireInputController] deactivate server: \(client().bundleIdentifier() ?? "no client deactivate")")
         clean()
     }
 }

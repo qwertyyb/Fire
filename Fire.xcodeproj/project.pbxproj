@@ -30,6 +30,7 @@
 		673C416925468A4800F462A3 /* FireMenu.swift in Sources */ = {isa = PBXBuildFile; fileRef = 673C416825468A4800F462A3 /* FireMenu.swift */; };
 		673C417225468FFA00F462A3 /* ModifierKeyUpChecker.swift in Sources */ = {isa = PBXBuildFile; fileRef = 673C417125468FFA00F462A3 /* ModifierKeyUpChecker.swift */; };
 		673C4178254697E400F462A3 /* TipsWindow.swift in Sources */ = {isa = PBXBuildFile; fileRef = 673C4177254697E400F462A3 /* TipsWindow.swift */; };
+		677A0874254BD47D000B58D4 /* ToastWindow.swift in Sources */ = {isa = PBXBuildFile; fileRef = 677A0873254BD47D000B58D4 /* ToastWindow.swift */; };
 		67E8B515233B97FD00D7CE80 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 67E8B517233B97FD00D7CE80 /* InfoPlist.strings */; };
 		67E8B521233C537B00D7CE80 /* fire.pdf in Resources */ = {isa = PBXBuildFile; fileRef = 67E8B51E233C537B00D7CE80 /* fire.pdf */; };
 /* End PBXBuildFile section */
@@ -94,6 +95,7 @@
 		673C416825468A4800F462A3 /* FireMenu.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FireMenu.swift; sourceTree = "<group>"; };
 		673C417125468FFA00F462A3 /* ModifierKeyUpChecker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ModifierKeyUpChecker.swift; sourceTree = "<group>"; };
 		673C4177254697E400F462A3 /* TipsWindow.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TipsWindow.swift; sourceTree = "<group>"; };
+		677A0873254BD47D000B58D4 /* ToastWindow.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ToastWindow.swift; sourceTree = "<group>"; };
 		67E8B511233B978E00D7CE80 /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		67E8B516233B97FD00D7CE80 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/InfoPlist.strings; sourceTree = "<group>"; };
 		67E8B518233B994000D7CE80 /* zh-Hans */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "zh-Hans"; path = "zh-Hans.lproj/InfoPlist.strings"; sourceTree = "<group>"; };
@@ -226,6 +228,7 @@
 			children = (
 				673C417125468FFA00F462A3 /* ModifierKeyUpChecker.swift */,
 				673C4177254697E400F462A3 /* TipsWindow.swift */,
+				677A0873254BD47D000B58D4 /* ToastWindow.swift */,
 			);
 			path = Utils;
 			sourceTree = "<group>";
@@ -412,6 +415,7 @@
 				45577EB4254576720064325B /* FirePreferencesController.swift in Sources */,
 				459DE990232EB26600A3ACD1 /* CandidatesView.swift in Sources */,
 				673C4178254697E400F462A3 /* TipsWindow.swift in Sources */,
+				677A0874254BD47D000B58D4 /* ToastWindow.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

@@ -34,7 +34,6 @@ class Fire: NSObject {
 
     override init() {
         super.init()
-        self.prepareStatement()
 
         preferencesObserver = Defaults.observe(keys: .codeMode, .candidateCount) { () in
             self.prepareStatement()

@@ -15,10 +15,20 @@ enum CandidatesDirection: Int, Decodable, Encodable {
     case horizontal
 }
 
+enum InputModeTipWindowType: Int, Decodable, Encodable {
+    case followInput
+    case centerScreen
+    case none
+}
+
 extension Defaults.Keys {
     static let candidatesDirection = Key<CandidatesDirection>(
         "candidatesDirection",
         default: CandidatesDirection.horizontal
+    )
+    static let inputModeTipWindowType = Key<InputModeTipWindowType>(
+        "inputModeTipWindowType",
+        default: InputModeTipWindowType.centerScreen
     )
     static let showCodeInWindow = Key<Bool>("showCodeInWindow", default: true)
     static let wubiCodeTip = Key<Bool>("wubiCodeTip", default: true)
@@ -80,3 +90,7 @@ let punctution: [String: String] = [
     ">": "》",
     "?": "？"
 ]
+
+protocol ToastWindowProtocol {
+    func show(_ text: String, position: NSPoint)
+}
