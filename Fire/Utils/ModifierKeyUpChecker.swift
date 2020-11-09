@@ -10,24 +10,40 @@ import Foundation
 import Carbon
 import Cocoa
 
-class ModifierKeyUpChecker {
-    init(_ modifier: NSEvent.ModifierFlags) {
-        checkModifier = modifier
-        lastModifier = .init(rawValue: 0)
+extension Date {
+    static func - (lhs: Date, rhs: Date) -> TimeInterval {
+        return lhs.timeIntervalSinceReferenceDate - rhs.timeIntervalSinceReferenceDate
     }
-    private let checkModifier: NSEvent.ModifierFlags
 
-    private var lastModifier: NSEvent.ModifierFlags
+}
 
-    // 检查shift键被抬起
+class ModifierKeyUpChecker {
+    init(_ modifier: NSEvent.ModifierFlags, keyCode: Int) {
+        checkModifier = modifier
+        checkKeyCode = keyCode
+    }
+    let checkModifier: NSEvent.ModifierFlags
+    let checkKeyCode: Int
+
+    private let delayInterval = 0.3
+
+    private var lastTime: Date = Date()
+
+    // 检查修饰键被按下并抬起
     func check(_ event: NSEvent) -> Bool {
         if event.type == .flagsChanged
             && event.modifierFlags == .init(rawValue: 0)
-            && lastModifier == checkModifier {  // shift键抬起
-            lastModifier = event.modifierFlags
+            && Date() - lastTime <= delayInterval {
+            // modifier keyup event
+            lastTime = Date(timeInterval: -3600*4, since: Date())
             return true
         }
-        lastModifier = event.type == .flagsChanged ? event.modifierFlags : .init(rawValue: 0)
+        if event.type == .flagsChanged && event.modifierFlags == checkModifier && event.keyCode == checkKeyCode {
+            // modifier keydown event
+            lastTime = Date()
+        } else {
+            lastTime = Date(timeInterval: -3600*4, since: Date())
+        }
         return false
     }
 }

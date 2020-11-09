@@ -9,6 +9,7 @@
 import Cocoa
 import SwiftUI
 import InputMethodKit
+import Defaults
 
 enum HandlerStatus {
     case next
@@ -16,11 +17,26 @@ enum HandlerStatus {
 }
 
 class Utils {
-    let shiftKeyUpChecker = ModifierKeyUpChecker(.shift)
+    let shiftKeyUpChecker = ModifierKeyUpChecker(.shift, keyCode: kVK_Shift)
 
-    let tipsWindow = TipsWindow()
+    var toast: ToastWindowProtocol?
 
+    private func initToastWindow() {
+        toast = Defaults[.inputModeTipWindowType] == .centerScreen
+            ? ToastWindow()
+           : Defaults[.inputModeTipWindowType] == .followInput
+               ? TipsWindow()
+               : nil
+    }
+    private var toastSettingObserver: Defaults.Observation!
     init() {
+        toastSettingObserver = Defaults.observe(keys: .inputModeTipWindowType, .candidateCount) { () in
+            self.initToastWindow()
+        }
+    }
+
+    deinit {
+        toastSettingObserver.invalidate()
     }
 
     func processHandlers<T>(
