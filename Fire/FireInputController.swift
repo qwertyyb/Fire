@@ -16,6 +16,7 @@ class FireInputController: IMKInputController {
     private var  _composedString = ""
     private let candidatesWindow = CandidatesWindow.shared
     private var inputMode: InputMode = .zhhans
+    private var flagsChangeEventMonitor: Any?
     private var _originalString = "" {
         didSet {
             if self.curPage != 1 {
@@ -39,9 +40,6 @@ class FireInputController: IMKInputController {
                 return
             }
         }
-    }
-    override func recognizedEvents(_ sender: Any!) -> Int {
-        return Int(NSEvent.EventTypeMask.keyDown.rawValue | NSEvent.EventTypeMask.flagsChanged.rawValue)
     }
 
     private func markText() {
@@ -280,8 +278,22 @@ class FireInputController: IMKInputController {
         curPage = 1
         candidatesWindow.close()
     }
+
+    /**
+     * 由于使用recognizedEvents在一些场景下不能监听到flagChanged事件，比如保存文件场景
+     * 所以这里需要使用NSEvent.addGlobalMonitorForEvents监听shift键被按下
+     */
+    override func activateServer(_ sender: Any!) {
+        flagsChangeEventMonitor = NSEvent.addGlobalMonitorForEvents(matching: .flagsChanged) { (event) in
+            _ = self.handle(event, client: self.client())
+        }
+        NSLog("[FireInputController] activate server: \(client().bundleIdentifier() ?? "no client deactivate")")
+    }
     override func deactivateServer(_ sender: Any!) {
         NSLog("[FireInputController] deactivate server: \(client().bundleIdentifier() ?? "no client deactivate")")
         clean()
+        if let monitor = flagsChangeEventMonitor {
+            NSEvent.removeMonitor(monitor)
+        }
     }
 }
