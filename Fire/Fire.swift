@@ -28,6 +28,8 @@ extension UserDefaults {
 internal let SQLITE_TRANSIENT = unsafeBitCast(-1, to: sqlite3_destructor_type.self)
 
 class Fire: NSObject {
+    static let candidateSelected = Notification.Name("Fire.candidateSelected")
+
     private var database: OpaquePointer?
     private var queryStatement: OpaquePointer?
     private var preferencesObserver: Defaults.Observation!

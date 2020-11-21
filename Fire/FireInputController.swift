@@ -17,6 +17,7 @@ class FireInputController: IMKInputController {
     private let candidatesWindow = CandidatesWindow.shared
     private var inputMode: InputMode = .zhhans
     private var flagsChangeEventMonitor: Any?
+    private var candidateSelectedObserver: NSObjectProtocol?
     private var _originalString = "" {
         didSet {
             if self.curPage != 1 {
@@ -287,6 +288,16 @@ class FireInputController: IMKInputController {
         flagsChangeEventMonitor = NSEvent.addGlobalMonitorForEvents(matching: .flagsChanged) { (event) in
             _ = self.handle(event, client: self.client())
         }
+        // 鼠标点击选词
+        candidateSelectedObserver = NotificationCenter.default.addObserver(
+            forName: Fire.candidateSelected,
+            object: nil,
+            queue: nil) { (notification) in
+            if let candidate = notification.userInfo?["candidate"] as? Candidate {
+                self._composedString = candidate.text
+                self.insertText(self)
+            }
+        }
         NSLog("[FireInputController] activate server: \(client().bundleIdentifier() ?? "no client deactivate")")
     }
     override func deactivateServer(_ sender: Any!) {
@@ -294,6 +305,9 @@ class FireInputController: IMKInputController {
         clean()
         if let monitor = flagsChangeEventMonitor {
             NSEvent.removeMonitor(monitor)
+        }
+        if let observer = candidateSelectedObserver {
+            NotificationCenter.default.removeObserver(observer)
         }
     }
 }
