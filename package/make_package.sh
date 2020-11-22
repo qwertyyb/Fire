@@ -8,7 +8,7 @@ INSTALL_LOCATION='/Library/Input Methods'
 BUILD_DIR="${PROJECT_ROOT}"
 TARGET='Fire'
 Version=`date "+%Y%m%d%H%M%S"`
-ROOT_DIR="${PROJECT_ROOT}/apps/root/"
+ROOT_DIR="${PROJECT_ROOT}/apps/root"
 
 rm "${PROJECT_ROOT}/package/${TARGET}-*.pkg"
 rm -rf "${ROOT_DIR}"
@@ -19,6 +19,7 @@ echo $ROOT_DIR
 pkgbuild \
     --info "${PROJECT_ROOT}/package/PackageInfo" \
     --root "${ROOT_DIR}" \
+    --component-plist "${PROJECT_ROOT}/package/component.plist" \
     --identifier "${BUNDLE_IDENTIFIER}" \
     --version "${Version}" \
     --install-location "${INSTALL_LOCATION}" \
