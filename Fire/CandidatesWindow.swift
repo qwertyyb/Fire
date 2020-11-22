@@ -9,7 +9,7 @@
 import SwiftUI
 import InputMethodKit
 
-var set = false
+typealias CandidatesData = (list: [Candidate], hasPrev: Bool, hasNext: Bool)
 
 class CandidatesWindow: NSWindow, NSWindowDelegate {
     let hostingView = NSHostingView(rootView: CandidatesView(candidates: [], origin: ""))
@@ -31,15 +31,18 @@ class CandidatesWindow: NSWindow, NSWindowDelegate {
     }
 
     func setCandidates(
-        candidates: [Candidate],
+        _ candidatesData: CandidatesData,
         originalString: String,
         topLeft: NSPoint
     ) {
-        hostingView.rootView.candidates = candidates
+        hostingView.rootView.candidates = candidatesData.list
         hostingView.rootView.origin = originalString
+        hostingView.rootView.hasNext = candidatesData.hasNext
+        hostingView.rootView.hasPrev = candidatesData.hasPrev
         print("origin top left: \(topLeft)")
         self.setFrameTopLeftPoint(topLeft)
         self.orderFront(nil)
+        NSApp.setActivationPolicy(.prohibited)
     }
 
     override init(
