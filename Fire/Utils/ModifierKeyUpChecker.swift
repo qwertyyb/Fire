@@ -29,31 +29,21 @@ class ModifierKeyUpChecker {
 
     private var lastTime: Date = Date()
 
-    private func checkModifierKeyUp (event: NSEvent) -> Bool {
+    // 检查修饰键被按下并抬起
+    func check(_ event: NSEvent) -> Bool {
         if event.type == .flagsChanged
-            && event.modifierFlags.intersection(.deviceIndependentFlagsMask) == .init(rawValue: 0)
+            && event.modifierFlags == .init(rawValue: 0)
             && Date() - lastTime <= delayInterval {
             // modifier keyup event
             lastTime = Date(timeInterval: -3600*4, since: Date())
             return true
         }
-        return false
-    }
-
-    private func checkModifierKeyDown(event: NSEvent) -> Bool {
-        if event.type == .flagsChanged
-            && event.modifierFlags.intersection(.deviceIndependentFlagsMask) == checkModifier
-            && event.keyCode == checkKeyCode {
+        if event.type == .flagsChanged && event.modifierFlags == checkModifier && event.keyCode == checkKeyCode {
             // modifier keydown event
             lastTime = Date()
         } else {
             lastTime = Date(timeInterval: -3600*4, since: Date())
         }
         return false
-    }
-
-    // 检查修饰键被按下并抬起
-    func check(_ event: NSEvent) -> Bool {
-        return checkModifierKeyUp(event: event) || checkModifierKeyDown(event: event)
     }
 }

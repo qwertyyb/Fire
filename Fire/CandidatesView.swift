@@ -22,18 +22,13 @@ struct CandidateView: View {
     var index: Int
     var origin: String
     var selected: Bool = false
-
-    @State private var hovered = false
-
-    let hoveredColor = Color(red: 0.863, green: 0.078, blue: 0.235, opacity: 0.8)
-    let selectedColor = Color(red: 0.863, green: 0.078, blue: 0.235)
-    let defaultColor = Color(red: 0.23, green: 0.23, blue: 0.23)
     var body: some View {
-        let mainColor = selected ? selectedColor
-            : hovered ? hoveredColor : defaultColor
+        let mainColor = selected
+            ? Color(red: 0.863, green: 0.078, blue: 0.235)
+            : Color(red: 0.23, green: 0.23, blue: 0.23)
 
         return HStack(alignment: .center, spacing: 2) {
-            Text("\(index + 1).")
+            Text("\(index).")
                 .font(.system(size: 20))
                 .foregroundColor(mainColor)
             Text(candidate.text)
@@ -48,21 +43,6 @@ struct CandidateView: View {
             }
         }
         .fixedSize()
-        .onHover { (hover) in
-            print("hover", hover)
-            self.hovered = hover
-        }
-        .onTapGesture {
-            print("tap")
-            NotificationCenter.default.post(
-                name: Fire.candidateSelected,
-                object: nil,
-                userInfo: [
-                    "candidate": candidate,
-                    "index": index
-                ]
-            )
-        }
     }
 }
 
@@ -76,7 +56,7 @@ struct CandidatesView: View {
         ForEach(Array(candidates.enumerated()), id: \.element) { (index, candidate) -> CandidateView in
             CandidateView(
                 candidate: candidate,
-                index: index,
+                index: index + 1,
                 origin: origin,
                 selected: index == 0
             )

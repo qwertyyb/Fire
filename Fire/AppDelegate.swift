@@ -44,7 +44,6 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         }
         NSLog("[Fire] app is running")
         fire = Fire.shared
-        NSApp.setActivationPolicy(.prohibited)
     }
 
     func applicationWillTerminate(_ aNotification: Notification) {
