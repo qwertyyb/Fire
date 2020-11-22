@@ -69,6 +69,8 @@ struct CandidateView: View {
 struct CandidatesView: View {
     var candidates: [Candidate]
     var origin: String
+    var hasPrev: Bool = false
+    var hasNext: Bool = false
 
     let direction = Defaults[.candidatesDirection]
 
@@ -83,6 +85,59 @@ struct CandidatesView: View {
         }
     }
 
+    var _indicator: some View {
+        if Defaults[.candidatesDirection] == CandidatesDirection.horizontal {
+            return AnyView(VStack(spacing: 0) {
+                Image(hasPrev ? "arrowUp" : "arrowUpOff")
+                    .resizable()
+                    .frame(width: 10, height: 10, alignment: .center)
+                    .onTapGesture {
+                        if !hasPrev { return }
+                        NotificationCenter.default.post(
+                            name: Fire.prevPageBtnTapped,
+                            object: nil
+                        )
+                    }
+                Image(hasNext ? "arrowDown" : "arrowDownOff")
+                    .resizable()
+                    .frame(width: 10, height: 10, alignment: .center)
+                    .onTapGesture {
+                        if !hasNext { return }
+                        print("next")
+                        NotificationCenter.default.post(
+                            name: Fire.nextPageBtnTapped,
+                            object: nil
+                        )
+                    }
+            })
+        }
+        return AnyView(HStack(spacing: 4) {
+            Image(hasPrev ? "arrowUp" : "arrowUpOff")
+                .resizable()
+                .frame(width: 10, height: 10, alignment: .center)
+                .rotationEffect(Angle(degrees: -90), anchor: .center)
+                .onTapGesture {
+                    if !hasPrev { return }
+                    NotificationCenter.default.post(
+                        name: Fire.prevPageBtnTapped,
+                        object: nil
+                    )
+                }
+            Image(hasNext ? "arrowDown" : "arrowDownOff")
+                .resizable()
+                .frame(width: 10, height: 10, alignment: .center)
+                .rotationEffect(Angle(degrees: -90), anchor: .center)
+                .onTapGesture {
+                    if !hasNext { return }
+                    print("next")
+                    NotificationCenter.default.post(
+                        name: Fire.nextPageBtnTapped,
+                        object: nil
+                    )
+                }
+        })
+    }
+
     var body: some View {
         VStack(alignment: .leading, spacing: 6, content: {
             if Defaults[.showCodeInWindow] {
@@ -94,11 +149,13 @@ struct CandidatesView: View {
             if Defaults[.candidatesDirection] == CandidatesDirection.horizontal {
                 HStack(alignment: .center, spacing: 8) {
                     _candidatesView
+                    _indicator
                 }
                 .fixedSize()
             } else {
                 VStack(alignment: .leading, spacing: 8) {
                     _candidatesView
+                    _indicator
                 }
                 .fixedSize()
             }

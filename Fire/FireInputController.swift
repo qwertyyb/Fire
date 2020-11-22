@@ -12,12 +12,22 @@ import Sparkle
 import Preferences
 import Defaults
 
+typealias NotificationObserver = (name: Notification.Name, callback: (_ notification: Notification) -> Void)
+
 class FireInputController: IMKInputController {
-    private var  _composedString = ""
-    private let candidatesWindow = CandidatesWindow.shared
+    private var _candidates: [Candidate] = []
+    private var _hasNext: Bool = false
     private var inputMode: InputMode = .zhhans
-    private var flagsChangeEventMonitor: Any?
-    private var candidateSelectedObserver: NSObjectProtocol?
+    
+    private var temp: (
+        observerList: [NSObjectProtocol],
+        monitorList: [Any?]
+    ) = (
+        observerList: [],
+        monitorList: []
+    )
+//    private var observerList: [NSObjectProtocol] = []
+//    private var flagsChangeEventMonitor: Any?
     private var _originalString = "" {
         didSet {
             if self.curPage != 1 {
@@ -30,7 +40,7 @@ class FireInputController: IMKInputController {
             // 建议mark originalString, 否则在某些APP中会有问题
             self.markText()
 
-            self._originalString.count > 0 ? self.refreshCandidatesWindow() : candidatesWindow.close()
+            self._originalString.count > 0 ? self.refreshCandidatesWindow() : CandidatesWindow.shared.close()
         }
     }
     private var curPage: Int = 1 {
@@ -63,8 +73,7 @@ class FireInputController: IMKInputController {
             NSLog("[FireInputController]toggle mode: \(inputMode)")
 
             // 把当前未上屏的原始code上屏处理
-            _composedString = _originalString
-            insertText(nil)
+            insertText(_originalString, sender: self)
 
             inputMode = inputMode == .zhhans ? InputMode.enUS : InputMode.zhhans
 
@@ -95,7 +104,7 @@ class FireInputController: IMKInputController {
         let keyCode = event.keyCode
         if inputMode == .zhhans && _originalString.count > 0 {
             if keyCode == kVK_ANSI_Equal || keyCode == kVK_DownArrow {
-                curPage += 1
+                curPage = _hasNext ? curPage + 1 : curPage
                 return true
             }
             if keyCode == kVK_ANSI_Minus || keyCode == kVK_UpArrow {
@@ -125,8 +134,7 @@ class FireInputController: IMKInputController {
 
         // 如果输入的字符是标点符号，转换标点符号为中文符号
         if inputMode == .zhhans && punctution.keys.contains(string) {
-            _composedString = punctution[string]!
-            insertText(self)
+            insertText(punctution[string]!, sender: self)
             return true
         }
         return nil
@@ -165,10 +173,8 @@ class FireInputController: IMKInputController {
         // 当前输入的是数字,选择当前候选列表中的第N个字符 v
         if let pos = Int(string), _originalString.count > 0 {
             let index = pos - 1
-            let candidates = self.getCandidates(self)
-            if index < candidates.count {
-                _composedString = candidates[index].text
-                insertText(self)
+            if index < _candidates.count {
+                insertText(_candidates[index].text, sender: self)
             } else {
                 _originalString += string
             }
@@ -181,8 +187,7 @@ class FireInputController: IMKInputController {
         // 回车键输入原字符
         if event.keyCode == kVK_Return && _originalString.count > 0 {
             // 插入原字符
-            _composedString = _originalString
-            insertText(self)
+            insertText(_originalString, sender: self)
             return true
         }
         return nil
@@ -191,10 +196,8 @@ class FireInputController: IMKInputController {
     private func spaceKeyHandler(event: NSEvent) -> Bool? {
         // 空格键输入转换后的中文字符
         if event.keyCode == kVK_Space && _originalString.count > 0 {
-            if let first = self.getCandidates(self).first {
-                _composedString = first.text
-                insertText(self)
-                candidatesWindow.close()
+            if let first = self._candidates.first {
+                insertText(first.text, sender: self)
             }
             return true
         }
@@ -220,29 +223,30 @@ class FireInputController: IMKInputController {
         return handler(event) ?? false
     }
 
-    func getCandidates(_ sender: Any!) -> [Candidate] {
-        let candidates = Fire.shared.getCandidates(origin: self._originalString, page: curPage)
-        return candidates
+    func updateCandidates(_ sender: Any!) {
+        let (candidates, hasNext) = Fire.shared.getCandidates(origin: self._originalString, page: curPage)
+        _candidates = candidates
+        _hasNext = hasNext
     }
 
     // 更新候选窗口
     func refreshCandidatesWindow() {
-        let candidates = getCandidates(client())
-        if Defaults[.wubiAutoCommit] && candidates.count == 1 && _originalString.count >= 4 {
+        updateCandidates(client())
+        if Defaults[.wubiAutoCommit] && _candidates.count == 1 && _originalString.count >= 4 {
             // 满4码唯一候选词自动上屏
-            if let candidate = candidates.first {
-                _composedString = candidate.text
-                insertText(self)
+            if let candidate = _candidates.first {
+                insertText(candidate.text, sender: self)
                 return
             }
         }
-        if !Defaults[.showCodeInWindow] && candidates.count <= 0 {
+        if !Defaults[.showCodeInWindow] && _candidates.count <= 0 {
             // 不在候选框显示输入码时，如果候选词为空，则不显示候选框
-            candidatesWindow.close()
+            CandidatesWindow.shared.close()
             return
         }
-        candidatesWindow.setCandidates(
-            candidates: candidates,
+        let candidatesData = (list: _candidates, hasPrev: curPage > 1, hasNext: _hasNext)
+        CandidatesWindow.shared.setCandidates(
+            candidatesData,
             originalString: _originalString,
             topLeft: getOriginPoint()
         )
@@ -256,9 +260,9 @@ class FireInputController: IMKInputController {
     }
 
     // 往输入框插入当前字符
-    func insertText(_ sender: Any!) {
-        NSLog("insertText: %@", _composedString)
-        let value = NSAttributedString(string: _composedString)
+    func insertText(_ text: String, sender: Any!) {
+        NSLog("insertText: %@", text)
+        let value = NSAttributedString(string: text)
         client().insertText(value, replacementRange: replacementRange())
         clean()
     }
@@ -275,9 +279,20 @@ class FireInputController: IMKInputController {
     func clean() {
         NSLog("[FireInputController] clean")
         _originalString = ""
-        _composedString = ""
         curPage = 1
-        candidatesWindow.close()
+        CandidatesWindow.shared.close()
+    }
+
+    func notificationList() -> [NotificationObserver] {
+        return [
+            (Fire.candidateSelected, { notification in
+                if let candidate = notification.userInfo?["candidate"] as? Candidate {
+                    self.insertText(candidate.text, sender: self)
+                }
+            }),
+            (Fire.prevPageBtnTapped, { _ in self.curPage = self.curPage > 1 ? self.curPage - 1 : 1 }),
+            (Fire.nextPageBtnTapped, { _ in self.curPage = self._hasNext ? self.curPage + 1 : self.curPage })
+        ]
     }
 
     /**
@@ -285,29 +300,26 @@ class FireInputController: IMKInputController {
      * 所以这里需要使用NSEvent.addGlobalMonitorForEvents监听shift键被按下
      */
     override func activateServer(_ sender: Any!) {
-        flagsChangeEventMonitor = NSEvent.addGlobalMonitorForEvents(matching: .flagsChanged) { (event) in
-            _ = self.handle(event, client: self.client())
-        }
-        // 鼠标点击选词
-        candidateSelectedObserver = NotificationCenter.default.addObserver(
-            forName: Fire.candidateSelected,
-            object: nil,
-            queue: nil) { (notification) in
-            if let candidate = notification.userInfo?["candidate"] as? Candidate {
-                self._composedString = candidate.text
-                self.insertText(self)
-            }
-        }
         NSLog("[FireInputController] activate server: \(client().bundleIdentifier() ?? "no client deactivate")")
+        temp.monitorList.append(NSEvent.addGlobalMonitorForEvents(matching: .flagsChanged) { (event) in
+            _ = self.handle(event, client: self.client())
+        })
+        notificationList().forEach { (observer) in temp.observerList.append(NotificationCenter.default.addObserver(
+            forName: observer.name, object: nil, queue: nil, using: observer.callback
+        ))}
     }
     override func deactivateServer(_ sender: Any!) {
         NSLog("[FireInputController] deactivate server: \(client().bundleIdentifier() ?? "no client deactivate")")
         clean()
-        if let monitor = flagsChangeEventMonitor {
-            NSEvent.removeMonitor(monitor)
+        temp.monitorList.forEach { (monitor) in
+            if let m = monitor {
+                NSEvent.removeMonitor(m)
+            }
         }
-        if let observer = candidateSelectedObserver {
+        temp.observerList.forEach { (observer) in
             NotificationCenter.default.removeObserver(observer)
         }
+        temp.monitorList = []
+        temp.observerList = []
     }
 }

@@ -29,6 +29,9 @@ internal let SQLITE_TRANSIENT = unsafeBitCast(-1, to: sqlite3_destructor_type.se
 
 class Fire: NSObject {
     static let candidateSelected = Notification.Name("Fire.candidateSelected")
+    static let candidateListUpdated = Notification.Name("Fire.candidateListUpdated")
+    static let nextPageBtnTapped = Notification.Name("Fire.nextPageBtnTapped")
+    static let prevPageBtnTapped = Notification.Name("Fire.prevPageBtnTapped")
 
     private var database: OpaquePointer?
     private var queryStatement: OpaquePointer?
@@ -44,10 +47,12 @@ class Fire: NSObject {
 
     deinit {
         preferencesObserver.invalidate()
+        close()
     }
 
     private func getStatementSql() -> String {
         let candidateCount = Defaults[.candidateCount]
+        // 比显示的候选词数量多查一个，以此判断有没有下一页
         var sql = """
             select
                 max(wbcode), text, type, min(query) as query
@@ -55,7 +60,7 @@ class Fire: NSObject {
                 where query like :query
                 group by text
                 order by query, id
-                limit :offset, \(candidateCount)
+                limit :offset, \(candidateCount + 1)
         """
         let codeMode = Defaults[.codeMode]
         if codeMode != .wubiPinyin {
@@ -69,7 +74,7 @@ class Fire: NSObject {
                 where code like :query
                 group by text
                 order by query
-                limit :offset, \(candidateCount)
+                limit :offset, \(candidateCount + 1)
             """
         }
         print(sql)
@@ -92,9 +97,9 @@ class Fire: NSObject {
     }
 
     var server: IMKServer = IMKServer.init(name: kConnectionName, bundleIdentifier: Bundle.main.bundleIdentifier)
-    func getCandidates(origin: String = String(), page: Int = 1) -> [Candidate] {
+    func getCandidates(origin: String = String(), page: Int = 1) -> (candidates: [Candidate], hasNext: Bool) {
         if origin.count <= 0 {
-            return []
+            return ([], false)
         }
         NSLog("get local candidate, origin: \(origin)")
         var candidates: [Candidate] = []
@@ -123,7 +128,7 @@ class Fire: NSObject {
             let candidate = Candidate(code: code, text: text, type: type)
             candidates.append(candidate)
         }
-        return candidates
+        return (Array(candidates.prefix(5)), hasNext: candidates.count > Defaults[.candidateCount])
     }
 
     static let shared = Fire()
