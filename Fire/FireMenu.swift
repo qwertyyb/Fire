@@ -12,15 +12,15 @@ import Sparkle
 extension FireInputController {
     /* -- menu actions start -- */
     @objc func openAbout (_ sender: Any!) {
-        NSApp.setActivationPolicy(.regular)
+        NSApp.setActivationPolicy(.accessory)
         NSApp.orderFrontStandardAboutPanel(sender)
     }
     @objc func checkForUpdates(_ sender: Any!) {
-        NSApp.setActivationPolicy(.regular)
+        NSApp.setActivationPolicy(.accessory)
         SUUpdater.shared()?.checkForUpdates(sender)
     }
     override func showPreferences(_ sender: Any!) {
-        NSApp.setActivationPolicy(.regular)
+        NSApp.setActivationPolicy(.accessory)
         FirePreferencesController.shared.controller.show()
     }
     override func menu() -> NSMenu! {

@@ -17,7 +17,7 @@ enum HandlerStatus {
 }
 
 class Utils {
-    let shiftKeyUpChecker = ModifierKeyUpChecker(.shift, keyCode: kVK_Shift)
+    var toggleInputModeKeyUpChecker = ModifierKeyUpChecker(.shift)
 
     var toast: ToastWindowProtocol?
 
@@ -29,16 +29,21 @@ class Utils {
                : nil
     }
     private var toastSettingObserver: Defaults.Observation!
+    private var toggleInputModeKeyObserver: Defaults.Observation!
     init() {
         toastSettingObserver = Defaults.observe(keys: .inputModeTipWindowType, .candidateCount) { () in
             self.initToastWindow()
         }
+        toggleInputModeKeyObserver = Defaults.observe(.toggleInputModeKey) { (val) in
+            let modifier = NSEvent.ModifierFlags(rawValue: val.newValue)
+            print("modifier: ", modifier)
+            self.toggleInputModeKeyUpChecker = ModifierKeyUpChecker(modifier)
+        }
     }
-
     deinit {
         toastSettingObserver.invalidate()
+        toggleInputModeKeyObserver.invalidate()
     }
-
     func processHandlers<T>(
         handlers: [(NSEvent) -> T?]
     ) -> ((NSEvent) -> T?) {

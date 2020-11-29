@@ -18,7 +18,7 @@ class FireInputController: IMKInputController {
     private var _candidates: [Candidate] = []
     private var _hasNext: Bool = false
     private var inputMode: InputMode = .zhhans
-    
+
     private var temp: (
         observerList: [NSObjectProtocol],
         monitorList: [Any?]
@@ -69,7 +69,7 @@ class FireInputController: IMKInputController {
 
     private func flagChangedHandler(event: NSEvent) -> Bool? {
         // 只有在shift keyup时，才切换中英文输入, 否则会导致shift+[a-z]大写的功能失效
-        if Utils.shared.shiftKeyUpChecker.check(event) {
+        if Utils.shared.toggleInputModeKeyUpChecker.check(event) {
             NSLog("[FireInputController]toggle mode: \(inputMode)")
 
             // 把当前未上屏的原始code上屏处理

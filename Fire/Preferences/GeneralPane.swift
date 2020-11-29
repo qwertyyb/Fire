@@ -17,8 +17,10 @@ struct GeneralPane: View {
     @Default(.wubiAutoCommit) private var wubiAutoCommit
     @Default(.wubiCodeTip) private var wubiCodeTip
     @Default(.showCodeInWindow) private var showCodeInWindow
-    @Default(.candidatesDirection) var candidatesDirection
-    @Default(.inputModeTipWindowType) var inputModeTipWindowType
+    @Default(.candidatesDirection) private var candidatesDirection
+    @Default(.inputModeTipWindowType) private var inputModeTipWindowType
+    @Default(.zKeyQuery) private var zKeyQuery
+    @Default(.toggleInputModeKey) private var toggleInputModeKey
 
     var body: some View {
         Preferences.Container(contentWidth: 450.0) {
@@ -39,6 +41,10 @@ struct GeneralPane: View {
                                 Toggle("满4码唯一候选词直接上屏", isOn: $wubiAutoCommit)
                                 Spacer(minLength: 50)
                                 Toggle("提示五笔编码", isOn: $wubiCodeTip)
+                                Spacer(minLength: 50)
+                            }
+                            HStack {
+                                Toggle("z键查询", isOn: $zKeyQuery)
                                 Spacer(minLength: 50)
                             }
                         }
@@ -70,6 +76,13 @@ struct GeneralPane: View {
                     GroupBox(label: Text("中英文切换")) {
                         VStack(alignment: .leading, spacing: 12) {
                             HStack {
+                                Picker("快捷键", selection: $toggleInputModeKey) {
+                                    Text("control").tag(NSEvent.ModifierFlags.control.rawValue)
+                                    Text("shift").tag(NSEvent.ModifierFlags.shift.rawValue)
+                                    Text("option").tag(NSEvent.ModifierFlags.option.rawValue)
+                                    Text("command").tag(NSEvent.ModifierFlags.command.rawValue)
+                                }
+                                Spacer(minLength: 50)
                                 Picker(
                                     "提示框位置",
                                     selection: $inputModeTipWindowType
@@ -81,8 +94,7 @@ struct GeneralPane: View {
                                     Text("不显示")
                                     .tag(InputModeTipWindowType.none)
                                 }
-                                .frame(width: 180)
-                                Spacer(minLength: 180)
+//                                .frame(width: 180)
                             }
                         }
                     }
