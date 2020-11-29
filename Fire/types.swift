@@ -38,6 +38,14 @@ extension Defaults.Keys {
     static let codeMode = Key<CodeMode>("codeMode", default: CodeMode.wubiPinyin)
     static let toggleInputModeKey = Key<NSEvent.ModifierFlags.RawValue>("toggleInputModeKey",
         default: NSEvent.ModifierFlags.shift.rawValue)
+    static let wbTablePath = Key<String>(
+        "wbTableURL",
+        default: Bundle.main.resourceURL?.appendingPathComponent("wb_table.txt").path
+            ?? "")
+    static let pyTablePath = Key<String>(
+        "pyTableURL",
+        default: Bundle.main.resourceURL?.appendingPathComponent("py_table").path
+            ?? "")
     //            ^            ^         ^                ^
     //           Key          Type   UserDefaults name   Default value
 }

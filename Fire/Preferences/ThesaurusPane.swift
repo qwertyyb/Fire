@@ -8,18 +8,85 @@
 
 import SwiftUI
 import Preferences
+import Defaults
 
 struct ThesaurusPane: View {
+    @Default(.wbTablePath) private var wbTablePath
+    @Default(.pyTablePath) private var pyTablePath
+
+    private func selectFile() -> String? {
+        let openPanel = NSOpenPanel()
+        openPanel.directoryURL = Bundle.main.resourceURL
+        openPanel.prompt = "选择词库文件"
+        openPanel.allowsMultipleSelection = false
+        openPanel.canChooseDirectories = false
+        openPanel.canCreateDirectories = false
+        openPanel.canChooseFiles = true
+        openPanel.allowedFileTypes = ["txt"]
+        let result = openPanel.runModal()
+        if result == NSApplication.ModalResponse.OK {
+            let selectedPath = openPanel.url!.path
+            print(selectedPath)
+            return selectedPath
+
+        }
+        return nil
+    }
+
     var body: some View {
         Preferences.Container(contentWidth: 450.0) {
             Preferences.Section(title: "") {
-                Button(action: {
-                    Fire.shared.close()
-                    buildDict()
-                    Fire.shared.prepareStatement()
-                }, label: {
-                    Text("重建索引")
-                })
+                VStack(alignment: .leading) {
+                    GroupBox(label: Text("词库设置")) {
+                        VStack(spacing: 6) {
+                            HStack {
+                                Group {
+                                    Text("五笔词库: ")
+                                    Text(wbTablePath)
+                                        .lineLimit(1)
+                                        .padding(.horizontal, 6)
+                                        .truncationMode(.middle)
+                                        .font(.system(size: 10))
+                                        .foregroundColor(.gray)
+                                        .background(Color(.displayP3, red: 0.5, green: 0.5, blue: 0.5, opacity: 1))
+                                        .cornerRadius(4)
+                                        .onTapGesture {
+                                            if let path = selectFile() {
+                                                Defaults[.wbTablePath] = path
+                                            }
+                                        }
+                                }
+                                Spacer()
+                            }
+                            HStack {
+                                Group {
+                                    Text("拼音词库: ")
+                                    Text(pyTablePath)
+                                        .lineLimit(1)
+                                        .padding(.horizontal, 6)
+                                        .truncationMode(.middle)
+                                        .font(.system(size: 10))
+                                        .foregroundColor(.gray)
+                                        .background(Color(.displayP3, red: 0.5, green: 0.5, blue: 0.5, opacity: 1))
+                                        .cornerRadius(4)
+                                        .onTapGesture {
+                                            if let path = selectFile() {
+                                                Defaults[.pyTablePath] = path
+                                            }
+                                        }
+                                }
+                                Spacer()
+                            }
+                        }
+                    }
+                    Button(action: {
+                        Fire.shared.close()
+                        buildDict()
+                        Fire.shared.prepareStatement()
+                    }, label: {
+                        Text("建立索引")
+                    })
+                }
             }
         }
     }

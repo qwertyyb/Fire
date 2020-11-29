@@ -83,6 +83,7 @@ class Fire: NSObject {
 
     func close() {
         sqlite3_close(database)
+        database = nil
     }
 
     func prepareStatement() {

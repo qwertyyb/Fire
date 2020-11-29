@@ -8,6 +8,7 @@
 
 import Foundation
 import Cocoa
+import Defaults
 
 func getDatabaseURL () -> URL {
     guard let supportDir = FileManager.default.urls(for: .applicationSupportDirectory, in: .userDomainMask).first else {
@@ -79,12 +80,13 @@ func beforeBuildDict() {
 }
 
 func afterBuildDict() {
+    print("update dict with new")
     var bkURL = getDatabaseURL()
     bkURL.appendPathExtension("bk")
 
     var dbTempURL = getDatabaseURL()
     dbTempURL.appendPathExtension("ing")
-
+    try? FileManager.default.removeItem(at: bkURL)
     try? FileManager.default.moveItem(at: getDatabaseURL(), to: bkURL)
     try? FileManager.default.moveItem(at: dbTempURL, to: getDatabaseURL())
 }
@@ -92,16 +94,17 @@ func afterBuildDict() {
 func buildDict() {
     beforeBuildDict()
 
-    let wbPath = Bundle.main.path(forResource: "wb_table", ofType: "txt") ?? ""
-    let pyPath = Bundle.main.path(forResource: "py_table", ofType: "txt") ?? ""
+    let wbPath = Defaults[.wbTablePath]
+    let pyPath = Defaults[.pyTablePath]
 
     let wb = buildTable(txtPath: wbPath, tableName: "wb_dict")
     let py = buildTable(txtPath: pyPath, tableName: "py_dict")
     let cb = combineTableList(wbTable: "wb_dict", pyTable: "py_dict")
 
     print(wb, py, cb)
-
-    afterBuildDict()
+    if wb && py && cb {
+        afterBuildDict()
+    }
 }
 
 func hasDict() -> Bool {
