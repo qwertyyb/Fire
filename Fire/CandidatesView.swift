@@ -10,11 +10,15 @@ import SwiftUI
 import Defaults
 
 func getShownCode(candidate: Candidate, origin: String) -> String {
-    if candidate.type == "py" {
+    if candidate.type == "py" || !candidate.code.hasPrefix(origin) {
         return "(\(candidate.code))"
     }
-    return candidate.code.hasPrefix(origin) && candidate.code.count > origin.count
-        ? "~\(String(candidate.code.suffix(candidate.code.count - origin.count)))" : ""
+    if candidate.code.hasPrefix(origin) {
+        return candidate.code.count > origin.count
+            ? "~\(String(candidate.code.suffix(candidate.code.count - origin.count)))"
+            : ""
+    }
+    return ""
 }
 
 struct CandidateView: View {

@@ -22,6 +22,7 @@ enum InputModeTipWindowType: Int, Decodable, Encodable {
 }
 
 extension Defaults.Keys {
+    static let zKeyQuery = Key<Bool>("zKeyQuery", default: true)
     static let candidatesDirection = Key<CandidatesDirection>(
         "candidatesDirection",
         default: CandidatesDirection.horizontal
@@ -35,6 +36,8 @@ extension Defaults.Keys {
     static let wubiAutoCommit = Key<Bool>("wubiAutoCommit", default: false)
     static let candidateCount = Key<Int>("candidateCount", default: 5)
     static let codeMode = Key<CodeMode>("codeMode", default: CodeMode.wubiPinyin)
+    static let toggleInputModeKey = Key<NSEvent.ModifierFlags.RawValue>("toggleInputModeKey",
+        default: NSEvent.ModifierFlags.shift.rawValue)
     //            ^            ^         ^                ^
     //           Key          Type   UserDefaults name   Default value
 }

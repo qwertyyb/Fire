@@ -18,12 +18,24 @@ extension Date {
 }
 
 class ModifierKeyUpChecker {
-    init(_ modifier: NSEvent.ModifierFlags, keyCode: Int) {
+    init(_ modifier: NSEvent.ModifierFlags) {
         checkModifier = modifier
-        checkKeyCode = keyCode
     }
     let checkModifier: NSEvent.ModifierFlags
-    let checkKeyCode: Int
+    var checkKeyCode: Int {
+        switch self.checkModifier {
+        case .shift:
+            return kVK_Shift
+        case .command:
+            return kVK_Command
+        case .control:
+            return kVK_Control
+        case .option:
+            return kVK_Option
+        default:
+            return 0
+        }
+    }
 
     private let delayInterval = 0.3
 
