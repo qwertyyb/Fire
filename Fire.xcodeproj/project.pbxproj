@@ -26,6 +26,7 @@
 		459DE990232EB26600A3ACD1 /* CandidatesView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 459DE98E232EB26500A3ACD1 /* CandidatesView.swift */; };
 		459DE991232EB26600A3ACD1 /* CandidatesWindow.swift in Sources */ = {isa = PBXBuildFile; fileRef = 459DE98F232EB26500A3ACD1 /* CandidatesWindow.swift */; };
 		45D996AA253C5232001460A8 /* GeneralPane.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45D996A9253C5232001460A8 /* GeneralPane.swift */; };
+		45E85F742573BE1800F71024 /* wb_98_table.txt in Resources */ = {isa = PBXBuildFile; fileRef = 45E85F732573BE1800F71024 /* wb_98_table.txt */; };
 		673A400C253D9FE70003901E /* InputSource.swift in Sources */ = {isa = PBXBuildFile; fileRef = 673A400B253D9FE70003901E /* InputSource.swift */; };
 		673C416925468A4800F462A3 /* FireMenu.swift in Sources */ = {isa = PBXBuildFile; fileRef = 673C416825468A4800F462A3 /* FireMenu.swift */; };
 		673C417225468FFA00F462A3 /* ModifierKeyUpChecker.swift in Sources */ = {isa = PBXBuildFile; fileRef = 673C417125468FFA00F462A3 /* ModifierKeyUpChecker.swift */; };
@@ -90,6 +91,7 @@
 		459DE98E232EB26500A3ACD1 /* CandidatesView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CandidatesView.swift; sourceTree = "<group>"; };
 		459DE98F232EB26500A3ACD1 /* CandidatesWindow.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CandidatesWindow.swift; sourceTree = "<group>"; };
 		45D996A9253C5232001460A8 /* GeneralPane.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GeneralPane.swift; sourceTree = "<group>"; };
+		45E85F732573BE1800F71024 /* wb_98_table.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = wb_98_table.txt; sourceTree = "<group>"; };
 		497E90F13FA9A943AC0BE3DB /* Pods-Fire.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Fire.release.xcconfig"; path = "Target Support Files/Pods-Fire/Pods-Fire.release.xcconfig"; sourceTree = "<group>"; };
 		673A400B253D9FE70003901E /* InputSource.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InputSource.swift; sourceTree = "<group>"; };
 		673C416825468A4800F462A3 /* FireMenu.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FireMenu.swift; sourceTree = "<group>"; };
@@ -199,6 +201,7 @@
 		45577E522543F1000064325B /* Resources */ = {
 			isa = PBXGroup;
 			children = (
+				45E85F732573BE1800F71024 /* wb_98_table.txt */,
 				45577E552543F4060064325B /* wb_table.txt */,
 				45577E91254448B80064325B /* py_table.txt */,
 			);
@@ -326,6 +329,7 @@
 			files = (
 				67E8B515233B97FD00D7CE80 /* InfoPlist.strings in Resources */,
 				451E605D232E3A3C007B0463 /* MainMenu.xib in Resources */,
+				45E85F742573BE1800F71024 /* wb_98_table.txt in Resources */,
 				45577E92254448B80064325B /* py_table.txt in Resources */,
 				45577E562543F4060064325B /* wb_table.txt in Resources */,
 				67E8B521233C537B00D7CE80 /* fire.pdf in Resources */,

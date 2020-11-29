@@ -180,6 +180,7 @@ int main(int argc, const char * argv[]) {
         open_database();
         
         build_wb_py_dict(py_dict, wb_dict);
+        sqlite3_close(db);
         return 0;
     }
     
@@ -229,6 +230,6 @@ int main(int argc, const char * argv[]) {
         }
     }
     
-    
+    sqlite3_close(db);
     return 0;
 }
