@@ -83,12 +83,12 @@ func afterBuildDict() {
     print("update dict with new")
     var bkURL = getDatabaseURL()
     bkURL.appendPathExtension("bk")
+    
+    let dbURL = getDatabaseURL()
 
-    var dbTempURL = getDatabaseURL()
-    dbTempURL.appendPathExtension("ing")
     try? FileManager.default.removeItem(at: bkURL)
-    try? FileManager.default.moveItem(at: getDatabaseURL(), to: bkURL)
-    try? FileManager.default.moveItem(at: dbTempURL, to: getDatabaseURL())
+    try? FileManager.default.moveItem(at: dbURL, to: bkURL)
+    try? FileManager.default.moveItem(at: getDatabaseURL().appendingPathExtension("ing"), to: dbURL)
 }
 
 func buildDict() {
