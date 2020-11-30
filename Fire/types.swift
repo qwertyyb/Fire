@@ -44,7 +44,7 @@ extension Defaults.Keys {
             ?? "")
     static let pyTablePath = Key<String>(
         "pyTableURL",
-        default: Bundle.main.resourceURL?.appendingPathComponent("py_table").path
+        default: Bundle.main.resourceURL?.appendingPathComponent("py_table.txt").path
             ?? "")
     //            ^            ^         ^                ^
     //           Key          Type   UserDefaults name   Default value
