@@ -82,7 +82,10 @@ class Fire: NSObject {
     }
 
     func close() {
+        queryStatement = nil
         sqlite3_close(database)
+        sqlite3_close_v2(database)
+        sqlite3_shutdown()
         database = nil
     }
 
