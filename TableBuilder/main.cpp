@@ -132,6 +132,15 @@ void build_wb_py_dict(string py_dict, string wb_dict) {
         cout<<"initilize wb_py_dict created failure: "<<sqlite3_errmsg(db) <<endl;
         exit(1);
     }
+    
+    sql = "create index if not exists query_index on wb_py_dict(query)";
+    rc = sqlite3_exec(db, sql.c_str(), NULL, NULL, NULL);
+    if (rc == SQLITE_OK) {
+        cout<<"create index success"<<endl;
+    } else {
+        cout<<"create index fail: "<<sqlite3_errmsg(db)<<endl;
+        exit(1);
+    }
 }
 
 
@@ -171,6 +180,7 @@ int main(int argc, const char * argv[]) {
         open_database();
         
         build_wb_py_dict(py_dict, wb_dict);
+        sqlite3_close(db);
         return 0;
     }
     
@@ -220,6 +230,6 @@ int main(int argc, const char * argv[]) {
         }
     }
     
-    
+    sqlite3_close(db);
     return 0;
 }

@@ -83,6 +83,7 @@ class Fire: NSObject {
 
     func close() {
         sqlite3_close(database)
+        database = nil
     }
 
     func prepareStatement() {
@@ -96,12 +97,28 @@ class Fire: NSObject {
         }
     }
 
+    private func getQueryFromOrigin(_ origin: String) -> String {
+        if origin.isEmpty {
+            return origin
+        }
+
+        if !Defaults[.zKeyQuery] {
+            return origin
+        }
+
+        // z键查询，z不能放在首位
+        let first = origin.first!
+        return String(first) + (String(origin.suffix(origin.count - 1))
+            .replacingOccurrences(of: "z", with: "_"))
+    }
+
     var server: IMKServer = IMKServer.init(name: kConnectionName, bundleIdentifier: Bundle.main.bundleIdentifier)
     func getCandidates(origin: String = String(), page: Int = 1) -> (candidates: [Candidate], hasNext: Bool) {
         if origin.count <= 0 {
             return ([], false)
         }
-        NSLog("get local candidate, origin: \(origin)")
+        let query = getQueryFromOrigin(origin)
+        NSLog("get local candidate, origin: \(origin), query: ", query)
         var candidates: [Candidate] = []
         sqlite3_reset(queryStatement)
         sqlite3_clear_bindings(queryStatement)
@@ -112,7 +129,7 @@ class Fire: NSObject {
         )
         sqlite3_bind_text(queryStatement,
                           sqlite3_bind_parameter_index(queryStatement, ":query"),
-                          "\(origin)%", -1,
+                          "\(query)%", -1,
                           SQLITE_TRANSIENT
         )
         sqlite3_bind_int(queryStatement,
