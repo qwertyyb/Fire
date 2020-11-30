@@ -3,14 +3,14 @@
     <channel>
         <title>Fire</title>
         <item>
-            <title>v0.1.2</title>
-            <pubDate>Mon, 09 Nov 2020 03:58:03 +0000</pubDate>
+            <title>v0.2.0</title>
+            <pubDate>Mon, 30 Nov 2020 13:36:02 +0000</pubDate>
             <sparkle:minimumSystemVersion>10.15</sparkle:minimumSystemVersion>
             <enclosure url="https://github.com/qwertyyb/Fire/releases/latest/download/FireInstaller.pkg"
-              sparkle:version="20201109035714"
-              sparkle:shortVersionString="v0.1.2"
-              length="2640057"
-              sparkle:edSignature="GGRyIemfBlGwx4KUmgwxRGaTfxkh9sA0v1xLIoeyZy2eitlCXVV0IR94CugCg+Z/MfHB9gZMIKVWBu+GGaCnAg=="
+              sparkle:version="20201130133516"
+              sparkle:shortVersionString="v0.2.0"
+              length="3214363"
+              sparkle:edSignature="fwzCz0KFzA+D2soFlzGalfpIdFXF21hep6kKVr03egy9luh4RQZrVJ+yY1c/lmwqfYkKZBVqvSm2RbW7fANDBw=="
               type="application/octet-stream"/>
         </item>
     </channel>
