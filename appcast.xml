@@ -8,6 +8,7 @@
             <sparkle:minimumSystemVersion>10.15</sparkle:minimumSystemVersion>
             <enclosure url="https://github.com/qwertyyb/Fire/releases/latest/download/FireInstaller.pkg"
               sparkle:version="20210218111033"
+              sparkle:installationType="package"
               sparkle:shortVersionString="v0.3.1"
               length="3818640"
               sparkle:edSignature="0EQd3VPloMFKATlY3zUG1dkqYfhPqI1nhQU+o62+NzxQ3eLZ8z5ZPST4pb5m5jLu17So/tONWP55SH5LAlMWAA=="
