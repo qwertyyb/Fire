@@ -9,11 +9,11 @@ then
     exit 1
 fi
 
-download_url='https://github.com/qwertyyb/Fire/releases/latest/download/FireInstaller.pkg'
+download_url='https://github.com/qwertyyb/Fire/releases/latest/download/FireInstaller.zip'
 
 version=$(git describe --tags `git rev-list --tags --max-count=1`)
 
-str=$($PROJECT_ROOT/Pods/Sparkle/bin/sign_update -s "${sparkle_key}" "$EXPORT_INSTALLER")
+str=$($PROJECT_ROOT/Pods/Sparkle/bin/sign_update -s "${sparkle_key}" "$EXPORT_INSTALLER_ZIP")
 
 sign=$(echo $str | grep "edSignature=\"[^\"]*" -o | grep "\"[^\"]*" -o)
 sign=${sign#\"}
@@ -45,6 +45,10 @@ cat>$EXPORT_PATH/appcast.xml<<EOF
             <title>${version}</title>
             <pubDate>$(date -R)</pubDate>
             <sparkle:minimumSystemVersion>10.15</sparkle:minimumSystemVersion>
+            <description><![CDATA[
+                ${update_notes}
+            ]]>
+            </description>
             <enclosure url="${download_url}"
               sparkle:version="${CFBundleVersion}"
               sparkle:shortVersionString="${version}"
