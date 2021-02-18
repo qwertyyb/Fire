@@ -1,10 +1,19 @@
 #!/bin/bash
 
+PROJECT_ROOT="$(cd "$(dirname "$BASH_SOURCE")/.."; pwd)"
+source "$PROJECT_ROOT/scripts/common.sh"
+
+if [[ ${sparkle_key} == "" ]]
+then
+    echo "Error: No Sparkle key"
+    exit 1
+fi
+
 download_url='https://github.com/qwertyyb/Fire/releases/latest/download/FireInstaller.pkg'
 
 version=$(git describe --tags `git rev-list --tags --max-count=1`)
 
-str=$(./Pods/Sparkle/bin/sign_update -s "${sparkle_key}" ./apps/FireInstaller.pkg)
+str=$($PROJECT_ROOT/Pods/Sparkle/bin/sign_update -s "${sparkle_key}" "$EXPORT_INSTALLER")
 
 sign=$(echo $str | grep "edSignature=\"[^\"]*" -o | grep "\"[^\"]*" -o)
 sign=${sign#\"}
@@ -15,13 +24,19 @@ length=${length#\"}
 echo "${sign}";
 echo "${length}"
 
+if [[ $sign == "" ]]
+then
+    echo "Sign Failed: no sign"
+    exit 1
+fi
 
-CFBundleVersion=$(/usr/libexec/PlistBuddy -c "Print CFBundleVersion" Fire/Info.plist)
+
+CFBundleVersion=$(/usr/libexec/PlistBuddy -c "Print CFBundleVersion" "$PROJECT_ROOT/Fire/Info.plist")
 
 echo "${version}"
 echo "${CFBundleVersion}"
 
-cat>./apps/appcast.xml<<EOF
+cat>$EXPORT_PATH/appcast.xml<<EOF
 <?xml version="1.0" standalone="yes"?>
 <rss xmlns:sparkle="http://www.andymatuschak.org/xml-namespaces/sparkle" version="2.0">
     <channel>
