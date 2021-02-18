@@ -1,8 +1,8 @@
 PODS:
   - Defaults (4.1.0)
-  - Preferences (2.0.1)
-  - Sparkle (1.23.0)
-  - SwiftLint (0.40.3)
+  - Preferences (2.2.0)
+  - Sparkle (1.24.0)
+  - SwiftLint (0.42.0)
 
 DEPENDENCIES:
   - Defaults
@@ -19,10 +19,10 @@ SPEC REPOS:
 
 SPEC CHECKSUMS:
   Defaults: 2198ac20a65633de273110b5e9954f0a252f275b
-  Preferences: 1ce41315ecadd28a9a4dd92ccd5dea7ca3437f92
-  Sparkle: 55b1a87ba69d56913375a281546b7c82dec95bb0
-  SwiftLint: dfd554ff0dff17288ee574814ccdd5cea85d76f7
+  Preferences: 4894cc28df3557336b0b72440c893d95203d3e33
+  Sparkle: 270cd27377bf04e9c128af06e3a22d0f572d6ee3
+  SwiftLint: 4fa9579c63416865179bc416f0a92d55f009600d
 
-PODFILE CHECKSUM: fcf20d06250373889826449c419d7cc2b0688a1e
+PODFILE CHECKSUM: f3222fdef34001bff78c89a55dda9f7e0a1e60e3
 
-COCOAPODS: 1.9.3
+COCOAPODS: 1.10.1

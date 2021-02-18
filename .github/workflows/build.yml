@@ -1,6 +1,12 @@
 name: build installer.pkg
 
 on:
+  workflow_dispatch:
+    inputs: 
+      release:
+        description: 'release version'
+        required: true
+        default: 'v1.0.2'
   pull_request:
     types: [closed]
 
@@ -72,24 +78,27 @@ jobs:
     - name: install depencies
       run: pod install
 
-    - name: build
-      run: ./build_app.sh
+    - name: build Fire.app
+      run: ./scripts/a_build_app.sh
 
-    - name: make FireInstaller.pkg
-      run: ./package/make_package.sh
+    - name: build FireInstaller.pkg
+      run: ./scripts/b_build_installer.sh
+
+    - name: notarize FireInstaller.pkg
+      run: ./scripts/c_notarize_installer.sh
 
     - name: generate appcast.xml
       env:
         sparkle_key: ${{ secrets.sparkle_key }}
-      run: ./build_appcast.sh
+      run: ./scripts/d_build_appcast.sh
 
     - name: gather artifact
-      run: cp ./Fire/Info.plist ./apps/
+      run: cp ./Fire/Info.plist ./dist/
 
     - uses: actions/upload-artifact@v2
       with:
-        name: apps
-        path: ./apps/
+        name: dist
+        path: ./dist/
         retention-days: 7
 
   upload_publish:
@@ -100,8 +109,8 @@ jobs:
 
     - uses: actions/download-artifact@v2
       with:
-        name: apps
-        path: ./apps
+        name: dist
+        path: ./dist
 
     - uses: actions/download-artifact@v2
       with:
@@ -120,7 +129,7 @@ jobs:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       with:
         upload_url: ${{ steps.get_upload_url.outputs.upload_url }}
-        asset_path: ./apps/FireInstaller.pkg
+        asset_path: ./dist/FireInstaller.pkg
         asset_name: FireInstaller.pkg
         asset_content_type: application/octet-stream
 
@@ -130,7 +139,7 @@ jobs:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       with:
         upload_url: ${{ steps.get_upload_url.outputs.upload_url }}
-        asset_path: ./apps/Fire.zip
+        asset_path: ./dist/Fire.zip
         asset_name: Fire.zip
         asset_content_type: application/zip
 
@@ -141,7 +150,7 @@ jobs:
         git checkout .
         git fetch
         git checkout gh-pages
-        mv apps/appcast.xml ./appcast.xml
+        mv dist/appcast.xml ./appcast.xml
         git add appcast.xml
         git commit -m "feat: 更新appcast.xml"
         git push origin gh-pages

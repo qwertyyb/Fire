@@ -1,5 +1,6 @@
 
 /apps
+/dist
 /*.xcarchive
 /*.log
 /package/*.pkg

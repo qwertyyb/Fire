@@ -1,0 +1,13 @@
+#!/bin/bash
+
+PROJECT_ROOT="$(cd "$(dirname "$BASH_SOURCE")/.."; pwd)"
+TARGET="Fire"
+WORKSPACE="$PROJECT_ROOT/${TARGET}.xcworkspace"
+
+EXPORT_PATH="$PROJECT_ROOT/dist"
+EXPORT_ARCHIVE="$EXPORT_PATH/archive.xcarchive"
+EXPORT_APP="$EXPORT_PATH/$TARGET.app"
+EXPORT_ZIP="$EXPORT_PATH/$TARGET.zip"
+EXPORT_INSTALLER="$EXPORT_PATH/FireInstaller.pkg"
+
+echo "PROJECT_ROOT=$PROJECT_ROOT"
