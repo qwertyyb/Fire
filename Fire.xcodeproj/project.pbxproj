@@ -652,8 +652,8 @@
 		45577E6525442E240064325B /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				CODE_SIGN_IDENTITY = "Apple Development";
-				CODE_SIGN_STYLE = Automatic;
+				CODE_SIGN_IDENTITY = "Developer ID Application";
+				CODE_SIGN_STYLE = Manual;
 				DEVELOPMENT_TEAM = T68XK6867P;
 				ENABLE_HARDENED_RUNTIME = YES;
 				MACH_O_TYPE = mh_execute;
