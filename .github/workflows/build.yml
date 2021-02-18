@@ -100,6 +100,9 @@ jobs:
       run: ./scripts/b_build_installer.sh
 
     - name: notarize FireInstaller.pkg
+      env:
+        apple_id: ${{ secrets.APPLE_ID }}
+        apple_id_password: ${{ secrets.APPLE_ID_PASSWORD }}
       run: ./scripts/c_notarize_installer.sh
 
     - name: generate appcast.xml

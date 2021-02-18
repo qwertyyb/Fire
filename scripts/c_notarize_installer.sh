@@ -1,7 +1,19 @@
 #!/bin/bash
 
-AC_USERNAME="qwertyyb@qq.com"
-AC_PASSWORD="ijrn-znsz-qpzt-jqse"
+AC_USERNAME="$apple_id"
+AC_PASSWORD="$apple_id_password"
+
+if [[ $AC_USERNAME == "" ]]; then
+  echo "error: no username"
+  exit 1
+  break
+fi
+
+if [[ $AC_PASSWORD == "" ]]; then
+  echo "error: no pass"
+  exit 1
+  break
+fi
 
 PROJECT_ROOT="$(cd "$(dirname "$BASH_SOURCE")/.."; pwd)"
 source "$PROJECT_ROOT/scripts/common.sh"
