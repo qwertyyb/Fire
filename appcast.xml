@@ -6,6 +6,13 @@
             <title>v0.3.1</title>
             <pubDate>Thu, 18 Feb 2021 11:14:07 +0000</pubDate>
             <sparkle:minimumSystemVersion>10.15</sparkle:minimumSystemVersion>
+            <description><![CDATA[
+                <h3 id="bug-fixes">Bug Fixes</h3>
+<ul>
+<li><strong>candidates:</strong> 修复候选词的问题 (<a href="https://github.com/qwertyyb/Fire/commit/1c3a35bc246cdb46b184417330fc77502e152d2a">1c3a35b</a>)</li>
+</ul>
+            ]]>
+            </description>
             <enclosure url="https://github.com/qwertyyb/Fire/releases/latest/download/FireInstaller.zip"
               sparkle:version="20210218111033"
               sparkle:installationType="package"
