@@ -37,6 +37,7 @@ pkgbuild \
     --sign "Developer ID Installer: Yongbang Yang" \
     "$EXPORT_INSTALLER"
 
-# clean
+# pack zip for update
+zip "$EXPORT_INSTALLER_ZIP" "$EXPORT_INSTALLER"
 
 rm -rf "${ROOT_DIR}"

@@ -36,12 +36,22 @@ jobs:
           release_name: ${{ steps.changelog.outputs.tag }}
           body: ${{ steps.changelog.outputs.clean_changelog }}
 
-      - name: Write Changelog variable
+      - name: write update url to temp
         env:
           upload_url: ${{ steps.create_release.outputs.upload_url }}
         run: |
           mkdir tmp
           echo "${upload_url}" > tmp/upload_url
+      
+      - uses: lifepal/markdown-to-html@v1.2
+        id: create_html
+        with:
+          text: ${{ steps.changelog.outputs.clean_changelog }}
+      
+      - name: write changelog to temp
+        env:
+          changelog_html: ${{ steps.create_html.outputs.html }}
+        run: echo "$changelog_html" > tmp/changelog_html
 
       - uses: actions/upload-artifact@v2
         with:
@@ -104,10 +114,22 @@ jobs:
         apple_id: ${{ secrets.APPLE_ID }}
         apple_id_password: ${{ secrets.APPLE_ID_PASSWORD }}
       run: ./scripts/c_notarize_installer.sh
+    
+    - uses: actions/download-artifact@v2
+      with:
+        name: tmp
+        path: ./tmp
+
+    - name: load changelog to env
+      id: load_changelog
+      run: |
+        changelog=`cat tmp/changelog_html`
+        echo "::set-output name=changelog_html::${changelog}"
 
     - name: generate appcast.xml
       env:
         sparkle_key: ${{ secrets.sparkle_key }}
+        update_notes: ${{ steps.load_changelog.outputs.changelog_html }}
       run: ./scripts/d_build_appcast.sh
 
     - name: gather artifact
@@ -135,7 +157,7 @@ jobs:
         name: tmp
         path: ./tmp
     
-    - name: 'Load UploadURL'
+    - name: load update url
       id: get_upload_url
       run: |
         value=`cat tmp/upload_url`
@@ -150,6 +172,16 @@ jobs:
         asset_path: ./dist/FireInstaller.pkg
         asset_name: FireInstaller.pkg
         asset_content_type: application/octet-stream
+
+    - name: Upload Release Asset(installer.zip)
+      uses: actions/upload-release-asset@v1
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      with:
+        upload_url: ${{ steps.get_upload_url.outputs.upload_url }}
+        asset_path: ./dist/FireInstaller.zip
+        asset_name: FireInstaller.zip
+        asset_content_type: application/zip
 
     - name: Upload Release Asset(Fire.zip)
       uses: actions/upload-release-asset@v1

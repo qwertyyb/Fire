@@ -2,9 +2,11 @@
 
 TARGET='Fire'
 
-pkill -9 "${TARGET}" && rm -rf "/Library/Input\ Methods/${TARGET}.app"
-
 login_user=`/usr/bin/stat -f%Su /dev/console`
+
+/usr/bin/sudo -u "${login_user}" pkill -9 "${TARGET}"
+/usr/bin/sudo -u "${login_user}" rm -rf "/Library/Input\ Methods/${TARGET}.app"
+
 
 /usr/bin/sudo -u "${login_user}" "/Library/Input Methods/${TARGET}.app/Contents/MacOS/${TARGET}" --install
 
