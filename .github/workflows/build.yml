@@ -124,9 +124,9 @@ jobs:
       id: load_changelog
       run: |
         changelog=`cat tmp/changelog_html`
-        changelog="${changelog//'%'/'%25'}"
-        changelog="${changelog//$'\n'/'%0A'}"
-        changelog="${changelog//$'\r'/'%0D'}"
+        changelog="${changelog//'%'/%25}"
+        changelog="${changelog//$'\n'/%0A}"
+        changelog="${changelog//$'\r'/%0D}"
         echo "::set-output name=changelog_html::${changelog}"
 
     - name: generate appcast.xml
