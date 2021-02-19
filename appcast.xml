@@ -3,22 +3,18 @@
     <channel>
         <title>Fire</title>
         <item>
-            <title>v0.3.1</title>
-            <pubDate>Thu, 18 Feb 2021 11:14:07 +0000</pubDate>
+            <title>v0.3.2</title>
+            <pubDate>Fri, 19 Feb 2021 11:47:35 +0000</pubDate>
             <sparkle:minimumSystemVersion>10.15</sparkle:minimumSystemVersion>
             <description><![CDATA[
-                <h3 id="bug-fixes">Bug Fixes</h3>
-<ul>
-<li><strong>candidates:</strong> 修复候选词的问题 (<a href="https://github.com/qwertyyb/Fire/commit/1c3a35bc246cdb46b184417330fc77502e152d2a">1c3a35b</a>)</li>
-</ul>
+                <h3 id="bugfixes">Bug Fixes</h3>
             ]]>
             </description>
             <enclosure url="https://github.com/qwertyyb/Fire/releases/latest/download/FireInstaller.zip"
-              sparkle:version="20210218111033"
-              sparkle:installationType="package"
-              sparkle:shortVersionString="v0.3.1"
-              length="3804626"
-              sparkle:edSignature="fc1z6CTUFoL5wl5HnW9HJGH0q5i+YkluccnifTLeoWM4pTbShOfA4BOGmbBhHSCL77Caz1V29sjmV6HHTba6Ag=="
+              sparkle:version="20210219114317"
+              sparkle:shortVersionString="v0.3.2"
+              length="3803702"
+              sparkle:edSignature="b/sXlCXblsaSkoRiIjTmQIW5xpMjYuWagr60W8hCYj/iq1NhM7sXb3pR16Jhyl0BzCA5sJb9o4A1qU3IaFbrDQ=="
               type="application/octet-stream"/>
         </item>
     </channel>
