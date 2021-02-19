@@ -3,18 +3,21 @@
     <channel>
         <title>Fire</title>
         <item>
-            <title>v0.3.2</title>
-            <pubDate>Fri, 19 Feb 2021 11:47:35 +0000</pubDate>
+            <title>v0.3.3</title>
+            <pubDate>Fri, 19 Feb 2021 12:56:47 +0000</pubDate>
             <sparkle:minimumSystemVersion>10.15</sparkle:minimumSystemVersion>
             <description><![CDATA[
-                <h3 id="bugfixes">Bug Fixes</h3>
+                <h3 id="bugfixes">Bug Fixes</h3>'
+'<ul>'
+'<li><strong>build:</strong> 修复更新内容只能显示一行的问题 (<a href="https://github.com/qwertyyb/Fire/issues/40">#40</a>) (<a href="https://github.com/qwertyyb/Fire/commit/797ef0f0f588ac568f1d7bd1ceef26150f83c943">797ef0f</a>)</li>'
+'</ul>
             ]]>
             </description>
             <enclosure url="https://github.com/qwertyyb/Fire/releases/latest/download/FireInstaller.zip"
-              sparkle:version="20210219114317"
-              sparkle:shortVersionString="v0.3.2"
-              length="3803702"
-              sparkle:edSignature="b/sXlCXblsaSkoRiIjTmQIW5xpMjYuWagr60W8hCYj/iq1NhM7sXb3pR16Jhyl0BzCA5sJb9o4A1qU3IaFbrDQ=="
+              sparkle:version="20210219125311"
+              sparkle:shortVersionString="v0.3.3"
+              length="3801401"
+              sparkle:edSignature="wx2oQLsI5PLzP7q8S9MUgsV/D9zp4e45YQDNtQGGqjMyQI/dhm4AsM5yDogCsqjIGglWLti2KuIpMftoPg30CQ=="
               type="application/octet-stream"/>
         </item>
     </channel>
