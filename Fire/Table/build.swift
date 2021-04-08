@@ -83,7 +83,7 @@ func afterBuildDict() {
     print("update dict with new")
     var bkURL = getDatabaseURL()
     bkURL.appendPathExtension("bk")
-    
+
     let dbURL = getDatabaseURL()
 
     try? FileManager.default.removeItem(at: bkURL)
