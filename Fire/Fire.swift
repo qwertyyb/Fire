@@ -149,13 +149,14 @@ class Fire: NSObject {
             candidates.append(candidate)
         }
         let count = Defaults[.candidateCount]
+        let allCount = candidates.count
         candidates = Array(candidates.prefix(count))
 
         if candidates.isEmpty {
             candidates.append(Candidate(code: origin, text: origin, type: "wb"))
         }
 
-        return (candidates, hasNext: candidates.count > count)
+        return (candidates, hasNext: allCount > count)
     }
 
     static let shared = Fire()
