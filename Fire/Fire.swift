@@ -37,6 +37,10 @@ class Fire: NSObject {
     private var queryStatement: OpaquePointer?
     private var preferencesObserver: Defaults.Observation!
 
+    let appSettingCache = ApplicationSettingCache()
+
+    var inputMode: InputMode = .zhhans
+
     override init() {
         super.init()
 

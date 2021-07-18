@@ -17,7 +17,10 @@ typealias NotificationObserver = (name: Notification.Name, callback: (_ notifica
 class FireInputController: IMKInputController {
     private var _candidates: [Candidate] = []
     private var _hasNext: Bool = false
-    private var inputMode: InputMode = .zhhans
+    private var inputMode: InputMode {
+        get { Fire.shared.inputMode }
+        set(value) { Fire.shared.inputMode = value }
+    }
 
     private var temp: (
         observerList: [NSObjectProtocol],
@@ -26,8 +29,7 @@ class FireInputController: IMKInputController {
         observerList: [],
         monitorList: []
     )
-//    private var observerList: [NSObjectProtocol] = []
-//    private var flagsChangeEventMonitor: Any?
+
     private var _originalString = "" {
         didSet {
             if self.curPage != 1 {
@@ -296,11 +298,32 @@ class FireInputController: IMKInputController {
     }
 
     /**
+     * 根据当前输入的应用改变输入模式
+     */
+    private func activeClientInputMode() {
+        guard let identifier = client()?.bundleIdentifier() else { return }
+        if let appSetting = Defaults[.appSettings][identifier],
+           let mode = InputMode(rawValue: appSetting.inputModeSetting.rawValue) {
+            print("[FireInputController] activeClientInputMode from setting : \(identifier), \(mode)")
+            inputMode = mode
+            return
+        }
+        if !Defaults[.keepAppInputMode] { return }
+        // 启用APP缓存设置
+        if let appSetting = Fire.shared.appSettingCache.get(bundleIdentifier: identifier),
+           let mode = InputMode(rawValue: appSetting.inputModeSetting.rawValue) {
+            print("[FireInputController] activeClientInputMode from cache: \(identifier), \(mode)")
+            inputMode = mode
+        }
+    }
+
+    /**
      * 由于使用recognizedEvents在一些场景下不能监听到flagChanged事件，比如保存文件场景
      * 所以这里需要使用NSEvent.addGlobalMonitorForEvents监听shift键被按下
      */
     override func activateServer(_ sender: Any!) {
-        NSLog("[FireInputController] activate server: \(client().bundleIdentifier() ?? "no client deactivate")")
+        NSLog("[FireInputController] activate server: \(client().bundleIdentifier() ?? sender.debugDescription)")
+        activeClientInputMode()
         temp.monitorList.append(NSEvent.addGlobalMonitorForEvents(matching: .flagsChanged) { (event) in
             _ = self.handle(event, client: self.client())
         })
@@ -310,6 +333,16 @@ class FireInputController: IMKInputController {
     }
     override func deactivateServer(_ sender: Any!) {
         NSLog("[FireInputController] deactivate server: \(client().bundleIdentifier() ?? "no client deactivate")")
+        if let identifier = client().bundleIdentifier() {
+        // 缓存当前输入模式
+            Fire.shared.appSettingCache.add(
+                bundleIdentifier: identifier,
+                setting: ApplicationSettingItem(
+                    bundleId: identifier,
+                    inputMs: InputModeSetting(rawValue: inputMode.rawValue)!
+                )
+            )
+        }
         clean()
         temp.monitorList.forEach { (monitor) in
             if let m = monitor {
