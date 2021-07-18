@@ -107,7 +107,7 @@ struct ApplicationPane: View {
     }
 
     var body: some View {
-        Preferences.Container(contentWidth: 450) {
+        AnyView(Preferences.Container(contentWidth: 450) {
             Preferences.Section(title: "") {
                 HStack {
                     Text("自动切换")
@@ -133,13 +133,13 @@ struct ApplicationPane: View {
                         // 按照添加时间排序
                         ForEach(appSettings.values.sorted(by: { a, b in
                             a.createdTimestamp < b.createdTimestamp
-                        })) { (settingItem) -> ApplicationSettingItemView in
-                            ApplicationSettingItemView(settingItem: settingItem) {
+                        })) { (settingItem) -> AnyView in
+                            AnyView(ApplicationSettingItemView(settingItem: settingItem) {
                                 removeApp(settingItem)
                             } onChange: {
                                 appSettings[settingItem.bundleIdentifier] = settingItem
                                 Defaults[.appSettings] = appSettings
-                            }
+                            })
                         }
                     } else {
                         VStack {
@@ -152,7 +152,7 @@ struct ApplicationPane: View {
                 .frame(minWidth: 450, minHeight: 320)
                 .background(Color.white)
             }
-        }
+        })
     }
 }
 
