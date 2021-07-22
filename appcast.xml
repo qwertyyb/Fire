@@ -3,21 +3,21 @@
     <channel>
         <title>Fire</title>
         <item>
-            <title>v0.3.4</title>
-            <pubDate>Thu, 08 Apr 2021 15:02:10 +0000</pubDate>
+            <title>v0.4.0</title>
+            <pubDate>Thu, 22 Jul 2021 02:45:13 +0000</pubDate>
             <sparkle:minimumSystemVersion>10.15</sparkle:minimumSystemVersion>
             <description><![CDATA[
-                <h3 id="bugfixes">Bug Fixes</h3>
+                <h3 id="features">Features</h3>
 <ul>
-<li>修复页面指示器不正确,不能正常翻页的问题 (<a href="https://github.com/qwertyyb/Fire/issues/41">#41</a>) (<a href="https://github.com/qwertyyb/Fire/commit/38b602f7bf429923b7bb3dca05936abd3d88c075">38b602f</a>)</li>
+<li>支持按应用切换输入模式 (<a href="https://github.com/qwertyyb/Fire/issues/42">#42</a>) (<a href="https://github.com/qwertyyb/Fire/commit/57f5884d783fa0f06686ddd5f027c29e24d076ae">57f5884</a>)</li>
 </ul>
             ]]>
             </description>
             <enclosure url="https://github.com/qwertyyb/Fire/releases/latest/download/FireInstaller.zip"
-              sparkle:version="20210408145734"
-              sparkle:shortVersionString="v0.3.4"
-              length="3803659"
-              sparkle:edSignature="p/s9p9skCtzJhOWejCHskzaGTZnn+FPNxrx4Y7hmUedcwcFpOUK3ND6OwTFQbpAfzdlACB9J0JVEkBLJC5PjCg=="
+              sparkle:version="20210722024022"
+              sparkle:shortVersionString="v0.4.0"
+              length="3154437"
+              sparkle:edSignature="LDpPF2rr0rCcZbtV1EhpoPHSs8FBcJzPP/zwO1akN+JrkQS+MDjMaY3gHR+PjJSWSBu6mHkLGdwt8IpCJ/9gCw=="
               type="application/octet-stream"/>
         </item>
     </channel>
