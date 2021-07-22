@@ -84,7 +84,7 @@ struct ApplicationPane: View {
     @Default(.keepAppInputMode) private var keepAppInputMode
     @Default(.appSettings) private var appSettings
 
-    private func addApp() {
+    private func addApp() -> Void {
         let openPanel = NSOpenPanel()
         openPanel.directoryURL = Bundle.main.resourceURL
         openPanel.prompt = "选择应用"
@@ -107,7 +107,7 @@ struct ApplicationPane: View {
     }
 
     var body: some View {
-        AnyView(Preferences.Container(contentWidth: 450) {
+        Preferences.Container(contentWidth: 450) {
             Preferences.Section(title: "") {
                 HStack {
                     Text("自动切换")
@@ -116,9 +116,7 @@ struct ApplicationPane: View {
                 }
                 HStack {
                     Text("应用设置")
-                    Button {
-                        addApp()
-                    } label: { () -> HStack in
+                    Button(action: addApp) {
                         HStack(spacing: 0) {
                             Image(nsImage: NSImage(named: NSImage.addTemplateName)!)
                                 .resizable()
@@ -152,7 +150,7 @@ struct ApplicationPane: View {
                 .frame(minWidth: 450, minHeight: 320)
                 .background(Color.white)
             }
-        })
+        }
     }
 }
 
