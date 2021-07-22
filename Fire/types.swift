@@ -9,6 +9,7 @@
 import Foundation
 import Defaults
 import Sparkle
+import SwiftUI
 
 enum CandidatesDirection: Int, Decodable, Encodable {
     case vertical
@@ -19,6 +20,46 @@ enum InputModeTipWindowType: Int, Decodable, Encodable {
     case followInput
     case centerScreen
     case none
+}
+
+class ApplicationSettingItem: ObservableObject, Codable, Identifiable {
+//    let identifier: String = ""
+
+    @Published var bundleIdentifier: String = ""
+
+    @Published var inputModeSetting: InputModeSetting = InputModeSetting.recentUsed {
+        didSet {
+            self.objectWillChange.send()
+        }
+    }
+
+    var createdTimestamp: Int = 0
+
+    private enum CodingKeys: String, CodingKey {
+        case bundleIdentifier
+        case inputModeSetting
+        case createdTimestamp
+    }
+
+    init(bundleId: String, inputMs: InputModeSetting) {
+        bundleIdentifier = bundleId
+        inputModeSetting = inputMs
+        createdTimestamp = Int(Date().timeIntervalSince1970)
+    }
+
+    required init(from decoder: Decoder) throws {
+        let values = try decoder.container(keyedBy: CodingKeys.self)
+        bundleIdentifier = try values.decode(String.self, forKey: .bundleIdentifier)
+        inputModeSetting = try values.decode(InputModeSetting.self, forKey: .inputModeSetting)
+        createdTimestamp = try values.decode(Int.self, forKey: .createdTimestamp)
+    }
+
+    func encode(to encoder: Encoder) throws {
+        var container = encoder.container(keyedBy: CodingKeys.self)
+        try container.encode(bundleIdentifier, forKey: .bundleIdentifier)
+        try container.encode(inputModeSetting, forKey: .inputModeSetting)
+        try container.encode(createdTimestamp, forKey: .createdTimestamp)
+    }
 }
 
 extension Defaults.Keys {
@@ -38,6 +79,11 @@ extension Defaults.Keys {
     static let codeMode = Key<CodeMode>("codeMode", default: CodeMode.wubiPinyin)
     static let toggleInputModeKey = Key<NSEvent.ModifierFlags.RawValue>("toggleInputModeKey",
         default: NSEvent.ModifierFlags.shift.rawValue)
+    static let keepAppInputMode = Key<Bool>("keepAppInputMode", default: true)
+    static let appSettings = Key<[String: ApplicationSettingItem]>(
+        "AppSettings",
+        default: [:]
+    )
     static let wbTablePath = Key<String>(
         "wbTableURL",
         default: Bundle.main.resourceURL?.appendingPathComponent("wb_table.txt").path
@@ -50,9 +96,15 @@ extension Defaults.Keys {
     //           Key          Type   UserDefaults name   Default value
 }
 
-enum InputMode {
+enum InputMode: String {
     case zhhans
     case enUS
+}
+
+enum InputModeSetting: String, Codable {
+    case zhhans
+    case enUS
+    case recentUsed
 }
 
 struct Candidate: Hashable {

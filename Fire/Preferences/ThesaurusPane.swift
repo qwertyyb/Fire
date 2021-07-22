@@ -47,7 +47,7 @@ struct ThesaurusPane: View {
                                         .padding(.horizontal, 6)
                                         .truncationMode(.middle)
                                         .font(.system(size: 10))
-                                        .foregroundColor(.gray)
+                                      .foregroundColor(.white)
                                         .background(Color(.displayP3, red: 0.5, green: 0.5, blue: 0.5, opacity: 1))
                                         .cornerRadius(4)
                                         .onTapGesture {
@@ -66,7 +66,7 @@ struct ThesaurusPane: View {
                                         .padding(.horizontal, 6)
                                         .truncationMode(.middle)
                                         .font(.system(size: 10))
-                                        .foregroundColor(.gray)
+                                        .foregroundColor(.white)
                                         .background(Color(.displayP3, red: 0.5, green: 0.5, blue: 0.5, opacity: 1))
                                         .cornerRadius(4)
                                         .onTapGesture {
