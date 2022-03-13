@@ -69,6 +69,29 @@ class FireInputController: IMKInputController {
 
     // ---- handlers begin -----
 
+    private func hotkeyHandler(event: NSEvent) -> Bool? {
+        if event.type == .flagsChanged {
+            return nil
+        }
+        if event.charactersIgnoringModifiers == nil {
+            return nil
+        }
+        guard let num = Int(event.charactersIgnoringModifiers!) else {
+            return nil
+        }
+        if event.modifierFlags == .control &&
+            num > 0 && num <= _candidates.count {
+            NSLog("hotkey: control + \(num)")
+            if Fire.shared.setFirstCandidate(wbcode: _originalString, candidate: _candidates[num - 1]) {
+                self.curPage = 1
+                self.refreshCandidatesWindow()
+                return true
+            }
+            return nil
+        }
+        return nil
+    }
+
     private func flagChangedHandler(event: NSEvent) -> Bool? {
         // 只有在shift keyup时，才切换中英文输入, 否则会导致shift+[a-z]大写的功能失效
         if Utils.shared.toggleInputModeKeyUpChecker.check(event) {
@@ -87,7 +110,12 @@ class FireInputController: IMKInputController {
         }
         // 监听.flagsChanged事件只为切换中英文，其它情况不处理
         // 当用户已经按下了非shift的修饰键时，不处理
-        if event.type == .flagsChanged || (event.modifierFlags != .init(rawValue: 0) && event.modifierFlags != .shift) {
+        if event.type == .flagsChanged ||
+            (event.modifierFlags != .init(rawValue: 0) &&
+             event.modifierFlags != .shift &&
+            // 方向键的modifierFlags
+             event.modifierFlags != .init(arrayLiteral: .numericPad, .function)
+        ) {
             return false
         }
         return nil
@@ -212,6 +240,7 @@ class FireInputController: IMKInputController {
         NSLog("[FireInputController] handle: \(event.debugDescription)")
 
         let handler = Utils.shared.processHandlers(handlers: [
+            hotkeyHandler,
             flagChangedHandler,
             enModeHandler,
             pageKeyHandler,

@@ -40,6 +40,7 @@ class CandidatesWindow: NSWindow, NSWindowDelegate {
         hostingView.rootView.hasNext = candidatesData.hasNext
         hostingView.rootView.hasPrev = candidatesData.hasPrev
         print("origin top left: \(topLeft)")
+        print("candidates: \(candidatesData)")
         self.setFrameTopLeftPoint(topLeft)
         self.orderFront(nil)
         NSApp.setActivationPolicy(.prohibited)

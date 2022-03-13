@@ -59,7 +59,7 @@ struct ApplicationSettingItemView: View {
                     } label: {
                         Image(
                             nsImage: NSImage(named: NSImage.stopProgressTemplateName)!)
-                                .resizable().frame(alignment: .center)
+                            .frame(width: 20, height: 20)
                     }
                     .buttonStyle(BorderlessButtonStyle())
                     .help("删除")
@@ -68,7 +68,7 @@ struct ApplicationSettingItemView: View {
                         onDelete()
                     } label: {
                         Image(nsImage: NSImage(named: NSImage.stopProgressTemplateName)!)
-                            .resizable().frame(alignment: .center)
+                            .frame(width: 20, height: 20)
                     }
                     .buttonStyle(BorderlessButtonStyle())
                 }
@@ -84,7 +84,7 @@ struct ApplicationPane: View {
     @Default(.keepAppInputMode) private var keepAppInputMode
     @Default(.appSettings) private var appSettings
 
-    private func addApp() -> Void {
+    private func addApp() {
         let openPanel = NSOpenPanel()
         openPanel.directoryURL = Bundle.main.resourceURL
         openPanel.prompt = "选择应用"
