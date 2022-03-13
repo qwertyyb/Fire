@@ -68,17 +68,25 @@ extension Defaults.Keys {
         "candidatesDirection",
         default: CandidatesDirection.horizontal
     )
-    static let inputModeTipWindowType = Key<InputModeTipWindowType>(
-        "inputModeTipWindowType",
-        default: InputModeTipWindowType.centerScreen
-    )
     static let showCodeInWindow = Key<Bool>("showCodeInWindow", default: true)
     static let wubiCodeTip = Key<Bool>("wubiCodeTip", default: true)
     static let wubiAutoCommit = Key<Bool>("wubiAutoCommit", default: false)
     static let candidateCount = Key<Int>("candidateCount", default: 5)
     static let codeMode = Key<CodeMode>("codeMode", default: CodeMode.wubiPinyin)
+    
+    // 中英文切换配置
+    // 禁止切换英文
+    static let disableEnMode = Key<Bool>("diableEnMode", default: false)
+    // 切换英文模式的按键
     static let toggleInputModeKey = Key<NSEvent.ModifierFlags.RawValue>("toggleInputModeKey",
         default: NSEvent.ModifierFlags.shift.rawValue)
+    // 中英文切换提示弹窗位置
+    static let inputModeTipWindowType = Key<InputModeTipWindowType>(
+        "inputModeTipWindowType",
+        default: InputModeTipWindowType.centerScreen
+    )
+    
+    // 应用输入配置
     static let keepAppInputMode = Key<Bool>("keepAppInputMode", default: true)
     static let appSettings = Key<[String: ApplicationSettingItem]>(
         "AppSettings",

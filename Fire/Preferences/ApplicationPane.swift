@@ -83,6 +83,7 @@ struct ApplicationSettingItemView: View {
 struct ApplicationPane: View {
     @Default(.keepAppInputMode) private var keepAppInputMode
     @Default(.appSettings) private var appSettings
+    @Default(.disableEnMode) private var disableEnMode
 
     private func addApp() {
         let openPanel = NSOpenPanel()
@@ -109,46 +110,49 @@ struct ApplicationPane: View {
     var body: some View {
         Preferences.Container(contentWidth: 450) {
             Preferences.Section(title: "") {
-                HStack {
-                    Text("自动切换")
-                    Toggle("保持应用最后使用的输入模式", isOn: $keepAppInputMode)
+                VStack(alignment: .leading) {
+                    HStack {
+                        Text("自动切换")
+                        Toggle("保持应用最后使用的输入模式", isOn: $keepAppInputMode)
+                            .padding(.leading, 12)
+                    }
+                    HStack {
+                        Text("应用设置")
+                        Button(action: addApp) {
+                            HStack(spacing: 0) {
+                                Image(nsImage: NSImage(named: NSImage.addTemplateName)!)
+                                    .resizable()
+                                    .frame(width: 16, height: 16, alignment: .bottom)
+                                Text("添加")
+                            }
+                        }
                         .padding(.leading, 12)
-                }
-                HStack {
-                    Text("应用设置")
-                    Button(action: addApp) {
-                        HStack(spacing: 0) {
-                            Image(nsImage: NSImage(named: NSImage.addTemplateName)!)
-                                .resizable()
-                                .frame(width: 16, height: 16, alignment: .bottom)
-                            Text("添加")
+                    }
+                    ScrollView(.vertical) {
+                        if appSettings.count > 0 {
+                            // 按照添加时间排序
+                            ForEach(appSettings.values.sorted(by: { a, b in
+                                a.createdTimestamp < b.createdTimestamp
+                            })) { (settingItem) -> AnyView in
+                                AnyView(ApplicationSettingItemView(settingItem: settingItem) {
+                                    removeApp(settingItem)
+                                } onChange: {
+                                    appSettings[settingItem.bundleIdentifier] = settingItem
+                                    Defaults[.appSettings] = appSettings
+                                })
+                            }
+                        } else {
+                            VStack {
+                                Text("添加应用可单独设置该应用下默认使用英文或五笔")
+                                    .foregroundColor(Color.gray)
+                            }
+                            .frame(minHeight: 400)
                         }
                     }
-                    .padding(.leading, 12)
+                    .frame(minWidth: 450, minHeight: 320)
+                    .background(Color.white)
                 }
-                ScrollView(.vertical) {
-                    if appSettings.count > 0 {
-                        // 按照添加时间排序
-                        ForEach(appSettings.values.sorted(by: { a, b in
-                            a.createdTimestamp < b.createdTimestamp
-                        })) { (settingItem) -> AnyView in
-                            AnyView(ApplicationSettingItemView(settingItem: settingItem) {
-                                removeApp(settingItem)
-                            } onChange: {
-                                appSettings[settingItem.bundleIdentifier] = settingItem
-                                Defaults[.appSettings] = appSettings
-                            })
-                        }
-                    } else {
-                        VStack {
-                            Text("添加应用可单独设置该应用下默认使用英文或五笔")
-                                .foregroundColor(Color.gray)
-                        }
-                        .frame(minHeight: 400)
-                    }
-                }
-                .frame(minWidth: 450, minHeight: 320)
-                .background(Color.white)
+                .disabled(disableEnMode)
             }
         }
     }

@@ -93,6 +93,9 @@ class FireInputController: IMKInputController {
     }
 
     private func flagChangedHandler(event: NSEvent) -> Bool? {
+        if Defaults[.disableEnMode] {
+            return nil
+        }
         // 只有在shift keyup时，才切换中英文输入, 否则会导致shift+[a-z]大写的功能失效
         if Utils.shared.toggleInputModeKeyUpChecker.check(event) {
             NSLog("[FireInputController]toggle mode: \(inputMode)")
@@ -352,17 +355,24 @@ class FireInputController: IMKInputController {
      */
     override func activateServer(_ sender: Any!) {
         NSLog("[FireInputController] activate server: \(client().bundleIdentifier() ?? sender.debugDescription)")
+        
+        // 监听candidateView点击，翻页事件
+        notificationList().forEach { (observer) in temp.observerList.append(NotificationCenter.default.addObserver(
+            forName: observer.name, object: nil, queue: nil, using: observer.callback
+        ))}
+        if (Defaults[.disableEnMode]) {
+            inputMode = .zhhans
+            return
+        }
+
         activeClientInputMode()
         temp.monitorList.append(NSEvent.addGlobalMonitorForEvents(matching: .flagsChanged) { (event) in
             _ = self.handle(event, client: self.client())
         })
-        notificationList().forEach { (observer) in temp.observerList.append(NotificationCenter.default.addObserver(
-            forName: observer.name, object: nil, queue: nil, using: observer.callback
-        ))}
     }
     override func deactivateServer(_ sender: Any!) {
         NSLog("[FireInputController] deactivate server: \(client().bundleIdentifier() ?? "no client deactivate")")
-        if let identifier = client().bundleIdentifier() {
+        if let identifier = client().bundleIdentifier(), !Defaults[.disableEnMode] {
         // 缓存当前输入模式
             Fire.shared.appSettingCache.add(
                 bundleIdentifier: identifier,

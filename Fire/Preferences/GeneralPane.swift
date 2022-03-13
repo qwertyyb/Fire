@@ -21,6 +21,7 @@ struct GeneralPane: View {
     @Default(.inputModeTipWindowType) private var inputModeTipWindowType
     @Default(.zKeyQuery) private var zKeyQuery
     @Default(.toggleInputModeKey) private var toggleInputModeKey
+    @Default(.disableEnMode) private var disableEnMode
 
     var body: some View {
         Preferences.Container(contentWidth: 450.0) {
@@ -76,12 +77,16 @@ struct GeneralPane: View {
                     GroupBox(label: Text("中英文切换")) {
                         VStack(alignment: .leading, spacing: 12) {
                             HStack {
+                                Toggle("禁止切换英文", isOn: $disableEnMode)
+                            }
+                            HStack {
                                 Picker("快捷键", selection: $toggleInputModeKey) {
                                     Text("control").tag(NSEvent.ModifierFlags.control.rawValue)
                                     Text("shift").tag(NSEvent.ModifierFlags.shift.rawValue)
                                     Text("option").tag(NSEvent.ModifierFlags.option.rawValue)
                                     Text("command").tag(NSEvent.ModifierFlags.command.rawValue)
                                 }
+                                .disabled(disableEnMode)
                                 Spacer(minLength: 50)
                                 Picker(
                                     "提示框位置",
@@ -94,7 +99,7 @@ struct GeneralPane: View {
                                     Text("不显示")
                                     .tag(InputModeTipWindowType.none)
                                 }
-//                                .frame(width: 180)
+                                .disabled(disableEnMode)
                             }
                         }
                     }
