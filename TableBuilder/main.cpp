@@ -68,7 +68,8 @@ void create_table(sqlite3 *db, string tableName = "wb_dict") {
         "id integer primary key autoincrement not null, " \
         "code   text not null," \
         "text   text    not null" \
-    ")";
+    "); \
+    insert into sqlite_sequence(name, seq) values('" + tableName + "', 100000)";
     int rc = sqlite3_exec(db, sql.c_str(), NULL, NULL, NULL);
     if (rc == SQLITE_OK) {
         cout<<"dict table created successfully"<<endl;
@@ -92,7 +93,8 @@ void build_wb_py_dict(string py_dict, string wb_dict) {
       text text not null,\
       type text not null,\
       query text not null\
-    )";
+    ); \
+    insert into sqlite_sequence(name, seq) values('wb_py_dict', 100000)";
     
     int rc = sqlite3_exec(db, createTable.c_str(), NULL, NULL, NULL);
     if (rc == SQLITE_OK) {

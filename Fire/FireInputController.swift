@@ -69,7 +69,33 @@ class FireInputController: IMKInputController {
 
     // ---- handlers begin -----
 
+    private func hotkeyHandler(event: NSEvent) -> Bool? {
+        if event.type == .flagsChanged {
+            return nil
+        }
+        if event.charactersIgnoringModifiers == nil {
+            return nil
+        }
+        guard let num = Int(event.charactersIgnoringModifiers!) else {
+            return nil
+        }
+        if event.modifierFlags == .control &&
+            num > 0 && num <= _candidates.count {
+            NSLog("hotkey: control + \(num)")
+            if Fire.shared.setFirstCandidate(wbcode: _originalString, candidate: _candidates[num - 1]) {
+                self.curPage = 1
+                self.refreshCandidatesWindow()
+                return true
+            }
+            return nil
+        }
+        return nil
+    }
+
     private func flagChangedHandler(event: NSEvent) -> Bool? {
+        if Defaults[.disableEnMode] {
+            return nil
+        }
         // 只有在shift keyup时，才切换中英文输入, 否则会导致shift+[a-z]大写的功能失效
         if Utils.shared.toggleInputModeKeyUpChecker.check(event) {
             NSLog("[FireInputController]toggle mode: \(inputMode)")
@@ -87,7 +113,12 @@ class FireInputController: IMKInputController {
         }
         // 监听.flagsChanged事件只为切换中英文，其它情况不处理
         // 当用户已经按下了非shift的修饰键时，不处理
-        if event.type == .flagsChanged || (event.modifierFlags != .init(rawValue: 0) && event.modifierFlags != .shift) {
+        if event.type == .flagsChanged ||
+            (event.modifierFlags != .init(rawValue: 0) &&
+             event.modifierFlags != .shift &&
+            // 方向键的modifierFlags
+             event.modifierFlags != .init(arrayLiteral: .numericPad, .function)
+        ) {
             return false
         }
         return nil
@@ -212,6 +243,7 @@ class FireInputController: IMKInputController {
         NSLog("[FireInputController] handle: \(event.debugDescription)")
 
         let handler = Utils.shared.processHandlers(handlers: [
+            hotkeyHandler,
             flagChangedHandler,
             enModeHandler,
             pageKeyHandler,
@@ -323,17 +355,24 @@ class FireInputController: IMKInputController {
      */
     override func activateServer(_ sender: Any!) {
         NSLog("[FireInputController] activate server: \(client().bundleIdentifier() ?? sender.debugDescription)")
+        
+        // 监听candidateView点击，翻页事件
+        notificationList().forEach { (observer) in temp.observerList.append(NotificationCenter.default.addObserver(
+            forName: observer.name, object: nil, queue: nil, using: observer.callback
+        ))}
+        if (Defaults[.disableEnMode]) {
+            inputMode = .zhhans
+            return
+        }
+
         activeClientInputMode()
         temp.monitorList.append(NSEvent.addGlobalMonitorForEvents(matching: .flagsChanged) { (event) in
             _ = self.handle(event, client: self.client())
         })
-        notificationList().forEach { (observer) in temp.observerList.append(NotificationCenter.default.addObserver(
-            forName: observer.name, object: nil, queue: nil, using: observer.callback
-        ))}
     }
     override func deactivateServer(_ sender: Any!) {
         NSLog("[FireInputController] deactivate server: \(client().bundleIdentifier() ?? "no client deactivate")")
-        if let identifier = client().bundleIdentifier() {
+        if let identifier = client().bundleIdentifier(), !Defaults[.disableEnMode] {
         // 缓存当前输入模式
             Fire.shared.appSettingCache.add(
                 bundleIdentifier: identifier,

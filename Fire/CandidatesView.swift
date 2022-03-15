@@ -29,7 +29,7 @@ struct CandidateView: View {
 
     @State private var hovered = false
 
-    let hoveredColor = Color(red: 0.863, green: 0.078, blue: 0.235, opacity: 0.8)
+    let hoveredColor = Color(red: 0.863, green: 0.078, blue: 0.235, opacity: 0.7)
     let selectedColor = Color(red: 0.863, green: 0.078, blue: 0.235)
     let defaultColor = Color(red: 0.23, green: 0.23, blue: 0.23)
     var body: some View {

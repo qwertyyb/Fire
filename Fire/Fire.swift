@@ -77,7 +77,7 @@ class Fire: NSObject {
                 from \(codeMode == .wubi ? "wb_dict" : "py_dict")
                 where code like :query
                 group by text
-                order by query
+                order by query, id
                 limit :offset, \(candidateCount + 1)
             """
         }
@@ -87,14 +87,13 @@ class Fire: NSObject {
 
     func close() {
         queryStatement = nil
-        sqlite3_close(database)
         sqlite3_close_v2(database)
         sqlite3_shutdown()
         database = nil
     }
 
     func prepareStatement() {
-        sqlite3_open(getDatabaseURL().path, &database)
+        sqlite3_open_v2(getDatabaseURL().path, &database, SQLITE_OPEN_READWRITE, nil)
         if sqlite3_prepare_v2(database, getStatementSql(), -1, &queryStatement, nil) == SQLITE_OK {
             print("prepare ok")
             print(sqlite3_bind_parameter_index(queryStatement, ":code"))
@@ -161,6 +160,51 @@ class Fire: NSObject {
         }
 
         return (candidates, hasNext: allCount > count)
+    }
+
+    func setFirstCandidate(wbcode: String, candidate: Candidate) -> Bool {
+        var sql = """
+            insert into wb_py_dict(id, wbcode, text, type, query)
+            values (
+                (select MIN(id) - 1 from wb_py_dict), :code, :text, :type, :code
+            );
+        """
+        let codeMode = Defaults[.codeMode]
+        if codeMode != .wubiPinyin {
+            sql = """
+                insert into \(codeMode == .wubi ? "wb_dict" : "py_dict")(id, code, text)
+                values(
+                    (select MIN(id) - 1 from \(codeMode == .wubi ? "wb_dict" : "py_dict")),
+                    :code,
+                    :text
+                );
+            """
+        }
+        var insertStatement: OpaquePointer?
+        if sqlite3_prepare_v2(database, sql, -1, &insertStatement, nil) == SQLITE_OK {
+            sqlite3_bind_text(insertStatement,
+                sqlite3_bind_parameter_index(insertStatement, ":code"),
+                              wbcode, -1, SQLITE_TRANSIENT)
+            sqlite3_bind_text(insertStatement,
+                              sqlite3_bind_parameter_index(insertStatement, ":text"),
+                              candidate.text, -1, SQLITE_TRANSIENT)
+            sqlite3_bind_text(insertStatement,
+                              sqlite3_bind_parameter_index(insertStatement, ":type"),
+                              "wb", -1, SQLITE_TRANSIENT)
+            let strp = sqlite3_expanded_sql(queryStatement)!
+            print(String(cString: strp))
+            if sqlite3_step(insertStatement) == SQLITE_DONE {
+                sqlite3_finalize(insertStatement)
+                insertStatement = nil
+                return true
+            } else {
+                print("errmsg: \(String(cString: sqlite3_errmsg(database)!))")
+                return false
+            }
+        } else {
+            print("prepare_errmsg: \(String(cString: sqlite3_errmsg(database)!))")
+        }
+        return false
     }
 
     static let shared = Fire()
