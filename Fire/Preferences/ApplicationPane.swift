@@ -150,7 +150,7 @@ struct ApplicationPane: View {
                         }
                     }
                     .frame(minWidth: 450, minHeight: 320)
-                    .background(Color.white)
+                    .background(Color(.sRGB, red: 0.4, green: 0.4, blue: 0.4, opacity: 0.2))
                 }
                 .disabled(disableEnMode)
             }
