@@ -27,37 +27,32 @@ struct CandidateView: View {
     var origin: String
     var selected: Bool = false
 
-    @State private var hovered = false
-
-    let hoveredColor = Color(red: 0.863, green: 0.078, blue: 0.235, opacity: 0.7)
-    let selectedColor = Color(red: 0.863, green: 0.078, blue: 0.235)
-    let defaultColor = Color(red: 0.23, green: 0.23, blue: 0.23)
     var body: some View {
-        let mainColor = selected ? selectedColor
-            : hovered ? hoveredColor : defaultColor
+        let indexColor = selected
+            ? ThemeConfig.current.selectedIndexColor
+            : ThemeConfig.current.candidateIndexColor
+        let textColor = selected
+            ? ThemeConfig.current.selectedTextColor
+            : ThemeConfig.current.candidateTextColor
+        let codeColor = selected
+            ? ThemeConfig.current.selectedCodeColor
+            : ThemeConfig.current.candidateCodeColor
 
         return HStack(alignment: .center, spacing: 2) {
             Text("\(index + 1).")
-                .font(.system(size: 20))
-                .foregroundColor(mainColor)
+                .font(.system(size: ThemeConfig.current.fontSize))
+                .foregroundColor(Color(indexColor))
             Text(candidate.text)
-                .font(.system(size: 20))
-                .foregroundColor(mainColor)
+                .font(.system(size: ThemeConfig.current.fontSize))
+                .foregroundColor(Color(textColor))
             if Defaults[.wubiCodeTip] {
                 Text(getShownCode(candidate: candidate, origin: origin))
-                    .font(.system(size: 18))
-                    .foregroundColor(
-                        .init(Color.RGBColorSpace.sRGBLinear, red: 0.3, green: 0.3, blue: 0.3, opacity: 0.8)
-                    )
+                    .font(.system(size: ThemeConfig.current.fontSize))
+                    .foregroundColor(Color(codeColor))
             }
         }
         .fixedSize()
-        .onHover { (hover) in
-            print("hover", hover)
-            self.hovered = hover
-        }
         .onTapGesture {
-            print("tap")
             NotificationCenter.default.post(
                 name: Fire.candidateSelected,
                 object: nil,
@@ -146,8 +141,8 @@ struct CandidatesView: View {
         VStack(alignment: .leading, spacing: 6, content: {
             if Defaults[.showCodeInWindow] {
                 Text(origin)
-                    .font(.system(size: 20))
-                    .foregroundColor(.init(red: 0.3, green: 0.3, blue: 0.3))
+                    .font(.system(size: ThemeConfig.current.fontSize))
+                    .foregroundColor(Color(ThemeConfig.current.originCodeColor))
                     .fixedSize()
             }
             if Defaults[.candidatesDirection] == CandidatesDirection.horizontal {
@@ -164,10 +159,13 @@ struct CandidatesView: View {
                 .fixedSize()
             }
         })
-        .padding(.horizontal, 10.0)
-        .padding(.vertical, 6)
-        .fixedSize()
-        .background(Color.white)
+            .padding(.top, ThemeConfig.current.windowPaddingTop)
+            .padding(.bottom, ThemeConfig.current.windowPaddingBottom)
+            .padding(.leading, ThemeConfig.current.windowPaddingLeft)
+            .padding(.trailing, ThemeConfig.current.windowPaddingRight)
+            .fixedSize()
+            .background(Color(ThemeConfig.current.windowBackgroundColor))
+            .cornerRadius(ThemeConfig.current.windowBorderRadius, antialiased: true)
     }
 }
 
