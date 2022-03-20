@@ -13,6 +13,7 @@ extension FireInputController {
     /* -- menu actions start -- */
     @objc func openAbout (_ sender: Any!) {
         NSApp.setActivationPolicy(.accessory)
+        NSApp.activate(ignoringOtherApps: true)
         NSApp.orderFrontStandardAboutPanel(sender)
     }
     @objc func checkForUpdates(_ sender: Any!) {

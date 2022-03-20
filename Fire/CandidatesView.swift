@@ -27,37 +27,33 @@ struct CandidateView: View {
     var origin: String
     var selected: Bool = false
 
-    @State private var hovered = false
+    @Default(.themeConfig) private var themeConfig
+    @Default(.wubiCodeTip) private var wubiCodeTip
+    @Environment(\.colorScheme) var colorScheme
 
-    let hoveredColor = Color(red: 0.863, green: 0.078, blue: 0.235, opacity: 0.7)
-    let selectedColor = Color(red: 0.863, green: 0.078, blue: 0.235)
-    let defaultColor = Color(red: 0.23, green: 0.23, blue: 0.23)
     var body: some View {
-        let mainColor = selected ? selectedColor
-            : hovered ? hoveredColor : defaultColor
+        let indexColor = selected
+            ? themeConfig[colorScheme].selectedIndexColor
+            : themeConfig[colorScheme].candidateIndexColor
+        let textColor = selected
+            ? themeConfig[colorScheme].selectedTextColor
+            : themeConfig[colorScheme].candidateTextColor
+        let codeColor = selected
+            ? themeConfig[colorScheme].selectedCodeColor
+            : themeConfig[colorScheme].candidateCodeColor
 
         return HStack(alignment: .center, spacing: 2) {
             Text("\(index + 1).")
-                .font(.system(size: 20))
-                .foregroundColor(mainColor)
+                .foregroundColor(Color(indexColor))
             Text(candidate.text)
-                .font(.system(size: 20))
-                .foregroundColor(mainColor)
-            if Defaults[.wubiCodeTip] {
+                .foregroundColor(Color(textColor))
+            if wubiCodeTip {
                 Text(getShownCode(candidate: candidate, origin: origin))
-                    .font(.system(size: 18))
-                    .foregroundColor(
-                        .init(Color.RGBColorSpace.sRGBLinear, red: 0.3, green: 0.3, blue: 0.3, opacity: 0.8)
-                    )
+                    .foregroundColor(Color(codeColor))
             }
         }
-        .fixedSize()
-        .onHover { (hover) in
-            print("hover", hover)
-            self.hovered = hover
-        }
+//        .fixedSize()
         .onTapGesture {
-            print("tap")
             NotificationCenter.default.post(
                 name: Fire.candidateSelected,
                 object: nil,
@@ -76,7 +72,10 @@ struct CandidatesView: View {
     var hasPrev: Bool = false
     var hasNext: Bool = false
 
-    let direction = Defaults[.candidatesDirection]
+    @Default(.candidatesDirection) private var direction
+    @Default(.themeConfig) private var themeConfig
+    @Default(.showCodeInWindow) private var showCodeInWindow
+    @Environment(\.colorScheme) var colorScheme
 
     var _candidatesView: some View {
         ForEach(Array(candidates.enumerated()), id: \.element) { (index, candidate) -> CandidateView in
@@ -90,7 +89,7 @@ struct CandidatesView: View {
     }
 
     var _indicator: some View {
-        if Defaults[.candidatesDirection] == CandidatesDirection.horizontal {
+        if direction == CandidatesDirection.horizontal {
             return AnyView(VStack(spacing: 0) {
                 Image(hasPrev ? "arrowUp" : "arrowUpOff")
                     .resizable()
@@ -143,31 +142,34 @@ struct CandidatesView: View {
     }
 
     var body: some View {
-        VStack(alignment: .leading, spacing: 6, content: {
-            if Defaults[.showCodeInWindow] {
+        VStack(alignment: .leading, spacing: CGFloat( themeConfig[colorScheme].originCandidatesSpace), content: {
+            if showCodeInWindow {
                 Text(origin)
-                    .font(.system(size: 20))
-                    .foregroundColor(.init(red: 0.3, green: 0.3, blue: 0.3))
+                    .foregroundColor(Color(themeConfig[colorScheme].originCodeColor))
                     .fixedSize()
             }
-            if Defaults[.candidatesDirection] == CandidatesDirection.horizontal {
-                HStack(alignment: .center, spacing: 8) {
+            if direction == CandidatesDirection.horizontal {
+                HStack(alignment: .center, spacing: CGFloat(themeConfig[colorScheme].candidateSpace)) {
                     _candidatesView
                     _indicator
                 }
                 .fixedSize()
             } else {
-                VStack(alignment: .leading, spacing: 8) {
+                VStack(alignment: .leading, spacing: CGFloat(themeConfig[colorScheme].candidateSpace)) {
                     _candidatesView
                     _indicator
                 }
                 .fixedSize()
             }
         })
-        .padding(.horizontal, 10.0)
-        .padding(.vertical, 6)
-        .fixedSize()
-        .background(Color.white)
+            .padding(.top, CGFloat(themeConfig[colorScheme].windowPaddingTop))
+            .padding(.bottom, CGFloat(themeConfig[colorScheme].windowPaddingBottom))
+            .padding(.leading, CGFloat(themeConfig[colorScheme].windowPaddingLeft))
+            .padding(.trailing, CGFloat(themeConfig[colorScheme].windowPaddingRight))
+            .fixedSize()
+            .font(.system(size: CGFloat(themeConfig[colorScheme].fontSize)))
+            .background(Color(themeConfig[colorScheme].windowBackgroundColor))
+            .cornerRadius(CGFloat(themeConfig[colorScheme].windowBorderRadius), antialiased: true)
     }
 }
 

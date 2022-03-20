@@ -100,7 +100,6 @@ struct ApplicationPane: View {
         guard let bundle = Bundle(path: selectedPath) else { return }
         guard let identifier = bundle.bundleIdentifier else { return }
 
-        print(selectedPath, identifier)
         appSettings[identifier] = ApplicationSettingItem(bundleId: identifier, inputMs: .enUS)
     }
     private func removeApp(_ settingItem: ApplicationSettingItem) {
@@ -150,7 +149,7 @@ struct ApplicationPane: View {
                         }
                     }
                     .frame(minWidth: 450, minHeight: 320)
-                    .background(Color.white)
+                    .background(Color(.sRGB, red: 0.4, green: 0.4, blue: 0.4, opacity: 0.2))
                 }
                 .disabled(disableEnMode)
             }

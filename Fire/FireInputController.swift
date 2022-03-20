@@ -297,7 +297,7 @@ class FireInputController: IMKInputController {
     func insertText(_ text: String, sender: Any!) {
         NSLog("insertText: %@", text)
         let value = NSAttributedString(string: text)
-        client().insertText(value, replacementRange: replacementRange())
+        try client()?.insertText(value, replacementRange: replacementRange())
         clean()
     }
 
@@ -306,7 +306,7 @@ class FireInputController: IMKInputController {
         let xd: CGFloat = 0
         let yd: CGFloat = 4
         var rect = NSRect()
-        client().attributes(forCharacterIndex: 0, lineHeightRectangle: &rect)
+        client()?.attributes(forCharacterIndex: 0, lineHeightRectangle: &rect)
         return NSPoint(x: rect.minX + xd, y: rect.minY - yd)
     }
 
@@ -354,13 +354,13 @@ class FireInputController: IMKInputController {
      * 所以这里需要使用NSEvent.addGlobalMonitorForEvents监听shift键被按下
      */
     override func activateServer(_ sender: Any!) {
-        NSLog("[FireInputController] activate server: \(client().bundleIdentifier() ?? sender.debugDescription)")
-        
+        NSLog("[FireInputController] activate server: \(client()?.bundleIdentifier() ?? sender.debugDescription)")
+
         // 监听candidateView点击，翻页事件
         notificationList().forEach { (observer) in temp.observerList.append(NotificationCenter.default.addObserver(
             forName: observer.name, object: nil, queue: nil, using: observer.callback
         ))}
-        if (Defaults[.disableEnMode]) {
+        if Defaults[.disableEnMode] {
             inputMode = .zhhans
             return
         }
@@ -371,8 +371,8 @@ class FireInputController: IMKInputController {
         })
     }
     override func deactivateServer(_ sender: Any!) {
-        NSLog("[FireInputController] deactivate server: \(client().bundleIdentifier() ?? "no client deactivate")")
-        if let identifier = client().bundleIdentifier(), !Defaults[.disableEnMode] {
+        NSLog("[FireInputController] deactivate server: \(client()?.bundleIdentifier() ?? "no client deactivate")")
+        if let identifier = client()?.bundleIdentifier(), !Defaults[.disableEnMode] {
         // 缓存当前输入模式
             Fire.shared.appSettingCache.add(
                 bundleIdentifier: identifier,

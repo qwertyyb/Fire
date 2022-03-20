@@ -73,7 +73,7 @@ extension Defaults.Keys {
     static let wubiAutoCommit = Key<Bool>("wubiAutoCommit", default: false)
     static let candidateCount = Key<Int>("candidateCount", default: 5)
     static let codeMode = Key<CodeMode>("codeMode", default: CodeMode.wubiPinyin)
-    
+
     // 中英文切换配置
     // 禁止切换英文
     static let disableEnMode = Key<Bool>("diableEnMode", default: false)
@@ -85,7 +85,11 @@ extension Defaults.Keys {
         "inputModeTipWindowType",
         default: InputModeTipWindowType.centerScreen
     )
-    
+
+    // 主题
+    static let themeConfig = Key<ThemeConfig>("themeConfig", default: defaultThemeConfig)
+    static let importedThemeConfig = Key<ThemeConfig?>("importedThemeConfig", default: nil)
+
     // 应用输入配置
     static let keepAppInputMode = Key<Bool>("keepAppInputMode", default: true)
     static let appSettings = Key<[String: ApplicationSettingItem]>(
