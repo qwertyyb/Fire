@@ -3,21 +3,26 @@
     <channel>
         <title>Fire</title>
         <item>
-            <title>v0.5.0</title>
-            <pubDate>Tue, 15 Mar 2022 13:51:12 +0000</pubDate>
+            <title>v0.6.0</title>
+            <pubDate>Sun, 20 Mar 2022 14:26:38 +0000</pubDate>
             <sparkle:minimumSystemVersion>10.15</sparkle:minimumSystemVersion>
             <description><![CDATA[
-                <h3 id="features">Features</h3>
+                <h3 id="bugfixes">Bug Fixes</h3>
 <ul>
-<li>支持调整候选词顺序和禁用英文输入模式 (<a href="https://github.com/qwertyyb/Fire/issues/46">#46</a>) (<a href="https://github.com/qwertyyb/Fire/commit/a82001710b29536871ba8873d6ce3ea212bb4de9">a820017</a>)</li>
+<li>修正「偏好设定与关于视窗无法用CMD+W关闭」<a href="https://github.com/qwertyyb/Fire/issues/47">#47</a> (<a href="https://github.com/qwertyyb/Fire/issues/48">#48</a>) (<a href="https://github.com/qwertyyb/Fire/commit/50bbb1dbdd1c2c5b8ac991aefba98cea8595ad54">50bbb1d</a>)</li>
+<li>让剪贴簿热键等其他常用热键在输入法自身的视窗内生效 (<a href="https://github.com/qwertyyb/Fire/issues/49">#49</a>) (<a href="https://github.com/qwertyyb/Fire/commit/d66ec2d33ba453fc1d9071c4cd3c3f9ca2255594">d66ec2d</a>)</li>
+</ul>
+<h3 id="features">Features</h3>
+<ul>
+<li>添加主题能力 (<a href="https://github.com/qwertyyb/Fire/issues/50">#50</a>) (<a href="https://github.com/qwertyyb/Fire/commit/be0e859b1a9d563a9a93477a0a878827029dd956">be0e859</a>)</li>
 </ul>
             ]]>
             </description>
             <enclosure url="https://github.com/qwertyyb/Fire/releases/latest/download/FireInstaller.zip"
-              sparkle:version="20220315134607"
-              sparkle:shortVersionString="v0.5.0"
-              length="3155237"
-              sparkle:edSignature="6tCXFfJ64bPwX2iBY4BeqV2OdJIfTdrMPntZ2gjTqKrj1HV2jC9EngJAklFbSCGMqq3W3Lvg46C08UgwaamDAw=="
+              sparkle:version="20220320142236"
+              sparkle:shortVersionString="v0.6.0"
+              length="3219506"
+              sparkle:edSignature="oAEcEbF5iyz/K4KDvaIDKhRu9/v0b5hI4+70pObxlcDojit2KF/1e3I5W4Y5qwG3vEjq6LlfXpBirBWa4OrjAg=="
               type="application/octet-stream"/>
         </item>
     </channel>
