@@ -26,7 +26,9 @@ struct CandidateView: View {
     var index: Int
     var origin: String
     var selected: Bool = false
-    let themeConfig = Defaults[.themeConfig]
+
+    @Default(.themeConfig) private var themeConfig
+    @Default(.wubiCodeTip) private var wubiCodeTip
     @Environment(\.colorScheme) var colorScheme
 
     var body: some View {
@@ -45,7 +47,7 @@ struct CandidateView: View {
                 .foregroundColor(Color(indexColor))
             Text(candidate.text)
                 .foregroundColor(Color(textColor))
-            if Defaults[.wubiCodeTip] {
+            if wubiCodeTip {
                 Text(getShownCode(candidate: candidate, origin: origin))
                     .foregroundColor(Color(codeColor))
             }
@@ -70,8 +72,9 @@ struct CandidatesView: View {
     var hasPrev: Bool = false
     var hasNext: Bool = false
 
-    let direction = Defaults[.candidatesDirection]
-    let themeConfig = Defaults[.themeConfig]
+    @Default(.candidatesDirection) private var direction
+    @Default(.themeConfig) private var themeConfig
+    @Default(.showCodeInWindow) private var showCodeInWindow
     @Environment(\.colorScheme) var colorScheme
 
     var _candidatesView: some View {
@@ -86,7 +89,7 @@ struct CandidatesView: View {
     }
 
     var _indicator: some View {
-        if Defaults[.candidatesDirection] == CandidatesDirection.horizontal {
+        if direction == CandidatesDirection.horizontal {
             return AnyView(VStack(spacing: 0) {
                 Image(hasPrev ? "arrowUp" : "arrowUpOff")
                     .resizable()
@@ -140,13 +143,13 @@ struct CandidatesView: View {
 
     var body: some View {
         VStack(alignment: .leading, spacing: themeConfig[colorScheme].originCandidatesSpace, content: {
-            if Defaults[.showCodeInWindow] {
+            if showCodeInWindow {
                 Text(origin)
                     .font(.system(size: themeConfig[colorScheme].fontSize))
                     .foregroundColor(Color(themeConfig[colorScheme].originCodeColor))
                     .fixedSize()
             }
-            if Defaults[.candidatesDirection] == CandidatesDirection.horizontal {
+            if direction == CandidatesDirection.horizontal {
                 HStack(alignment: .center, spacing: themeConfig[colorScheme].candidateSpace) {
                     _candidatesView
                     _indicator

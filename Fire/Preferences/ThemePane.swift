@@ -71,6 +71,10 @@ struct ThemePane: View {
             return
         }
         Defaults[.importedThemeConfig] = themeConfig
+        // 当前使用的和导入的输入法id一致，直接更新
+        if Defaults[.themeConfig].id == themeConfig.id {
+            Defaults[.themeConfig] = themeConfig
+        }
         print(themeConfig)
     }
 
