@@ -81,11 +81,11 @@
     }
   </style>
   <script src="https://unpkg.com/petite-vue"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jscolor/2.4.7/jscolor.min.js"></script>
 </head>
 <body class="h-full">
   <template id="color-picker">
-    <input type="color" v-model="value" @input="onColorInput">
-    <input type="number" v-model="opacity" step="0.01" min="0" max="1" @input="onOpacityInput">
+    <input data-jscolor="" :value="value" @input="onInput">
   </template>
 
   <div class="page-container h-full" id="app" v-scope>
@@ -242,18 +242,24 @@
   </div>
   
   <script>
+    jscolor.presets.default = {
+      format: 'HEXA',
+      alphaChannel: true
+    }
+
     const colorData2RGB = ({ red, green, blue, opacity }) => {
       return `rgba(${255 * red}, ${255 * green}, ${255 * blue}, ${opacity})`;
     }
-    const colorData2Hex = ({ red, green, blue }) => {
+    const colorData2Hex = ({ red, green, blue, opacity }) => {
       const getHex = num => Math.round(255 * num).toString(16).padStart(2, '0');
-      return `#${getHex(red)}${getHex(green)}${getHex(blue)}`;
+      console.log(`#${getHex(red)}${getHex(green)}${getHex(blue)}${getHex(opacity)}`)
+      return `#${getHex(red)}${getHex(green)}${getHex(blue)}${getHex(opacity)}`;
     }
-    const hex2ColorData = (hex = '#ffffff') => {
+    const hex2ColorData = (hex = '#ffffffff') => {
       const hex2Num = hex => parseInt(hex, 16);
       const hex2RGB = hex => {
-        const [r, g, b] = hex.slice(1).match(/.{2}/g).map(hex2Num);
-        return { red: r / 255, green: g / 255, blue: b / 255 };
+        const [r, g, b, a] = hex.slice(1).match(/.{2}/g).map(hex2Num);
+        return { red: r / 255, green: g / 255, blue: b / 255, opacity: a / 255 };
       }
       return hex2RGB(hex);
     }
@@ -264,17 +270,13 @@
         $template: '#color-picker',
         value: colorData2Hex(props.colorData),
         opacity: props.colorData.opacity,
-        onColorInput(e) {
+        onInput(e) {
           const value = e.target.value;
-          const {red, green, blue} = hex2ColorData(value)
+          const {red, green, blue, opacity} = hex2ColorData(value)
           props.colorData.red = red;
           props.colorData.green = green;
           props.colorData.blue = blue;
-          props.colorData.opacity = this.opacity;
-        },
-        onOpacityInput(e) {
-          const value = e.target.value;
-          props.colorData.opacity = +value;
+          props.colorData.opacity = opacity;
         },
       }
     }
