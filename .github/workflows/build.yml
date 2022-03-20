@@ -76,7 +76,7 @@ jobs:
         git checkout $version
 
     - name: switch xcode version
-      run: sudo xcode-select --switch /Applications/Xcode_12.4.app
+      run: sudo xcode-select --switch /Applications/Xcode_13.2.1.app
     
     - uses: actions/cache@v2
       with:

@@ -12,7 +12,7 @@ rm -rf "$EXPORT_PATH"
 mkdir -p "$EXPORT_PATH"
 
 
-xcodebuild clean -workspace "${WORKSPACE}" -scheme "${TARGET}" || { echo "clean Failed"; exit 1; }
+xcodebuild clean -workspace "${WORKSPACE}" -scheme "${TARGET}" -configuration Release  || { echo "clean Failed"; exit 1; }
 
 
 PRODUCT_SETTINGS_PATH="$PROJECT_ROOT/Fire/Info.plist"

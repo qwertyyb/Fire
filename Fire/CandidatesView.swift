@@ -144,7 +144,8 @@ struct CandidatesView: View {
     var body: some View {
         VStack(alignment: .leading, spacing: CGFloat( themeConfig[colorScheme].originCandidatesSpace), content: {
             if showCodeInWindow {
-                Text(origin)                    .foregroundColor(Color(themeConfig[colorScheme].originCodeColor))
+                Text(origin)
+                    .foregroundColor(Color(themeConfig[colorScheme].originCodeColor))
                     .fixedSize()
             }
             if direction == CandidatesDirection.horizontal {
