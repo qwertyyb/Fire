@@ -32,15 +32,15 @@ extension Color {
 
 struct ApperanceThemeConfig: Codable {
     let windowBackgroundColor: ColorData
-    let windowPaddingTop: Double
-    let windowPaddingLeft: Double
-    let windowPaddingRight: Double
-    let windowPaddingBottom: Double
-    let windowBorderRadius: Double
+    let windowPaddingTop: Float
+    let windowPaddingLeft: Float
+    let windowPaddingRight: Float
+    let windowPaddingBottom: Float
+    let windowBorderRadius: Float
 
     let originCodeColor: ColorData
-    let originCandidatesSpace: Double
-    let candidateSpace: Double
+    let originCandidatesSpace: Float
+    let candidateSpace: Float
 
     let candidateIndexColor: ColorData
     let candidateTextColor: ColorData
@@ -51,7 +51,7 @@ struct ApperanceThemeConfig: Codable {
     let selectedCodeColor: ColorData
 
     let fontName: String
-    let fontSize: Double
+    let fontSize: Float
 }
 
 struct ThemeConfig: Codable {

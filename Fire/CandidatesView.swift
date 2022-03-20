@@ -142,35 +142,33 @@ struct CandidatesView: View {
     }
 
     var body: some View {
-        VStack(alignment: .leading, spacing: themeConfig[colorScheme].originCandidatesSpace, content: {
+        VStack(alignment: .leading, spacing: CGFloat( themeConfig[colorScheme].originCandidatesSpace), content: {
             if showCodeInWindow {
-                Text(origin)
-                    .font(.system(size: themeConfig[colorScheme].fontSize))
-                    .foregroundColor(Color(themeConfig[colorScheme].originCodeColor))
+                Text(origin)                    .foregroundColor(Color(themeConfig[colorScheme].originCodeColor))
                     .fixedSize()
             }
             if direction == CandidatesDirection.horizontal {
-                HStack(alignment: .center, spacing: themeConfig[colorScheme].candidateSpace) {
+                HStack(alignment: .center, spacing: CGFloat(themeConfig[colorScheme].candidateSpace)) {
                     _candidatesView
                     _indicator
                 }
                 .fixedSize()
             } else {
-                VStack(alignment: .leading, spacing: themeConfig[colorScheme].candidateSpace) {
+                VStack(alignment: .leading, spacing: CGFloat(themeConfig[colorScheme].candidateSpace)) {
                     _candidatesView
                     _indicator
                 }
                 .fixedSize()
             }
         })
-            .padding(.top, themeConfig[colorScheme].windowPaddingTop)
-            .padding(.bottom, themeConfig[colorScheme].windowPaddingBottom)
-            .padding(.leading, themeConfig[colorScheme].windowPaddingLeft)
-            .padding(.trailing, themeConfig[colorScheme].windowPaddingRight)
+            .padding(.top, CGFloat(themeConfig[colorScheme].windowPaddingTop))
+            .padding(.bottom, CGFloat(themeConfig[colorScheme].windowPaddingBottom))
+            .padding(.leading, CGFloat(themeConfig[colorScheme].windowPaddingLeft))
+            .padding(.trailing, CGFloat(themeConfig[colorScheme].windowPaddingRight))
             .fixedSize()
-            .font(.system(size: themeConfig[colorScheme].fontSize))
+            .font(.system(size: CGFloat(themeConfig[colorScheme].fontSize)))
             .background(Color(themeConfig[colorScheme].windowBackgroundColor))
-            .cornerRadius(themeConfig[colorScheme].windowBorderRadius, antialiased: true)
+            .cornerRadius(CGFloat(themeConfig[colorScheme].windowBorderRadius), antialiased: true)
     }
 }
 
