@@ -100,7 +100,6 @@ struct ApplicationPane: View {
         guard let bundle = Bundle(path: selectedPath) else { return }
         guard let identifier = bundle.bundleIdentifier else { return }
 
-        print(selectedPath, identifier)
         appSettings[identifier] = ApplicationSettingItem(bundleId: identifier, inputMs: .enUS)
     }
     private func removeApp(_ settingItem: ApplicationSettingItem) {

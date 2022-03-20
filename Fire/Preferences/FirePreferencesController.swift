@@ -27,6 +27,13 @@ class FirePreferencesController {
                 ApplicationPane()
             },
             Preferences.Pane(
+                identifier: Preferences.PaneIdentifier(rawValue: "主题"),
+                 title: "主题",
+                toolbarIcon: NSImage(named: NSImage.colorPanelName) ?? NSImage(named: "general")!
+            ) {
+                ThemePane()
+            },
+            Preferences.Pane(
                 identifier: Preferences.PaneIdentifier(rawValue: "高级"),
                  title: "高级",
                 toolbarIcon: NSImage(named: NSImage.advancedName)!

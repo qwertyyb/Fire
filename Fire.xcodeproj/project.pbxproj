@@ -28,6 +28,7 @@
 		459DE991232EB26600A3ACD1 /* CandidatesWindow.swift in Sources */ = {isa = PBXBuildFile; fileRef = 459DE98F232EB26500A3ACD1 /* CandidatesWindow.swift */; };
 		45D996AA253C5232001460A8 /* GeneralPane.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45D996A9253C5232001460A8 /* GeneralPane.swift */; };
 		45DB6EC727E5B8FE00A39925 /* ThemeConfig.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45DB6EC627E5B8FE00A39925 /* ThemeConfig.swift */; };
+		45DB6EC927E609CB00A39925 /* ThemePane.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45DB6EC827E609CB00A39925 /* ThemePane.swift */; };
 		45DCE62226A31F140009FED1 /* ApplicationSettingCache.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45DCE62126A31F140009FED1 /* ApplicationSettingCache.swift */; };
 		45E85F742573BE1800F71024 /* wb_98_table.txt in Resources */ = {isa = PBXBuildFile; fileRef = 45E85F732573BE1800F71024 /* wb_98_table.txt */; };
 		673A400C253D9FE70003901E /* InputSource.swift in Sources */ = {isa = PBXBuildFile; fileRef = 673A400B253D9FE70003901E /* InputSource.swift */; };
@@ -95,6 +96,7 @@
 		459DE98F232EB26500A3ACD1 /* CandidatesWindow.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CandidatesWindow.swift; sourceTree = "<group>"; };
 		45D996A9253C5232001460A8 /* GeneralPane.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GeneralPane.swift; sourceTree = "<group>"; };
 		45DB6EC627E5B8FE00A39925 /* ThemeConfig.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ThemeConfig.swift; sourceTree = "<group>"; };
+		45DB6EC827E609CB00A39925 /* ThemePane.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ThemePane.swift; sourceTree = "<group>"; };
 		45DCE62126A31F140009FED1 /* ApplicationSettingCache.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ApplicationSettingCache.swift; sourceTree = "<group>"; };
 		45E85F732573BE1800F71024 /* wb_98_table.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = wb_98_table.txt; sourceTree = "<group>"; };
 		673A400B253D9FE70003901E /* InputSource.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InputSource.swift; sourceTree = "<group>"; };
@@ -230,6 +232,7 @@
 				45577EA0254552110064325B /* ThesaurusPane.swift */,
 				45577EB3254576720064325B /* FirePreferencesController.swift */,
 				450B7D9926A2847D00808A4D /* ApplicationPane.swift */,
+				45DB6EC827E609CB00A39925 /* ThemePane.swift */,
 			);
 			path = Preferences;
 			sourceTree = "<group>";
@@ -430,6 +433,7 @@
 				45D996AA253C5232001460A8 /* GeneralPane.swift in Sources */,
 				673C416925468A4800F462A3 /* FireMenu.swift in Sources */,
 				451E6048232E227B007B0463 /* AppDelegate.swift in Sources */,
+				45DB6EC927E609CB00A39925 /* ThemePane.swift in Sources */,
 				673A400C253D9FE70003901E /* InputSource.swift in Sources */,
 				459DE991232EB26600A3ACD1 /* CandidatesWindow.swift in Sources */,
 				45577EB0254575480064325B /* types.swift in Sources */,

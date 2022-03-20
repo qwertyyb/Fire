@@ -26,32 +26,31 @@ struct CandidateView: View {
     var index: Int
     var origin: String
     var selected: Bool = false
+    let themeConfig = Defaults[.themeConfig]
+    @Environment(\.colorScheme) var colorScheme
 
     var body: some View {
         let indexColor = selected
-            ? ThemeConfig.current.selectedIndexColor
-            : ThemeConfig.current.candidateIndexColor
+            ? themeConfig[colorScheme].selectedIndexColor
+            : themeConfig[colorScheme].candidateIndexColor
         let textColor = selected
-            ? ThemeConfig.current.selectedTextColor
-            : ThemeConfig.current.candidateTextColor
+            ? themeConfig[colorScheme].selectedTextColor
+            : themeConfig[colorScheme].candidateTextColor
         let codeColor = selected
-            ? ThemeConfig.current.selectedCodeColor
-            : ThemeConfig.current.candidateCodeColor
+            ? themeConfig[colorScheme].selectedCodeColor
+            : themeConfig[colorScheme].candidateCodeColor
 
         return HStack(alignment: .center, spacing: 2) {
             Text("\(index + 1).")
-                .font(.system(size: ThemeConfig.current.fontSize))
                 .foregroundColor(Color(indexColor))
             Text(candidate.text)
-                .font(.system(size: ThemeConfig.current.fontSize))
                 .foregroundColor(Color(textColor))
             if Defaults[.wubiCodeTip] {
                 Text(getShownCode(candidate: candidate, origin: origin))
-                    .font(.system(size: ThemeConfig.current.fontSize))
                     .foregroundColor(Color(codeColor))
             }
         }
-        .fixedSize()
+//        .fixedSize()
         .onTapGesture {
             NotificationCenter.default.post(
                 name: Fire.candidateSelected,
@@ -72,6 +71,8 @@ struct CandidatesView: View {
     var hasNext: Bool = false
 
     let direction = Defaults[.candidatesDirection]
+    let themeConfig = Defaults[.themeConfig]
+    @Environment(\.colorScheme) var colorScheme
 
     var _candidatesView: some View {
         ForEach(Array(candidates.enumerated()), id: \.element) { (index, candidate) -> CandidateView in
@@ -138,34 +139,35 @@ struct CandidatesView: View {
     }
 
     var body: some View {
-        VStack(alignment: .leading, spacing: 6, content: {
+        VStack(alignment: .leading, spacing: themeConfig[colorScheme].originCandidatesSpace, content: {
             if Defaults[.showCodeInWindow] {
                 Text(origin)
-                    .font(.system(size: ThemeConfig.current.fontSize))
-                    .foregroundColor(Color(ThemeConfig.current.originCodeColor))
+                    .font(.system(size: themeConfig[colorScheme].fontSize))
+                    .foregroundColor(Color(themeConfig[colorScheme].originCodeColor))
                     .fixedSize()
             }
             if Defaults[.candidatesDirection] == CandidatesDirection.horizontal {
-                HStack(alignment: .center, spacing: 8) {
+                HStack(alignment: .center, spacing: themeConfig[colorScheme].candidateSpace) {
                     _candidatesView
                     _indicator
                 }
                 .fixedSize()
             } else {
-                VStack(alignment: .leading, spacing: 8) {
+                VStack(alignment: .leading, spacing: themeConfig[colorScheme].candidateSpace) {
                     _candidatesView
                     _indicator
                 }
                 .fixedSize()
             }
         })
-            .padding(.top, ThemeConfig.current.windowPaddingTop)
-            .padding(.bottom, ThemeConfig.current.windowPaddingBottom)
-            .padding(.leading, ThemeConfig.current.windowPaddingLeft)
-            .padding(.trailing, ThemeConfig.current.windowPaddingRight)
+            .padding(.top, themeConfig[colorScheme].windowPaddingTop)
+            .padding(.bottom, themeConfig[colorScheme].windowPaddingBottom)
+            .padding(.leading, themeConfig[colorScheme].windowPaddingLeft)
+            .padding(.trailing, themeConfig[colorScheme].windowPaddingRight)
             .fixedSize()
-            .background(Color(ThemeConfig.current.windowBackgroundColor))
-            .cornerRadius(ThemeConfig.current.windowBorderRadius, antialiased: true)
+            .font(.system(size: themeConfig[colorScheme].fontSize))
+            .background(Color(themeConfig[colorScheme].windowBackgroundColor))
+            .cornerRadius(themeConfig[colorScheme].windowBorderRadius, antialiased: true)
     }
 }
 
