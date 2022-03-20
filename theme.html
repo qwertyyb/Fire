@@ -1,0 +1,532 @@
+<!DOCTYPE html>
+<html lang="zh-CN" class="h-full">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>主题 - 业火输入法</title>
+  <style>
+    body {
+      margin: 0;
+    }
+    .flex {
+      display: flex;
+    }
+    .flex-1 {
+      flex: 1;
+    }
+    .flex-3 {
+      flex: 3
+    }
+    .flex-col {
+      flex-direction: column;
+    }
+    .justify-center {
+      justify-content: center;
+    }
+    .items-center {
+      align-items: center;
+    }
+    .flex-wrap {
+      flex-wrap: wrap;
+    }
+    .w-full {
+      width: 100%;
+    }
+    .h-full {
+      height: 100%;
+    }
+    .h-screen {
+      height: 100vh;
+    }
+    .w-half {
+      width: 50%;
+    }
+    .bg-gray {
+      background-color: gray;
+    }
+    .bg-white {
+      background-color: white;
+    }
+    .ov-auto {
+      overflow: auto;
+    }
+    .text-center {
+      text-align: center;
+    }
+    .form-label {
+      width: 120px;
+    }
+    .form-item {
+      margin-bottom: 10px;
+    }
+    .setting-container {
+      padding: 20px 0 0 20px;
+      box-sizing: border-box;
+    }
+    .setting-container + .setting-container {
+      padding-top: 0;
+    }
+    .setting-wrapper {
+      padding-left: 20px;
+    }
+    .setting-area {
+      padding-left: 12px;
+    }
+    .theme-preview-container {
+      width: 600px;
+      max-height: 200px;
+      border: 1px solid #ccc;
+      margin-bottom: 20px;
+    }
+  </style>
+  <script src="https://unpkg.com/petite-vue"></script>
+</head>
+<body class="h-full">
+  <template id="color-picker">
+    <input type="color" v-model="value" @input="onColorInput">
+    <input type="number" v-model="opacity" step="0.01" min="0" max="1" @input="onOpacityInput">
+  </template>
+
+  <div class="page-container h-full" id="app" v-scope>
+    <div class="flex h-full">
+      <div class="flex-1 h-full bg-gray flex flex-col justify-center items-center">
+        <fieldset class="theme-preview-container flex h-full flex-col justify-center items-center"
+          v-for="(themeConfig, index) in (formValue.darkSameLight ? [themeConfig] : [themeConfig, darkThemeConfig])"
+          :key="index">
+          <legend>{{ index ? '深色模式' : '浅色模式' }}</legend>
+          <div class="candidate-window flex flex-col bg-white"
+            :style="style.window">
+            <div class="origin-code" :style="style.origin">g</div>
+            <div class="candidate-list flex" :style="style.candidateList">
+              <div class="candidate-item flex"
+                v-for="(item, index) in previewData.candidates"
+                :key="item.code">
+                <div class="item-index" :style="index === previewData.selectedIndex ? style.selected.index : style.candidate.index">{{item.index}}.</div>
+                <div class="item-text" :style="index === previewData.selectedIndex ? style.selected.text : style.candidate.text">{{item.text}}</div>
+                <div class="item-code" :style="index === previewData.selectedIndex ? style.selected.code : style.candidate.code">{{item.code}}</div>
+              </div>
+            </div>
+          </div>
+        </fieldset>
+      </div>
+      <div class="flex-1 flex-col h-screen ov-auto">
+        <h1 class="text-center">创建主题</h1>
+        <div class="flex-1 setting-container"
+          v-for="(themeConfig, index) in (!formValue.darkSameLight ? [themeConfig, darkThemeConfig] : [themeConfig])"
+          :key="index">
+          <h2 style="margin: 0">{{ !index ? '默认(浅色)模式' : '深色模式'　}}</h2>
+          <br>
+          <fieldset class="setting-wrapper">
+            <legend>基本信息</legend>
+            <div class="setting-area flex flex-wrap">
+              <div class="form-item flex items-center w-half">
+                <div class="form-label">名字</div>
+                <input type="text" v-model="formValue.name">
+              </div>
+              <div class="form-item flex items-center w-half">
+                <div class="form-label">唯一ID</div>
+                <input type="text" v-model="formValue.id">
+              </div>
+              <div class="form-item flex items-center w-half">
+                <div class="form-label">作者</div>
+                <input type="text" v-model="formValue.author">
+              </div>
+            </div>
+          </fieldset>
+          <div class="setting-wrapper" v-if="index === 0" style="padding: 0">
+            <div class="setting-area flex flex-wrap">
+              <div class="form-item flex items-center w-half">
+                <div class="form-label" style="width:200px">深色与浅色使用一套配色</div>
+                <input type="checkbox" v-model="formValue.darkSameLight" id="">
+              </div>
+            </div>
+          </div>
+          <fieldset class="setting-wrapper">
+            <legend>候选面板</legend>
+            <div class="setting-area flex flex-wrap">
+              <div class="form-item flex items-center w-half">
+                <div class="form-label">窗口背景</div>
+                <div v-scope="ColorPicker({ colorData: themeConfig.windowBackgroundColor })"
+                  class="flex"></div>
+              </div>
+              <div class="form-item flex items-center w-half">
+                <div class="form-label">行间距</div>
+                <input type="number" min="0" v-model="themeConfig.originCandidatesSpace" id="">
+              </div>
+              <div class="form-item flex items-center w-half">
+                <div class="form-label">上边距</div>
+                <input type="number" min="0" v-model="themeConfig.windowPaddingTop" id="">
+              </div>
+              <div class="form-item flex items-center w-half">
+                <div class="form-label">下边距</div>
+                <input type="number" min="0" v-model="themeConfig.windowPaddingBottom" id="">
+              </div>
+              <div class="form-item flex items-center w-half">
+                <div class="form-label">左边距</div>
+                <input type="number" min="0" v-model="themeConfig.windowPaddingLeft" id="">
+              </div>
+              <div class="form-item flex items-center w-half">
+                <div class="form-label">右边距</div>
+                <input type="number" min="0" v-model="themeConfig.windowPaddingRight" id="">
+              </div>
+            </div>
+          </fieldset>
+          <fieldset class="setting-wrapper">
+            <legend>输入编码</legend>
+            <div class="setting-area flex flex-wrap">
+              <div class="form-item flex items-center w-half">
+                <div class="form-label">文字颜色</div>
+                <div v-scope="ColorPicker({ colorData: themeConfig.originCodeColor })"
+                  class="flex"></div>
+              </div>
+            </div>
+          </fieldset>
+          <fieldset class="setting-wrapper">
+            <legend>候选列表</legend>
+            <div class="setting-area flex flex-wrap">
+              <div class="form-item flex items-center w-half">
+                <div class="form-label">候选项间距</div>
+                <input type="number" min="0" v-model="themeConfig.candidateSpace">
+              </div>
+            </div>
+          </fieldset>
+          <fieldset class="setting-wrapper">
+            <legend>候选项</legend>
+            <div class="setting-area flex flex-wrap">
+              <div class="form-item flex items-center w-half">
+                <div class="form-label">序号颜色</div>
+                <div v-scope="ColorPicker({ colorData: themeConfig.candidateIndexColor })"
+                  class="flex"></div>
+              </div>
+              <div class="form-item flex items-center w-half">
+                <div class="form-label">文字颜色</div>
+                <div v-scope="ColorPicker({ colorData: themeConfig.candidateTextColor })"
+                  class="flex"></div>
+              </div>
+              <div class="form-item flex items-center w-half">
+                <div class="form-label">提示码颜色</div>
+                <div v-scope="ColorPicker({ colorData: themeConfig.candidateCodeColor })"
+                  class="flex"></div>
+              </div>
+            </div>
+          </fieldset>
+          <fieldset class="setting-wrapper">
+            <legend>选中项</legend>
+            <div class="setting-area flex flex-wrap">
+              <div class="form-item flex items-center w-half">
+                <div class="form-label">序号颜色</div>
+                <div v-scope="ColorPicker({ colorData: themeConfig.selectedIndexColor })"
+                  class="flex"></div>
+              </div>
+              <div class="form-item flex items-center w-half">
+                <div class="form-label">文字颜色</div>
+                <div v-scope="ColorPicker({ colorData: themeConfig.selectedTextColor })"
+                  class="flex"></div>
+              </div>
+              <div class="form-item flex items-center w-half">
+                <div class="form-label">提示码颜色</div>
+                <div v-scope="ColorPicker({ colorData: themeConfig.selectedCodeColor })"
+                  class="flex"></div>
+              </div>
+            </div>
+          </fieldset>
+          <br><br>
+        </div>
+        <button @click="exportConfig" style="margin-left: 30px">导出</button>
+        <div style="padding: 20px">使用方式: 首选项 -> 主题 -> 导入 -> 选择导出的文件 -> 使用</div>
+        <br>
+        <br>
+      </div>
+    </div>
+  </div>
+  
+  <script>
+    const colorData2RGB = ({ red, green, blue, opacity }) => {
+      return `rgba(${255 * red}, ${255 * green}, ${255 * blue}, ${opacity})`;
+    }
+    const colorData2Hex = ({ red, green, blue }) => {
+      const getHex = num => Math.round(255 * num).toString(16).padStart(2, '0');
+      return `#${getHex(red)}${getHex(green)}${getHex(blue)}`;
+    }
+    const hex2ColorData = (hex = '#ffffff') => {
+      const hex2Num = hex => parseInt(hex, 16);
+      const hex2RGB = hex => {
+        const [r, g, b] = hex.slice(1).match(/.{2}/g).map(hex2Num);
+        return { red: r / 255, green: g / 255, blue: b / 255 };
+      }
+      return hex2RGB(hex);
+    }
+    const transUnit = (num) => num + 'px'
+
+    function ColorPicker(props) {
+      return {
+        $template: '#color-picker',
+        value: colorData2Hex(props.colorData),
+        opacity: props.colorData.opacity,
+        onColorInput(e) {
+          const value = e.target.value;
+          const {red, green, blue} = hex2ColorData(value)
+          props.colorData.red = red;
+          props.colorData.green = green;
+          props.colorData.blue = blue;
+          props.colorData.opacity = this.opacity;
+        },
+        onOpacityInput(e) {
+          const value = e.target.value;
+          props.colorData.opacity = +value;
+        },
+      }
+    }
+
+
+    PetiteVue.createApp({
+      ColorPicker,
+      previewData: {
+        origin: 'g',
+        selectedIndex: 0,
+        candidates: [
+          {
+            index: 1,
+            text: '一',
+            code: '~gll'
+          },
+          {
+            index: 2,
+            text: '王',
+            code: '~ggg'
+          },
+          {
+            index: 3,
+            text: '开',
+            code: '~gak'
+          },
+          {
+            index: 4,
+            text: '噶',
+            code: '(kajn)'
+          },
+          {
+            index: 5,
+            text: '嘎',
+            code: '(kdha)'
+          },
+        ]
+      },
+      formValue: {
+        id: '',
+        name: '',
+        author: '',
+        darkSameLight: true,
+      },
+      themeConfig: {
+        windowBackgroundColor: {
+          red: 1,
+          blue: 1,
+          green: 1,
+          opacity: 1
+        },
+        windowPaddingTop: 6,
+        windowPaddingBottom: 6,
+        windowPaddingLeft: 10,
+        windowPaddingRight: 10,
+        windowBorderRadius: 6,
+
+        originCodeColor: {
+          red: 0.3,
+          green: 0.3,
+          blue: 0.3,
+          opacity: 1
+        },
+
+        originCandidatesSpace: 6,
+        candidateSpace: 8,
+
+        candidateIndexColor: {
+          red: 0.1,
+          green: 0.1,
+          blue: 0.1,
+          opacity: 1
+        },
+        candidateTextColor: {
+          red: 0.1,
+          green: 0.1,
+          blue: 0.1,
+          opacity: 1
+        },
+        candidateCodeColor: {
+          red: 0.3,
+          green: 0.3,
+          blue: 0.3,
+          opacity: 0.8
+        },
+
+        selectedIndexColor: {
+          red: 0.863,
+          green: 0.078,
+          blue: 0.235,
+          opacity: 1
+        },
+        selectedTextColor: {
+          red: 0.863,
+          green: 0.078,
+          blue: 0.235,
+          opacity: 1
+        },
+        selectedCodeColor: {
+          red: 0.863,
+          green: 0.078,
+          blue: 0.235,
+          opacity: 0.8
+        },
+
+        fontName: '',
+        fontSize: 20
+      },
+      darkThemeConfig: {
+        windowBackgroundColor: {
+          red: 0,
+          blue: 0,
+          green: 0,
+          opacity: 1
+        },
+        windowPaddingTop: 6,
+        windowPaddingBottom: 6,
+        windowPaddingLeft: 10,
+        windowPaddingRight: 10,
+        windowBorderRadius: 6,
+
+        originCodeColor: {
+          red: 0.7,
+          green: 0.7,
+          blue: 0.7,
+          opacity: 1
+        },
+
+        originCandidatesSpace: 6,
+        candidateSpace: 8,
+
+        candidateIndexColor: {
+          red: 0.9,
+          green: 0.9,
+          blue: 0.9,
+          opacity: 1
+        },
+        candidateTextColor: {
+          red: 0.9,
+          green: 0.9,
+          blue: 0.9,
+          opacity: 1
+        },
+        candidateCodeColor: {
+          red: 0.7,
+          green: 0.7,
+          blue: 0.7,
+          opacity: 0.8
+        },
+
+        selectedIndexColor: {
+          red: 0.863,
+          green: 0.078,
+          blue: 0.235,
+          opacity: 1
+        },
+        selectedTextColor: {
+          red: 0.863,
+          green: 0.078,
+          blue: 0.235,
+          opacity: 1
+        },
+        selectedCodeColor: {
+          red: 0.863,
+          green: 0.078,
+          blue: 0.235,
+          opacity: 0.8
+        },
+
+        fontName: '',
+        fontSize: 20
+      },
+
+      get style() {
+        return {
+          window: {
+            background: colorData2RGB(this.themeConfig.windowBackgroundColor),
+            paddingTop: transUnit(this.themeConfig.windowPaddingTop),
+            paddingBottom: transUnit(this.themeConfig.windowPaddingBottom),
+            paddingLeft: transUnit(this.themeConfig.windowPaddingLeft),
+            paddingRight: transUnit(this.themeConfig.windowPaddingRight),
+            borderRadius: transUnit(this.themeConfig.windowBorderRadius),
+            gap: transUnit(this.themeConfig.originCandidatesSpace),
+            fontSize: transUnit(this.themeConfig.fontSize),
+          },
+          origin: {
+            color: colorData2RGB(this.themeConfig.originCodeColor)
+          },
+          candidateList: {
+            gap: transUnit(this.themeConfig.candidateSpace)
+          },
+          candidate: {
+            index: {
+              color: colorData2RGB(this.themeConfig.candidateIndexColor)
+            },
+            text: {
+              color: colorData2RGB(this.themeConfig.candidateTextColor)
+            },
+            code: {
+              color: colorData2RGB(this.themeConfig.candidateCodeColor)
+            }
+          },
+          selected: {
+            index: {
+              color: colorData2RGB(this.themeConfig.selectedIndexColor)
+            },
+            text: {
+              color: colorData2RGB(this.themeConfig.selectedTextColor)
+            },
+            code: {
+              color: colorData2RGB(this.themeConfig.selectedCodeColor)
+            }
+          }
+        }
+      },
+      exportConfig() {
+        const containerEls = Array.from(document.querySelectorAll('.theme-preview-container'));
+        containerEls.forEach(containerEl => {
+          const containerRect = containerEl.getBoundingClientRect();
+          const windowEl = containerEl.querySelector('.candidate-window');
+          const windowRect = windowEl.getBoundingClientRect();
+          const isInContainer = containerRect.top < windowRect.top && containerRect.bottom > windowRect.bottom && containerRect.left < windowRect.left && containerRect.right > windowRect.right;
+          if (!isInContainer) {
+            if(!window.confirm('主题应用后候选窗口过大，确认导出吗？')) {
+              return
+            }
+          }
+        })
+        if (!this.formValue.id || !this.formValue.name || !this.formValue.author) {
+          alert('请先填写完整信息');
+          return;
+        }
+        const config = {
+          ...this.formValue,
+          light: this.themeConfig,
+          dark: this.darkThemeConfig,
+        }
+        if (this.formValue.darkSameLight) {
+          config.dark = config.light;
+        }
+        const blob = new Blob([JSON.stringify(config, null, 2)], {
+          type: 'application/json'
+        });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        const name = `${this.formValue.name}-${this.formValue.id}-${this.formValue.author}.json`;
+        a.download = name;
+        a.click();
+      }
+    },
+    ).mount()
+  </script>
+</body>
+</html>
