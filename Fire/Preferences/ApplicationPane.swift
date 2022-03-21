@@ -87,7 +87,7 @@ struct ApplicationPane: View {
 
     private func addApp() {
         let openPanel = NSOpenPanel()
-        openPanel.directoryURL = Bundle.main.resourceURL
+        openPanel.directoryURL = FileManager.default.urls(for: .applicationDirectory, in: .systemDomainMask).first
         openPanel.prompt = "选择应用"
         openPanel.allowsMultipleSelection = false
         openPanel.canChooseDirectories = false
@@ -145,7 +145,7 @@ struct ApplicationPane: View {
                                 Text("添加应用可单独设置该应用下默认使用英文或五笔")
                                     .foregroundColor(Color.gray)
                             }
-                            .frame(minHeight: 400)
+                            .frame(minHeight: 300)
                         }
                     }
                     .frame(minWidth: 450, minHeight: 320)
