@@ -54,6 +54,17 @@
     .text-center {
       text-align: center;
     }
+
+    .page-indicator-item {
+      height: 10px;
+      font-size: 0;
+      margin-top: auto
+    }
+    .page-indicator-item:last-child {
+      margin-top: 0;
+      margin-bottom: auto;
+    }
+
     .form-label {
       width: 120px;
     }
@@ -98,13 +109,24 @@
           <div class="candidate-window flex flex-col bg-white"
             :style="style.window">
             <div class="origin-code" :style="style.origin">g</div>
-            <div class="candidate-list flex" :style="style.candidateList">
-              <div class="candidate-item flex"
-                v-for="(item, index) in previewData.candidates"
-                :key="item.code">
-                <div class="item-index" :style="index === previewData.selectedIndex ? style.selected.index : style.candidate.index">{{item.index}}.</div>
-                <div class="item-text" :style="index === previewData.selectedIndex ? style.selected.text : style.candidate.text">{{item.text}}</div>
-                <div class="item-code" :style="index === previewData.selectedIndex ? style.selected.code : style.candidate.code">{{item.code}}</div>
+            <div class="window-bottom flex" :style="style.candidateList">
+              <div class="candidate-list flex">
+                <div class="candidate-item flex"
+                  v-for="(item, index) in previewData.candidates"
+                  :key="item.code">
+                  <div class="item-index" :style="index === previewData.selectedIndex ? style.selected.index : style.candidate.index">{{item.index}}.</div>
+                  <div class="item-text" :style="index === previewData.selectedIndex ? style.selected.text : style.candidate.text">{{item.text}}</div>
+                  <div class="item-code" :style="index === previewData.selectedIndex ? style.selected.code : style.candidate.code">{{item.code}}</div>
+                </div>
+              </div>
+              <div class="page-indicator flex flex-col items-center">
+                <div class="page-indicator-item">
+                  <svg t="1647879424228" class="icon" viewBox="0 0 1765 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="82046" width="10" height="10"><path d="M882.468812 341.347341L241.376231 982.608011a141.405121 141.405121 0 0 1-199.984242-199.94222l741.273802-741.273802a141.405121 141.405121 0 0 1 199.94222 0l741.231779 741.273802a141.405121 141.405121 0 0 1-199.942219 199.94222z" p-id="82047" :style="style.indicator.disabled"></path></svg>
+                </div>
+                <div class="page-indicator-item"
+                  :style="style.indicator.defaults">
+                  <svg t="1647879201778" class="icon" viewBox="0 0 1765 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="75307" width="10" height="10"><path d="M882.440095 682.698561L241.368376 41.416738A141.40052 141.40052 0 0 0 41.390643 241.394471l741.249679 741.207659a141.40052 141.40052 0 0 0 199.935713 0L1723.783693 241.394471a141.40052 141.40052 0 0 0-199.935713-199.977733z" p-id="75308" :style="style.indicator.defaults"></path></svg>
+                </div>
               </div>
             </div>
           </div>
@@ -231,6 +253,21 @@
               </div>
             </div>
           </fieldset>
+          <fieldset class="setting-wrapper">
+            <legend>页面指示器</legend>
+            <div class="setting-area flex flex-wrap">
+              <div class="form-item flex items-center w-half">
+                <div class="form-label">默认颜色</div>
+                <div v-scope="ColorPicker({ colorData: themeConfig.pageIndicatorColor })"
+                  class="flex"></div>
+              </div>
+              <div class="form-item flex items-center w-half">
+                <div class="form-label">置灰颜色</div>
+                <div v-scope="ColorPicker({ colorData: themeConfig.pageIndicatorDisabledColor })"
+                  class="flex"></div>
+              </div>
+            </div>
+          </fieldset>
           <br><br>
         </div>
         <button @click="exportConfig" style="margin-left: 30px">导出</button>
@@ -250,10 +287,9 @@
     const colorData2RGB = ({ red, green, blue, opacity }) => {
       return `rgba(${255 * red}, ${255 * green}, ${255 * blue}, ${opacity})`;
     }
-    const colorData2Hex = ({ red, green, blue, opacity }) => {
+    const colorData2Hex = ({ red, green, blue, opacity }, useOpacity = true) => {
       const getHex = num => Math.round(255 * num).toString(16).padStart(2, '0');
-      console.log(`#${getHex(red)}${getHex(green)}${getHex(blue)}${getHex(opacity)}`)
-      return `#${getHex(red)}${getHex(green)}${getHex(blue)}${getHex(opacity)}`;
+      return `#${getHex(red)}${getHex(green)}${getHex(blue)}${useOpacity ? getHex(opacity) : ''}`;
     }
     const hex2ColorData = (hex = '#ffffffff') => {
       const hex2Num = hex => parseInt(hex, 16);
@@ -382,6 +418,20 @@
           opacity: 0.8
         },
 
+        pageIndicatorColor: {
+          red: 0.863,
+          green: 0.078,
+          blue: 0.235,
+          opacity: 1
+        },
+
+        pageIndicatorDisabledColor: {
+          red: 0.863,
+          green: 0.078,
+          blue: 0.235,
+          opacity: 0.4
+        },
+
         fontName: '',
         fontSize: 20
       },
@@ -446,6 +496,20 @@
           opacity: 0.8
         },
 
+        pageIndicatorColor: {
+          red: 0.863,
+          green: 0.078,
+          blue: 0.235,
+          opacity: 1
+        },
+
+        pageIndicatorDisabledColor: {
+          red: 0.863,
+          green: 0.078,
+          blue: 0.235,
+          opacity: 0.4
+        },
+
         fontName: '',
         fontSize: 20
       },
@@ -488,6 +552,16 @@
             },
             code: {
               color: colorData2RGB(this.themeConfig.selectedCodeColor)
+            }
+          },
+          indicator: {
+            defaults: {
+              fill: colorData2Hex(this.themeConfig.pageIndicatorColor, false),
+              fillOpacity: this.themeConfig.pageIndicatorColor.opacity,
+            },
+            disabled: {
+              fill: colorData2Hex(this.themeConfig.pageIndicatorDisabledColor, false),
+              fillOpacity: this.themeConfig.pageIndicatorDisabledColor.opacity
             }
           }
         }
