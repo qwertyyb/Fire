@@ -49,6 +49,11 @@ struct ApperanceThemeConfig: Codable {
     let selectedIndexColor: ColorData
     let selectedTextColor: ColorData
     let selectedCodeColor: ColorData
+    
+    // 页面指示器颜色
+    let pageIndicatorColor: ColorData
+    // 页面指示器置灰色
+    let pageIndicatorDisabledColor: ColorData
 
     let fontName: String
     let fontSize: Float
@@ -94,6 +99,8 @@ let defaultThemeConfig = ThemeConfig(
         selectedIndexColor: ColorData(red: 0.863, green: 0.078, blue: 0.235, opacity: 1),
         selectedTextColor: ColorData(red: 0.863, green: 0.078, blue: 0.235, opacity: 1),
         selectedCodeColor: ColorData(red: 0.863, green: 0.078, blue: 0.235, opacity: 0.8),
+        pageIndicatorColor: ColorData(red: 0.863, green: 0.078, blue: 0.235, opacity: 1),
+        pageIndicatorDisabledColor: ColorData(red: 0.863, green: 0.078, blue: 0.235, opacity: 0.4),
         fontName: "system",
         fontSize: 20),
     dark: ApperanceThemeConfig(
@@ -112,6 +119,8 @@ let defaultThemeConfig = ThemeConfig(
         selectedIndexColor: ColorData(red: 0.863, green: 0.078, blue: 0.235, opacity: 1),
         selectedTextColor: ColorData(red: 0.863, green: 0.078, blue: 0.235, opacity: 1),
         selectedCodeColor: ColorData(red: 0.863, green: 0.078, blue: 0.235, opacity: 0.8),
+        pageIndicatorColor: ColorData(red: 0.863, green: 0.078, blue: 0.235, opacity: 1),
+        pageIndicatorDisabledColor: ColorData(red: 0.863, green: 0.078, blue: 0.235, opacity: 0.4),
         fontName: "system",
         fontSize: 20
     )
