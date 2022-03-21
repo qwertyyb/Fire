@@ -2,7 +2,7 @@ PODS:
   - Defaults (4.2.2)
   - Preferences (2.2.0)
   - Sparkle (1.26.0)
-  - SwiftLint (0.42.0)
+  - SwiftLint (0.46.5)
 
 DEPENDENCIES:
   - Defaults
@@ -21,7 +21,7 @@ SPEC CHECKSUMS:
   Defaults: d785e56c0fb8890dc40351603f05c8e1df1bdd45
   Preferences: 4894cc28df3557336b0b72440c893d95203d3e33
   Sparkle: d56d028f4b0c123577825f5d1004f6140d77f90e
-  SwiftLint: 4fa9579c63416865179bc416f0a92d55f009600d
+  SwiftLint: 2c16e8fa99dac2e440dc0c70ea74d2532048f6cf
 
 PODFILE CHECKSUM: f3222fdef34001bff78c89a55dda9f7e0a1e60e3
 
