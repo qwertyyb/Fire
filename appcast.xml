@@ -3,21 +3,21 @@
     <channel>
         <title>Fire</title>
         <item>
-            <title>v0.5.0</title>
-            <pubDate>Tue, 15 Mar 2022 13:51:12 +0000</pubDate>
+            <title>v0.6.1</title>
+            <pubDate>Mon, 21 Mar 2022 02:50:49 +0000</pubDate>
             <sparkle:minimumSystemVersion>10.15</sparkle:minimumSystemVersion>
             <description><![CDATA[
-                <h3 id="features">Features</h3>
+                <h3 id="bugfixes">Bug Fixes</h3>
 <ul>
-<li>支持调整候选词顺序和禁用英文输入模式 (<a href="https://github.com/qwertyyb/Fire/issues/46">#46</a>) (<a href="https://github.com/qwertyyb/Fire/commit/a82001710b29536871ba8873d6ce3ea212bb4de9">a820017</a>)</li>
+<li>修复应用设置样式问题并调整app选择初始目录 (<a href="https://github.com/qwertyyb/Fire/issues/52">#52</a>) (<a href="https://github.com/qwertyyb/Fire/commit/dbf01c88782bb445cf31c7184b42d1b21dd19c37">dbf01c8</a>)</li>
 </ul>
             ]]>
             </description>
             <enclosure url="https://github.com/qwertyyb/Fire/releases/latest/download/FireInstaller.zip"
-              sparkle:version="20220315134607"
-              sparkle:shortVersionString="v0.5.0"
-              length="3155237"
-              sparkle:edSignature="6tCXFfJ64bPwX2iBY4BeqV2OdJIfTdrMPntZ2gjTqKrj1HV2jC9EngJAklFbSCGMqq3W3Lvg46C08UgwaamDAw=="
+              sparkle:version="20220321024611"
+              sparkle:shortVersionString="v0.6.1"
+              length="3219868"
+              sparkle:edSignature="2rT3E/IXKtUF7LMfYsbKxGmyFVUx0gtWNdcyxtNKXYE1Ls2F2TGf7Zi1XurVZ9Nx52Dqy0ER4RmkjgC2S/BGAQ=="
               type="application/octet-stream"/>
         </item>
     </channel>
