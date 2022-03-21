@@ -3,26 +3,21 @@
     <channel>
         <title>Fire</title>
         <item>
-            <title>v0.6.0</title>
-            <pubDate>Sun, 20 Mar 2022 14:26:38 +0000</pubDate>
+            <title>v0.6.1</title>
+            <pubDate>Mon, 21 Mar 2022 02:50:49 +0000</pubDate>
             <sparkle:minimumSystemVersion>10.15</sparkle:minimumSystemVersion>
             <description><![CDATA[
                 <h3 id="bugfixes">Bug Fixes</h3>
 <ul>
-<li>修正「偏好设定与关于视窗无法用CMD+W关闭」<a href="https://github.com/qwertyyb/Fire/issues/47">#47</a> (<a href="https://github.com/qwertyyb/Fire/issues/48">#48</a>) (<a href="https://github.com/qwertyyb/Fire/commit/50bbb1dbdd1c2c5b8ac991aefba98cea8595ad54">50bbb1d</a>)</li>
-<li>让剪贴簿热键等其他常用热键在输入法自身的视窗内生效 (<a href="https://github.com/qwertyyb/Fire/issues/49">#49</a>) (<a href="https://github.com/qwertyyb/Fire/commit/d66ec2d33ba453fc1d9071c4cd3c3f9ca2255594">d66ec2d</a>)</li>
-</ul>
-<h3 id="features">Features</h3>
-<ul>
-<li>添加主题能力 (<a href="https://github.com/qwertyyb/Fire/issues/50">#50</a>) (<a href="https://github.com/qwertyyb/Fire/commit/be0e859b1a9d563a9a93477a0a878827029dd956">be0e859</a>)</li>
+<li>修复应用设置样式问题并调整app选择初始目录 (<a href="https://github.com/qwertyyb/Fire/issues/52">#52</a>) (<a href="https://github.com/qwertyyb/Fire/commit/dbf01c88782bb445cf31c7184b42d1b21dd19c37">dbf01c8</a>)</li>
 </ul>
             ]]>
             </description>
             <enclosure url="https://github.com/qwertyyb/Fire/releases/latest/download/FireInstaller.zip"
-              sparkle:version="20220320142236"
-              sparkle:shortVersionString="v0.6.0"
-              length="3219506"
-              sparkle:edSignature="oAEcEbF5iyz/K4KDvaIDKhRu9/v0b5hI4+70pObxlcDojit2KF/1e3I5W4Y5qwG3vEjq6LlfXpBirBWa4OrjAg=="
+              sparkle:version="20220321024611"
+              sparkle:shortVersionString="v0.6.1"
+              length="3219868"
+              sparkle:edSignature="2rT3E/IXKtUF7LMfYsbKxGmyFVUx0gtWNdcyxtNKXYE1Ls2F2TGf7Zi1XurVZ9Nx52Dqy0ER4RmkjgC2S/BGAQ=="
               type="application/octet-stream"/>
         </item>
     </channel>
