@@ -1,0 +1,8 @@
+build
+dist
+Fire
+Fire.xcodeproj
+Fire.xcworkspace
+Pods
+Sources
+Tests
