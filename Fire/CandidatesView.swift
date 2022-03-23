@@ -91,7 +91,8 @@ struct CandidatesView: View {
     var _indicator: some View {
         if direction == CandidatesDirection.horizontal {
             return AnyView(VStack(spacing: 0) {
-                Image(hasPrev ? "arrowUp" : "arrowUpOff")
+                Image("arrowUp")
+                    .renderingMode(.template)
                     .resizable()
                     .frame(width: 10, height: 10, alignment: .center)
                     .onTapGesture {
@@ -101,7 +102,12 @@ struct CandidatesView: View {
                             object: nil
                         )
                     }
-                Image(hasNext ? "arrowDown" : "arrowDownOff")
+                    .foregroundColor(Color(hasPrev
+                                     ? themeConfig[colorScheme].pageIndicatorColor
+                                     : themeConfig[colorScheme].pageIndicatorDisabledColor
+                    ))
+                Image("arrowDown")
+                    .renderingMode(.template)
                     .resizable()
                     .frame(width: 10, height: 10, alignment: .center)
                     .onTapGesture {
@@ -112,10 +118,15 @@ struct CandidatesView: View {
                             object: nil
                         )
                     }
+                    .foregroundColor(Color(hasNext
+                                     ? themeConfig[colorScheme].pageIndicatorColor
+                                     : themeConfig[colorScheme].pageIndicatorDisabledColor
+                    ))
             })
         }
         return AnyView(HStack(spacing: 4) {
-            Image(hasPrev ? "arrowUp" : "arrowUpOff")
+            Image("arrowUp")
+                .renderingMode(.template)
                 .resizable()
                 .frame(width: 10, height: 10, alignment: .center)
                 .rotationEffect(Angle(degrees: -90), anchor: .center)
@@ -126,7 +137,8 @@ struct CandidatesView: View {
                         object: nil
                     )
                 }
-            Image(hasNext ? "arrowDown" : "arrowDownOff")
+            Image("arrowDown")
+                .renderingMode(.template)
                 .resizable()
                 .frame(width: 10, height: 10, alignment: .center)
                 .rotationEffect(Angle(degrees: -90), anchor: .center)
