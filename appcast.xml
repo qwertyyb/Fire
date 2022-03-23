@@ -3,21 +3,21 @@
     <channel>
         <title>Fire</title>
         <item>
-            <title>v0.6.1</title>
-            <pubDate>Mon, 21 Mar 2022 02:50:49 +0000</pubDate>
+            <title>v0.6.2</title>
+            <pubDate>Wed, 23 Mar 2022 05:12:09 +0000</pubDate>
             <sparkle:minimumSystemVersion>10.15</sparkle:minimumSystemVersion>
             <description><![CDATA[
                 <h3 id="bugfixes">Bug Fixes</h3>
 <ul>
-<li>修复应用设置样式问题并调整app选择初始目录 (<a href="https://github.com/qwertyyb/Fire/issues/52">#52</a>) (<a href="https://github.com/qwertyyb/Fire/commit/dbf01c88782bb445cf31c7184b42d1b21dd19c37">dbf01c8</a>)</li>
+<li>主题配置支持页面指示器颜色 (<a href="https://github.com/qwertyyb/Fire/issues/53">#53</a>) (<a href="https://github.com/qwertyyb/Fire/commit/dc9fbed3f2168a3697a030627fe82d64ff1a0800">dc9fbed</a>)</li>
 </ul>
             ]]>
             </description>
             <enclosure url="https://github.com/qwertyyb/Fire/releases/latest/download/FireInstaller.zip"
-              sparkle:version="20220321024611"
-              sparkle:shortVersionString="v0.6.1"
-              length="3219868"
-              sparkle:edSignature="2rT3E/IXKtUF7LMfYsbKxGmyFVUx0gtWNdcyxtNKXYE1Ls2F2TGf7Zi1XurVZ9Nx52Dqy0ER4RmkjgC2S/BGAQ=="
+              sparkle:version="20220323050455"
+              sparkle:shortVersionString="v0.6.2"
+              length="3227893"
+              sparkle:edSignature="2ZEFqyZRK4+H+ulMYBv3Gs8zg62TClD5wl0ZsBzAn2NCdGDI1RNt4ompbBHz6V8Y79hef+VCBLDdjYCzLmg6Dg=="
               type="application/octet-stream"/>
         </item>
     </channel>
