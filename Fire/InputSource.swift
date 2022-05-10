@@ -14,16 +14,9 @@ class InputSource {
     let kInputModeID = "com.qwertyyb.inputmethod.Fire"
 
     func registerInputSource() {
-        let installedLocationURL = CFURLCreateFromFileSystemRepresentation(
-            nil,
-            installLocation,
-            installLocation.count,
-            false
-        )
-        if installedLocationURL != nil {
-            TISRegisterInputSource(installedLocationURL)
-            NSLog("register input source")
-        }
+        let installedLocationURL = NSURL(fileURLWithPath: installLocation)
+        TISRegisterInputSource(installedLocationURL as CFURL)
+        NSLog("register input source")
     }
 
     private func transformTargetSource(_ inputSource: TISInputSource)
@@ -70,6 +63,16 @@ class InputSource {
         }
         TISDisableInputSource(source.inputSource)
         NSLog("Disable input source: %@", source.sourceID)
+    }
+    
+    func isSelected() -> Bool {
+        guard let result = findInputSource() else {
+            return false
+        }
+        let unsafeIsSelected = TISGetInputSourceProperty(result.inputSource, kTISPropertyInputSourceIsSelected).assumingMemoryBound(to: CFBoolean.self)
+        let isSelected = CFBooleanGetValue(Unmanaged<CFBoolean>.fromOpaque(unsafeIsSelected).takeUnretainedValue())
+
+        return isSelected
     }
 
     static let shared = InputSource()
