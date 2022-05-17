@@ -3,21 +3,21 @@
     <channel>
         <title>Fire</title>
         <item>
-            <title>v0.6.2</title>
-            <pubDate>Wed, 23 Mar 2022 05:12:09 +0000</pubDate>
+            <title>v0.6.3</title>
+            <pubDate>Tue, 17 May 2022 05:28:49 +0000</pubDate>
             <sparkle:minimumSystemVersion>10.15</sparkle:minimumSystemVersion>
             <description><![CDATA[
                 <h3 id="bugfixes">Bug Fixes</h3>
 <ul>
-<li>主题配置支持页面指示器颜色 (<a href="https://github.com/qwertyyb/Fire/issues/53">#53</a>) (<a href="https://github.com/qwertyyb/Fire/commit/dc9fbed3f2168a3697a030627fe82d64ff1a0800">dc9fbed</a>)</li>
+<li>修复当切换到其它输入法时，仍然可以切换中英文输入的问题 (<a href="https://github.com/qwertyyb/Fire/issues/54">#54</a>) (<a href="https://github.com/qwertyyb/Fire/commit/cd142014f423950bfed3837af1a60a6171503226">cd14201</a>)</li>
 </ul>
             ]]>
             </description>
             <enclosure url="https://github.com/qwertyyb/Fire/releases/latest/download/FireInstaller.zip"
-              sparkle:version="20220323050455"
-              sparkle:shortVersionString="v0.6.2"
-              length="3227893"
-              sparkle:edSignature="2ZEFqyZRK4+H+ulMYBv3Gs8zg62TClD5wl0ZsBzAn2NCdGDI1RNt4ompbBHz6V8Y79hef+VCBLDdjYCzLmg6Dg=="
+              sparkle:version="20220517052349"
+              sparkle:shortVersionString="v0.6.3"
+              length="3228097"
+              sparkle:edSignature="n2RD3CxCFY5AkxpRG/TX3PzyjJC2VCClWKQ6txOA8pV2SHs43fjWA+Bn4DullUP2UiFtSgAd+n46Lr+Y9cMNDw=="
               type="application/octet-stream"/>
         </item>
     </channel>
