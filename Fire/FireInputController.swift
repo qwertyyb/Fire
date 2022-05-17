@@ -367,8 +367,23 @@ class FireInputController: IMKInputController {
 
         activeClientInputMode()
         temp.monitorList.append(NSEvent.addGlobalMonitorForEvents(matching: .flagsChanged) { (event) in
+            if !InputSource.shared.isSelected() {
+                return self.clearEventListener()
+            }
             _ = self.handle(event, client: self.client())
         })
+    }
+    func clearEventListener() {
+        temp.monitorList.forEach { (monitor) in
+            if let m = monitor {
+                NSEvent.removeMonitor(m)
+            }
+        }
+        temp.observerList.forEach { (observer) in
+            NotificationCenter.default.removeObserver(observer)
+        }
+        temp.monitorList = []
+        temp.observerList = []
     }
     override func deactivateServer(_ sender: Any!) {
         NSLog("[FireInputController] deactivate server: \(client()?.bundleIdentifier() ?? "no client deactivate")")
@@ -383,15 +398,6 @@ class FireInputController: IMKInputController {
             )
         }
         clean()
-        temp.monitorList.forEach { (monitor) in
-            if let m = monitor {
-                NSEvent.removeMonitor(m)
-            }
-        }
-        temp.observerList.forEach { (observer) in
-            NotificationCenter.default.removeObserver(observer)
-        }
-        temp.monitorList = []
-        temp.observerList = []
+        clearEventListener()
     }
 }
