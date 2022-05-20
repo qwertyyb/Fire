@@ -6,7 +6,20 @@
 [![codebeat badge](https://codebeat.co/badges/f15efd85-e85d-4f72-87ab-f204abd17412)](https://codebeat.co/projects/github-com-qwertyyb-fire-master)
 
 ## 介绍
-使用 `swift` 基于 `InputMethodKit` 实现的Mac平台五笔输入法, `InputMethodKit` 真是巨坑
+
+轻量干净，但功能强大的五笔输入法
+
+## 截图
+<img width="504" alt="image" src="https://user-images.githubusercontent.com/16240729/169542300-270fe10c-b418-44a5-ab0f-3bebe8fceeb6.png">
+
+<img width="553" alt="image" src="https://user-images.githubusercontent.com/16240729/169542920-013ea4e7-b7e2-420d-bcfb-398e1a65a507.png">
+
+<img width="536" alt="image" src="https://user-images.githubusercontent.com/16240729/169543029-179fd02b-dbfd-407a-9a30-ae176f0eb7ad.png">
+
+<img width="538" alt="image" src="https://user-images.githubusercontent.com/16240729/169543126-396c75c4-1090-4aec-b861-a4d555b97600.png">
+
+<img width="541" alt="image" src="https://user-images.githubusercontent.com/16240729/169543209-d03c40c1-afde-4b4e-bd5b-e34f65d63004.png">
+
 
 ## 功能
 1. 五笔输入(支持86版/98版/自定义编码方案)
