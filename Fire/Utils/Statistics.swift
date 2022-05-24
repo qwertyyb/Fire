@@ -80,6 +80,11 @@ class Statistics {
         return 0
     }
 
+    func clear() {
+        _ = try? db.run(data.delete())
+        NotificationCenter.default.post(name: Statistics.updated, object: nil)
+    }
+
     private var db: Connection!
     private let data = Table("data")
     private let id = Expression<Int64>("id")

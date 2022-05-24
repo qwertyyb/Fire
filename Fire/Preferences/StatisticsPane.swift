@@ -8,6 +8,7 @@
 
 import SwiftUI
 import Preferences
+import Defaults
 
 func formatCount(_ count: Int64) -> String {
     return NumberFormatter.localizedString(from: NSNumber(value: count), number: .decimal)
@@ -76,10 +77,16 @@ class DateCountData: ObservableObject {
         data = Statistics.shared.queryCountByDate()
         total = Statistics.shared.queryTotalCount()
     }
+
+    func clear() {
+        Statistics.shared.clear()
+    }
 }
 
 struct StatisticsPane: View {
     @ObservedObject var dateCountData = DateCountData()
+    @Default(.enableStatistics) private var enableStatistics
+    @State private var showAlert = false
 
     func getPath(geo: GeometryProxy) -> Path {
         return Path { path in
@@ -157,54 +164,86 @@ struct StatisticsPane: View {
         }
     }
 
+    func drawData(data: [DateCount]) -> some View {
+        return VStack {
+            GeometryReader { geo in
+                getPath(geo: geo)
+                    .fill(Color.red.opacity(0.2))
+            }
+            .frame(height: 320)
+            .overlay(drawBackground(data: data))
+            .overlay(GeometryReader(content: { geo in
+                getPath(geo: geo)
+                    .stroke(
+                        style: StrokeStyle(
+                            lineWidth: 2,
+                            lineCap: .round,
+                            lineJoin: .round,
+                            miterLimit: 80,
+                            dash: [],
+                            dashPhase: 0
+                        )
+                    )
+                    .foregroundColor(Color(red: 251/255, green: 82/255, blue: 0).opacity(0.6))
+            }))
+            .overlay(drawLogPoints(data: data))
+            .background(Color.yellow.opacity(0.1))
+            HStack {
+                ForEach(Array(data.enumerated()), id: \.element) { (offset, element) in
+                    Text(element.date)
+                    if offset < data.count - 1 {
+                        Spacer()
+                    }
+                }
+            }
+            Spacer(minLength: 20)
+            Text("近\(NumberFormatter.localizedString(from: NSNumber(value: dateCountData.data.count), number: .spellOut))天内输入情况统计")
+        }
+    }
+
     var body: some View {
         Preferences.Container(contentWidth: 450) {
             Preferences.Section(title: "") {
                 VStack(alignment: .leading) {
-                    GroupBox {
+                    HStack(alignment: .center) {
+                        Toggle("启用统计", isOn: $enableStatistics)
+                        Spacer()
+                        if #available(macOS 12.0, *) {
+                            Button {
+                                dateCountData.clear()
+                                showAlert = true
+                            } label: {
+                                Text("清除数据")
+                            }
+                            .alert("清除成功", isPresented: $showAlert, actions: {})
+                        } else {
+                            Button {
+                                dateCountData.clear()
+                            } label: {
+                                Text("清除数据")
+                            }
+                        }
+
+                    }
+                    GroupBox(label: Text("累计输入")) {
                         HStack {
                             Text("\(formatCount(dateCountData.total))字")
                             Spacer()
                         }
-                    } label: {
-                        Text("累计输入")
+                        .frame(width: 420)
                     }
 
-                    GroupBox {
-                        GeometryReader { geo in
-                            getPath(geo: geo)
-                                .fill(Color.red.opacity(0.2))
-                        }
-                        .frame(height: 320)
-                        .overlay(drawBackground(data: dateCountData.data))
-                        .overlay(GeometryReader(content: { geo in
-                            getPath(geo: geo)
-                                .stroke(
-                                    style: StrokeStyle(
-                                        lineWidth: 2,
-                                        lineCap: .round,
-                                        lineJoin: .round,
-                                        miterLimit: 80,
-                                        dash: [],
-                                        dashPhase: 0
-                                    )
-                                )
-                                .foregroundColor(Color(red: 251/255, green: 82/255, blue: 0).opacity(0.6))
-                        }))
-                        .overlay(drawLogPoints(data: dateCountData.data))
-                        .background(Color.yellow.opacity(0.1))
-                        HStack {
-                            ForEach(Array(dateCountData.data.enumerated()), id: \.element) { (offset, element) in
-                                Text(element.date)
-                                if offset < dateCountData.data.count - 1 {
-                                    Spacer()
-                                }
+                    GroupBox(label: Text("输入统计")) {
+                        if dateCountData.data.count <= 0 {
+                            HStack {
+                                Spacer()
+                                Text("暂无数据")
+                                Spacer()
                             }
+                            .frame(width: 420, height: 320)
+                        } else {
+                            drawData(data: dateCountData.data)
                         }
-                        Spacer(minLength: 20)
-                        Text("近五天内输入情况统计")
-                    } label: {
-                        Text("统计数据")
                     }
                 }
             }
