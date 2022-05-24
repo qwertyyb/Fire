@@ -22,7 +22,7 @@ extension FireInputController {
     }
     override func showPreferences(_ sender: Any!) {
         NSApp.setActivationPolicy(.accessory)
-        FirePreferencesController.shared.controller.show()
+        FirePreferencesController.shared.show()
     }
     override func menu() -> NSMenu! {
         let menu = NSMenu()
