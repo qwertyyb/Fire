@@ -49,7 +49,7 @@ struct ApperanceThemeConfig: Codable {
     let selectedIndexColor: ColorData
     let selectedTextColor: ColorData
     let selectedCodeColor: ColorData
-    
+
     // 页面指示器颜色
     let pageIndicatorColor: ColorData
     // 页面指示器置灰色

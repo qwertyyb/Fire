@@ -123,6 +123,7 @@ struct Candidate: Hashable {
     let code: String
     let text: String
     let type: String  // wb | py
+    var isPlaceholder: Bool = false // 是否是占位符，当没有其他候选词时，会显示占位
 }
 
 enum CodeMode: Int, CaseIterable, Decodable, Encodable {

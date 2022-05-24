@@ -13,6 +13,7 @@ import InputMethodKit
 class AppDelegate: NSObject, NSApplicationDelegate {
 
     var fire: Fire!
+    var statistics: Statistics!
 
     func installInputSource() {
         print("install input source")
@@ -44,6 +45,7 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         }
         NSLog("[Fire] app is running")
         fire = Fire.shared
+        statistics = Statistics.shared
     }
 
     func applicationWillTerminate(_ aNotification: Notification) {

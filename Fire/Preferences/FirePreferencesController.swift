@@ -34,6 +34,13 @@ class FirePreferencesController {
                 ThemePane()
             },
             Preferences.Pane(
+                identifier: Preferences.PaneIdentifier(rawValue: "统计"),
+                 title: "统计",
+                toolbarIcon: NSImage(named: NSImage.bonjourName) ?? NSImage(named: "general")!
+            ) {
+                StatisticsPane()
+            },
+            Preferences.Pane(
                 identifier: Preferences.PaneIdentifier(rawValue: "高级"),
                  title: "高级",
                 toolbarIcon: NSImage(named: NSImage.advancedName)!

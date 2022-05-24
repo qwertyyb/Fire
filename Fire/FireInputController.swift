@@ -101,7 +101,7 @@ class FireInputController: IMKInputController {
             NSLog("[FireInputController]toggle mode: \(inputMode)")
 
             // 把当前未上屏的原始code上屏处理
-            insertText(_originalString, sender: self)
+            insertText(_originalString)
 
             inputMode = inputMode == .zhhans ? InputMode.enUS : InputMode.zhhans
 
@@ -167,7 +167,7 @@ class FireInputController: IMKInputController {
 
         // 如果输入的字符是标点符号，转换标点符号为中文符号
         if inputMode == .zhhans && punctution.keys.contains(string) {
-            insertText(punctution[string]!, sender: self)
+            insertText(punctution[string]!)
             return true
         }
         return nil
@@ -207,7 +207,7 @@ class FireInputController: IMKInputController {
         if let pos = Int(string), _originalString.count > 0 {
             let index = pos - 1
             if index < _candidates.count {
-                insertText(_candidates[index].text, sender: self)
+                insertCandidate(_candidates[index])
             } else {
                 _originalString += string
             }
@@ -220,7 +220,7 @@ class FireInputController: IMKInputController {
         // 回车键输入原字符
         if event.keyCode == kVK_Return && _originalString.count > 0 {
             // 插入原字符
-            insertText(_originalString, sender: self)
+            insertText(_originalString)
             return true
         }
         return nil
@@ -230,7 +230,7 @@ class FireInputController: IMKInputController {
         // 空格键输入转换后的中文字符
         if event.keyCode == kVK_Space && _originalString.count > 0 {
             if let first = self._candidates.first {
-                insertText(first.text, sender: self)
+                insertCandidate(first)
             }
             return true
         }
@@ -269,7 +269,7 @@ class FireInputController: IMKInputController {
         if Defaults[.wubiAutoCommit] && _candidates.count == 1 && _originalString.count >= 4 {
             // 满4码唯一候选词自动上屏
             if let candidate = _candidates.first {
-                insertText(candidate.text, sender: self)
+                insertCandidate(candidate)
                 return
             }
         }
@@ -293,8 +293,19 @@ class FireInputController: IMKInputController {
         return NSRange(location: 0, length: _originalString.count)
     }
 
+    func insertCandidate(_ candidate: Candidate) {
+        insertText(candidate.text)
+        let notification = Notification(
+            name: Fire.candidateInserted,
+            object: nil,
+            userInfo: [ "candidate": candidate ]
+        )
+        // 异步派发事件，防止阻塞当前线程
+        NotificationQueue.default.enqueue(notification, postingStyle: .whenIdle)
+    }
+
     // 往输入框插入当前字符
-    func insertText(_ text: String, sender: Any!) {
+    func insertText(_ text: String) {
         NSLog("insertText: %@", text)
         let value = NSAttributedString(string: text)
         try client()?.insertText(value, replacementRange: replacementRange())
@@ -321,7 +332,7 @@ class FireInputController: IMKInputController {
         return [
             (Fire.candidateSelected, { notification in
                 if let candidate = notification.userInfo?["candidate"] as? Candidate {
-                    self.insertText(candidate.text, sender: self)
+                    self.insertCandidate(candidate)
                 }
             }),
             (Fire.prevPageBtnTapped, { _ in self.curPage = self.curPage > 1 ? self.curPage - 1 : 1 }),

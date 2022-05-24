@@ -64,7 +64,7 @@ class InputSource {
         TISDisableInputSource(source.inputSource)
         NSLog("Disable input source: %@", source.sourceID)
     }
-    
+
     func isSelected() -> Bool {
         guard let result = findInputSource() else {
             return false

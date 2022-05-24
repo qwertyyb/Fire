@@ -31,6 +31,8 @@
 		45DB6EC927E609CB00A39925 /* ThemePane.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45DB6EC827E609CB00A39925 /* ThemePane.swift */; };
 		45DCE62226A31F140009FED1 /* ApplicationSettingCache.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45DCE62126A31F140009FED1 /* ApplicationSettingCache.swift */; };
 		45E85F742573BE1800F71024 /* wb_98_table.txt in Resources */ = {isa = PBXBuildFile; fileRef = 45E85F732573BE1800F71024 /* wb_98_table.txt */; };
+		45EBB54E283A073000A56CBA /* Statistics.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45EBB54D283A073000A56CBA /* Statistics.swift */; };
+		45EBB550283A311C00A56CBA /* StatisticsPane.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45EBB54F283A311C00A56CBA /* StatisticsPane.swift */; };
 		673A400C253D9FE70003901E /* InputSource.swift in Sources */ = {isa = PBXBuildFile; fileRef = 673A400B253D9FE70003901E /* InputSource.swift */; };
 		673C416925468A4800F462A3 /* FireMenu.swift in Sources */ = {isa = PBXBuildFile; fileRef = 673C416825468A4800F462A3 /* FireMenu.swift */; };
 		673C417225468FFA00F462A3 /* ModifierKeyUpChecker.swift in Sources */ = {isa = PBXBuildFile; fileRef = 673C417125468FFA00F462A3 /* ModifierKeyUpChecker.swift */; };
@@ -99,6 +101,8 @@
 		45DB6EC827E609CB00A39925 /* ThemePane.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ThemePane.swift; sourceTree = "<group>"; };
 		45DCE62126A31F140009FED1 /* ApplicationSettingCache.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ApplicationSettingCache.swift; sourceTree = "<group>"; };
 		45E85F732573BE1800F71024 /* wb_98_table.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = wb_98_table.txt; sourceTree = "<group>"; };
+		45EBB54D283A073000A56CBA /* Statistics.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Statistics.swift; sourceTree = "<group>"; };
+		45EBB54F283A311C00A56CBA /* StatisticsPane.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StatisticsPane.swift; sourceTree = "<group>"; };
 		673A400B253D9FE70003901E /* InputSource.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InputSource.swift; sourceTree = "<group>"; };
 		673C416825468A4800F462A3 /* FireMenu.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FireMenu.swift; sourceTree = "<group>"; };
 		673C417125468FFA00F462A3 /* ModifierKeyUpChecker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ModifierKeyUpChecker.swift; sourceTree = "<group>"; };
@@ -233,6 +237,7 @@
 				45577EB3254576720064325B /* FirePreferencesController.swift */,
 				450B7D9926A2847D00808A4D /* ApplicationPane.swift */,
 				45DB6EC827E609CB00A39925 /* ThemePane.swift */,
+				45EBB54F283A311C00A56CBA /* StatisticsPane.swift */,
 			);
 			path = Preferences;
 			sourceTree = "<group>";
@@ -252,6 +257,7 @@
 				673C4177254697E400F462A3 /* TipsWindow.swift */,
 				677A0873254BD47D000B58D4 /* ToastWindow.swift */,
 				45DCE62126A31F140009FED1 /* ApplicationSettingCache.swift */,
+				45EBB54D283A073000A56CBA /* Statistics.swift */,
 			);
 			path = Utils;
 			sourceTree = "<group>";
@@ -431,10 +437,12 @@
 				45587F2D24E8FBFB005F291B /* Utils.swift in Sources */,
 				45577E502543F03F0064325B /* build.swift in Sources */,
 				45D996AA253C5232001460A8 /* GeneralPane.swift in Sources */,
+				45EBB54E283A073000A56CBA /* Statistics.swift in Sources */,
 				673C416925468A4800F462A3 /* FireMenu.swift in Sources */,
 				451E6048232E227B007B0463 /* AppDelegate.swift in Sources */,
 				45DB6EC927E609CB00A39925 /* ThemePane.swift in Sources */,
 				673A400C253D9FE70003901E /* InputSource.swift in Sources */,
+				45EBB550283A311C00A56CBA /* StatisticsPane.swift in Sources */,
 				459DE991232EB26600A3ACD1 /* CandidatesWindow.swift in Sources */,
 				45577EB0254575480064325B /* types.swift in Sources */,
 				45577EB4254576720064325B /* FirePreferencesController.swift in Sources */,
