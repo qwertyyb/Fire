@@ -104,7 +104,7 @@ extension Defaults.Keys {
         "pyTableURL",
         default: Bundle.main.resourceURL?.appendingPathComponent("py_table.txt").path
             ?? "")
-    
+
     // 统计配置
     static let enableStatistics = Key<Bool>("enableStatistics", default: true)
     //            ^            ^         ^                ^

@@ -17,6 +17,4 @@ target 'Fire' do
   
   pod 'Defaults'
 
-  pod 'SQLite.swift', '~> 0.13.3'
-
 end

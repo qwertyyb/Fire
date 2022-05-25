@@ -7,7 +7,7 @@
 //
 
 import Foundation
-import SQLite
+import SQLite3
 
 struct DateCount: Hashable {
     let count: Int64
@@ -28,75 +28,88 @@ class Statistics {
 
     @objc func listener(notification: Notification) {
         NSLog("[Statistics] listener: \(notification)")
-        guard let db = self.db, let candidate = notification.userInfo?["candidate"] as? Candidate else {
+        guard let candidate = notification.userInfo?["candidate"] as? Candidate else {
             return
         }
         if candidate.isPlaceholder { return }
-        _ = try? db.run(data.insert(
-            text <- candidate.text,
-            type <- candidate.type,
-            code <- candidate.code,
-            createdAt <- Date()
-        ))
+        let sql = "insert into data(text, type, code, createdAt) values (:text, :type, :code, :createdAt)"
+        var insertStatement: OpaquePointer?
+        if sqlite3_prepare_v2(database, sql, -1, &insertStatement, nil) == SQLITE_OK {
+            let format = DateFormatter()
+            format.dateFormat = "yyyy-MM-dd'T'HH:mm:ss.SSS"
+            sqlite3_bind_text(insertStatement,
+                              sqlite3_bind_parameter_index(insertStatement, ":text"),
+                              candidate.text, -1, SQLITE_TRANSIENT)
+            sqlite3_bind_text(insertStatement,
+                              sqlite3_bind_parameter_index(insertStatement, ":type"),
+                              candidate.type, -1, SQLITE_TRANSIENT)
+            sqlite3_bind_text(insertStatement,
+                              sqlite3_bind_parameter_index(insertStatement, ":code"),
+                              candidate.code, -1, SQLITE_TRANSIENT)
+            sqlite3_bind_text(insertStatement,
+                              sqlite3_bind_parameter_index(insertStatement, ":createdAt"),
+                              format.string(from: Date()), -1, SQLITE_TRANSIENT)
+
+            if sqlite3_step(insertStatement) == SQLITE_DONE {
+                sqlite3_finalize(insertStatement)
+                insertStatement = nil
+            } else {
+                print("errmsg: \(String(cString: sqlite3_errmsg(database)!))")
+            }
+        } else {
+            print("prepare_errmsg: \(String(cString: sqlite3_errmsg(database)!))")
+        }
         NotificationCenter.default.post(name: Statistics.updated, object: nil)
     }
 
-    func query() -> [Row] {
-        guard let res = try? db.prepare(data.order(createdAt.desc)) else {
-            return []
-        }
-        let list = Array(res)
-        return list
-    }
-
     func queryCountByDate() -> [DateCount] {
-        guard let stmt = try? db.prepare(
-            """
-            select * from
-                (select date(createdAt, 'localtime') as date, sum(length(text)) as count from data group by date(createdAt))
+        var queryStatement: OpaquePointer?
+        let sql = """
+            select date, count from
+                (select
+                    date(createdAt, 'localtime') as date,
+                    sum(length(text)) as count
+                from data group by date(createdAt))
             order by date desc limit 0, 5
-            """
-        ) else {
+        """
+        if sqlite3_prepare_v2(database, sql, -1, &queryStatement, nil) == SQLITE_OK {
+            var results: [DateCount] = []
+            while sqlite3_step(queryStatement) == SQLITE_ROW {
+                let date = String(cString: sqlite3_column_text(queryStatement, 0))
+                let count = sqlite3_column_int64(queryStatement, 1)
+                let dateCount = DateCount(count: count, date: date)
+                results.append(dateCount)
+            }
+            return results.sorted { prev, next in
+                return next.date > prev.date
+            }
+        } else {
             return []
-        }
-        let results = stmt.map { row -> DateCount in
-            return DateCount(count: row[1] as? Int64 ?? 0, date: row[0] as? String ?? "")
-        }
-        NSLog("[Statistics] queryCountByDate: \(results)")
-        return results.sorted { prev, next in
-            return next.date > prev.date
         }
     }
 
     func queryTotalCount() -> Int64 {
-        guard let stmt = try? db.prepare(
-            "select sum(length(text)) as total from data"
-        ) else {
-            return 0
-        }
-        for row in stmt {
-            return row[0] as? Int64 ?? 0
+        let sql = "select sum(length(text)) as total from data"
+        var queryStatement: OpaquePointer?
+        if sqlite3_prepare_v2(database, sql, -1, &queryStatement, nil) == SQLITE_OK
+            && sqlite3_step(queryStatement) == SQLITE_ROW {
+            let count = sqlite3_column_int64(queryStatement, 0)
+            return count
         }
         return 0
     }
 
     func clear() {
-        _ = try? db.run(data.delete())
+        let sql = "delete * from data"
+        sqlite3_exec(database, sql, nil, nil, nil)
         NotificationCenter.default.post(name: Statistics.updated, object: nil)
     }
-
-    private var db: Connection!
-    private let data = Table("data")
-    private let id = Expression<Int64>("id")
-    private let text = Expression<String>("text")
-    private let type = Expression<String>("type")
-    private let code = Expression<String>("code")
-    private let createdAt = Expression<Date>("createdAt")
+    private var database: OpaquePointer?
 
     private func initDB() {
         let path = NSSearchPathForDirectoriesInDomains(
             .applicationSupportDirectory, .userDomainMask, true
-        ).first! + "/" + Bundle.main.bundleIdentifier!
+        ).first! + "/" + Bundle.main.bundleIdentifier! + "/statistics.sqlite3"
 
         // create parent directory iff it doesn’t exist
         try? FileManager.default.createDirectory(
@@ -105,16 +118,6 @@ class Statistics {
             attributes: nil
         )
 
-        if let connection = try? Connection("\(path)/statistics.sqlite3") {
-            db = connection
-
-            _ = try? db.run(data.create(ifNotExists: true) { t in
-                t.column(id, primaryKey: true)
-                t.column(text)
-                t.column(type)
-                t.column(code)
-                t.column(createdAt, defaultValue: Date())
-            })
-        }
+        sqlite3_open_v2(path, &database, SQLITE_OPEN_READWRITE, nil)
     }
 }
