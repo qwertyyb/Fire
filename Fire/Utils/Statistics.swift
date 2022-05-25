@@ -8,6 +8,7 @@
 
 import Foundation
 import SQLite3
+import Defaults
 
 struct DateCount: Hashable {
     let count: Int64
@@ -29,6 +30,9 @@ class Statistics {
     @objc func listener(notification: Notification) {
         NSLog("[Statistics] listener: \(notification)")
         guard let candidate = notification.userInfo?["candidate"] as? Candidate else {
+            return
+        }
+        if !Defaults[.enableStatistics] {
             return
         }
         if candidate.isPlaceholder { return }
