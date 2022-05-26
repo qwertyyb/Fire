@@ -84,6 +84,7 @@ class Statistics {
                 let dateCount = DateCount(count: count, date: date)
                 results.append(dateCount)
             }
+            sqlite3_finalize(queryStatement)
             return results.sorted { prev, next in
                 return next.date > prev.date
             }
@@ -98,6 +99,7 @@ class Statistics {
         if sqlite3_prepare_v2(database, sql, -1, &queryStatement, nil) == SQLITE_OK
             && sqlite3_step(queryStatement) == SQLITE_ROW {
             let count = sqlite3_column_int64(queryStatement, 0)
+            sqlite3_finalize(queryStatement)
             return count
         }
         return 0
@@ -108,7 +110,50 @@ class Statistics {
         sqlite3_exec(database, sql, nil, nil, nil)
         NotificationCenter.default.post(name: Statistics.updated, object: nil)
     }
+
     private var database: OpaquePointer?
+    private let upgrade = [
+        """
+        CREATE TABLE IF NOT EXISTS "data" (
+            "id" INTEGER PRIMARY KEY NOT NULL,
+            "text" TEXT NOT NULL,
+            "type" TEXT NOT NULL,
+            "code" TEXT NOT NULL,
+            "createdAt" TEXT NOT NULL DEFAULT (datetime('now')
+        )
+        """
+    ]
+
+    private func getVersion() -> Int32 {
+        let sql = "PRAGMA user_version"
+        var stmt: OpaquePointer?
+        if sqlite3_prepare_v2(database, sql, -1, &stmt, nil) == SQLITE_OK
+            && sqlite3_step(stmt) == SQLITE_ROW {
+            return sqlite3_column_int(stmt, 0)
+        }
+        return 0
+    }
+
+    private func setVersion(_ version: Int32) -> Bool {
+        let sql = "PRAGMA user_version = \(version)"
+        if sqlite3_exec(database, sql, nil, nil, nil) == SQLITE_OK {
+            return true
+        }
+        return false
+    }
+
+    private func migrate() -> Bool {
+        let curVersion = getVersion()
+        NSLog("[Statistics] migrate curVersion: \(curVersion)")
+        if curVersion >= upgrade.count {
+            return true
+        }
+        upgrade.forEach { sql in
+            sqlite3_exec(database, sql, nil, nil, nil)
+        }
+        NSLog("[Statistics] migrate setVersion: \(upgrade.count)")
+        return setVersion(Int32(upgrade.count))
+    }
 
     private func initDB() {
         let path = NSSearchPathForDirectoriesInDomains(
@@ -123,5 +168,7 @@ class Statistics {
         )
 
         sqlite3_open_v2(path, &database, SQLITE_OPEN_READWRITE, nil)
+
+        _ = migrate()
     }
 }
