@@ -2,16 +2,12 @@ PODS:
   - Defaults (4.2.2)
   - Preferences (2.2.0)
   - Sparkle (1.26.0)
-  - SQLite.swift (0.13.3):
-    - SQLite.swift/standard (= 0.13.3)
-  - SQLite.swift/standard (0.13.3)
   - SwiftLint (0.46.5)
 
 DEPENDENCIES:
   - Defaults
   - Preferences
   - Sparkle
-  - SQLite.swift (~> 0.13.3)
   - SwiftLint
 
 SPEC REPOS:
@@ -19,16 +15,14 @@ SPEC REPOS:
     - Defaults
     - Preferences
     - Sparkle
-    - SQLite.swift
     - SwiftLint
 
 SPEC CHECKSUMS:
   Defaults: d785e56c0fb8890dc40351603f05c8e1df1bdd45
   Preferences: 4894cc28df3557336b0b72440c893d95203d3e33
   Sparkle: d56d028f4b0c123577825f5d1004f6140d77f90e
-  SQLite.swift: 903bfa3bc9ab06345fdfbb578e34f47cfcf417da
   SwiftLint: 2c16e8fa99dac2e440dc0c70ea74d2532048f6cf
 
-PODFILE CHECKSUM: 829ddb2c25e9ad4ce849da3270f1c493017630a7
+PODFILE CHECKSUM: b421cd646a340fad70db87c9d570d7d7e94f91d2
 
 COCOAPODS: 1.11.3
