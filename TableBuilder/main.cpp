@@ -12,7 +12,7 @@
 #include <vector>
 #include <fstream>
 #include <regex>
-#include <sqlite3.h>
+#include "SQLCipher/sqlite3.h"
 
 #define MULTILINE(...) #__VA_ARGS__
 

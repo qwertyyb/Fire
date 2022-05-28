@@ -14,10 +14,7 @@ func getDatabaseURL () -> URL {
     guard let supportDir = FileManager.default.urls(for: .applicationSupportDirectory, in: .userDomainMask).first else {
         return URL(fileURLWithPath: "")
     }
-    guard let appName = Bundle.main.object(forInfoDictionaryKey: "CFBundleName") as? String else {
-        return URL(fileURLWithPath: "")
-    }
-    let appDir = supportDir.appendingPathComponent(appName)
+    let appDir = supportDir.appendingPathComponent(Bundle.main.bundleIdentifier!)
     if !FileManager.default.fileExists(atPath: appDir.path) {
         print("create support directory")
         try? FileManager.default.createDirectory(

@@ -64,12 +64,15 @@ class InputSource {
         TISDisableInputSource(source.inputSource)
         NSLog("Disable input source: %@", source.sourceID)
     }
-    
+
     func isSelected() -> Bool {
         guard let result = findInputSource() else {
             return false
         }
-        let unsafeIsSelected = TISGetInputSourceProperty(result.inputSource, kTISPropertyInputSourceIsSelected).assumingMemoryBound(to: CFBoolean.self)
+        let unsafeIsSelected = TISGetInputSourceProperty(
+            result.inputSource,
+            kTISPropertyInputSourceIsSelected
+        ).assumingMemoryBound(to: CFBoolean.self)
         let isSelected = CFBooleanGetValue(Unmanaged<CFBoolean>.fromOpaque(unsafeIsSelected).takeUnretainedValue())
 
         return isSelected

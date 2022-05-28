@@ -8,7 +8,6 @@
 
 import Cocoa
 import InputMethodKit
-import SQLite3
 import Sparkle
 import Defaults
 
@@ -28,10 +27,14 @@ extension UserDefaults {
 internal let SQLITE_TRANSIENT = unsafeBitCast(-1, to: sqlite3_destructor_type.self)
 
 class Fire: NSObject {
+    // SwiftUI 界面事件
     static let candidateSelected = Notification.Name("Fire.candidateSelected")
     static let candidateListUpdated = Notification.Name("Fire.candidateListUpdated")
     static let nextPageBtnTapped = Notification.Name("Fire.nextPageBtnTapped")
     static let prevPageBtnTapped = Notification.Name("Fire.prevPageBtnTapped")
+
+    // 逻辑
+    static let candidateInserted = Notification.Name("Fire.candidateInserted")
 
     private var database: OpaquePointer?
     private var queryStatement: OpaquePointer?
@@ -156,7 +159,7 @@ class Fire: NSObject {
         candidates = Array(candidates.prefix(count))
 
         if candidates.isEmpty {
-            candidates.append(Candidate(code: origin, text: origin, type: "wb"))
+            candidates.append(Candidate(code: origin, text: origin, type: "wb", isPlaceholder: true))
         }
 
         return (candidates, hasNext: allCount > count)
