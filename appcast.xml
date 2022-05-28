@@ -3,21 +3,21 @@
     <channel>
         <title>Fire</title>
         <item>
-            <title>v0.6.3</title>
-            <pubDate>Tue, 17 May 2022 05:28:49 +0000</pubDate>
+            <title>v0.7.0</title>
+            <pubDate>Sat, 28 May 2022 05:26:19 +0000</pubDate>
             <sparkle:minimumSystemVersion>10.15</sparkle:minimumSystemVersion>
             <description><![CDATA[
-                <h3 id="bugfixes">Bug Fixes</h3>
+                <h3 id="features">Features</h3>
 <ul>
-<li>修复当切换到其它输入法时，仍然可以切换中英文输入的问题 (<a href="https://github.com/qwertyyb/Fire/issues/54">#54</a>) (<a href="https://github.com/qwertyyb/Fire/commit/cd142014f423950bfed3837af1a60a6171503226">cd14201</a>)</li>
+<li>添加统计功能 (<a href="https://github.com/qwertyyb/Fire/issues/56">#56</a>) (<a href="https://github.com/qwertyyb/Fire/commit/b01d305cbc356c588d6f47db84294e2b2181c918">b01d305</a>)</li>
 </ul>
             ]]>
             </description>
             <enclosure url="https://github.com/qwertyyb/Fire/releases/latest/download/FireInstaller.zip"
-              sparkle:version="20220517052349"
-              sparkle:shortVersionString="v0.6.3"
-              length="3228097"
-              sparkle:edSignature="n2RD3CxCFY5AkxpRG/TX3PzyjJC2VCClWKQ6txOA8pV2SHs43fjWA+Bn4DullUP2UiFtSgAd+n46Lr+Y9cMNDw=="
+              sparkle:version="20220528052127"
+              sparkle:shortVersionString="v0.7.0"
+              length="5533079"
+              sparkle:edSignature="YiWpXaJV8eKxfYa7O8A5C+WA0/BZFnOydcAlhaz9XoJSBn5sWDcY97njhW9PuDi8XXMjJDA/S/wOtPvNkRw+Dw=="
               type="application/octet-stream"/>
         </item>
     </channel>
