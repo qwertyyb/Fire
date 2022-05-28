@@ -75,6 +75,7 @@ class InputSource {
             NSLog("Selected input source: %@, selected: \(isSelected)", result.sourceID)
             if isSelected {
                 timer.invalidate()
+                NSApp.terminate(nil)
             }
         }
     }
