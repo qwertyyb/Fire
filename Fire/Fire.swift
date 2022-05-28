@@ -8,7 +8,6 @@
 
 import Cocoa
 import InputMethodKit
-import SQLite3
 import Sparkle
 import Defaults
 

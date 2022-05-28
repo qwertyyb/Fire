@@ -17,4 +17,13 @@ target 'Fire' do
   
   pod 'Defaults'
 
+  pod 'SQLCipher', '~> 4.5'
+
+  pod 'KeychainSwift', '~> 20.0'
+
+  pod 'NanoID', '~> 1.0'
+end
+
+target 'TableBuilder' do
+  pod 'SQLCipher', '~> 4.5'
 end

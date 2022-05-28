@@ -7,8 +7,9 @@
 //
 
 import Foundation
-import SQLite3
 import Defaults
+import KeychainSwift
+import NanoID
 
 struct DateCount: Hashable {
     let count: Int64
@@ -74,7 +75,8 @@ class Statistics {
                     date(createdAt, 'localtime') as date,
                     sum(length(text)) as count
                 from data group by date(createdAt))
-            order by date desc limit 0, 5
+            order by date desc limit 0, 5;
+            PRAGMA key = 'testkey'
         """
         if sqlite3_prepare_v2(database, sql, -1, &queryStatement, nil) == SQLITE_OK {
             var results: [DateCount] = []
@@ -112,6 +114,7 @@ class Statistics {
     }
 
     private var database: OpaquePointer?
+    private let keychain = KeychainSwift(keyPrefix: Bundle.main.bundleIdentifier!)
     private let upgrade = [
         """
         CREATE TABLE IF NOT EXISTS "data" (
@@ -119,7 +122,7 @@ class Statistics {
             "text" TEXT NOT NULL,
             "type" TEXT NOT NULL,
             "code" TEXT NOT NULL,
-            "createdAt" TEXT NOT NULL DEFAULT (datetime('now')
+            "createdAt" TEXT NOT NULL DEFAULT (datetime('now'))
         )
         """
     ]
@@ -156,19 +159,38 @@ class Statistics {
     }
 
     private func initDB() {
-        let path = NSSearchPathForDirectoriesInDomains(
+        let dirPath = NSSearchPathForDirectoriesInDomains(
             .applicationSupportDirectory, .userDomainMask, true
-        ).first! + "/" + Bundle.main.bundleIdentifier! + "/statistics.sqlite3"
+        ).first! + "/" + Bundle.main.bundleIdentifier!
 
         // create parent directory iff it doesn’t exist
         try? FileManager.default.createDirectory(
-            atPath: path,
+            atPath: dirPath,
             withIntermediateDirectories: true,
             attributes: nil
         )
 
-        sqlite3_open_v2(path, &database, SQLITE_OPEN_READWRITE, nil)
-
-        _ = migrate()
+        NSLog("[Statistics] init DB, database path in \(dirPath)")
+        var key = keychain.get("dbkey")
+        if key == nil {
+            key = ID(alphabet: .urlSafe, size: 16).generate()
+            if keychain.set(key!, forKey: "dbkey") {
+                key = "testkey"
+            } else {
+                NSLog("[Statistics] init DB, generate key failed")
+                return
+            }
+        }
+        if sqlite3_open_v2(
+            dirPath + "/statistics.db",
+            &database,
+            SQLITE_OPEN_READWRITE | SQLITE_OPEN_CREATE,
+            nil
+        ) == SQLITE_OK {
+            sqlite3_key(database, key!, Int32(key!.count))
+            _ = migrate()
+        } else {
+            NSLog("[Statistics] init DB, open error: \(String(cString: sqlite3_errmsg(database)))")
+        }
     }
 }
