@@ -3,21 +3,21 @@
     <channel>
         <title>Fire</title>
         <item>
-            <title>v0.7.0</title>
-            <pubDate>Sat, 28 May 2022 05:26:19 +0000</pubDate>
+            <title>v0.7.1</title>
+            <pubDate>Sat, 28 May 2022 14:49:47 +0000</pubDate>
             <sparkle:minimumSystemVersion>10.15</sparkle:minimumSystemVersion>
             <description><![CDATA[
-                <h3 id="features">Features</h3>
+                <h3 id="bugfixes">Bug Fixes</h3>
 <ul>
-<li>添加统计功能 (<a href="https://github.com/qwertyyb/Fire/issues/56">#56</a>) (<a href="https://github.com/qwertyyb/Fire/commit/b01d305cbc356c588d6f47db84294e2b2181c918">b01d305</a>)</li>
+<li>优化安装体验 (<a href="https://github.com/qwertyyb/Fire/issues/57">#57</a>) (<a href="https://github.com/qwertyyb/Fire/commit/f35635266bf2fe9379f78dd536c38589ad1847f9">f356352</a>)</li>
 </ul>
             ]]>
             </description>
             <enclosure url="https://github.com/qwertyyb/Fire/releases/latest/download/FireInstaller.zip"
-              sparkle:version="20220528052127"
-              sparkle:shortVersionString="v0.7.0"
-              length="5533079"
-              sparkle:edSignature="YiWpXaJV8eKxfYa7O8A5C+WA0/BZFnOydcAlhaz9XoJSBn5sWDcY97njhW9PuDi8XXMjJDA/S/wOtPvNkRw+Dw=="
+              sparkle:version="20220528144151"
+              sparkle:shortVersionString="v0.7.1"
+              length="5534533"
+              sparkle:edSignature="xLdmMMW/8hVl5SAXi4BM/YCsAAf6Jf371qaUZ56c+bij/+ka+6dzvYaecOOUTi45m1OJ+j7djDNmaYATwUXCAQ=="
               type="application/octet-stream"/>
         </item>
     </channel>
