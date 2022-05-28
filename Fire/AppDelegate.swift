@@ -17,8 +17,13 @@ class AppDelegate: NSObject, NSApplicationDelegate {
 
     func installInputSource() {
         print("install input source")
+        InputSource.shared.deactivateInputSource()
         InputSource.shared.registerInputSource()
         InputSource.shared.activateInputSource()
+    }
+
+    func stop() {
+        InputSource.shared.deactivateInputSource()
         NSApp.terminate(nil)
     }
 
@@ -27,12 +32,16 @@ class AppDelegate: NSObject, NSApplicationDelegate {
             print("[Fire] launch argument: \(CommandLine.arguments[1])")
             let command = CommandLine.arguments[1]
             if command == "--install" {
-                return installInputSource()
+                installInputSource()
             }
             if command == "--build-dict" {
                 print("[Fire] build dict")
                 buildDict()
                 return NSApp.terminate(nil)
+            }
+            if command == "--stop" {
+                print("[Fire] stop")
+                return stop()
             }
         }
     }

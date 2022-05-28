@@ -7,6 +7,12 @@
 //
 
 import Carbon
+import AppKit
+
+enum InputSourceUsage {
+    case enable
+    case selected
+}
 
 class InputSource {
     let installLocation = "/Library/Input Methods/Fire.app"
@@ -29,38 +35,69 @@ class InputSource {
         return nil
     }
 
-    private func findInputSource() -> (inputSource: TISInputSource, sourceID: NSString)? {
+    private func findInputSource(forUsage: InputSourceUsage = .enable) -> (inputSource: TISInputSource, sourceID: NSString)? {
         let sourceList = TISCreateInputSourceList(nil, true).takeUnretainedValue()
 
         for index in 0...CFArrayGetCount(sourceList)-1 {
             let inputSource = Unmanaged<TISInputSource>.fromOpaque(CFArrayGetValueAtIndex(
                 sourceList, index)).takeUnretainedValue()
             if let result = transformTargetSource(inputSource) {
-                return result
+                let selectable = CFBooleanGetValue(Unmanaged<CFBoolean>.fromOpaque(
+                    TISGetInputSourceProperty(result.inputSource, kTISPropertyInputSourceIsSelectCapable)
+                ).takeUnretainedValue())
+                let enableable = CFBooleanGetValue(Unmanaged<CFBoolean>.fromOpaque(
+                    TISGetInputSourceProperty(result.inputSource, kTISPropertyInputSourceIsEnableCapable)
+                ).takeUnretainedValue())
+                NSLog("find input source: %@, enableable: \(enableable), selectable: \(selectable)", result.sourceID)
+                if forUsage == .enable && enableable {
+                    return result
+                }
+                if forUsage == .selected && selectable {
+                    return result
+                }
+                if selectable {
+                    return result
+                }
             }
         }
         return nil
+    }
+
+    func selectInputSource() {
+        Timer.scheduledTimer(withTimeInterval: 1, repeats: true) { timer in
+            guard let result = self.findInputSource(forUsage: .selected) else {
+                return
+            }
+            TISSelectInputSource(result.inputSource)
+            let isSelected = CFBooleanGetValue(Unmanaged<CFBoolean>.fromOpaque(
+                TISGetInputSourceProperty(result.inputSource, kTISPropertyInputSourceIsSelected)
+            ).takeUnretainedValue())
+            NSLog("Selected input source: %@, selected: \(isSelected)", result.sourceID)
+            if isSelected {
+                timer.invalidate()
+            }
+        }
     }
 
     func activateInputSource() {
         guard let result = findInputSource() else {
             return
         }
-        TISEnableInputSource(result.inputSource)
-        NSLog("Enabled input source: %@", result.sourceID)
-        let isSelectable = Unmanaged<CFBoolean>.fromOpaque(
-            TISGetInputSourceProperty(result.inputSource, kTISPropertyInputSourceIsSelectCapable)
-        ).takeUnretainedValue()
-        if CFBooleanGetValue(isSelectable) {
-            TISSelectInputSource(result.inputSource)
-            NSLog("Selected input source: %@", result.sourceID)
+        let enabled = CFBooleanGetValue(Unmanaged<CFBoolean>.fromOpaque(
+            TISGetInputSourceProperty(result.inputSource, kTISPropertyInputSourceIsEnabled)
+        ).takeUnretainedValue())
+        if !enabled {
+            TISEnableInputSource(result.inputSource)
+            NSLog("Enabled input source: %@", result.sourceID)
         }
+        selectInputSource()
     }
 
     func deactivateInputSource() {
         guard let source = findInputSource() else {
             return
         }
+        TISDeselectInputSource(source.inputSource)
         TISDisableInputSource(source.inputSource)
         NSLog("Disable input source: %@", source.sourceID)
     }
