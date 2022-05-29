@@ -175,7 +175,8 @@ class Statistics {
         if key == nil {
             key = ID(alphabet: .urlSafe, size: 16).generate()
             if keychain.set(key!, forKey: "dbkey") {
-                key = "testkey"
+                NSLog("[Statistics] write dbkey failed")
+                return
             } else {
                 NSLog("[Statistics] init DB, generate key failed")
                 return
