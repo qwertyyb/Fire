@@ -3,21 +3,21 @@
     <channel>
         <title>Fire</title>
         <item>
-            <title>v0.7.2</title>
-            <pubDate>Sun, 29 May 2022 09:40:03 +0000</pubDate>
+            <title>v0.7.3</title>
+            <pubDate>Mon, 30 May 2022 15:25:31 +0000</pubDate>
             <sparkle:minimumSystemVersion>10.15</sparkle:minimumSystemVersion>
             <description><![CDATA[
                 <h3 id="bugfixes">Bug Fixes</h3>
 <ul>
-<li>修复dbkey不正确的问题 (<a href="https://github.com/qwertyyb/Fire/issues/58">#58</a>) (<a href="https://github.com/qwertyyb/Fire/commit/c553f51f413b47e554865d024d3d0023edc347c2">c553f51</a>)</li>
+<li>修复首次运行，无法统计的问题 (<a href="https://github.com/qwertyyb/Fire/commit/aa37e07dae0b53da4d1ac559ff6c6c155ff46dc1">aa37e07</a>)</li>
 </ul>
             ]]>
             </description>
             <enclosure url="https://github.com/qwertyyb/Fire/releases/latest/download/FireInstaller.zip"
-              sparkle:version="20220529093440"
-              sparkle:shortVersionString="v0.7.2"
-              length="5534757"
-              sparkle:edSignature="XJ4wymFetzSOh9Sns6RWnQsh6lqrGk0ox38exQMUJLCt8ee0h5YyCu4PXTEmfa1NyL9mpyjf6pEio0Cz4YfZCg=="
+              sparkle:version="20220530151739"
+              sparkle:shortVersionString="v0.7.3"
+              length="5534824"
+              sparkle:edSignature="qryRsAkaE42/XdUjaCJJnbh8zW/wDFYi8KqYVDCoXXIHqAvqhxfhzsadmNsE1OzLA3vgYK+38yBlzb+KVrpcAA=="
               type="application/octet-stream"/>
         </item>
     </channel>
