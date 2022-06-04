@@ -14,6 +14,7 @@ class AppDelegate: NSObject, NSApplicationDelegate {
 
     var fire: Fire!
     var statistics: Statistics!
+    let statusBar = StatusBar.shared
 
     func installInputSource() {
         print("install input source")

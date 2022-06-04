@@ -35,6 +35,7 @@ class Fire: NSObject {
 
     // 逻辑
     static let candidateInserted = Notification.Name("Fire.candidateInserted")
+    static let inputModeChanged = Notification.Name("Fire.inputModeChanged")
 
     private var database: OpaquePointer?
     private var queryStatement: OpaquePointer?
@@ -55,6 +56,23 @@ class Fire: NSObject {
     deinit {
         preferencesObserver.invalidate()
         close()
+    }
+
+    func toggleInputMode(_ nextInputMode: InputMode? = nil) {
+        if nextInputMode != nil, self.inputMode == nextInputMode {
+            return
+        }
+        let oldVal = self.inputMode
+        if let nextInputMode = nextInputMode, nextInputMode != self.inputMode {
+            self.inputMode = nextInputMode
+        } else {
+            self.inputMode = inputMode == .enUS ? .zhhans : .enUS
+        }
+        NotificationCenter.default.post(name: Fire.inputModeChanged, object: nil, userInfo: [
+            "oldVal": oldVal,
+            "val": self.inputMode,
+            "label": self.inputMode == .enUS ? "英" : "中"
+        ])
     }
 
     private func getStatementSql() -> String {
@@ -96,7 +114,12 @@ class Fire: NSObject {
     }
 
     func prepareStatement() {
-        sqlite3_open_v2(getDatabaseURL().path, &database, SQLITE_OPEN_READWRITE, nil)
+        if database == nil {
+            sqlite3_open_v2(getDatabaseURL().path, &database, SQLITE_OPEN_READWRITE, nil)
+        }
+        if queryStatement != nil {
+            sqlite3_finalize(queryStatement)
+        }
         if sqlite3_prepare_v2(database, getStatementSql(), -1, &queryStatement, nil) == SQLITE_OK {
             print("prepare ok")
             print(sqlite3_bind_parameter_index(queryStatement, ":code"))
@@ -145,8 +168,6 @@ class Fire: NSObject {
                          sqlite3_bind_parameter_index(queryStatement, ":offset"),
                          Int32((page - 1) * Defaults[.candidateCount])
         )
-        let strp = sqlite3_expanded_sql(queryStatement)!
-        print(String(cString: strp))
         while sqlite3_step(queryStatement) == SQLITE_ROW {
             let code = String.init(cString: sqlite3_column_text(queryStatement, 0))
             let text = String.init(cString: sqlite3_column_text(queryStatement, 1))
@@ -161,7 +182,6 @@ class Fire: NSObject {
         if candidates.isEmpty {
             candidates.append(Candidate(code: origin, text: origin, type: "wb", isPlaceholder: true))
         }
-
         return (candidates, hasNext: allCount > count)
     }
 

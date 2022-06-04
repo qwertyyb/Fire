@@ -103,7 +103,7 @@ class FireInputController: IMKInputController {
             // 把当前未上屏的原始code上屏处理
             insertText(_originalString)
 
-            inputMode = inputMode == .zhhans ? InputMode.enUS : InputMode.zhhans
+            Fire.shared.toggleInputMode()
 
             let text = inputMode == .zhhans ? "中" : "英"
 
@@ -336,7 +336,12 @@ class FireInputController: IMKInputController {
                 }
             }),
             (Fire.prevPageBtnTapped, { _ in self.curPage = self.curPage > 1 ? self.curPage - 1 : 1 }),
-            (Fire.nextPageBtnTapped, { _ in self.curPage = self._hasNext ? self.curPage + 1 : self.curPage })
+            (Fire.nextPageBtnTapped, { _ in self.curPage = self._hasNext ? self.curPage + 1 : self.curPage }),
+            (Fire.inputModeChanged, { notification in
+                if self._originalString.count > 0, notification.userInfo?["val"] as? InputMode == InputMode.enUS {
+                    self.insertText(self._originalString)
+                }
+            })
         ]
     }
 
@@ -348,7 +353,7 @@ class FireInputController: IMKInputController {
         if let appSetting = Defaults[.appSettings][identifier],
            let mode = InputMode(rawValue: appSetting.inputModeSetting.rawValue) {
             print("[FireInputController] activeClientInputMode from setting : \(identifier), \(mode)")
-            inputMode = mode
+            Fire.shared.toggleInputMode(mode)
             return
         }
         if !Defaults[.keepAppInputMode] { return }
@@ -356,7 +361,7 @@ class FireInputController: IMKInputController {
         if let appSetting = Fire.shared.appSettingCache.get(bundleIdentifier: identifier),
            let mode = InputMode(rawValue: appSetting.inputModeSetting.rawValue) {
             print("[FireInputController] activeClientInputMode from cache: \(identifier), \(mode)")
-            inputMode = mode
+            Fire.shared.toggleInputMode(mode)
         }
     }
 
@@ -372,7 +377,7 @@ class FireInputController: IMKInputController {
             forName: observer.name, object: nil, queue: nil, using: observer.callback
         ))}
         if Defaults[.disableEnMode] {
-            inputMode = .zhhans
+            Fire.shared.toggleInputMode(.zhhans)
             return
         }
 

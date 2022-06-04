@@ -59,9 +59,13 @@ class Statistics {
                 sqlite3_finalize(insertStatement)
                 insertStatement = nil
             } else {
+                sqlite3_finalize(insertStatement)
+                insertStatement = nil
                 print("errmsg: \(String(cString: sqlite3_errmsg(database)!))")
             }
         } else {
+            sqlite3_finalize(insertStatement)
+            insertStatement = nil
             print("prepare_errmsg: \(String(cString: sqlite3_errmsg(database)!))")
         }
         NotificationCenter.default.post(name: Statistics.updated, object: nil)
@@ -130,10 +134,13 @@ class Statistics {
     private func getVersion() -> Int32 {
         let sql = "PRAGMA user_version"
         var stmt: OpaquePointer?
-        if sqlite3_prepare_v2(database, sql, -1, &stmt, nil) == SQLITE_OK
-            && sqlite3_step(stmt) == SQLITE_ROW {
-            return sqlite3_column_int(stmt, 0)
+        if sqlite3_prepare_v2(database, sql, -1, &stmt, nil) == SQLITE_OK,
+           sqlite3_step(stmt) == SQLITE_ROW {
+            let version = sqlite3_column_int(stmt, 0)
+            sqlite3_finalize(stmt)
+            return version
         }
+        sqlite3_finalize(stmt)
         return 0
     }
 

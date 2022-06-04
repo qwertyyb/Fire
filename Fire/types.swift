@@ -85,6 +85,7 @@ extension Defaults.Keys {
         "inputModeTipWindowType",
         default: InputModeTipWindowType.centerScreen
     )
+    static let showInputModeStatus = Key<Bool>("showInputModeStatus", default: true)
 
     // 主题
     static let themeConfig = Key<ThemeConfig>("themeConfig", default: defaultThemeConfig)
