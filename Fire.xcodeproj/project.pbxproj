@@ -12,6 +12,7 @@
 		451E6056232E24A5007B0463 /* FireInputController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 451E6055232E24A5007B0463 /* FireInputController.swift */; };
 		451E605D232E3A3C007B0463 /* MainMenu.xib in Resources */ = {isa = PBXBuildFile; fileRef = 451E605C232E3A3C007B0463 /* MainMenu.xib */; };
 		451E605F232E400B007B0463 /* Fire.swift in Sources */ = {isa = PBXBuildFile; fileRef = 451E605E232E400B007B0463 /* Fire.swift */; };
+		453377E52849E76A0064E4F2 /* StatusBar.swift in Sources */ = {isa = PBXBuildFile; fileRef = 453377E42849E76A0064E4F2 /* StatusBar.swift */; };
 		45449B4C23535ED000C9EFEF /* InputMethodKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 451E6058232E2787007B0463 /* InputMethodKit.framework */; };
 		45577E502543F03F0064325B /* build.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45577E4F2543F03F0064325B /* build.swift */; };
 		45577E562543F4060064325B /* wb_table.txt in Resources */ = {isa = PBXBuildFile; fileRef = 45577E552543F4060064325B /* wb_table.txt */; };
@@ -83,6 +84,7 @@
 		451E6058232E2787007B0463 /* InputMethodKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = InputMethodKit.framework; path = System/Library/Frameworks/InputMethodKit.framework; sourceTree = SDKROOT; };
 		451E605C232E3A3C007B0463 /* MainMenu.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = MainMenu.xib; sourceTree = "<group>"; };
 		451E605E232E400B007B0463 /* Fire.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Fire.swift; sourceTree = "<group>"; };
+		453377E42849E76A0064E4F2 /* StatusBar.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StatusBar.swift; sourceTree = "<group>"; };
 		45577E4F2543F03F0064325B /* build.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = build.swift; sourceTree = "<group>"; };
 		45577E552543F4060064325B /* wb_table.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = wb_table.txt; sourceTree = "<group>"; };
 		45577E5F25442E240064325B /* TableBuilder */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = TableBuilder; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -195,6 +197,7 @@
 				673A400B253D9FE70003901E /* InputSource.swift */,
 				45577EAF254575480064325B /* types.swift */,
 				45ACDE1A2841C52500658F46 /* Bridging-Header.h */,
+				453377E42849E76A0064E4F2 /* StatusBar.swift */,
 			);
 			path = Fire;
 			sourceTree = "<group>";
@@ -479,6 +482,7 @@
 				45DCE62226A31F140009FED1 /* ApplicationSettingCache.swift in Sources */,
 				459DE990232EB26600A3ACD1 /* CandidatesView.swift in Sources */,
 				45DB6EC727E5B8FE00A39925 /* ThemeConfig.swift in Sources */,
+				453377E52849E76A0064E4F2 /* StatusBar.swift in Sources */,
 				673C4178254697E400F462A3 /* TipsWindow.swift in Sources */,
 				677A0874254BD47D000B58D4 /* ToastWindow.swift in Sources */,
 			);

@@ -36,9 +36,9 @@ class InputSource {
     }
 
     private func findInputSource(forUsage: InputSourceUsage = .enable) -> (inputSource: TISInputSource, sourceID: NSString)? {
-        let sourceList = TISCreateInputSourceList(nil, true).takeUnretainedValue()
+        let sourceList = TISCreateInputSourceList(nil, true).takeRetainedValue() as NSArray
 
-        for index in 0...CFArrayGetCount(sourceList)-1 {
+        for index in 0..<sourceList.count {
             let inputSource = Unmanaged<TISInputSource>.fromOpaque(CFArrayGetValueAtIndex(
                 sourceList, index)).takeUnretainedValue()
             if let result = transformTargetSource(inputSource) {
@@ -104,7 +104,7 @@ class InputSource {
     }
 
     func isSelected() -> Bool {
-        guard let result = findInputSource() else {
+        guard let result = findInputSource(forUsage: .selected) else {
             return false
         }
         let unsafeIsSelected = TISGetInputSourceProperty(

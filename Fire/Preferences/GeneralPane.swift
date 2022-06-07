@@ -22,6 +22,7 @@ struct GeneralPane: View {
     @Default(.zKeyQuery) private var zKeyQuery
     @Default(.toggleInputModeKey) private var toggleInputModeKey
     @Default(.disableEnMode) private var disableEnMode
+    @Default(.showInputModeStatus) private var showInputModeStatus
 
     var body: some View {
         Preferences.Container(contentWidth: 450.0) {
@@ -76,6 +77,9 @@ struct GeneralPane: View {
                     }
                     GroupBox(label: Text("中英文切换")) {
                         VStack(alignment: .leading, spacing: 12) {
+                            HStack {
+                                Toggle("状态栏显示", isOn: $showInputModeStatus)
+                            }
                             HStack {
                                 Toggle("禁止切换英文", isOn: $disableEnMode)
                             }
