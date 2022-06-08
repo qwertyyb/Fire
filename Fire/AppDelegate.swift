@@ -18,7 +18,7 @@ class AppDelegate: NSObject, NSApplicationDelegate {
 
     func installInputSource() {
         print("install input source")
-        InputSource.shared.deactivateInputSource()
+//        InputSource.shared.deactivateInputSource()
         InputSource.shared.registerInputSource()
         InputSource.shared.activateInputSource()
     }
