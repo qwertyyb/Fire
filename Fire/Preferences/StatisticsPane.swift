@@ -9,6 +9,7 @@
 import SwiftUI
 import Preferences
 import Defaults
+import Combine
 
 func formatCount(_ count: Int64) -> String {
     return NumberFormatter.localizedString(from: NSNumber(value: count), number: .decimal)
@@ -49,9 +50,12 @@ struct CountCircle: View {
 }
 
 class DateCountData: ObservableObject {
+    @Published var startDate = Date().addingTimeInterval(-5 * 24 * 60 * 60)
+    @Published var endDate = Date()
     @Published var data: [DateCount] = []
     @Published var total: Int64 = 0
 
+    var cancellables = Set<AnyCancellable>()
     private var observer: Any?
 
     init() {
@@ -62,6 +66,14 @@ class DateCountData: ObservableObject {
             name: Statistics.updated,
             object: nil
         )
+        $startDate.sink { date in
+            self.refreshData(startDate: date, endDate: nil)
+        }
+            .store(in: &cancellables)
+        $endDate.sink { date in
+            self.refreshData(startDate: nil, endDate: date)
+        }
+            .store(in: &cancellables)
     }
 
     deinit {
@@ -73,9 +85,13 @@ class DateCountData: ObservableObject {
     }
 
     @objc func refresh() {
-        NSLog("[DateCountData] refresh start")
-        data = Statistics.shared.queryCountByDate()
+        NSLog("[DateCountData] refresh start: \(startDate)")
         total = Statistics.shared.queryTotalCount()
+        self.refreshData(startDate: nil, endDate: nil)
+    }
+    
+    func refreshData(startDate: Date?, endDate: Date?) {
+        data = Statistics.shared.queryCountByDate(startDate: startDate ?? self.startDate, endDate: endDate ?? self.endDate)
     }
 
     func clear() {
@@ -197,7 +213,6 @@ struct StatisticsPane: View {
                 }
             }
             Spacer(minLength: 20)
-            Text("近\(NumberFormatter.localizedString(from: NSNumber(value: dateCountData.data.count), number: .spellOut))天内输入情况统计")
         }
     }
 
@@ -234,6 +249,13 @@ struct StatisticsPane: View {
                     }
 
                     GroupBox(label: Text("输入统计")) {
+                        HStack {
+                            DatePicker("开始日期", selection: $dateCountData.startDate, displayedComponents: [.date])
+                                .datePickerStyle(.field)
+                            DatePicker("结束日期", selection: $dateCountData.endDate, displayedComponents: [.date])
+                                .datePickerStyle(.field)
+                        }
+                        Spacer(minLength: 20)
                         if dateCountData.data.count <= 0 {
                             HStack {
                                 Spacer()
