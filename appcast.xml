@@ -3,21 +3,21 @@
     <channel>
         <title>Fire</title>
         <item>
-            <title>v0.8.1</title>
-            <pubDate>Wed, 08 Jun 2022 04:07:09 +0000</pubDate>
+            <title>v0.9.0</title>
+            <pubDate>Sun, 12 Jun 2022 12:58:45 +0000</pubDate>
             <sparkle:minimumSystemVersion>10.15</sparkle:minimumSystemVersion>
             <description><![CDATA[
-                <h3 id="bugfixes">Bug Fixes</h3>
+                <h3 id="features">Features</h3>
 <ul>
-<li>修复安装问题 (<a href="https://github.com/qwertyyb/Fire/commit/6578c47446a1ddb63ec596bf50e6cd4b8e078e9b">6578c47</a>)</li>
+<li>数据统计支持调整时间范围 (<a href="https://github.com/qwertyyb/Fire/commit/62359a86c628e0572fa28ecfc6d39bce3a720bd1">62359a8</a>)</li>
 </ul>
             ]]>
             </description>
             <enclosure url="https://github.com/qwertyyb/Fire/releases/latest/download/FireInstaller.zip"
-              sparkle:version="20220608035931"
-              sparkle:shortVersionString="v0.8.1"
-              length="5536909"
-              sparkle:edSignature="TUtuiQVSTySHVRjTrRyC0IWiyhMf+Lqr73jOkJZs+j3+EbaN591ePd1mHqZ2pW71AgrMwCBzF4AHd6nkSMBbBQ=="
+              sparkle:version="20220612125346"
+              sparkle:shortVersionString="v0.9.0"
+              length="5549702"
+              sparkle:edSignature="WnlW0Mx2etLYTdyrjNwyzMXfZEZJVu57A9h2NbhN17hPJqN1r/VIiQ6WENxOgmuVqFzxT/6rMxV88BP/OULODg=="
               type="application/octet-stream"/>
         </item>
     </channel>
