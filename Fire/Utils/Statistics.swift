@@ -71,15 +71,21 @@ class Statistics {
         NotificationCenter.default.post(name: Statistics.updated, object: nil)
     }
 
-    func queryCountByDate() -> [DateCount] {
+    func queryCountByDate(startDate: Date, endDate: Date) -> [DateCount] {
         var queryStatement: OpaquePointer?
+        let formatter = DateFormatter()
+        formatter.dateFormat = "yyyy-MM-dd"
+        let start = formatter.string(from: startDate)
+        let end = formatter.string(from: endDate)
         let sql = """
             select date, count from
                 (select
                     date(createdAt, 'localtime') as date,
                     sum(length(text)) as count
-                from data group by date(createdAt))
-            order by date desc limit 0, 5;
+                from data
+                where date(createdAt, 'localtime') >= "\(start)" and date(createdAt, 'localtime') <= "\(end)"
+                group by date(createdAt, 'localtime'))
+            order by date desc;
             PRAGMA key = 'testkey'
         """
         if sqlite3_prepare_v2(database, sql, -1, &queryStatement, nil) == SQLITE_OK {
