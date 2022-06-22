@@ -215,6 +215,15 @@ class FireInputController: IMKInputController {
         }
         return nil
     }
+    
+    private func escKeyHandler(event: NSEvent) -> Bool? {
+        // ESC键取消所有输入
+        if event.keyCode == kVK_Escape, _originalString.count > 0 {
+            clean()
+            return true
+        }
+        return nil
+    }
 
     private func enterKeyHandler(event: NSEvent) -> Bool? {
         // 回车键输入原字符
@@ -251,6 +260,7 @@ class FireInputController: IMKInputController {
             charKeyHandler,
             numberKeyHandlder,
             punctutionKeyHandler,
+            escKeyHandler,
             enterKeyHandler,
             spaceKeyHandler
         ])
