@@ -119,11 +119,10 @@ class Fire: NSObject {
         }
         if queryStatement != nil {
             sqlite3_finalize(queryStatement)
+            queryStatement = nil
         }
         if sqlite3_prepare_v2(database, getStatementSql(), -1, &queryStatement, nil) == SQLITE_OK {
             print("prepare ok")
-            print(sqlite3_bind_parameter_index(queryStatement, ":code"))
-            print(sqlite3_bind_parameter_count(queryStatement))
         } else if let err = sqlite3_errmsg(database) {
             print("prepare fail: \(err)")
         }

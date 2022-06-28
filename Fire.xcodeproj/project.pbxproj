@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		4500AC622869F8CC006F3FCC /* PunctutionPane.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4500AC612869F8CC006F3FCC /* PunctutionPane.swift */; };
 		450B7D9A26A2847D00808A4D /* ApplicationPane.swift in Sources */ = {isa = PBXBuildFile; fileRef = 450B7D9926A2847D00808A4D /* ApplicationPane.swift */; };
 		451E6048232E227B007B0463 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 451E6047232E227B007B0463 /* AppDelegate.swift */; };
 		451E6056232E24A5007B0463 /* FireInputController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 451E6055232E24A5007B0463 /* FireInputController.swift */; };
@@ -76,6 +77,7 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		4500AC612869F8CC006F3FCC /* PunctutionPane.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PunctutionPane.swift; sourceTree = "<group>"; };
 		450B7D9926A2847D00808A4D /* ApplicationPane.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ApplicationPane.swift; sourceTree = "<group>"; };
 		451E6044232E227B007B0463 /* Fire.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Fire.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		451E6047232E227B007B0463 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
@@ -247,6 +249,7 @@
 				450B7D9926A2847D00808A4D /* ApplicationPane.swift */,
 				45DB6EC827E609CB00A39925 /* ThemePane.swift */,
 				45EBB54F283A311C00A56CBA /* StatisticsPane.swift */,
+				4500AC612869F8CC006F3FCC /* PunctutionPane.swift */,
 			);
 			path = Preferences;
 			sourceTree = "<group>";
@@ -466,6 +469,7 @@
 				45577EA1254552110064325B /* ThesaurusPane.swift in Sources */,
 				451E6056232E24A5007B0463 /* FireInputController.swift in Sources */,
 				451E605F232E400B007B0463 /* Fire.swift in Sources */,
+				4500AC622869F8CC006F3FCC /* PunctutionPane.swift in Sources */,
 				45587F2D24E8FBFB005F291B /* Utils.swift in Sources */,
 				45577E502543F03F0064325B /* build.swift in Sources */,
 				45D996AA253C5232001460A8 /* GeneralPane.swift in Sources */,
