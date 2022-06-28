@@ -56,16 +56,15 @@ class DateCountData: ObservableObject {
     @Published var total: Int64 = 0
 
     var cancellables = Set<AnyCancellable>()
-    private var observer: Any?
 
     init() {
         refresh()
-        observer = NotificationCenter.default.addObserver(
-            self,
-            selector: #selector(refresh),
-            name: Statistics.updated,
-            object: nil
-        )
+        NotificationCenter.default
+            .publisher(for: Statistics.updated)
+            .sink { _ in
+                self.refresh()
+            }
+            .store(in: &cancellables)
         $startDate.sink { date in
             self.refreshData(startDate: date, endDate: nil)
         }
@@ -77,21 +76,28 @@ class DateCountData: ObservableObject {
     }
 
     deinit {
-        guard let observer = self.observer else {
-            return
+        cancellables.forEach { cancellable in
+            cancellable.cancel()
         }
-        NotificationCenter.default.removeObserver(observer)
-        self.observer = nil
+        cancellables = []
     }
 
     @objc func refresh() {
         NSLog("[DateCountData] refresh start: \(startDate)")
+        if !FirePreferencesController.shared.isVisible {
+            NSLog("[DateCountData] refresh cancel: not visible")
+            return
+        }
         total = Statistics.shared.queryTotalCount()
         self.refreshData(startDate: nil, endDate: nil)
     }
-    
+
     func refreshData(startDate: Date?, endDate: Date?) {
-        data = Statistics.shared.queryCountByDate(startDate: startDate ?? self.startDate, endDate: endDate ?? self.endDate)
+        data = Statistics.shared
+            .queryCountByDate(
+                startDate: startDate ?? self.startDate,
+                endDate: endDate ?? self.endDate
+            )
     }
 
     func clear() {
@@ -100,7 +106,7 @@ class DateCountData: ObservableObject {
 }
 
 struct StatisticsPane: View {
-    @ObservedObject var dateCountData = DateCountData()
+    @StateObject var dateCountData = DateCountData()
     @Default(.enableStatistics) private var enableStatistics
     @State private var showAlert = false
 
