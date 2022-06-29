@@ -3,21 +3,21 @@
     <channel>
         <title>Fire</title>
         <item>
-            <title>v0.10.0</title>
-            <pubDate>Fri, 24 Jun 2022 06:00:50 +0000</pubDate>
+            <title>v0.10.1</title>
+            <pubDate>Wed, 29 Jun 2022 03:07:30 +0000</pubDate>
             <sparkle:minimumSystemVersion>10.15</sparkle:minimumSystemVersion>
             <description><![CDATA[
-                <h3 id="features">Features</h3>
+                <h3 id="bugfixes">Bug Fixes</h3>
 <ul>
-<li>添加ESC监听，有输入时，按ESC取消所有输入 (<a href="https://github.com/qwertyyb/Fire/commit/49196589bca63ec5bfe4156530630595bc3e3415">4919658</a>)</li>
+<li>修复多次打开首选项窗口会导致内存泄漏的问题 (<a href="https://github.com/qwertyyb/Fire/commit/093d8f7df1105ae20745dcd2457b8f5d240f3e0f">093d8f7</a>)</li>
 </ul>
             ]]>
             </description>
             <enclosure url="https://github.com/qwertyyb/Fire/releases/latest/download/FireInstaller.zip"
-              sparkle:version="20220624055543"
-              sparkle:shortVersionString="v0.10.0"
-              length="5550495"
-              sparkle:edSignature="13k628HZnv0TpIWWRV96cylgcq0vnJHXW+w3gTINt3XKJZ+RyETTh+YOSMfncP59zNBrRk34/tF8/rE2Cep9DA=="
+              sparkle:version="20220629030202"
+              sparkle:shortVersionString="v0.10.1"
+              length="5554107"
+              sparkle:edSignature="2+pSp+p7ANNJBBrl9QrY7YalY9tTWPhOUGxI6gX8nKu3VzoXbSqYpx4ZU+Z1ZZG9eGMUsbJspYbmg6gt9db0DQ=="
               type="application/octet-stream"/>
         </item>
     </channel>
