@@ -13,6 +13,10 @@ class FirePreferencesController: NSObject, NSWindowDelegate {
     private var controller: PreferencesWindowController?
     static let shared = FirePreferencesController()
 
+    var isVisible: Bool {
+        controller?.window?.isVisible ?? false
+    }
+
     func show() {
         if let controller = controller {
             controller.show()
@@ -60,11 +64,5 @@ class FirePreferencesController: NSObject, NSWindowDelegate {
         )
         self.controller?.window?.delegate = self
         self.controller?.show()
-    }
-
-    func windowWillClose(_ notification: Notification) {
-        Timer.scheduledTimer(withTimeInterval: 2, repeats: false) { _ in
-            self.controller = nil
-        }
     }
 }
