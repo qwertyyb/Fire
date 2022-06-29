@@ -26,7 +26,7 @@ struct PunctutionPane: View {
                 }
                 VStack(alignment: .leading) {
                     Text("自定义符号")
-                    Spacer(minLength: 10)
+                    Spacer(minLength: 4)
                     VStack {
                         HStack {
                             Text("按键")
@@ -47,19 +47,21 @@ struct PunctutionPane: View {
                                             customPunctutionSettings[key] = $0
                                         }
                                     )) {
-                                        Text(key).tag(key)
-                                        Text(punctution[key]!).tag(punctution[key]!)
+                                        Text(key)
+                                            .tag(key)
+                                        Text(punctution[key]!)
+                                            .tag(punctution[key]!)
                                     }
                                     .frame(width: 200, alignment: .center)
                                 })
                             }
-                                .padding(EdgeInsets(top: 10, leading: 20, bottom: 10, trailing: 20))
+                                .padding(EdgeInsets(top: 6, leading: 20, bottom: 10, trailing: 20))
                         }
                         .frame(maxHeight: 300)
                     }
+                    .padding(.top, 4)
                     .background(Color(.sRGB, red: 0.4, green: 0.4, blue: 0.4, opacity: 0.2))
                 }
-                .padding(.top, 10)
                 .disabled(punctutionMode != .custom)
             }
         }
