@@ -28,6 +28,13 @@ class FirePreferencesController: NSObject, NSWindowDelegate {
                     GeneralPane()
                 },
                 Preferences.Pane(
+                    identifier: Preferences.PaneIdentifier(rawValue: "标点符号"),
+                     title: "标点符号",
+                    toolbarIcon: NSImage(named: NSImage.fontPanelName) ?? NSImage(named: "general")!
+                ) {
+                    PunctutionPane()
+                },
+                Preferences.Pane(
                     identifier: Preferences.PaneIdentifier(rawValue: "应用"),
                      title: "应用",
                     toolbarIcon: NSImage(named: NSImage.computerName) ?? NSImage(named: "general")!

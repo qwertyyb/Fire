@@ -62,6 +62,12 @@ class ApplicationSettingItem: ObservableObject, Codable, Identifiable {
     }
 }
 
+enum PunctutionMode: Codable {
+    case enUs // 半角
+    case zhhans // 全角
+    case custom // 自定义
+}
+
 extension Defaults.Keys {
     static let zKeyQuery = Key<Bool>("zKeyQuery", default: true)
     static let candidatesDirection = Key<CandidatesDirection>(
@@ -97,6 +103,10 @@ extension Defaults.Keys {
         "AppSettings",
         default: [:]
     )
+    // 标点符号配置
+    static let punctutionMode = Key<PunctutionMode>("punctutionMode", default: PunctutionMode.zhhans)
+    static let customPunctutionSettings = Key<[String: String]>("customPunctutionSettings", default: punctution)
+
     static let wbTablePath = Key<String>(
         "wbTableURL",
         default: Bundle.main.resourceURL?.appendingPathComponent("wb_table.txt").path

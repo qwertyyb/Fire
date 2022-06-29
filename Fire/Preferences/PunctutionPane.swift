@@ -8,41 +8,59 @@
 
 import SwiftUI
 import Preferences
-
-struct PunctutionItem: Identifiable {
-    let id = UUID()
-    let input: String
-    let output: String
-}
+import Defaults
 
 struct PunctutionPane: View {
-    let data = [
-        PunctutionItem(input: "+", output: "＋"),
-        PunctutionItem(input: "-", output: "－")
-    ]
-    @State private var selected = "b"
+    @Default(.punctutionMode) private var punctutionMode
+    @Default(.customPunctutionSettings) private var customPunctutionSettings
     var body: some View {
         Preferences.Container(contentWidth: 450) {
             Preferences.Section(title: "") {
-                GroupBox(label: Text("标点符号")) {
-                    HStack {
-                        Text("按键")
-                            .frame(width: 200, alignment: .center)
-                        Text("输出")
-                            .frame(width: 200, alignment: .center)
+                HStack {
+                    Picker("标点符号方案", selection: $punctutionMode) {
+                        Text("半角").tag(PunctutionMode.enUs)
+                        Text("全角").tag(PunctutionMode.zhhans)
+                        Text("自定义").tag(PunctutionMode.custom)
                     }
-                    List(data) { item in
-                        VStack {
-                            HStack(spacing: 0) {
-                                Text(item.input)
-                                    .frame(width: 200, alignment: .center)
-                                Text(item.output)
-                                    .frame(width: 200, alignment: .center)
-                            }
-                            Divider()
-                        }
-                    }
+                    Spacer(minLength: 150)
                 }
+                VStack(alignment: .leading) {
+                    Text("自定义符号")
+                    Spacer(minLength: 10)
+                    VStack {
+                        HStack {
+                            Text("按键")
+                                .frame(width: 200, alignment: .center)
+                            Text("输出")
+                                .frame(width: 200, alignment: .center)
+                        }
+                        ScrollView {
+                            ForEach(
+                                customPunctutionSettings.sorted(by: <),
+                                id: \.key) { (key, value) -> AnyView in
+                                AnyView(HStack(spacing: 0) {
+                                    Text(key)
+                                        .frame(width: 200, alignment: .center)
+                                    Picker("", selection: Binding<String>(
+                                        get: { value },
+                                        set: {
+                                            customPunctutionSettings[key] = $0
+                                        }
+                                    )) {
+                                        Text(key).tag(key)
+                                        Text(punctution[key]!).tag(punctution[key]!)
+                                    }
+                                    .frame(width: 200, alignment: .center)
+                                })
+                            }
+                                .padding(EdgeInsets(top: 10, leading: 20, bottom: 10, trailing: 20))
+                        }
+                        .frame(maxHeight: 300)
+                    }
+                    .background(Color(.sRGB, red: 0.4, green: 0.4, blue: 0.4, opacity: 0.2))
+                }
+                .padding(.top, 10)
+                .disabled(punctutionMode != .custom)
             }
         }
     }

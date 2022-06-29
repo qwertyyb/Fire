@@ -58,6 +58,24 @@ class Fire: NSObject {
         close()
     }
 
+    func transformPunctution(_ origin: String)-> String? {
+        let isPunctution = punctution.keys.contains(origin)
+        if !isPunctution {
+            return nil
+        }
+        let mode = Defaults[.punctutionMode]
+        if mode == .enUs {
+            return origin
+        }
+        if mode == .zhhans {
+            return punctution[origin]
+        }
+        if mode == .custom {
+            return Defaults[.customPunctutionSettings][origin]
+        }
+        return nil
+    }
+
     func toggleInputMode(_ nextInputMode: InputMode? = nil) {
         if nextInputMode != nil, self.inputMode == nextInputMode {
             return
