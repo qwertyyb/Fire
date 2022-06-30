@@ -166,8 +166,8 @@ class FireInputController: IMKInputController {
         let string = event.characters!
 
         // 如果输入的字符是标点符号，转换标点符号为中文符号
-        if inputMode == .zhhans && punctution.keys.contains(string) {
-            insertText(punctution[string]!)
+        if inputMode == .zhhans, let result = Fire.shared.transformPunctution(string) {
+            insertText(result)
             return true
         }
         return nil

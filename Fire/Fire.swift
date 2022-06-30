@@ -58,6 +58,24 @@ class Fire: NSObject {
         close()
     }
 
+    func transformPunctution(_ origin: String)-> String? {
+        let isPunctution = punctution.keys.contains(origin)
+        if !isPunctution {
+            return nil
+        }
+        let mode = Defaults[.punctutionMode]
+        if mode == .enUs {
+            return origin
+        }
+        if mode == .zhhans {
+            return punctution[origin]
+        }
+        if mode == .custom {
+            return Defaults[.customPunctutionSettings][origin]
+        }
+        return nil
+    }
+
     func toggleInputMode(_ nextInputMode: InputMode? = nil) {
         if nextInputMode != nil, self.inputMode == nextInputMode {
             return
@@ -119,11 +137,10 @@ class Fire: NSObject {
         }
         if queryStatement != nil {
             sqlite3_finalize(queryStatement)
+            queryStatement = nil
         }
         if sqlite3_prepare_v2(database, getStatementSql(), -1, &queryStatement, nil) == SQLITE_OK {
             print("prepare ok")
-            print(sqlite3_bind_parameter_index(queryStatement, ":code"))
-            print(sqlite3_bind_parameter_count(queryStatement))
         } else if let err = sqlite3_errmsg(database) {
             print("prepare fail: \(err)")
         }
