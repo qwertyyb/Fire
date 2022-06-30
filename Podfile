@@ -8,7 +8,7 @@ target 'Fire' do
   # use_frameworks!
 
   # Pods for Fire
-  pod 'Sparkle'
+  pod 'Sparkle', '~> 1.26.0'
   
   # Pods for lint
   pod 'SwiftLint'

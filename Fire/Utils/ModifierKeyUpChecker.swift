@@ -18,22 +18,44 @@ extension Date {
 }
 
 class ModifierKeyUpChecker {
-    init(_ modifier: NSEvent.ModifierFlags) {
-        checkModifier = modifier
+    init(_ modifier: ModifierKey) {
+        checkModifierKey = modifier
     }
-    let checkModifier: NSEvent.ModifierFlags
-    var checkKeyCode: Int {
-        switch self.checkModifier {
-        case .shift:
-            return kVK_Shift
+    let checkModifierKey: ModifierKey
+    private var checkModifier: NSEvent.ModifierFlags {
+        switch self.checkModifierKey {
         case .command:
-            return kVK_Command
+            return NSEvent.ModifierFlags.command
         case .control:
-            return kVK_Control
+            return NSEvent.ModifierFlags.control
+        case .shift:
+            return NSEvent.ModifierFlags.shift
         case .option:
-            return kVK_Option
+            return NSEvent.ModifierFlags.option
+        case .function:
+            return NSEvent.ModifierFlags.function
         default:
-            return 0
+            return NSEvent.ModifierFlags.shift
+        }
+    }
+    var checkKeyCode: [Int] {
+        switch self.checkModifierKey {
+        case .shift:
+            return [kVK_Shift, kVK_RightShift]
+        case .leftShift:
+            return [kVK_Shift]
+        case .rightShift:
+            return [kVK_RightShift]
+        case .command:
+            return [kVK_Command, kVK_RightCommand]
+        case .control:
+            return [kVK_Control, kVK_RightControl]
+        case .option:
+            return [kVK_Option, kVK_RightOption]
+        case .function:
+            return [kVK_Function]
+        default:
+            return []
         }
     }
 
@@ -53,9 +75,13 @@ class ModifierKeyUpChecker {
     }
 
     private func checkModifierKeyDown(event: NSEvent) -> Bool {
-        if event.type == .flagsChanged
+        let isLeftShift = event.modifierFlags.rawValue & UInt(NX_DEVICELSHIFTKEYMASK) != 0
+        let isRightShift = event.modifierFlags.rawValue & UInt(NX_DEVICERSHIFTKEYMASK) != 0
+        print("isLeftShift: \(isLeftShift), isRightShift: \(isRightShift)")
+        let isKeyDown = event.type == .flagsChanged
             && event.modifierFlags.intersection(.deviceIndependentFlagsMask) == checkModifier
-            && event.keyCode == checkKeyCode {
+            && checkKeyCode.contains(Int(event.keyCode))
+        if isKeyDown {
             // modifier keydown event
             lastTime = Date()
         } else {

@@ -22,6 +22,16 @@ enum InputModeTipWindowType: Int, Decodable, Encodable {
     case none
 }
 
+enum ModifierKey: Codable {
+  case shift
+  case leftShift
+  case rightShift
+  case control
+  case command
+  case option
+  case function
+}
+
 class ApplicationSettingItem: ObservableObject, Codable, Identifiable {
 //    let identifier: String = ""
 
@@ -78,8 +88,7 @@ extension Defaults.Keys {
     // 禁止切换英文
     static let disableEnMode = Key<Bool>("diableEnMode", default: false)
     // 切换英文模式的按键
-    static let toggleInputModeKey = Key<NSEvent.ModifierFlags.RawValue>("toggleInputModeKey",
-        default: NSEvent.ModifierFlags.shift.rawValue)
+    static let toggleInputModeKey = Key<ModifierKey>("toggleInputModeKey", default: ModifierKey.shift)
     // 中英文切换提示弹窗位置
     static let inputModeTipWindowType = Key<InputModeTipWindowType>(
         "inputModeTipWindowType",

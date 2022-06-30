@@ -85,10 +85,13 @@ struct GeneralPane: View {
                             }
                             HStack {
                                 Picker("快捷键", selection: $toggleInputModeKey) {
-                                    Text("control").tag(NSEvent.ModifierFlags.control.rawValue)
-                                    Text("shift").tag(NSEvent.ModifierFlags.shift.rawValue)
-                                    Text("option").tag(NSEvent.ModifierFlags.option.rawValue)
-                                    Text("command").tag(NSEvent.ModifierFlags.command.rawValue)
+                                    Text("control").tag(ModifierKey.control)
+                                    Text("shift").tag(ModifierKey.shift)
+                                    Text("左shift").tag(ModifierKey.leftShift)
+                                    Text("右shift").tag(ModifierKey.rightShift)
+                                    Text("option").tag(ModifierKey.option)
+                                    Text("command").tag(ModifierKey.command)
+                                    Text("fn").tag(ModifierKey.function)
                                 }
                                 .disabled(disableEnMode)
                                 Spacer(minLength: 50)
