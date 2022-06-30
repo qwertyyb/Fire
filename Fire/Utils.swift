@@ -17,7 +17,7 @@ enum HandlerStatus {
 }
 
 class Utils {
-    var toggleInputModeKeyUpChecker = ModifierKeyUpChecker(.shift)
+    var toggleInputModeKeyUpChecker = ModifierKeyUpChecker(Defaults[.toggleInputModeKey])
 
     var toast: ToastWindowProtocol?
 
@@ -33,7 +33,7 @@ class Utils {
             self.initToastWindow()
         }.tieToLifetime(of: self)
         Defaults.observe(.toggleInputModeKey) { (val) in
-            let modifier = NSEvent.ModifierFlags(rawValue: val.newValue)
+            let modifier = val.newValue
             print("modifier: ", modifier)
             self.toggleInputModeKeyUpChecker = ModifierKeyUpChecker(modifier)
         }.tieToLifetime(of: self)
