@@ -3,21 +3,27 @@
     <channel>
         <title>Fire</title>
         <item>
-            <title>v0.10.1</title>
-            <pubDate>Wed, 29 Jun 2022 03:07:30 +0000</pubDate>
+            <title>v0.11.0</title>
+            <pubDate>Thu, 30 Jun 2022 09:25:35 +0000</pubDate>
             <sparkle:minimumSystemVersion>10.15</sparkle:minimumSystemVersion>
             <description><![CDATA[
                 <h3 id="bugfixes">Bug Fixes</h3>
 <ul>
-<li>修复多次打开首选项窗口会导致内存泄漏的问题 (<a href="https://github.com/qwertyyb/Fire/commit/093d8f7df1105ae20745dcd2457b8f5d240f3e0f">093d8f7</a>)</li>
+<li>修复切换中英文按键只有左侧按钮才可切换的问题; 新增左shift, 右shift和fn键切换中英文 (<a href="https://github.com/qwertyyb/Fire/commit/2668b680863ca57317d23b3be5e4b1e8e5a61813">2668b68</a>)</li>
+<li>修改样式 (<a href="https://github.com/qwertyyb/Fire/commit/ee02a2d2ef24981c46e514367373b58dbb16ce2d">ee02a2d</a>)</li>
+<li>标点符号设置界面 (<a href="https://github.com/qwertyyb/Fire/commit/a2200631bff9cff24e110b5c99e15902b581740e">a220063</a>)</li>
+</ul>
+<h3 id="features">Features</h3>
+<ul>
+<li>支持修改和自定义标点符号输入方案 (<a href="https://github.com/qwertyyb/Fire/commit/640e669bb73c0044987dfee33b314e26ba7becf0">640e669</a>)</li>
 </ul>
             ]]>
             </description>
             <enclosure url="https://github.com/qwertyyb/Fire/releases/latest/download/FireInstaller.zip"
-              sparkle:version="20220629030202"
-              sparkle:shortVersionString="v0.10.1"
-              length="5554107"
-              sparkle:edSignature="2+pSp+p7ANNJBBrl9QrY7YalY9tTWPhOUGxI6gX8nKu3VzoXbSqYpx4ZU+Z1ZZG9eGMUsbJspYbmg6gt9db0DQ=="
+              sparkle:version="20220630092011"
+              sparkle:shortVersionString="v0.11.0"
+              length="5585643"
+              sparkle:edSignature="itU5hbbw2e3Aa00ZdNyqeJGYOhoZuE0Hb8g5OYGqwvlAvNcDmwMtfLLAw79V0pJFVt8ZQHQF4+93Q5P+npF2Bw=="
               type="application/octet-stream"/>
         </item>
     </channel>
