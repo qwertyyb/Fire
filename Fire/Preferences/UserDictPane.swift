@@ -46,6 +46,8 @@ struct UserDictPane: View {
                         .font(Font.system(size: 11))
                     Text("3. 可以有多个候选项，每个候选项使用空格分隔")
                         .font(Font.system(size: 11))
+                    Text("4. 候选项可使用{yyyy}/{MM}/{dd}/{HH}/{mm}/{ss}代替当前年/月/日/时/分/秒")
+                        .font(Font.system(size: 11))
                     HStack {
                         Spacer()
                         if #available(macOS 12.0, *) {
