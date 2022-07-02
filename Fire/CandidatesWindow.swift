@@ -43,7 +43,7 @@ class CandidatesWindow: NSWindow, NSWindowDelegate {
         print("candidates: \(candidatesData)")
         self.setFrameTopLeftPoint(topLeft)
         self.orderFront(nil)
-        NSApp.setActivationPolicy(.prohibited)
+//        NSApp.setActivationPolicy(.prohibited)
     }
 
     override init(

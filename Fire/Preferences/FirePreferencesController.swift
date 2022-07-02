@@ -16,8 +16,8 @@ class FirePreferencesController: NSObject, NSWindowDelegate {
     var isVisible: Bool {
         controller?.window?.isVisible ?? false
     }
-
-    func show() {
+    
+    private func initController() {
         if let controller = controller {
             controller.show()
             return
@@ -37,6 +37,13 @@ class FirePreferencesController: NSObject, NSWindowDelegate {
                     toolbarIcon: NSImage(named: NSImage.fontPanelName) ?? NSImage(named: "general")!
                 ) {
                     PunctutionPane()
+                },
+                Preferences.Pane(
+                    identifier: Preferences.PaneIdentifier(rawValue: "用户词库"),
+                     title: "用户词库",
+                    toolbarIcon: NSImage(named: NSImage.multipleDocumentsName) ?? NSImage(named: "general")!
+                ) {
+                    UserDictPane()
                 },
                 Preferences.Pane(
                     identifier: Preferences.PaneIdentifier(rawValue: "应用"),
@@ -70,6 +77,15 @@ class FirePreferencesController: NSObject, NSWindowDelegate {
             style: .toolbarItems
         )
         self.controller?.window?.delegate = self
-        self.controller?.show()
+    }
+    
+    func showPane(_ name: String) {
+        initController()
+        controller?.show(preferencePane: Preferences.PaneIdentifier(rawValue: name))
+    }
+
+    func show() {
+        initController()
+        controller?.show()
     }
 }

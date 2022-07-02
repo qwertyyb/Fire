@@ -248,6 +248,16 @@ class FireInputController: IMKInputController {
 
     // ---- handlers end -------
 
+    override func recognizedEvents(_ sender: Any!) -> Int {
+        // 当在当前应用下输入时　NSEvent.addGlobalMonitorForEvents 回调不会被调用，需要针对当前app, 使用原始的方式处理flagsChanged事件
+        let isCurrentApp = client().bundleIdentifier() == Bundle.main.bundleIdentifier
+        var events = NSEvent.EventTypeMask(arrayLiteral: .keyDown)
+        if isCurrentApp {
+            events = NSEvent.EventTypeMask(arrayLiteral: .keyDown, .flagsChanged)
+        }
+        return Int(events.rawValue)
+    }
+
     override func handle(_ event: NSEvent!, client sender: Any!) -> Bool {
         NSLog("[FireInputController] handle: \(event.debugDescription)")
 
