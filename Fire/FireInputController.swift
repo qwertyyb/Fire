@@ -82,12 +82,10 @@ class FireInputController: IMKInputController {
         if event.modifierFlags == .control &&
             num > 0 && num <= _candidates.count {
             NSLog("hotkey: control + \(num)")
-            if Fire.shared.setFirstCandidate(wbcode: _originalString, candidate: _candidates[num - 1]) {
-                self.curPage = 1
-                self.refreshCandidatesWindow()
-                return true
-            }
-            return nil
+            DictManager.shared.setCandidateToFirst(query: _originalString, candidate: _candidates[num-1])
+            self.curPage = 1
+            self.refreshCandidatesWindow()
+            return true
         }
         return nil
     }

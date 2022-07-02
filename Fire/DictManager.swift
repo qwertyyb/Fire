@@ -11,12 +11,15 @@ import Defaults
 
 class DictManager {
     static let shared = DictManager()
-    
-    let userDictFilePath = NSSearchPathForDirectoriesInDomains(.applicationSupportDirectory, .userDomainMask, true).first! + "/" + Bundle.main.bundleIdentifier! + "/user-dict.txt"
-    
+    static let userDictUpdated = Notification.Name("DictManager.userDictUpdated")
+
+    let userDictFilePath = NSSearchPathForDirectoriesInDomains(
+        .applicationSupportDirectory,
+        .userDomainMask, true).first! + "/" + Bundle.main.bundleIdentifier! + "/user-dict.txt"
+
     private var database: OpaquePointer?
     private var queryStatement: OpaquePointer?
-    
+
     private init() {
         Defaults.observe(keys: .codeMode, .candidateCount) { () in
             self.prepareStatement()
@@ -36,7 +39,7 @@ class DictManager {
         sqlite3_shutdown()
         database = nil
     }
-    
+
     private func getStatementSql() -> String {
         let candidateCount = Defaults[.candidateCount]
         let codeMode = Defaults[.codeMode]
@@ -56,7 +59,7 @@ class DictManager {
         """
         return sql
     }
-    
+
     private func prepareStatement() {
         if database == nil {
             sqlite3_open_v2(getDatabaseURL().path, &database, SQLITE_OPEN_READWRITE, nil)
@@ -71,7 +74,7 @@ class DictManager {
             print("prepare fail: \(err)")
         }
     }
-    
+
     private func getMinIdFromDictTable() -> Int {
         let sql = "select min(id) from wb_py_dict"
         var queryStmt: OpaquePointer?
@@ -87,6 +90,27 @@ class DictManager {
         sqlite3_finalize(queryStmt)
         queryStmt = nil
         return 0
+    }
+
+    private func replaceTextWithVars(_ text: String) -> String {
+        let date = Date()
+        let formatter = DateFormatter()
+        formatter.dateFormat = "yyyy MM dd HH mm ss"
+        let arr = formatter.string(from: date).split(separator: " ")
+        let vars: [String: String] = [
+            "{yyyy}": String(arr[0]),
+            "{MM}": String(arr[1]),
+            "{dd}": String(arr[2]),
+            "{HH}": String(arr[3]),
+            "{mm}": String(arr[4]),
+            "{ss}": String(arr[5])
+        ]
+        var newText = text
+        vars.forEach { (key, val) in
+            newText = newText.replacingOccurrences(of: key, with: val)
+        }
+        print("[replaceTextWithVars] \(text), \(newText)")
+        return newText
     }
     
     func getCandidates(query: String = String(), page: Int = 1) -> (candidates: [Candidate], hasNext: Bool) {
@@ -113,9 +137,12 @@ class DictManager {
         )
         while sqlite3_step(queryStatement) == SQLITE_ROW {
             let code = String.init(cString: sqlite3_column_text(queryStatement, 0))
-            let text = String.init(cString: sqlite3_column_text(queryStatement, 1))
-            let type = String.init(cString: sqlite3_column_text(queryStatement, 2))
-            let candidate = Candidate(code: code, text: text, type: CandidateType(rawValue: type)!)
+            var text = String.init(cString: sqlite3_column_text(queryStatement, 1))
+            let type = CandidateType(rawValue: String.init(cString: sqlite3_column_text(queryStatement, 2)))!
+            if type == .user {
+                text = replaceTextWithVars(text)
+            }
+            let candidate = Candidate(code: code, text: text, type: type)
             candidates.append(candidate)
         }
         let count = Defaults[.candidateCount]
@@ -127,7 +154,13 @@ class DictManager {
         }
         return (candidates, hasNext: allCount > count)
     }
-    
+
+    func setCandidateToFirst(query: String, candidate: Candidate) {
+        let newCandidate = Candidate(code: query, text: candidate.text, type: CandidateType.user)
+        _ = prependCandidate(candidate: newCandidate)
+        NotificationQueue.default.enqueue(Notification(name: DictManager.userDictUpdated), postingStyle: .whenIdle)
+    }
+
     func prependCandidate(candidate: Candidate) -> Bool {
         let sql = """
             insert into wb_py_dict(id, wbcode, text, type, query)
@@ -157,7 +190,7 @@ class DictManager {
         print("errmsg: \(String(cString: sqlite3_errmsg(database)!))")
         return false
     }
-    
+
     func prependCandidates(candidates: [Candidate]) {
         if candidates.count <= 0 {
             return
@@ -174,13 +207,12 @@ class DictManager {
         """
         sqlite3_exec(database, sql, nil, nil, nil)
     }
-    
-    func updateUserDict() {
+
+    func updateUserDict(_ dictContent: String) {
         // 1. 先删除之前的用户词库
         sqlite3_exec(database, "delete from wb_py_dict where type = '\(CandidateType.user.rawValue)'", nil, nil, nil)
         // 2. 添加用户词库
-        let text = (try? String(contentsOfFile: userDictFilePath, encoding: .utf8)) ?? ""
-        let lines = text.split(whereSeparator: \.isNewline)
+        let lines = dictContent.split(whereSeparator: \.isNewline)
         let candidates = lines.map { (line) -> [Candidate] in
             let strs = line.split(whereSeparator: \.isWhitespace)
             if strs.count <= 1 {
@@ -194,6 +226,52 @@ class DictManager {
         }.reduce([] as [Candidate]) { partialResult, cur in
             partialResult + cur
         }
-        return prependCandidates(candidates: candidates)
+        prependCandidates(candidates: candidates)
+        NotificationQueue.default.enqueue(Notification(name: DictManager.userDictUpdated), postingStyle: .whenIdle)
+    }
+
+    func getUserCandidates() -> [Candidate] {
+        var stmt: OpaquePointer?
+        let sql = "select query, text from wb_py_dict where type = '\(CandidateType.user.rawValue)'"
+        if sqlite3_prepare_v2(database, sql, -1, &stmt, nil) == SQLITE_OK {
+            var candidates: [Candidate] = []
+            while sqlite3_step(stmt) == SQLITE_ROW {
+                let code = String(cString: sqlite3_column_text(stmt, 0))
+                let text = String(cString: sqlite3_column_text(stmt, 1))
+                candidates.append(Candidate(code: code, text: text, type: .user))
+            }
+            sqlite3_finalize(stmt)
+            stmt = nil
+            return candidates
+        }
+        sqlite3_finalize(stmt)
+        stmt = nil
+        return []
+    }
+
+    func getUserDictContent() -> String {
+        // 获取用户候选词(包括调整顺序的词)
+        struct UserDictLine {
+            let code: String
+            var texts: [String]
+        }
+        let candidates = getUserCandidates()
+        NSLog("[DictManager.exportUserDictToFile] candidates: \(candidates)")
+        var list: [UserDictLine] = []
+        candidates.forEach { candidate in
+            let index = list.firstIndex { dictItem in
+                dictItem.code == candidate.code
+            }
+            if index == nil {
+                list.append(UserDictLine(code: candidate.code, texts: [candidate.text]))
+            } else if !list[index!].texts.contains(candidate.text) {
+                list[index!].texts.append(candidate.text)
+            }
+        }
+        let content = list.map { dictItem in
+            ([dictItem.code] + dictItem.texts).joined(separator: "\t")
+        }
+        .joined(separator: "\n")
+        return content
     }
 }

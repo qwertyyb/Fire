@@ -97,12 +97,14 @@ class Fire: NSObject {
             return ([], false)
         }
         let query = getQueryFromOrigin(origin)
-        return DictManager.shared.getCandidates(query: query, page: page)
-    }
-
-    func setFirstCandidate(wbcode: String, candidate: Candidate) -> Bool {
-        let newCandidate = Candidate(code: wbcode, text: candidate.text, type: CandidateType.user)
-        return DictManager.shared.prependCandidate(candidate: newCandidate)
+        let (candidates, hasNext) = DictManager.shared.getCandidates(query: query, page: page)
+        let transformed = candidates.map { (candidate) -> Candidate in
+            if candidate.type == .user {
+                return Candidate(code: candidate.code, text: candidate.text, type: .user)
+            }
+            return candidate
+        }
+        return (transformed, hasNext)
     }
 
     static let shared = Fire()

@@ -8,32 +8,38 @@
 
 import SwiftUI
 import Preferences
+import Combine
 
-class UserDictModel: ObservableObject {
-    @Published var text: String = ""
-
-    let path = NSSearchPathForDirectoriesInDomains(.applicationSupportDirectory, .userDomainMask, true).first! + "/" + Bundle.main.bundleIdentifier! + "/user-dict.txt"
+class UserDictTextModel: ObservableObject {
+    @Published var text = ""
+    private var cancellable = Set<AnyCancellable>()
 
     init() {
-        self.text = (try? String(contentsOfFile: path, encoding: .utf8)) ?? ""
+        refresh()
+        NotificationCenter.default.publisher(for: DictManager.userDictUpdated).sink { notification in
+            self.refresh()
+        }
+        .store(in: &cancellable)
     }
 
-    func write() {
-        try? self.text.write(toFile: path, atomically: false, encoding: .utf8)
+    func refresh() {
+        NSLog("[UserDictTextModel.refresh]")
+        self.text = DictManager.shared.getUserDictContent()
     }
 }
 
 struct UserDictPane: View {
-    @StateObject private var userDict = UserDictModel()
+    @StateObject private var userDictTextModel = UserDictTextModel()
     @State private var saved = false
     var body: some View {
         Preferences.Container(contentWidth: 450) {
             Preferences.Section(title: "") {
                 Text("用户词库")
                 if #available(macOS 11.0, *) {
-                    TextEditor(text: $userDict.text)
+                    TextEditor(text: $userDictTextModel.text)
                         .font(Font.system(size: 14))
                         .frame(height: 400)
+                        .lineSpacing(6)
                     Text("1. 编码需在行首")
                         .font(Font.system(size: 11))
                     Text("2. 编码和候选项之间需用空格分隔")
@@ -44,8 +50,7 @@ struct UserDictPane: View {
                         Spacer()
                         if #available(macOS 12.0, *) {
                             Button("保存") {
-                                userDict.write()
-                                DictManager.shared.updateUserDict()
+                                DictManager.shared.updateUserDict(userDictTextModel.text)
                                 saved = true
                             }
                             .alert("保存成功", isPresented: $saved) {
@@ -53,8 +58,7 @@ struct UserDictPane: View {
                         } else {
                             // Fallback on earlier versions
                             Button("保存") {
-                                userDict.write()
-                                DictManager.shared.updateUserDict()
+                                DictManager.shared.updateUserDict(userDictTextModel.text)
                                 print("saved")
                             }
                         }
