@@ -80,9 +80,9 @@ struct ThesaurusPane: View {
                         }
                     }
                     Button(action: {
-                        Fire.shared.close()
+                        DictManager.shared.close()
                         buildDict()
-                        Fire.shared.prepareStatement()
+                        DictManager.shared.reinit()
                     }, label: {
                         Text("建立索引")
                     })

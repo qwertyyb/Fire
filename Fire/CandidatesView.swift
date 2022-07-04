@@ -10,7 +10,7 @@ import SwiftUI
 import Defaults
 
 func getShownCode(candidate: Candidate, origin: String) -> String {
-    if candidate.type == "py" || !candidate.code.hasPrefix(origin) {
+    if candidate.type == CandidateType.py || !candidate.code.hasPrefix(origin) {
         return "(\(candidate.code))"
     }
     if candidate.code.hasPrefix(origin) {
@@ -188,11 +188,11 @@ struct CandidatesView: View {
 struct ContentView_Previews: PreviewProvider {
     static var previews: some View {
         CandidatesView(candidates: [
-            Candidate(code: "a", text: "工", type: "wb"),
-            Candidate(code: "ab", text: "戈", type: "wb"),
-            Candidate(code: "abc", text: "啊", type: "wb"),
-            Candidate(code: "abcg", text: "阿", type: "wb"),
-            Candidate(code: "addd", text: "吖", type: "wb")
+            Candidate(code: "a", text: "工", type: CandidateType.wb),
+            Candidate(code: "ab", text: "戈", type:  CandidateType.wb),
+            Candidate(code: "abc", text: "啊", type:  CandidateType.wb),
+            Candidate(code: "abcg", text: "阿", type:  CandidateType.wb),
+            Candidate(code: "addd", text: "吖", type:  CandidateType.wb)
         ], origin: "a")
     }
 }

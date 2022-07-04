@@ -22,7 +22,7 @@ enum InputModeTipWindowType: Int, Decodable, Encodable {
     case none
 }
 
-enum ModifierKey: Codable {
+enum ModifierKey: String, Codable {
   case shift
   case leftShift
   case rightShift
@@ -142,11 +142,17 @@ enum InputModeSetting: String, Codable {
     case recentUsed
 }
 
+enum CandidateType: String {
+    case wb = "wb" // 五笔
+    case py = "py" // 拼音
+    case user = "user" // 用户词库
+    case placeholder = "placeholder" // 运行时类型，无匹配时表示占位
+}
+
 struct Candidate: Hashable {
     let code: String
     let text: String
-    let type: String  // wb | py
-    var isPlaceholder: Bool = false // 是否是占位符，当没有其他候选词时，会显示占位
+    let type: CandidateType
 }
 
 enum CodeMode: Int, CaseIterable, Decodable, Encodable {

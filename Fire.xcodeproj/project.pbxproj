@@ -8,6 +8,8 @@
 
 /* Begin PBXBuildFile section */
 		4500AC622869F8CC006F3FCC /* PunctutionPane.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4500AC612869F8CC006F3FCC /* PunctutionPane.swift */; };
+		4500AC64286F2B42006F3FCC /* UserDictPane.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4500AC63286F2B42006F3FCC /* UserDictPane.swift */; };
+		4500AC68287036CB006F3FCC /* DictManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4500AC67287036CB006F3FCC /* DictManager.swift */; };
 		450B7D9A26A2847D00808A4D /* ApplicationPane.swift in Sources */ = {isa = PBXBuildFile; fileRef = 450B7D9926A2847D00808A4D /* ApplicationPane.swift */; };
 		451E6048232E227B007B0463 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 451E6047232E227B007B0463 /* AppDelegate.swift */; };
 		451E6056232E24A5007B0463 /* FireInputController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 451E6055232E24A5007B0463 /* FireInputController.swift */; };
@@ -78,6 +80,8 @@
 
 /* Begin PBXFileReference section */
 		4500AC612869F8CC006F3FCC /* PunctutionPane.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PunctutionPane.swift; sourceTree = "<group>"; };
+		4500AC63286F2B42006F3FCC /* UserDictPane.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserDictPane.swift; sourceTree = "<group>"; };
+		4500AC67287036CB006F3FCC /* DictManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DictManager.swift; sourceTree = "<group>"; };
 		450B7D9926A2847D00808A4D /* ApplicationPane.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ApplicationPane.swift; sourceTree = "<group>"; };
 		451E6044232E227B007B0463 /* Fire.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Fire.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		451E6047232E227B007B0463 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
@@ -200,6 +204,7 @@
 				45577EAF254575480064325B /* types.swift */,
 				45ACDE1A2841C52500658F46 /* Bridging-Header.h */,
 				453377E42849E76A0064E4F2 /* StatusBar.swift */,
+				4500AC67287036CB006F3FCC /* DictManager.swift */,
 			);
 			path = Fire;
 			sourceTree = "<group>";
@@ -250,6 +255,7 @@
 				45DB6EC827E609CB00A39925 /* ThemePane.swift */,
 				45EBB54F283A311C00A56CBA /* StatisticsPane.swift */,
 				4500AC612869F8CC006F3FCC /* PunctutionPane.swift */,
+				4500AC63286F2B42006F3FCC /* UserDictPane.swift */,
 			);
 			path = Preferences;
 			sourceTree = "<group>";
@@ -466,6 +472,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				673C417225468FFA00F462A3 /* ModifierKeyUpChecker.swift in Sources */,
+				4500AC64286F2B42006F3FCC /* UserDictPane.swift in Sources */,
 				45577EA1254552110064325B /* ThesaurusPane.swift in Sources */,
 				451E6056232E24A5007B0463 /* FireInputController.swift in Sources */,
 				451E605F232E400B007B0463 /* Fire.swift in Sources */,
@@ -483,6 +490,7 @@
 				45577EB0254575480064325B /* types.swift in Sources */,
 				45577EB4254576720064325B /* FirePreferencesController.swift in Sources */,
 				450B7D9A26A2847D00808A4D /* ApplicationPane.swift in Sources */,
+				4500AC68287036CB006F3FCC /* DictManager.swift in Sources */,
 				45DCE62226A31F140009FED1 /* ApplicationSettingCache.swift in Sources */,
 				459DE990232EB26600A3ACD1 /* CandidatesView.swift in Sources */,
 				45DB6EC727E5B8FE00A39925 /* ThemeConfig.swift in Sources */,

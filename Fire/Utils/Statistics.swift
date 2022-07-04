@@ -36,7 +36,7 @@ class Statistics {
         if !Defaults[.enableStatistics] {
             return
         }
-        if candidate.isPlaceholder { return }
+        if candidate.type == CandidateType.placeholder { return }
         let sql = "insert into data(text, type, code, createdAt) values (:text, :type, :code, :createdAt)"
         var insertStatement: OpaquePointer?
         if sqlite3_prepare_v2(database, sql, -1, &insertStatement, nil) == SQLITE_OK {
@@ -47,7 +47,7 @@ class Statistics {
                               candidate.text, -1, SQLITE_TRANSIENT)
             sqlite3_bind_text(insertStatement,
                               sqlite3_bind_parameter_index(insertStatement, ":type"),
-                              candidate.type, -1, SQLITE_TRANSIENT)
+                              candidate.type.rawValue, -1, SQLITE_TRANSIENT)
             sqlite3_bind_text(insertStatement,
                               sqlite3_bind_parameter_index(insertStatement, ":code"),
                               candidate.code, -1, SQLITE_TRANSIENT)
