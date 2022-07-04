@@ -3,27 +3,26 @@
     <channel>
         <title>Fire</title>
         <item>
-            <title>v0.11.0</title>
-            <pubDate>Thu, 30 Jun 2022 09:25:35 +0000</pubDate>
+            <title>v0.12.0</title>
+            <pubDate>Mon, 04 Jul 2022 02:09:30 +0000</pubDate>
             <sparkle:minimumSystemVersion>10.15</sparkle:minimumSystemVersion>
             <description><![CDATA[
                 <h3 id="bugfixes">Bug Fixes</h3>
 <ul>
-<li>修复切换中英文按键只有左侧按钮才可切换的问题; 新增左shift, 右shift和fn键切换中英文 (<a href="https://github.com/qwertyyb/Fire/commit/2668b680863ca57317d23b3be5e4b1e8e5a61813">2668b68</a>)</li>
-<li>修改样式 (<a href="https://github.com/qwertyyb/Fire/commit/ee02a2d2ef24981c46e514367373b58dbb16ce2d">ee02a2d</a>)</li>
-<li>标点符号设置界面 (<a href="https://github.com/qwertyyb/Fire/commit/a2200631bff9cff24e110b5c99e15902b581740e">a220063</a>)</li>
+<li>添加变量说明 (<a href="https://github.com/qwertyyb/Fire/commit/e16df5cd1c3b4f6b0f5c860307165578e9139356">e16df5c</a>)</li>
 </ul>
 <h3 id="features">Features</h3>
 <ul>
-<li>支持修改和自定义标点符号输入方案 (<a href="https://github.com/qwertyyb/Fire/commit/640e669bb73c0044987dfee33b314e26ba7becf0">640e669</a>)</li>
+<li>完善功能 (<a href="https://github.com/qwertyyb/Fire/commit/dbaf06345d094513bd57111823eb16d5e39c0205">dbaf063</a>)</li>
+<li>添加用户词库能力 (<a href="https://github.com/qwertyyb/Fire/commit/9171ebc416af83c0450d68f5c284f187e8bfa697">9171ebc</a>)</li>
 </ul>
             ]]>
             </description>
             <enclosure url="https://github.com/qwertyyb/Fire/releases/latest/download/FireInstaller.zip"
-              sparkle:version="20220630092011"
-              sparkle:shortVersionString="v0.11.0"
-              length="5585643"
-              sparkle:edSignature="itU5hbbw2e3Aa00ZdNyqeJGYOhoZuE0Hb8g5OYGqwvlAvNcDmwMtfLLAw79V0pJFVt8ZQHQF4+93Q5P+npF2Bw=="
+              sparkle:version="20220704020335"
+              sparkle:shortVersionString="v0.12.0"
+              length="5615042"
+              sparkle:edSignature="93G4IEhc126qQxlQV6kEKPwAShz3o0MtyrlK+eL3J2Cw3ChFjbumx4kCiSUlhcnub8qc7DBHcwtgkx78Lnu8Dg=="
               type="application/octet-stream"/>
         </item>
     </channel>
