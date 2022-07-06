@@ -50,7 +50,7 @@ class DictManager {
                 text,
                 type, min(query) as query
             from wb_py_dict
-            where query like :query \(
+            where query >= :queryMin and query <= :queryMax \(
                 codeMode == .wubi ? "and type = 'wb'"
                                 : codeMode == .pinyin ? "and type = 'py'" : "")
             group by text
@@ -118,6 +118,8 @@ class DictManager {
             return ([], false)
         }
         NSLog("get local candidate, origin: \(query), query: ", query)
+        let queryMin = query;
+        let queryMax = query + "zzzz";
         var candidates: [Candidate] = []
         sqlite3_reset(queryStatement)
         sqlite3_clear_bindings(queryStatement)
@@ -127,8 +129,13 @@ class DictManager {
                         SQLITE_TRANSIENT
         )
         sqlite3_bind_text(queryStatement,
-                          sqlite3_bind_parameter_index(queryStatement, ":query"),
-                          "\(query)%", -1,
+                          sqlite3_bind_parameter_index(queryStatement, ":queryMin"),
+                          queryMin, -1,
+                          SQLITE_TRANSIENT
+        )
+        sqlite3_bind_text(queryStatement,
+                          sqlite3_bind_parameter_index(queryStatement, ":queryMax"),
+                          queryMax, -1,
                           SQLITE_TRANSIENT
         )
         sqlite3_bind_int(queryStatement,
