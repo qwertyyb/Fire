@@ -81,7 +81,7 @@
 /* Begin PBXFileReference section */
 		4500AC612869F8CC006F3FCC /* PunctutionPane.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PunctutionPane.swift; sourceTree = "<group>"; };
 		4500AC63286F2B42006F3FCC /* UserDictPane.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserDictPane.swift; sourceTree = "<group>"; };
-		4500AC67287036CB006F3FCC /* DictManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DictManager.swift; sourceTree = "<group>"; };
+		4500AC67287036CB006F3FCC /* DictManager.swift */ = {isa = PBXFileReference; indentWidth = 4; lastKnownFileType = sourcecode.swift; path = DictManager.swift; sourceTree = "<group>"; };
 		450B7D9926A2847D00808A4D /* ApplicationPane.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ApplicationPane.swift; sourceTree = "<group>"; };
 		451E6044232E227B007B0463 /* Fire.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Fire.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		451E6047232E227B007B0463 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
