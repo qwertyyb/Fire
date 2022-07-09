@@ -90,6 +90,8 @@
 	<string>https://qwertyyb.github.io/Fire/appcast.xml</string>
 	<key>SUPublicEDKey</key>
 	<string>tR/BZ1M7WhteABLgJDf3f/bsxUHYMPABoY9PuPvI0TE=</string>
+	<key>TICapsLockLanguageSwitchCapable</key>
+	<true/>
 	<key>tsInputMethodCharacterRepertoireKey</key>
 	<array>
 		<string>zh-Hans</string>
