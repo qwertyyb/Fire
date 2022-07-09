@@ -3,21 +3,21 @@
     <channel>
         <title>Fire</title>
         <item>
-            <title>v0.12.1</title>
-            <pubDate>Wed, 06 Jul 2022 03:38:19 +0000</pubDate>
+            <title>v0.13.0</title>
+            <pubDate>Sat, 09 Jul 2022 04:19:39 +0000</pubDate>
             <sparkle:minimumSystemVersion>10.15</sparkle:minimumSystemVersion>
             <description><![CDATA[
-                <h3 id="bugfixes">Bug Fixes</h3>
+                <h3 id="features">Features</h3>
 <ul>
-<li>优化查询速度 (<a href="https://github.com/qwertyyb/Fire/commit/f5e5c45a0cbb185066a27d5a230b280145fe7d55">f5e5c45</a>)</li>
+<li>支持使用caps lock键在ABC和Fire中切换 (<a href="https://github.com/qwertyyb/Fire/commit/8ae4ff6d72d960e5b0dd6bed7144b680010cac1b">8ae4ff6</a>)</li>
 </ul>
             ]]>
             </description>
             <enclosure url="https://github.com/qwertyyb/Fire/releases/latest/download/FireInstaller.zip"
-              sparkle:version="20220706033137"
-              sparkle:shortVersionString="v0.12.1"
-              length="5614699"
-              sparkle:edSignature="gu1calVYveMxucHGEMAPP9H8Uy5O1V8xQWJFIlSwt4QIjfNPJ/Yrpk1jIlyok8gvaOTC3tblz52yrhF3Sd9DCA=="
+              sparkle:version="20220709041354"
+              sparkle:shortVersionString="v0.13.0"
+              length="5614490"
+              sparkle:edSignature="R1uiNn+WPyJ50vKnsPcyMChLVK4fJFhyJCQ0a/FjGNYBme0TvQ93AnMMOSf4NSm/dbrGj7FoOqYij+Nv60BoBQ=="
               type="application/octet-stream"/>
         </item>
     </channel>
