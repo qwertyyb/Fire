@@ -36,6 +36,7 @@
 		45E85F742573BE1800F71024 /* wb_98_table.txt in Resources */ = {isa = PBXBuildFile; fileRef = 45E85F732573BE1800F71024 /* wb_98_table.txt */; };
 		45EBB54E283A073000A56CBA /* Statistics.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45EBB54D283A073000A56CBA /* Statistics.swift */; };
 		45EBB550283A311C00A56CBA /* StatisticsPane.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45EBB54F283A311C00A56CBA /* StatisticsPane.swift */; };
+		672C1987287EDAF8002B2540 /* FireInputServer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 672C1986287EDAF8002B2540 /* FireInputServer.swift */; };
 		673A400C253D9FE70003901E /* InputSource.swift in Sources */ = {isa = PBXBuildFile; fileRef = 673A400B253D9FE70003901E /* InputSource.swift */; };
 		673C416925468A4800F462A3 /* FireMenu.swift in Sources */ = {isa = PBXBuildFile; fileRef = 673C416825468A4800F462A3 /* FireMenu.swift */; };
 		673C417225468FFA00F462A3 /* ModifierKeyUpChecker.swift in Sources */ = {isa = PBXBuildFile; fileRef = 673C417125468FFA00F462A3 /* ModifierKeyUpChecker.swift */; };
@@ -112,6 +113,7 @@
 		45EBB54D283A073000A56CBA /* Statistics.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Statistics.swift; sourceTree = "<group>"; };
 		45EBB54F283A311C00A56CBA /* StatisticsPane.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StatisticsPane.swift; sourceTree = "<group>"; };
 		63CA87FF28AC32324A6D50A5 /* Pods-TableBuilder.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-TableBuilder.release.xcconfig"; path = "Target Support Files/Pods-TableBuilder/Pods-TableBuilder.release.xcconfig"; sourceTree = "<group>"; };
+		672C1986287EDAF8002B2540 /* FireInputServer.swift */ = {isa = PBXFileReference; indentWidth = 4; lastKnownFileType = sourcecode.swift; path = FireInputServer.swift; sourceTree = "<group>"; };
 		673A400B253D9FE70003901E /* InputSource.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InputSource.swift; sourceTree = "<group>"; };
 		673C416825468A4800F462A3 /* FireMenu.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FireMenu.swift; sourceTree = "<group>"; };
 		673C417125468FFA00F462A3 /* ModifierKeyUpChecker.swift */ = {isa = PBXFileReference; indentWidth = 4; lastKnownFileType = sourcecode.swift; path = ModifierKeyUpChecker.swift; sourceTree = "<group>"; };
@@ -197,6 +199,7 @@
 				451E605C232E3A3C007B0463 /* MainMenu.xib */,
 				451E604F232E227C007B0463 /* Fire.entitlements */,
 				451E6055232E24A5007B0463 /* FireInputController.swift */,
+				672C1986287EDAF8002B2540 /* FireInputServer.swift */,
 				673C416825468A4800F462A3 /* FireMenu.swift */,
 				451E605E232E400B007B0463 /* Fire.swift */,
 				45587F2C24E8FBFB005F291B /* Utils.swift */,
@@ -475,6 +478,7 @@
 				4500AC64286F2B42006F3FCC /* UserDictPane.swift in Sources */,
 				45577EA1254552110064325B /* ThesaurusPane.swift in Sources */,
 				451E6056232E24A5007B0463 /* FireInputController.swift in Sources */,
+				672C1987287EDAF8002B2540 /* FireInputServer.swift in Sources */,
 				451E605F232E400B007B0463 /* Fire.swift in Sources */,
 				4500AC622869F8CC006F3FCC /* PunctutionPane.swift in Sources */,
 				45587F2D24E8FBFB005F291B /* Utils.swift in Sources */,
