@@ -37,8 +37,6 @@ class Fire: NSObject {
     static let candidateInserted = Notification.Name("Fire.candidateInserted")
     static let inputModeChanged = Notification.Name("Fire.inputModeChanged")
 
-    let appSettingCache = ApplicationSettingCache()
-
     var inputMode: InputMode = .zhhans
 
     func transformPunctution(_ origin: String)-> String? {

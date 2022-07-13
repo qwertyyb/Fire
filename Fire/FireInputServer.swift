@@ -9,24 +9,23 @@
 import Foundation
 import Defaults
 
-var previousClientIdentifier: String = ""
+private var previousClientIdentifier: String = ""
+private var inputModeCache: [String: InputMode] = [:]
 
 extension FireInputController {
     /**
     * 根据当前输入的应用改变输入模式
     */
     private func activeCurrentClientInputMode() {
-      guard let identifier = client()?.bundleIdentifier() else { return }
-      if let appSetting = Defaults[.appSettings][identifier],
+        guard let identifier = client()?.bundleIdentifier() else { return }
+        if let appSetting = Defaults[.appSettings][identifier],
          let mode = InputMode(rawValue: appSetting.inputModeSetting.rawValue) {
-          print("[FireInputController] activeClientInputMode from setting : \(identifier), \(mode)")
-          Fire.shared.toggleInputMode(mode)
-          return
-      }
-      if !Defaults[.keepAppInputMode] { return }
-      // 启用APP缓存设置
-      if let appSetting = Fire.shared.appSettingCache.get(bundleIdentifier: identifier),
-         let mode = InputMode(rawValue: appSetting.inputModeSetting.rawValue) {
+            print("[FireInputController] activeClientInputMode from setting : \(identifier), \(mode)")
+            Fire.shared.toggleInputMode(mode)
+            return
+        }
+        // 启用APP缓存设置
+        if Defaults[.keepAppInputMode], let mode = inputModeCache[identifier] {
           print("[FireInputController] activeClientInputMode from cache: \(identifier), \(mode)")
           Fire.shared.toggleInputMode(mode)
       }
@@ -34,14 +33,8 @@ extension FireInputController {
 
     private func savePreviousClientInputMode() {
         if previousClientIdentifier.count > 0 {
-        // 缓存当前输入模式
-          Fire.shared.appSettingCache.add(
-              bundleIdentifier: previousClientIdentifier,
-              setting: ApplicationSettingItem(
-                  bundleId: previousClientIdentifier,
-                  inputMs: InputModeSetting(rawValue: inputMode.rawValue)!
-              )
-          )
+            // 缓存当前输入模式
+            inputModeCache.updateValue(inputMode, forKey: previousClientIdentifier)
         }
     }
 
@@ -64,14 +57,15 @@ extension FireInputController {
     }
 
     /**
-    * 由于使用recognizedEvents在一些场景下不能监听到flagChanged事件，比如保存文件场景
-    * 所以这里需要使用NSEvent.addGlobalMonitorForEvents监听shift键被按下
+    * 1.  由于使用recognizedEvents在一些场景下不能监听到flagChanged事件，比如保存文件场景
+    *      所以这里需要使用NSEvent.addGlobalMonitorForEvents监听shift键被按下
+    *  2. 当client变化时，deactiveServer 和 activeServer 的执行是不固定的，有可能 activeServer 先执行，所以需要在activeServer中执行清理逻辑
     */
     override func activateServer(_ sender: Any!) {
         NSLog("[FireInputController] activate server: \(client()?.bundleIdentifier() ?? sender.debugDescription)")
 
         previousClientHandler()
-        
+
         if let identifier = client()?.bundleIdentifier() {
             previousClientIdentifier = identifier
         }
