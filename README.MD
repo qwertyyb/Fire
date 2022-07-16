@@ -4,6 +4,7 @@
 ![](https://github.com/qwertyyb/FireWubi/workflows/CI/badge.svg)
 ![swift](https://img.shields.io/badge/swift-green.svg)
 [![codebeat badge](https://codebeat.co/badges/f15efd85-e85d-4f72-87ab-f204abd17412)](https://codebeat.co/projects/github-com-qwertyyb-fire-master)
+![GitHub release (latest by date including pre-releases)](https://img.shields.io/github/v/release/qwertyyb/Fire?include_prereleases)
 
 ## 介绍
 
@@ -32,6 +33,10 @@
 7. 候选窗口显示输入编码
 8. 应用输入模式切换
 9. 支持手动调整候选词顺序(`control` + `数字`)
+10. 支持用户词库
+11. 支持自定义符号
+12. 支持自定义主题
+13. 支持数据统计
 
 
 ## 安装
