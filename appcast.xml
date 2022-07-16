@@ -3,21 +3,22 @@
     <channel>
         <title>Fire</title>
         <item>
-            <title>v0.13.0</title>
-            <pubDate>Sat, 09 Jul 2022 04:19:39 +0000</pubDate>
+            <title>v0.13.1</title>
+            <pubDate>Sat, 16 Jul 2022 09:16:42 +0000</pubDate>
             <sparkle:minimumSystemVersion>10.15</sparkle:minimumSystemVersion>
             <description><![CDATA[
-                <h3 id="features">Features</h3>
+                <h3 id="bugfixes">Bug Fixes</h3>
 <ul>
-<li>支持使用caps lock键在ABC和Fire中切换 (<a href="https://github.com/qwertyyb/Fire/commit/8ae4ff6d72d960e5b0dd6bed7144b680010cac1b">8ae4ff6</a>)</li>
+<li>优化实现 (<a href="https://github.com/qwertyyb/Fire/commit/632c86382b5a34e0518d6f7331cf650a467ac6ea">632c863</a>)</li>
+<li>修复保持最后输入模式未按预期切换的问题 (<a href="https://github.com/qwertyyb/Fire/commit/9a27e0e06614c5d122eb751de312ede51d5e9af4">9a27e0e</a>)</li>
 </ul>
             ]]>
             </description>
             <enclosure url="https://github.com/qwertyyb/Fire/releases/latest/download/FireInstaller.zip"
-              sparkle:version="20220709041354"
-              sparkle:shortVersionString="v0.13.0"
-              length="5614490"
-              sparkle:edSignature="R1uiNn+WPyJ50vKnsPcyMChLVK4fJFhyJCQ0a/FjGNYBme0TvQ93AnMMOSf4NSm/dbrGj7FoOqYij+Nv60BoBQ=="
+              sparkle:version="20220716091118"
+              sparkle:shortVersionString="v0.13.1"
+              length="5606081"
+              sparkle:edSignature="cZfHEk3QpEmBk9pkRMCQJDEUrAv24FGmHeemB48BHvKRlZdfhvGbyilWMZKGly7DxVi1BoJ8gjlxmAD3YLHSAA=="
               type="application/octet-stream"/>
         </item>
     </channel>
