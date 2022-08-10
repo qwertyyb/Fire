@@ -11,15 +11,21 @@
 轻量干净，但功能强大的五笔输入法
 
 ## 截图
-<img width="504" alt="image" src="https://user-images.githubusercontent.com/16240729/169542300-270fe10c-b418-44a5-ab0f-3bebe8fceeb6.png">
 
-<img width="553" alt="image" src="https://user-images.githubusercontent.com/16240729/169542920-013ea4e7-b7e2-420d-bcfb-398e1a65a507.png">
+<img width="529" alt="image" src="https://user-images.githubusercontent.com/9018466/181672239-826e2f48-ce58-434a-9e05-6c58fcb8a5c8.png">
 
-<img width="536" alt="image" src="https://user-images.githubusercontent.com/16240729/169543029-179fd02b-dbfd-407a-9a30-ae176f0eb7ad.png">
+<img width="549" alt="image" src="https://user-images.githubusercontent.com/9018466/181672303-345e30f9-dfa6-4562-828f-6e5e8d87166a.png">
 
-<img width="538" alt="image" src="https://user-images.githubusercontent.com/16240729/169543126-396c75c4-1090-4aec-b861-a4d555b97600.png">
+<img width="545" alt="image" src="https://user-images.githubusercontent.com/9018466/181672403-f5372465-ccc5-4b7b-befb-47c913278d8b.png">
 
-<img width="541" alt="image" src="https://user-images.githubusercontent.com/16240729/169543209-d03c40c1-afde-4b4e-bd5b-e34f65d63004.png">
+<img width="557" alt="image" src="https://user-images.githubusercontent.com/9018466/181672445-0b8c2e1f-2105-4629-8b62-fe46001ebcec.png">
+
+<img width="556" alt="image" src="https://user-images.githubusercontent.com/9018466/181672510-8827fead-7a39-450a-bf62-4a129c9dc82d.png">
+
+<img width="540" alt="image" src="https://user-images.githubusercontent.com/9018466/181672573-9645e5fc-0092-4ff6-8b88-cd8e77d78453.png">
+
+<img width="540" alt="image" src="https://user-images.githubusercontent.com/9018466/181672627-4ab5b3c4-6d22-4bdc-93e5-a80570c24ef1.png">
+
 
 
 ## 功能
