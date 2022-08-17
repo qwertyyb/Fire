@@ -80,11 +80,11 @@ class Statistics {
         let sql = """
             select date, count from
                 (select
-                    date(createdAt, 'localtime') as date,
+                    date(createdAt) as date,
                     sum(length(text)) as count
                 from data
-                where date(createdAt, 'localtime') >= "\(start)" and date(createdAt, 'localtime') <= "\(end)"
-                group by date(createdAt, 'localtime'))
+                where date(createdAt) >= "\(start)" and date(createdAt) <= "\(end)"
+                group by date(createdAt))
             order by date desc;
             PRAGMA key = 'testkey'
         """
