@@ -1,4 +1,4 @@
-![业火五笔输入法](https://ftp.bmp.ovh/imgs/2020/10/f6411ae11c113c3f.png)
+![业火五笔输入法](https://github.com/qwertyyb/Fire/blob/ee8546aad395e4e6b3b1b756cfbd4f908c5dfe89/Fire/Assets.xcassets/AppIcon.appiconset/icon-256.png)
 
 # 业火五笔输入法
 ![](https://github.com/qwertyyb/FireWubi/workflows/CI/badge.svg)
