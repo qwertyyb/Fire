@@ -3,22 +3,21 @@
     <channel>
         <title>Fire</title>
         <item>
-            <title>v0.13.1</title>
-            <pubDate>Sat, 16 Jul 2022 09:16:42 +0000</pubDate>
+            <title>v0.13.2</title>
+            <pubDate>Wed, 17 Aug 2022 09:42:47 +0000</pubDate>
             <sparkle:minimumSystemVersion>10.15</sparkle:minimumSystemVersion>
             <description><![CDATA[
                 <h3 id="bugfixes">Bug Fixes</h3>
 <ul>
-<li>优化实现 (<a href="https://github.com/qwertyyb/Fire/commit/632c86382b5a34e0518d6f7331cf650a467ac6ea">632c863</a>)</li>
-<li>修复保持最后输入模式未按预期切换的问题 (<a href="https://github.com/qwertyyb/Fire/commit/9a27e0e06614c5d122eb751de312ede51d5e9af4">9a27e0e</a>)</li>
+<li>修复数据统计按天统计数据不正确的问题 (<a href="https://github.com/qwertyyb/Fire/commit/0bc18234be9c9b32b1914c28a22f839e2f458678">0bc1823</a>)</li>
 </ul>
             ]]>
             </description>
             <enclosure url="https://github.com/qwertyyb/Fire/releases/latest/download/FireInstaller.zip"
-              sparkle:version="20220716091118"
-              sparkle:shortVersionString="v0.13.1"
-              length="5606081"
-              sparkle:edSignature="cZfHEk3QpEmBk9pkRMCQJDEUrAv24FGmHeemB48BHvKRlZdfhvGbyilWMZKGly7DxVi1BoJ8gjlxmAD3YLHSAA=="
+              sparkle:version="20220817093716"
+              sparkle:shortVersionString="v0.13.2"
+              length="5605905"
+              sparkle:edSignature="5H1QRZKPGRerWyQAkmrCgc1IbOmBpRT4FzUeHsLlh2PVeqRHiFje2oi6JOYZRSbt9K/solahRRIBlICONiC9Cw=="
               type="application/octet-stream"/>
         </item>
     </channel>
