@@ -151,6 +151,10 @@ int main(int argc, const char * argv[]) {
     std::cout << "Hello, World!\n";
     
     cout << "argc: " << argc << endl;
+  
+  if (argc <= 1) {
+    return 0;
+  }
     
     for (int i = 0; i < argc; i++) {
         cout << "argv(" << i << "): " << argv[i] << endl;

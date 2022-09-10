@@ -50,7 +50,7 @@ class DictManager {
                 text,
                 type, min(query) as query
             from wb_py_dict
-            where query >= :queryMin and query <= :queryMax \(
+            where query like :queryLike \(
                 codeMode == .wubi ? "and type = 'wb'"
                                 : codeMode == .pinyin ? "and type = 'py'" : "")
             group by text
@@ -63,6 +63,7 @@ class DictManager {
     private func prepareStatement() {
         if database == nil {
             sqlite3_open_v2(getDatabaseURL().path, &database, SQLITE_OPEN_READWRITE, nil)
+            sqlite3_exec(database, "PRAGMA case_sensitive_like=ON;", nil, nil, nil)
         }
         if queryStatement != nil {
             sqlite3_finalize(queryStatement)
@@ -112,14 +113,28 @@ class DictManager {
         print("[replaceTextWithVars] \(text), \(newText)")
         return newText
     }
-    
+
+    private func getQueryLike(_ origin: String) -> String {
+        if origin.isEmpty {
+            return origin
+        }
+
+        if !Defaults[.zKeyQuery] {
+            return origin + "%"
+        }
+
+        // z键查询，z不能放在首位
+        let first = origin.first!
+        return String(first) + (String(origin.suffix(origin.count - 1))
+            .replacingOccurrences(of: "z", with: "_")) + "%"
+    }
+
     func getCandidates(query: String = String(), page: Int = 1) -> (candidates: [Candidate], hasNext: Bool) {
         if query.count <= 0 {
             return ([], false)
         }
         NSLog("get local candidate, origin: \(query), query: ", query)
-        let queryMin = query;
-        let queryMax = query + "zzzz";
+        let queryLike = getQueryLike(query)
         var candidates: [Candidate] = []
         sqlite3_reset(queryStatement)
         sqlite3_clear_bindings(queryStatement)
@@ -129,13 +144,8 @@ class DictManager {
                         SQLITE_TRANSIENT
         )
         sqlite3_bind_text(queryStatement,
-                          sqlite3_bind_parameter_index(queryStatement, ":queryMin"),
-                          queryMin, -1,
-                          SQLITE_TRANSIENT
-        )
-        sqlite3_bind_text(queryStatement,
-                          sqlite3_bind_parameter_index(queryStatement, ":queryMax"),
-                          queryMax, -1,
+                          sqlite3_bind_parameter_index(queryStatement, ":queryLike"),
+                          queryLike, -1,
                           SQLITE_TRANSIENT
         )
         sqlite3_bind_int(queryStatement,
