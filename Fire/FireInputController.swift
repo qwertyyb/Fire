@@ -35,6 +35,7 @@ class FireInputController: IMKInputController {
             if self.curPage != 1 {
                 // code被重新设置时，还原页码为1
                 self.curPage = 1
+                self.markText()
                 return
             }
             NSLog("[FireInputController] original changed: \(self._originalString), refresh window")
@@ -213,7 +214,7 @@ class FireInputController: IMKInputController {
         }
         return nil
     }
-    
+
     private func escKeyHandler(event: NSEvent) -> Bool? {
         // ESC键取消所有输入
         if event.keyCode == kVK_Escape, _originalString.count > 0 {

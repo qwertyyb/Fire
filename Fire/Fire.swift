@@ -74,28 +74,12 @@ class Fire: NSObject {
         ])
     }
 
-    private func getQueryFromOrigin(_ origin: String) -> String {
-        if origin.isEmpty {
-            return origin
-        }
-
-        if !Defaults[.zKeyQuery] {
-            return origin
-        }
-
-        // z键查询，z不能放在首位
-        let first = origin.first!
-        return String(first) + (String(origin.suffix(origin.count - 1))
-            .replacingOccurrences(of: "z", with: "_"))
-    }
-
     var server: IMKServer = IMKServer.init(name: kConnectionName, bundleIdentifier: Bundle.main.bundleIdentifier)
     func getCandidates(origin: String = String(), page: Int = 1) -> (candidates: [Candidate], hasNext: Bool) {
         if origin.count <= 0 {
             return ([], false)
         }
-        let query = getQueryFromOrigin(origin)
-        let (candidates, hasNext) = DictManager.shared.getCandidates(query: query, page: page)
+        let (candidates, hasNext) = DictManager.shared.getCandidates(query: origin, page: page)
         let transformed = candidates.map { (candidate) -> Candidate in
             if candidate.type == .user {
                 return Candidate(code: candidate.code, text: candidate.text, type: .user)
