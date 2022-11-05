@@ -3,22 +3,21 @@
     <channel>
         <title>Fire</title>
         <item>
-            <title>v0.13.3</title>
-            <pubDate>Sun, 11 Sep 2022 06:06:09 +0000</pubDate>
+            <title>v0.13.4</title>
+            <pubDate>Sat, 05 Nov 2022 09:35:22 +0000</pubDate>
             <sparkle:minimumSystemVersion>10.15</sparkle:minimumSystemVersion>
             <description><![CDATA[
                 <h3 id="bugfixes">Bug Fixes</h3>
 <ul>
-<li>修复z键查询的问题 (<a href="https://github.com/qwertyyb/Fire/commit/6bd735182941f396793af3d4398519162979025c">6bd7351</a>)</li>
-<li>修复翻页后，再输入原码或删除原码，输入框中原码未同步显示的问题 (<a href="https://github.com/qwertyyb/Fire/commit/a2720e5513a4dfb3f2912cf2427b8d8d489cc012">a2720e5</a>)</li>
+<li>修复竖向模式下，翻页指示器颜色的问题　<a href="https://github.com/qwertyyb/Fire/issues/89">#89</a> (<a href="https://github.com/qwertyyb/Fire/commit/5e8f0a9ed8c7fafee9390fa0a90ee37d86e17fb0">5e8f0a9</a>)</li>
 </ul>
             ]]>
             </description>
             <enclosure url="https://github.com/qwertyyb/Fire/releases/latest/download/FireInstaller.zip"
-              sparkle:version="20220911060022"
-              sparkle:shortVersionString="v0.13.3"
-              length="5607393"
-              sparkle:edSignature="rCWDcV/m061EFIAuWon+b9/u0+sb2SSNkp6K6vVnUQbUMem53TclmdO3QY1DO8ZWzn/zKeSYiU/ykJlzuVmwCg=="
+              sparkle:version="20221105093003"
+              sparkle:shortVersionString="v0.13.4"
+              length="5603846"
+              sparkle:edSignature="dJFr+UCgLMnBXBy/ZjWJlWM2LZ9VohUd4DysLj2XqxEB8qNIusKZVvQRdYi9vEF2JFqjyrWaB2VD2OplXEKCDw=="
               type="application/octet-stream"/>
         </item>
     </channel>
