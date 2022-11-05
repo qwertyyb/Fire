@@ -39,20 +39,20 @@ class Fire: NSObject {
 
     var inputMode: InputMode = .zhhans
 
-    func transformPunctution(_ origin: String)-> String? {
-        let isPunctution = punctution.keys.contains(origin)
-        if !isPunctution {
+    func transformPunctuation(_ origin: String)-> String? {
+        let isPunctuation = punctuation.keys.contains(origin)
+        if !isPunctuation {
             return nil
         }
-        let mode = Defaults[.punctutionMode]
+        let mode = Defaults[.punctuationMode]
         if mode == .enUs {
             return origin
         }
         if mode == .zhhans {
-            return punctution[origin]
+            return punctuation[origin]
         }
         if mode == .custom {
-            return Defaults[.customPunctutionSettings][origin]
+            return Defaults[.customPunctuationSettings][origin]
         }
         return nil
     }

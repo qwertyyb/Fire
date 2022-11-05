@@ -36,7 +36,7 @@ class FirePreferencesController: NSObject, NSWindowDelegate {
                      title: "标点符号",
                     toolbarIcon: NSImage(named: NSImage.fontPanelName) ?? NSImage(named: "general")!
                 ) {
-                    PunctutionPane()
+                    PunctuationPane()
                 },
                 Preferences.Pane(
                     identifier: Preferences.PaneIdentifier(rawValue: "用户词库"),

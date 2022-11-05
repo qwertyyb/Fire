@@ -1,5 +1,5 @@
 //
-//  PunctutionPane.swift
+//  PunctuationPane.swift
 //  Fire
 //
 //  Created by 虚幻 on 2022/6/27.
@@ -10,17 +10,17 @@ import SwiftUI
 import Preferences
 import Defaults
 
-struct PunctutionPane: View {
-    @Default(.punctutionMode) private var punctutionMode
-    @Default(.customPunctutionSettings) private var customPunctutionSettings
+struct PunctuationPane: View {
+    @Default(.punctuationMode) private var punctuationMode
+    @Default(.customPunctuationSettings) private var customPunctuationSettings
     var body: some View {
         Preferences.Container(contentWidth: 450) {
             Preferences.Section(title: "") {
                 HStack {
-                    Picker("标点符号方案", selection: $punctutionMode) {
-                        Text("半角").tag(PunctutionMode.enUs)
-                        Text("全角").tag(PunctutionMode.zhhans)
-                        Text("自定义").tag(PunctutionMode.custom)
+                    Picker("标点符号方案", selection: $punctuationMode) {
+                        Text("半角").tag(PunctuationMode.enUs)
+                        Text("全角").tag(PunctuationMode.zhhans)
+                        Text("自定义").tag(PunctuationMode.custom)
                     }
                     Spacer(minLength: 150)
                 }
@@ -36,7 +36,7 @@ struct PunctutionPane: View {
                         }
                         ScrollView {
                             ForEach(
-                                customPunctutionSettings.sorted(by: <),
+                                customPunctuationSettings.sorted(by: <),
                                 id: \.key) { (key, value) -> AnyView in
                                 AnyView(HStack(spacing: 0) {
                                     Text(key)
@@ -44,13 +44,13 @@ struct PunctutionPane: View {
                                     Picker("", selection: Binding<String>(
                                         get: { value },
                                         set: {
-                                            customPunctutionSettings[key] = $0
+                                            customPunctuationSettings[key] = $0
                                         }
                                     )) {
                                         Text(key)
                                             .tag(key)
-                                        Text(punctution[key]!)
-                                            .tag(punctution[key]!)
+                                        Text(punctuation[key]!)
+                                            .tag(punctuation[key]!)
                                     }
                                     .frame(width: 200, alignment: .center)
                                 })
@@ -62,14 +62,14 @@ struct PunctutionPane: View {
                     .padding(.top, 4)
                     .background(Color(.sRGB, red: 0.4, green: 0.4, blue: 0.4, opacity: 0.2))
                 }
-                .disabled(punctutionMode != .custom)
+                .disabled(punctuationMode != .custom)
             }
         }
     }
 }
 
-struct PunctutionPane_Previews: PreviewProvider {
+struct PunctuationPane_Previews: PreviewProvider {
     static var previews: some View {
-        PunctutionPane()
+        PunctuationPane()
     }
 }

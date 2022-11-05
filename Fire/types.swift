@@ -72,7 +72,7 @@ class ApplicationSettingItem: ObservableObject, Codable, Identifiable {
     }
 }
 
-enum PunctutionMode: Codable {
+enum PunctuationMode: Codable {
     case enUs // 半角
     case zhhans // 全角
     case custom // 自定义
@@ -113,8 +113,8 @@ extension Defaults.Keys {
         default: [:]
     )
     // 标点符号配置
-    static let punctutionMode = Key<PunctutionMode>("punctutionMode", default: PunctutionMode.zhhans)
-    static let customPunctutionSettings = Key<[String: String]>("customPunctutionSettings", default: punctution)
+    static let punctuationMode = Key<PunctuationMode>("punctuationMode", default: PunctuationMode.zhhans)
+    static let customPunctuationSettings = Key<[String: String]>("customPunctuationSettings", default: punctuation)
 
     static let wbTablePath = Key<String>(
         "wbTableURL",
@@ -161,7 +161,7 @@ enum CodeMode: Int, CaseIterable, Decodable, Encodable {
     case wubiPinyin
 }
 
-let punctution: [String: String] = [
+let punctuation: [String: String] = [
     ",": "，",
     ".": "。",
     "/": "、",
