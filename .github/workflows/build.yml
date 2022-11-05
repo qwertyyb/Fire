@@ -113,6 +113,7 @@ jobs:
       env:
         apple_id: ${{ secrets.APPLE_ID }}
         apple_id_password: ${{ secrets.APPLE_ID_PASSWORD }}
+        team_id: ${{ secrets.TEAM_ID }}
       run: ./scripts/c_notarize_installer.sh
     
     - uses: actions/download-artifact@v2
