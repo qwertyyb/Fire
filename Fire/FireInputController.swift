@@ -160,12 +160,12 @@ class FireInputController: IMKInputController {
         return nil
     }
 
-    private func punctutionKeyHandler(event: NSEvent) -> Bool? {
+    private func punctuationKeyHandler(event: NSEvent) -> Bool? {
         // 获取输入的字符
         let string = event.characters!
 
         // 如果输入的字符是标点符号，转换标点符号为中文符号
-        if inputMode == .zhhans, let result = Fire.shared.transformPunctution(string) {
+        if inputMode == .zhhans, let result = Fire.shared.transformPunctuation(string) {
             insertText(result)
             return true
         }
@@ -268,7 +268,7 @@ class FireInputController: IMKInputController {
             deleteKeyHandler,
             charKeyHandler,
             numberKeyHandlder,
-            punctutionKeyHandler,
+            punctuationKeyHandler,
             escKeyHandler,
             enterKeyHandler,
             spaceKeyHandler
