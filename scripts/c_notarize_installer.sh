@@ -2,7 +2,7 @@
 
 AC_USERNAME="$apple_id"
 AC_PASSWORD="$apple_id_password"
-TEAM_ID=$team_id"
+TEAM_ID="$team_id"
 
 if [[ $AC_USERNAME == "" ]]; then
   echo "error: no username"
