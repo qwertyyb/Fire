@@ -128,7 +128,7 @@ jobs:
         changelog="${changelog//'%'/%25}"
         changelog="${changelog//$'\n'/%0A}"
         changelog="${changelog//$'\r'/%0D}"
-        echo "::set-output name=changelog_html::${changelog}"
+        echo "changelog_html=${changelog}" >> $GITHUB_OUTPUT
 
     - name: generate appcast.xml
       env:
@@ -165,7 +165,7 @@ jobs:
       id: get_upload_url
       run: |
         value=`cat tmp/upload_url`
-        echo "::set-output name=upload_url::${value}"
+        echo "upload_url=${value}" >> $GITHUB_OUTPUT
 
     - name: Upload Release Asset(installer.pkg)
       uses: actions/upload-release-asset@v1
