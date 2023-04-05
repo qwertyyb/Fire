@@ -30,6 +30,21 @@ class FireInputController: IMKInputController {
         monitorList: []
     )
 
+    override init() {
+        super.init()
+        NSLog("[FireInputController] init without params")
+    }
+
+    override init!(server: IMKServer!, delegate: Any!, client inputClient: Any!) {
+        super.init(server: server, delegate: delegate, client: inputClient)
+        NSLog("[FireInputController] init with params")
+    }
+
+    deinit {
+        NSLog("[FireInputController] deinit")
+        clean()
+    }
+
     private var _originalString = "" {
         didSet {
             if self.curPage != 1 {
@@ -54,6 +69,12 @@ class FireInputController: IMKInputController {
                 return
             }
         }
+    }
+    func prevPage() {
+        self.curPage = self.curPage > 1 ? self.curPage - 1 : 1
+    }
+    func nextPage() {
+        self.curPage = self._hasNext ? self.curPage + 1 : self.curPage
     }
 
     private func markText() {
@@ -91,7 +112,7 @@ class FireInputController: IMKInputController {
         return nil
     }
 
-    private func flagChangedHandler(event: NSEvent) -> Bool? {
+     func flagChangedHandler(event: NSEvent) -> Bool? {
         if Defaults[.disableEnMode] {
             return nil
         }
@@ -330,6 +351,13 @@ class FireInputController: IMKInputController {
         try client()?.insertText(value, replacementRange: replacementRange())
         clean()
     }
+    
+    // 往输入框中插入原始字符
+    func insertOriginText() {
+        if self._originalString.count > 0 {
+            self.insertText(self._originalString)
+        }
+    }
 
     // 获取当前输入的光标位置
     private func getOriginPoint() -> NSPoint {
@@ -345,22 +373,5 @@ class FireInputController: IMKInputController {
         _originalString = ""
         curPage = 1
         CandidatesWindow.shared.close()
-    }
-
-    func notificationList() -> [NotificationObserver] {
-        return [
-            (Fire.candidateSelected, { notification in
-                if let candidate = notification.userInfo?["candidate"] as? Candidate {
-                    self.insertCandidate(candidate)
-                }
-            }),
-            (Fire.prevPageBtnTapped, { _ in self.curPage = self.curPage > 1 ? self.curPage - 1 : 1 }),
-            (Fire.nextPageBtnTapped, { _ in self.curPage = self._hasNext ? self.curPage + 1 : self.curPage }),
-            (Fire.inputModeChanged, { notification in
-                if self._originalString.count > 0, notification.userInfo?["val"] as? InputMode == InputMode.enUS {
-                    self.insertText(self._originalString)
-                }
-            })
-        ]
     }
 }

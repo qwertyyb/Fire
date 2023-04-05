@@ -13,6 +13,7 @@ typealias CandidatesData = (list: [Candidate], hasPrev: Bool, hasNext: Bool)
 
 class CandidatesWindow: NSWindow, NSWindowDelegate {
     let hostingView = NSHostingView(rootView: CandidatesView(candidates: [], origin: ""))
+    var inputController: FireInputController?
 
     func windowDidMove(_ notification: Notification) {
         /* windowDidMove会先于windowDidResize调用，所以需要
@@ -39,11 +40,42 @@ class CandidatesWindow: NSWindow, NSWindowDelegate {
         hostingView.rootView.origin = originalString
         hostingView.rootView.hasNext = candidatesData.hasNext
         hostingView.rootView.hasPrev = candidatesData.hasPrev
-        print("origin top left: \(topLeft)")
-        print("candidates: \(candidatesData)")
+        NSLog("origin top left: \(topLeft)")
+        NSLog("candidates: \(candidatesData)")
         self.setFrameTopLeftPoint(topLeft)
         self.orderFront(nil)
 //        NSApp.setActivationPolicy(.prohibited)
+    }
+    
+    func bindEvents() {
+        let events: [NotificationObserver] = [
+            (CandidatesView.candidateSelected, { notification in
+                if let candidate = notification.userInfo?["candidate"] as? Candidate {
+                    self.inputController?.insertCandidate(candidate)
+                }
+            }),
+            (CandidatesView.prevPageBtnTapped, { _ in self.inputController?.prevPage() }),
+            (CandidatesView.nextPageBtnTapped, { _ in self.inputController?.nextPage() }),
+            (Fire.inputModeChanged, { notification in
+                if notification.userInfo?["val"] as? InputMode == InputMode.enUS {
+                    self.inputController?.insertOriginText()
+                }
+            })
+        ]
+        events.forEach { (observer) in NotificationCenter.default.addObserver(
+          forName: observer.name, object: nil, queue: nil, using: observer.callback
+        )}
+        /**
+        * 1.  由于使用recognizedEvents在一些场景下不能监听到flagChanged事件，比如保存文件场景
+        *      所以这里需要使用NSEvent.addGlobalMonitorForEvents监听shift键被按下
+        */
+        NSEvent.addGlobalMonitorForEvents(matching: .flagsChanged) { (event) in
+            NSLog("[CandidatesWindow] globalMonitorForEvents flagsChanged: \(event)")
+            if !InputSource.shared.isSelected() {
+                return
+            }
+            _ = self.inputController?.flagChangedHandler(event: event)
+        }
     }
 
     override init(
@@ -60,6 +92,7 @@ class CandidatesWindow: NSWindow, NSWindowDelegate {
         backgroundColor = NSColor.clear
         delegate = self
         setSizePolicy()
+        bindEvents()
     }
 
     private func limitFrameInScreen() {
