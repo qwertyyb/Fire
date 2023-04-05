@@ -3,21 +3,18 @@
     <channel>
         <title>Fire</title>
         <item>
-            <title>v0.13.4</title>
-            <pubDate>Sat, 05 Nov 2022 09:35:22 +0000</pubDate>
+            <title>v0.13.6</title>
+            <pubDate>Wed, 05 Apr 2023 09:51:56 +0000</pubDate>
             <sparkle:minimumSystemVersion>10.15</sparkle:minimumSystemVersion>
             <description><![CDATA[
-                <h3 id="bugfixes">Bug Fixes</h3>
-<ul>
-<li>修复竖向模式下，翻页指示器颜色的问题　<a href="https://github.com/qwertyyb/Fire/issues/89">#89</a> (<a href="https://github.com/qwertyyb/Fire/commit/5e8f0a9ed8c7fafee9390fa0a90ee37d86e17fb0">5e8f0a9</a>)</li>
-</ul>
+                <h3 id="bugfixes">Bug Fixes</h3>%0A<ul>%0A<li>优化性能，修复越用越卡的问题 (<a href="https://github.com/qwertyyb/Fire/commit/6b5a1fa95fcc5f69d6a72947d63d414368bb35ee">6b5a1fa</a>)</li>%0A<li>使用glob替换like优化查询性能: glob能利用索引但是like不行 (<a href="https://github.com/qwertyyb/Fire/commit/cbefa870439b7ebbb5ea9fa77ebafd38136eb06b">cbefa87</a>)</li>%0A<li>修复某些情况下，按键被误判为Shift的问题，感谢 ShikiSuen 的反馈。 <a href="https://github.com/qwertyyb/Fire/issues/96">#96</a> (<a href="https://github.com/qwertyyb/Fire/commit/67156284bf2d7fdfc9cb639c930d59b08527c407">6715628</a>)</li>%0A<li>修复竖向模式下，无法使用左右箭头控制翻页的问题 <a href="https://github.com/qwertyyb/Fire/issues/88">#88</a> (<a href="https://github.com/qwertyyb/Fire/commit/136d09c0f1d01a4b7b2b301573efcf7942b73219">136d09c</a>)</li>%0A</ul>
             ]]>
             </description>
             <enclosure url="https://github.com/qwertyyb/Fire/releases/latest/download/FireInstaller.zip"
-              sparkle:version="20221105093003"
-              sparkle:shortVersionString="v0.13.4"
-              length="5603846"
-              sparkle:edSignature="dJFr+UCgLMnBXBy/ZjWJlWM2LZ9VohUd4DysLj2XqxEB8qNIusKZVvQRdYi9vEF2JFqjyrWaB2VD2OplXEKCDw=="
+              sparkle:version="20230405094833"
+              sparkle:shortVersionString="v0.13.6"
+              length="5605649"
+              sparkle:edSignature="rG1QCYPQK97ZMmI5PnpBjhPCpmDhWXDdISRUqW8mxiPgGLSluJOX6G4z0orbncZgIO0tRtvPv7yl0Ej94W3IAA=="
               type="application/octet-stream"/>
         </item>
     </channel>
