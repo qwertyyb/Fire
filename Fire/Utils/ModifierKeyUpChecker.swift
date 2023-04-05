@@ -64,6 +64,7 @@ class ModifierKeyUpChecker {
     private var lastTime: Date = Date()
 
     private func checkModifierKeyUp (event: NSEvent) -> Bool {
+        guard checkKeyCode.contains(Int(event.keyCode)) else { return false }
         if event.type == .flagsChanged
             && event.modifierFlags.intersection(.deviceIndependentFlagsMask) == .init(rawValue: 0)
             && Date() - lastTime <= delayInterval {
@@ -75,9 +76,6 @@ class ModifierKeyUpChecker {
     }
 
     private func checkModifierKeyDown(event: NSEvent) -> Bool {
-        let isLeftShift = event.modifierFlags.rawValue & UInt(NX_DEVICELSHIFTKEYMASK) != 0
-        let isRightShift = event.modifierFlags.rawValue & UInt(NX_DEVICERSHIFTKEYMASK) != 0
-        print("isLeftShift: \(isLeftShift), isRightShift: \(isRightShift)")
         let isKeyDown = event.type == .flagsChanged
             && event.modifierFlags.intersection(.deviceIndependentFlagsMask) == checkModifier
             && checkKeyCode.contains(Int(event.keyCode))

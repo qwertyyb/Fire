@@ -54,7 +54,7 @@ struct CandidateView: View {
         }
         .onTapGesture {
             NotificationCenter.default.post(
-                name: Fire.candidateSelected,
+                name: CandidatesView.candidateSelected,
                 object: nil,
                 userInfo: [
                     "candidate": candidate,
@@ -66,6 +66,10 @@ struct CandidateView: View {
 }
 
 struct CandidatesView: View {
+    static let candidateSelected = Notification.Name("CandidatesView.candidateSelected")
+    static let nextPageBtnTapped = Notification.Name("CandidatesView.nextPageBtnTapped")
+    static let prevPageBtnTapped = Notification.Name("CandidatesView.prevPageBtnTapped")
+    
     var candidates: [Candidate]
     var origin: String
     var hasPrev: Bool = false
@@ -77,7 +81,7 @@ struct CandidatesView: View {
     @Environment(\.colorScheme) var colorScheme
 
     var _candidatesView: some View {
-        ForEach(Array(candidates.enumerated()), id: \.element) { (index, candidate) -> CandidateView in
+        ForEach(Array(candidates.enumerated()), id: \.offset) { (index, candidate) -> CandidateView in
             CandidateView(
                 candidate: candidate,
                 index: index,
@@ -111,13 +115,13 @@ struct CandidatesView: View {
             imageName: "arrowUp",
             direction: direction,
             disabled: !hasPrev,
-            eventName: Fire.prevPageBtnTapped
+            eventName: CandidatesView.prevPageBtnTapped
         )
         let arrowDown = getIndicatorIcon(
             imageName: "arrowDown",
             direction: direction,
             disabled: !hasNext,
-            eventName: Fire.nextPageBtnTapped
+            eventName: CandidatesView.nextPageBtnTapped
         )
         if direction == CandidatesDirection.horizontal {
             return AnyView(VStack(spacing: 0) { arrowUp; arrowDown })
