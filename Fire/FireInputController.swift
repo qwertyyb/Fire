@@ -156,11 +156,18 @@ class FireInputController: IMKInputController {
         // +/-/arrowdown/arrowup翻页
         let keyCode = event.keyCode
         if inputMode == .zhhans && _originalString.count > 0 {
-            if keyCode == kVK_ANSI_Equal || keyCode == kVK_DownArrow {
+            let needNextPage = keyCode == kVK_ANSI_Equal ||
+                (keyCode == kVK_DownArrow && Defaults[.candidatesDirection] == .horizontal) ||
+                (keyCode == kVK_RightArrow && Defaults[.candidatesDirection] == .vertical)
+            if needNextPage {
                 curPage = _hasNext ? curPage + 1 : curPage
                 return true
             }
-            if keyCode == kVK_ANSI_Minus || keyCode == kVK_UpArrow {
+
+            let needPrevPage = keyCode == kVK_ANSI_Minus ||
+                (keyCode == kVK_UpArrow && Defaults[.candidatesDirection] == .horizontal) ||
+                (keyCode == kVK_LeftArrow && Defaults[.candidatesDirection] == .vertical)
+            if needPrevPage {
                 curPage = curPage > 1 ? curPage - 1 : 1
                 return true
             }
