@@ -77,7 +77,7 @@ struct CandidatesView: View {
     @Environment(\.colorScheme) var colorScheme
 
     var _candidatesView: some View {
-        ForEach(Array(candidates.enumerated()), id: \.element) { (index, candidate) -> CandidateView in
+        ForEach(Array(candidates.enumerated()), id: \.offset) { (index, candidate) -> CandidateView in
             CandidateView(
                 candidate: candidate,
                 index: index,

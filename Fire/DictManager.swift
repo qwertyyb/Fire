@@ -50,7 +50,7 @@ class DictManager {
                 text,
                 type, min(query) as query
             from wb_py_dict
-            where query like :queryLike \(
+            where query glob :queryLike \(
                 codeMode == .wubi ? "and type = 'wb'"
                                 : codeMode == .pinyin ? "and type = 'py'" : "")
             group by text
@@ -120,20 +120,21 @@ class DictManager {
         }
 
         if !Defaults[.zKeyQuery] {
-            return origin + "%"
+            return origin + "*"
         }
 
         // z键查询，z不能放在首位
         let first = origin.first!
         return String(first) + (String(origin.suffix(origin.count - 1))
-            .replacingOccurrences(of: "z", with: "_")) + "%"
+            .replacingOccurrences(of: "z", with: "?")) + "*"
     }
 
     func getCandidates(query: String = String(), page: Int = 1) -> (candidates: [Candidate], hasNext: Bool) {
         if query.count <= 0 {
             return ([], false)
         }
-        NSLog("get local candidate, origin: \(query), query: ", query)
+        NSLog("[DictManager] getCandidates origin: \(query)")
+        let startTime = CFAbsoluteTimeGetCurrent()
         let queryLike = getQueryLike(query)
         var candidates: [Candidate] = []
         sqlite3_reset(queryStatement)
@@ -169,6 +170,8 @@ class DictManager {
         if candidates.isEmpty {
             candidates.append(Candidate(code: query, text: query, type: CandidateType.placeholder))
         }
+        let duration = CFAbsoluteTimeGetCurrent() - startTime
+        NSLog("[DictManager] getCandidates query: \(query) , duration: \(duration)")
         return (candidates, hasNext: allCount > count)
     }
 
