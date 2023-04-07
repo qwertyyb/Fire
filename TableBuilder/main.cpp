@@ -24,16 +24,39 @@ string txtPath;
 
 sqlite3 *db;
 
-vector<string> split(const string& s, const char delim = ' ') {
+vector<string> split(const string& s) {
     vector<std::string> sv;
-    istringstream iss(s);
-    string temp;
+    int i = 0;
+    std::string ss;
 
-    while (getline(iss, temp, delim)) {
-        sv.emplace_back(move(temp));
+    while (s[i] != '\0') {
+        if (s[i] != ' ' && s[i] != '\t' && s[i] != '\r' && s[i] != '\n') {
+            // Append the char to the temp string.
+            ss += s[i];
+        } else if (ss.size() > 0) {
+            sv.emplace_back(ss);
+            ss.clear();
+        }
+        i++;
     }
+    
+  if (ss.size() > 0) {
+    sv.emplace_back(ss);
+  }
 
     return sv;
+}
+
+string join(vector<string> arr, string sperator) {
+  string values;
+  for (int j = 0; j < arr.size(); j += 1) {
+    if (j == 0) {
+      values += arr[j];
+    } else {
+      values += (sperator + arr[j]);
+    }
+  }
+  return values;
 }
 
 void open_database() {
@@ -51,16 +74,11 @@ string get_sql(vector<string> columns) {
     string code = columns[0];
 
     for (int i = 1; i < columns.size(); i++) {
-//        vector<string> row;
-//        row.push_back("'" +  + "'");
-//        row.push_back("'" + regex_replace(columns[i], regex("'"), "\'") + "'");
         string rowstr = "('" + regex_replace(code, regex("'"), "") + "', '" + regex_replace(columns[i], regex("'"), "") + "')";
         rows.push_back(rowstr);
     }
 
-    stringstream res;
-    copy(rows.begin(), rows.end(), ostream_iterator<string>(res, ", "));
-    return res.str();
+    return join(rows, ",");
 }
 
 void create_table(sqlite3 *db, string tableName = "wb_dict") {
@@ -212,20 +230,22 @@ int main(int argc, const char * argv[]) {
     
     // 分批插入
     int step = 100000;  //每次插入数量
-    vector<string>::iterator begin = rowstrs.begin();
+    int begin = 0;
     for(int i = 0; i < rowstrs.size(); i += step) {
-        vector<string>::iterator start = begin + i;
-        unsigned long length = rowstrs.size() - i > step ? step : rowstrs.size() - i;
+        int start = begin + i;
+        int length = rowstrs.size() - start < step ? rowstrs.size() - start : step;
+        int end = start + length;
 
-        vector<string>::iterator end = start + length;
+        string values;
+        for (int j = start; j < end; j += 1) {
+          if (j == start) {
+            values += rowstrs[j];
+          } else {
+            values += (',' + rowstrs[j]);
+          }
+        }
 
-        stringstream res;
-        copy(start, end, ostream_iterator<string>(res, " "));
-
-        string sql = "insert into " + tableName + "(code, text) values" + res.str();
-        sql.pop_back();
-        sql.pop_back();
-        sql.pop_back();
+        string sql = "insert into " + tableName + "(code, text) values" + values;
 
         int rc = sqlite3_exec(db, sql.c_str(), NULL, NULL, NULL);
         if (rc == SQLITE_OK) {
