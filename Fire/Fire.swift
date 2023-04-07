@@ -27,12 +27,6 @@ extension UserDefaults {
 internal let SQLITE_TRANSIENT = unsafeBitCast(-1, to: sqlite3_destructor_type.self)
 
 class Fire: NSObject {
-    // SwiftUI 界面事件
-    static let candidateSelected = Notification.Name("Fire.candidateSelected")
-    static let candidateListUpdated = Notification.Name("Fire.candidateListUpdated")
-    static let nextPageBtnTapped = Notification.Name("Fire.nextPageBtnTapped")
-    static let prevPageBtnTapped = Notification.Name("Fire.prevPageBtnTapped")
-
     // 逻辑
     static let candidateInserted = Notification.Name("Fire.candidateInserted")
     static let inputModeChanged = Notification.Name("Fire.inputModeChanged")
