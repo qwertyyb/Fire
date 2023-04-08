@@ -221,9 +221,9 @@
     <a href="" class="download-btn">立即下载</a>
     <p class="os-info">适用于 Macos 10.15 及以上系统</p>
     <div class="app-info">
-      <div class="version-info">版本: 1.11.2</div>
-      <div class="size-info">大小: 5.6M</div>
-      <div class="update-info">更新时间: 2023-04-04</div>
+      <div class="version-info">版本: <span id="version">0.13.6</span></div>
+      <div class="size-info">大小: <span id="size">5.36M</span></div>
+      <div class="update-info">更新时间: <span id="updated-date">2023-04-05</span></div>
     </div>
   </div>
   <ul class="feature-summary-list">
@@ -318,7 +318,7 @@
       <a href="https://github.com/qwertyyb/Fire/releases" class="changelog-link">更新日志</a>
       <a href="/" class="about-link">关于我</a>
     </div>
-    <p class="copyright">&copy; 2023 <a href="https://www.qwertyyb.com">qwertyyb.com</a>. All rights reserved</p>
+    <p class="copyright">&copy; 2019-<span id="copyright-end"></span> <a href="https://www.qwertyyb.com">qwertyyb.com</a>. All rights reserved</p>
   </footer>
 
   <script>
@@ -329,6 +329,32 @@
       var s = document.getElementsByTagName("script")[0]; 
       s.parentNode.insertBefore(hm, s);
     })();
+  </script>
+
+  <script>
+    // copyright 年份
+    document.getElementById('copyright-end').textContent = new Date().getFullYear() + ''
+    
+    const padZero = (origin, length = 2) => `${origin}`.padStart(length, '0')
+
+    const getDate = (date) => {
+      return `${date.getFullYear()}-${padZero(date.getMonth() + 1)}-${padZero(date.getDate())}`
+    }
+
+    // 更新版本相关信息
+    const refreshInfo = async () => {
+      const res = await fetch('https://api.github.com/repos/qwertyyb/Fire/releases/latest')
+      const json = await res.json()
+      const version = json.name
+      const asset = json.assets.find(item => item.name === 'FireInstaller.pkg')
+      const size = ((asset && asset.size || 0) / 1024 / 1024).toFixed(2)
+      const updateDate = asset && getDate(new Date(asset.created_at)) || '2023-04-05'
+      document.getElementById('version').textContent = version || 'v0.13.6'
+      document.getElementById('size').textContent = size + 'M'
+      document.getElementById('updated-date').textContent = updateDate
+    }
+
+    refreshInfo()
   </script>
     
 </body>
