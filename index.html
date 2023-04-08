@@ -1,0 +1,335 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width,initial-scale=1.0,minimum-scale=1,maximum-scale=1,user-scalable=no">
+  <meta name="keywords" content="输入法,五笔输入法,业火输入法,MacOS输入法,InputMethodKit,Fire,Input Method">
+  <meta name="description" content="业火输入法是一个轻量开源、功能强大的MacOS五笔输入法">
+  <title>业火输入法</title>
+</head>
+<style>
+  * {
+    font-family: "PingFang-SC-Regular","Helvetica", "Arial","微软雅黑","宋体";
+    margin: 0;
+    padding: 0;
+  }
+  body {
+    --primary-color: rgb(142, 2, 2);
+  }
+  a {
+    text-decoration: none;
+  }
+  .download-btn {
+    display: block;
+    width: 200px;
+    height: 44px;
+    line-height: 44px;
+    border-radius: 30px;
+    font-size: 20px;
+    text-align: center;
+    /* background-color: rgb(173, 12, 12); */
+    background: linear-gradient(to top, rgb(152, 3, 3), #f00);
+    color: #fff;
+  }
+  .header {
+    width: 1024px;
+    height: 56px;
+    margin: 0 auto;
+    display: flex;
+    align-items: center;
+  }
+  .header .logo {
+    width: 32px;
+    height: 32px;
+    background: var(--primary-color);
+    mask-image: url(https://raw.githubusercontent.com/qwertyyb/Fire/master/Fire/Assets.xcassets/AppIcon.appiconset/icon-256.png);
+    mask-size: 32px;
+    filter: hue-rotate(-10deg);
+  }
+  .header .title {
+    font-size: 20px;
+    margin-left: 8px;
+    font-weight: bold;
+    margin-top: 4px;
+  }
+  .header .nav {
+    margin-left: auto;
+    display: flex;
+    align-items: center;
+  }
+  .header .nav .nav-item {
+    color: #000;
+    font-size: 18px;
+    margin-left: 18px;
+  }
+  .header .nav .github-icon {
+    width: 24px;
+    height: 24px;
+    vertical-align: top;
+  }
+  .banner {
+    height: 600px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    background: linear-gradient(to top, rgb(21, 2, 2) 40%, var(--primary-color));
+    color: #fff;
+  }
+  .banner .download-btn {
+    margin: 32px 0 6px 0;
+  }
+  .banner .feature-item.primary {
+    font-size: 24px;
+    font-weight: 600;
+  }
+  .banner .feature-item + .feature-item {
+    margin-top: 18px;
+  }
+  .banner .os-info {
+    font-size: 14px;
+    color: #666;
+  }
+  .banner .app-info {
+    display: flex;
+    font-size: 14px;
+    color: #bbb;
+    margin-top: 32px;
+  }
+  .banner .app-info > * + * {
+    margin-left: 24px;
+  }
+
+  .feature-summary-list {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-wrap: wrap;
+    margin: 0 auto;
+    width: 900px;
+    padding: 20px 0;
+  }
+  .feature-summary-list .feature-summary-item {
+    display: flex;
+    flex-direction: column;
+    height: 120px;
+    width: 280px;
+    margin-right: 20px;
+  }
+  .feature-summary-list .feature-summary-item .feature-title {
+    font-size: 24px;
+    margin-bottom: 8px;
+    color: var(--primary-color)
+  }
+  .feature-summary-list .feature-summary-item .feature-desc {
+    font-size: 14px
+  }
+
+  .feature-list .feature-item {
+    margin: 0 auto;
+    display: flex;
+    justify-content: center;
+    padding: 20px;
+  }
+  .feature-list .feature-item > * + * {
+    margin-left: 20px;
+  }
+  .feature-list .feature-item .feature-info {
+    display: flex;
+    align-items: center;
+    font-size: 20px;
+    color: var(--primary-color)
+  }
+  .feature-list .feature-item .feature-image-wrapper {
+    display: flex;
+    align-items: center;
+    mix-blend-mode: darken;
+  }
+  .feature-list .feature-item .feature-image {
+    width: 800px;
+    height: auto;
+    mask: linear-gradient(to bottom, black 50%, transparent 80%);
+  }
+  .feature-list .feature-item:first-child {
+    height: 400px;
+  }
+  .feature-list .feature-item:nth-child(odd) {
+    background: #efefef;
+  }
+
+  .download-section {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    padding: 20px 0;
+    height: 200px;
+  }
+  .download-section .download-tip {
+    font-size: 20px;
+    font-weight: bold;
+  }
+  .download-section .download-btn {
+    margin: 12px 0;
+  }
+  .download-section .issue-tip {
+    font-size: 14px;
+    color: #666;
+    margin-top: 20px;
+  }
+
+  .footer {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    background: #efefef;
+    padding: 30px 0;
+  }
+  .footer .links {
+    margin-bottom: 20px;
+    display: flex;
+  }
+  .footer .links a {
+    padding: 0 20px;
+  }
+  .footer .links a + a {
+    border-left: 1px solid #ccc;
+  }
+  .footer .copyright {
+    color: #666;
+    font-size: 14px;
+  }
+</style>
+<body>
+  <header class="header">
+    <div src="" alt="" class="logo"></div>
+    <div class="title">业火输入法</div>
+    <nav class="nav">
+      <a href="https://github.com/qwertyyb/Fire/releases" class="nav-item">更新日志</a>
+      <a href="https://github.com/qwertyyb/Fire/issues/new" class="nav-item">建议反馈</a>
+      <a href="./theme.html" class="nav-item">制作主题</a>
+      <a href="https://github.com/qwertyyb/Fire" class="nav-item" title="查看代码">
+        <img src="https://github.com/fluidicon.png" alt="" class="github-icon">
+      </a>
+    </nav>
+  </header>
+  <div class="banner">
+    <p class="feature-item primary">免费开源 自由随心</p>
+    <p class="feature-item">轻量简洁，但功能强大的五笔输入法</p>
+    <a href="" class="download-btn">立即下载</a>
+    <p class="os-info">适用于 Macos 10.15 及以上系统</p>
+    <div class="app-info">
+      <div class="version-info">版本: 1.11.2</div>
+      <div class="size-info">大小: 5.6M</div>
+      <div class="update-info">更新时间: 2023-04-04</div>
+    </div>
+  </div>
+  <ul class="feature-summary-list">
+    <li class="feature-summary-item">
+      <h3 class="feature-title">流畅</h3>
+      <div class="feature-desc">非常优秀的五笔输入体验，行云流水般的流畅</div>
+    </li>
+    <li class="feature-summary-item">
+      <h3 class="feature-title">编码方案</h3>
+      <div class="feature-desc">支持86版、98版以及自定义编码方案，满足你所有的五笔输入需求</div>
+    </li>
+    <li class="feature-summary-item">
+      <h3 class="feature-title">用户词库</h3>
+      <div class="feature-desc">基于配置，用户可快速添加自定义词库，支持动态日期和时间</div>
+    </li>
+    <li class="feature-summary-item">
+      <h3 class="feature-title">调整候选词顺序</h3>
+      <div class="feature-desc">使用 control + 数字键，快速把对应的候选词调至最前，提高输入效率</div>
+    </li>
+    <li class="feature-summary-item">
+      <h3 class="feature-title">应用输入模式</h3>
+      <div class="feature-desc">支持区分不同的应用，设置不同的默认输入模式</div>
+    </li>
+    <li class="feature-summary-item">
+      <h3 class="feature-title">输入统计</h3>
+      <div class="feature-desc">安全的字数输入统计，统计每天的输入趋势</div>
+    </li>
+    <li class="feature-summary-item">
+      <h3 class="feature-title">自定义主题</h3>
+      <div class="feature-desc">基于所见即所得的主题编辑器，可以方便的创建用户独有的主题，支持暗黑模式哦！</div>
+    </li>
+    <li class="feature-summary-item">
+      <h3 class="feature-title">五笔拼音混合输入</h3>
+      <div class="feature-desc">支持使用纯五笔、纯拼音以及拼音五笔混合的文字输入</div>
+    </li>
+    <li class="feature-summary-item">
+      <h3 class="feature-title">Z键查询</h3>
+      <div class="feature-desc">支持五笔的万能学习键－z键，一切未知的编码都可以用Z键代替</div>
+    </li>
+    <li class="feature-summary-item">
+      <h3 class="feature-title">候选词方向</h3>
+      <div class="feature-desc">候选词弹窗支持横向或竖向显示</div>
+    </li>
+    <li class="feature-summary-item">
+      <h3 class="feature-title">原码显示位置</h3>
+      <div class="feature-desc">输入的五笔原码支持显示在输入框中或候选窗口中</div>
+    </li>
+    <li class="feature-summary-item">
+      <h3 class="feature-title">标点符号</h3>
+      <div class="feature-desc">标点符号支持半角、全角和自定义三种输入方案</div>
+    </li>
+  </ul>
+  <ul class="feature-list">
+    <li class="feature-item">
+      <div class="feature-image-wrapper">
+        <img src="https://user-images.githubusercontent.com/16240729/230705757-1363f408-2616-4f31-ad01-80a4d20a525b.gif" alt="" class="feature-image">
+      </div>
+      <div class="feature-info">
+        <p class="feature-desc">行云流水般的输入体验</p>
+      </div>
+    </li>
+    <li class="feature-item">
+      <div class="feature-info">
+        <p class="feature-desc">所见即所得主题编辑器</p>
+      </div>
+      <div class="feature-image-wrapper">
+        <img src="https://user-images.githubusercontent.com/16240729/230707941-c5f1bc1c-e290-4451-8df4-76a8e6c6a0e5.png" alt="" class="feature-image">
+      </div>
+    </li>
+    <li class="feature-item">
+      <div class="feature-image-wrapper">
+        <img src="https://user-images.githubusercontent.com/9018466/181672573-9645e5fc-0092-4ff6-8b88-cd8e77d78453.png" alt="" class="feature-image">
+      </div>
+      <div class="feature-info">
+        <p class="feature-desc">输入统计</p>
+      </div>
+    </li>
+  </ul>
+  <div class="download-section">
+    <p class="download-tip">感觉很不错，立即下载使用吧</p>
+    <a href="https://github.com/qwertyyb/Fire/releases/latest/download/FireInstaller.pkg" class="download-btn">立即下载</a>
+
+    <p class="issue-tip">
+      <span>还差点意思？</span>
+      <a href="https://github.com/qwertyyb/Fire/issues/new" class="issue-btn">立即反馈</a>
+    </p>
+  </div>
+  <footer class="footer">
+    <div class="links">
+      <a href="./theme.html" class="theme-link">主题制作</a>
+      <a href="https://github.com/qwertyyb/Fire/issues/new" class="issue-link">反馈</a>
+      <a href="https://github.com/qwertyyb/Fire/releases" class="changelog-link">更新日志</a>
+      <a href="/" class="about-link">关于我</a>
+    </div>
+    <p class="copyright">&copy; 2023 <a href="https://www.qwertyyb.com">qwertyyb.com</a>. All rights reserved</p>
+  </footer>
+
+  <script>
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "https://hm.baidu.com/hm.js?2cbe0d1d61c1f3e61fe5fc69ca4564af";
+      var s = document.getElementsByTagName("script")[0]; 
+      s.parentNode.insertBefore(hm, s);
+    })();
+  </script>
+    
+</body>
+</html>
