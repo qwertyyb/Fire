@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="viewport" content="width=device-width,initial-scale=1.0,minimum-scale=1,maximum-scale=1,user-scalable=no">
-  <meta name="keywords" content="输入法,五笔输入法,业火输入法,MacOS输入法,InputMethodKit,Fire,Input Method">
+  <meta name="keywords" content="输入法,五笔输入法,业火输入法,MacOS输入法,MacOS五笔输入法,InputMethodKit,Fire,Input Method">
   <meta name="description" content="业火输入法是一个轻量开源、功能强大的MacOS五笔输入法">
   <title>业火输入法</title>
 </head>
@@ -33,18 +33,22 @@
     color: #fff;
   }
   .header {
-    width: 1024px;
-    height: 56px;
+    width: 100%;
+    max-width: 1024px;
+    min-height: 56px;
     margin: 0 auto;
     display: flex;
     align-items: center;
+    flex-wrap: wrap;
   }
   .header .logo {
     width: 32px;
     height: 32px;
     background: var(--primary-color);
     mask-image: url(https://raw.githubusercontent.com/qwertyyb/Fire/master/Fire/Assets.xcassets/AppIcon.appiconset/icon-256.png);
+    -webkit-mask-image: url(https://raw.githubusercontent.com/qwertyyb/Fire/master/Fire/Assets.xcassets/AppIcon.appiconset/icon-256.png);
     mask-size: 32px;
+    -webkit-mask-size: 32px;
     filter: hue-rotate(-10deg);
   }
   .header .title {
@@ -107,7 +111,8 @@
     align-items: center;
     flex-wrap: wrap;
     margin: 0 auto;
-    width: 900px;
+    width: 100%;
+    max-width: 900px;
     padding: 20px 0;
   }
   .feature-summary-list .feature-summary-item {
@@ -130,6 +135,7 @@
     margin: 0 auto;
     display: flex;
     justify-content: center;
+    align-items: center;
     padding: 20px;
   }
   .feature-list .feature-item > * + * {
@@ -139,17 +145,22 @@
     display: flex;
     align-items: center;
     font-size: 20px;
+    height: 120px;
     color: var(--primary-color)
   }
   .feature-list .feature-item .feature-image-wrapper {
+    flex: 3;
+    max-width: 800px;
+    min-width: 360px;
     display: flex;
     align-items: center;
     mix-blend-mode: darken;
   }
   .feature-list .feature-item .feature-image {
-    width: 800px;
+    width: 100%;
     height: auto;
     mask: linear-gradient(to bottom, black 50%, transparent 80%);
+    -webkit-mask: linear-gradient(to bottom, black 50%, transparent 80%);
   }
   .feature-list .feature-item:first-child {
     height: 400px;
@@ -202,6 +213,33 @@
     font-size: 14px;
   }
 </style>
+<style>
+  @media (max-width: 1024px) {
+    .header {
+      margin-top: 12px;
+    }
+    .header .logo {
+      margin-left: auto;
+    }
+    .header .title, .header .nav {
+      margin-right: auto;
+    }
+    .header .nav {
+      margin-top: 12px;
+    }
+
+    .banner {
+      margin-top: 12px;
+      height: 300px;
+    }
+    .feature-list .feature-item {
+      flex-wrap: wrap;
+    }
+    .feature-list .feature-item .feature-image {
+      opacity: 0.6;
+    }
+  }
+</style>
 <body>
   <header class="header">
     <div src="" alt="" class="logo"></div>
@@ -219,7 +257,7 @@
     <p class="feature-item primary">免费开源 自由随心</p>
     <p class="feature-item">轻量简洁，但功能强大的五笔输入法</p>
     <a href="" class="download-btn">立即下载</a>
-    <p class="os-info">适用于 Macos 10.15 及以上系统</p>
+    <p class="os-info">适用于 MacOS 10.15 及以上系统</p>
     <div class="app-info">
       <div class="version-info">版本: <span id="version">0.13.6</span></div>
       <div class="size-info">大小: <span id="size">5.36M</span></div>
