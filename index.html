@@ -84,8 +84,11 @@
   .banner .download-btn {
     margin: 32px 0 6px 0;
   }
+  .banner .feature-item {
+    font-size: 18px;
+  }
   .banner .feature-item.primary {
-    font-size: 24px;
+    font-size: 28px;
     font-weight: 600;
   }
   .banner .feature-item + .feature-item {
@@ -97,7 +100,7 @@
   }
   .banner .app-info {
     display: flex;
-    font-size: 14px;
+    font-size: 16px;
     color: #bbb;
     margin-top: 32px;
   }
@@ -144,7 +147,7 @@
   .feature-list .feature-item .feature-info {
     display: flex;
     align-items: center;
-    font-size: 20px;
+    font-size: 18px;
     height: 120px;
     color: var(--primary-color)
   }
@@ -232,12 +235,31 @@
       margin-top: 12px;
       height: 300px;
     }
+    .banner .feature-item {
+      font-size: 14px;
+    }
+    .banner .feature-item.primary {
+      font-size: 24px;
+    }
+    .banner .os-info {
+      font-size: 12px;
+    }
+    .banner .app-info {
+      font-size: 14px;
+    }
   
     .feature-list .feature-item {
       flex-wrap: wrap;
     }
+    .feature-list .feature-item .feature-info {
+      height: auto;
+      margin-bottom: 20px;
+    }
     .feature-list .feature-item .feature-image {
       opacity: 0.6;
+    }
+    .feature-list .feature-item:nth-child(odd) {
+      flex-wrap: wrap-reverse;
     }
   }
 </style>
