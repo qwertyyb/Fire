@@ -13,6 +13,7 @@ import Defaults
 struct PunctuationPane: View {
     @Default(.punctuationMode) private var punctuationMode
     @Default(.customPunctuationSettings) private var customPunctuationSettings
+    @Default(.enableDotAfterNumber) private var enableDotAfterNumber
     var body: some View {
         Preferences.Container(contentWidth: 450) {
             Preferences.Section(title: "") {
@@ -23,6 +24,9 @@ struct PunctuationPane: View {
                         Text("自定义").tag(PunctuationMode.custom)
                     }
                     Spacer(minLength: 150)
+                }
+                HStack {
+                    Toggle("数字后输入 “。”自动转为 “.”", isOn: $enableDotAfterNumber)
                 }
                 VStack(alignment: .leading) {
                     Text("自定义符号")

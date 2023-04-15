@@ -17,6 +17,7 @@ typealias NotificationObserver = (name: Notification.Name, callback: (_ notifica
 class FireInputController: IMKInputController {
     private var _candidates: [Candidate] = []
     private var _hasNext: Bool = false
+    private var _lastInputIsNumber = false
     internal var inputMode: InputMode {
         get { Fire.shared.inputMode }
         set(value) { Fire.shared.inputMode = value }
@@ -152,6 +153,16 @@ class FireInputController: IMKInputController {
         return nil
     }
 
+    private func predictorHandler(event: NSEvent) -> Bool? {
+        if Defaults[.enableDotAfterNumber] && event.keyCode == kVK_ANSI_Period && _lastInputIsNumber {
+            insertText(".")
+            _lastInputIsNumber = false
+            return true
+        }
+        _lastInputIsNumber = false
+        return nil
+    }
+
     private func pageKeyHandler(event: NSEvent) -> Bool? {
         // +/-/arrowdown/arrowup翻页
         let keyCode = event.keyCode
@@ -176,9 +187,8 @@ class FireInputController: IMKInputController {
     }
 
     private func deleteKeyHandler(event: NSEvent) -> Bool? {
-        let keyCode = event.keyCode
         // 删除键删除字符
-        if keyCode == kVK_Delete {
+        if event.keyCode == kVK_Delete {
             if _originalString.count > 0 {
                 _originalString = String(_originalString.dropLast())
                 return true
@@ -231,14 +241,17 @@ class FireInputController: IMKInputController {
         // 获取输入的字符
         let string = event.characters!
         // 当前输入的是数字,选择当前候选列表中的第N个字符 v
-        if let pos = Int(string), _originalString.count > 0 {
-            let index = pos - 1
-            if index < _candidates.count {
-                insertCandidate(_candidates[index])
-            } else {
-                _originalString += string
+        if let pos = Int(string) {
+            if _originalString.count > 0 {
+                let index = pos - 1
+                if index < _candidates.count {
+                    insertCandidate(_candidates[index])
+                } else {
+                    _originalString += string
+                }
+                return true
             }
-            return true
+            _lastInputIsNumber = true
         }
         return nil
     }
@@ -292,6 +305,7 @@ class FireInputController: IMKInputController {
             hotkeyHandler,
             flagChangedHandler,
             enModeHandler,
+            predictorHandler,
             pageKeyHandler,
             deleteKeyHandler,
             charKeyHandler,
@@ -356,9 +370,10 @@ class FireInputController: IMKInputController {
         NSLog("insertText: %@", text)
         let value = NSAttributedString(string: text)
         try client()?.insertText(value, replacementRange: replacementRange())
+        _lastInputIsNumber = text.last != nil && Int(String(text.last!)) != nil
         clean()
     }
-    
+
     // 往输入框中插入原始字符
     func insertOriginText() {
         if self._originalString.count > 0 {

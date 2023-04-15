@@ -115,6 +115,8 @@ extension Defaults.Keys {
     // 标点符号配置
     static let punctuationMode = Key<PunctuationMode>("punctuationMode", default: PunctuationMode.zhhans)
     static let customPunctuationSettings = Key<[String: String]>("customPunctuationSettings", default: punctuation)
+    // 数字后输入"。"自动转为"."
+    static let enableDotAfterNumber = Key<Bool>("enableDotAfterNumber", default: true)
 
     static let wbTablePath = Key<String>(
         "wbTableURL",
