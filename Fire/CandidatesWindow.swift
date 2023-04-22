@@ -46,7 +46,7 @@ class CandidatesWindow: NSWindow, NSWindowDelegate {
         self.orderFront(nil)
 //        NSApp.setActivationPolicy(.prohibited)
     }
-    
+
     func bindEvents() {
         let events: [NotificationObserver] = [
             (CandidatesView.candidateSelected, { notification in
@@ -65,10 +65,8 @@ class CandidatesWindow: NSWindow, NSWindowDelegate {
         events.forEach { (observer) in NotificationCenter.default.addObserver(
           forName: observer.name, object: nil, queue: nil, using: observer.callback
         )}
-        /**
-        * 1.  由于使用recognizedEvents在一些场景下不能监听到flagChanged事件，比如保存文件场景
-        *      所以这里需要使用NSEvent.addGlobalMonitorForEvents监听shift键被按下
-        */
+        // 由于使用IMKInputController recognizedEvents在一些场景下不能监听到flagChanged事件，比如保存文件和lanchPad场景
+        // 所以这里需要使用NSEvent.addGlobalMonitorForEvents监听shift键被按下
         NSEvent.addGlobalMonitorForEvents(matching: .flagsChanged) { (event) in
             NSLog("[CandidatesWindow] globalMonitorForEvents flagsChanged: \(event)")
             if !InputSource.shared.isSelected() {

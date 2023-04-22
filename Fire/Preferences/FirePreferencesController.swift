@@ -16,7 +16,7 @@ class FirePreferencesController: NSObject, NSWindowDelegate {
     var isVisible: Bool {
         controller?.window?.isVisible ?? false
     }
-    
+
     private func initController() {
         if let controller = controller {
             controller.show()
@@ -78,7 +78,7 @@ class FirePreferencesController: NSObject, NSWindowDelegate {
         )
         self.controller?.window?.delegate = self
     }
-    
+
     func showPane(_ name: String) {
         initController()
         controller?.show(preferencePane: Preferences.PaneIdentifier(rawValue: name))

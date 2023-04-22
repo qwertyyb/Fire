@@ -35,7 +35,8 @@ class InputSource {
         return nil
     }
 
-    private func findInputSource(forUsage: InputSourceUsage = .enable) -> (inputSource: TISInputSource, sourceID: NSString)? {
+    private func findInputSource(forUsage: InputSourceUsage = .enable)
+        -> (inputSource: TISInputSource, sourceID: NSString)? {
         let sourceList = TISCreateInputSourceList(nil, true).takeRetainedValue() as NSArray
 
         for index in 0..<sourceList.count {

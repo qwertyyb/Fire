@@ -26,6 +26,7 @@ struct CandidateView: View {
     var index: Int
     var origin: String
     var selected: Bool = false
+    var indexVisible = true
 
     @Default(.themeConfig) private var themeConfig
     @Default(.wubiCodeTip) private var wubiCodeTip
@@ -43,9 +44,11 @@ struct CandidateView: View {
             : themeConfig[colorScheme].candidateCodeColor
 
         return HStack(alignment: .center, spacing: 2) {
-            Text("\(index + 1).")
-                .foregroundColor(Color(indexColor))
-            Text(candidate.text)
+            if indexVisible {
+                Text("\(index + 1).")
+                    .foregroundColor(Color(indexColor))
+            }
+            Text(candidate.label)
                 .foregroundColor(Color(textColor))
             if wubiCodeTip {
                 Text(getShownCode(candidate: candidate, origin: origin))
@@ -69,7 +72,7 @@ struct CandidatesView: View {
     static let candidateSelected = Notification.Name("CandidatesView.candidateSelected")
     static let nextPageBtnTapped = Notification.Name("CandidatesView.nextPageBtnTapped")
     static let prevPageBtnTapped = Notification.Name("CandidatesView.prevPageBtnTapped")
-    
+
     var candidates: [Candidate]
     var origin: String
     var hasPrev: Bool = false
@@ -86,12 +89,18 @@ struct CandidatesView: View {
                 candidate: candidate,
                 index: index,
                 origin: origin,
-                selected: index == 0
+                selected: index == 0,
+                indexVisible: candidates.count > 1
             )
         }
     }
 
-    func getIndicatorIcon(imageName: String, direction: CandidatesDirection, disabled: Bool, eventName: Notification.Name) -> some View {
+    func getIndicatorIcon(
+        imageName: String,
+        direction: CandidatesDirection,
+        disabled: Bool,
+        eventName: Notification.Name
+    ) -> some View {
         return Image(imageName)
             .renderingMode(.template)
             .resizable()
@@ -111,6 +120,9 @@ struct CandidatesView: View {
     }
 
     var _indicator: some View {
+        if candidates.count <= 1 {
+            return AnyView(EmptyView())
+        }
         let arrowUp = getIndicatorIcon(
             imageName: "arrowUp",
             direction: direction,
@@ -166,10 +178,10 @@ struct ContentView_Previews: PreviewProvider {
     static var previews: some View {
         CandidatesView(candidates: [
             Candidate(code: "a", text: "工", type: CandidateType.wb),
-            Candidate(code: "ab", text: "戈", type:  CandidateType.wb),
-            Candidate(code: "abc", text: "啊", type:  CandidateType.wb),
-            Candidate(code: "abcg", text: "阿", type:  CandidateType.wb),
-            Candidate(code: "addd", text: "吖", type:  CandidateType.wb)
+            Candidate(code: "ab", text: "戈", type: CandidateType.wb),
+            Candidate(code: "abc", text: "啊", type: CandidateType.wb),
+            Candidate(code: "abcg", text: "阿", type: CandidateType.wb),
+            Candidate(code: "addd", text: "吖", type: CandidateType.wb)
         ], origin: "a")
     }
 }

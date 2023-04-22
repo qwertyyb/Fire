@@ -31,16 +31,6 @@ class FireInputController: IMKInputController {
         monitorList: []
     )
 
-    override init() {
-        super.init()
-        NSLog("[FireInputController] init without params")
-    }
-
-    override init!(server: IMKServer!, delegate: Any!, client inputClient: Any!) {
-        super.init(server: server, delegate: delegate, client: inputClient)
-        NSLog("[FireInputController] init with params")
-    }
-
     deinit {
         NSLog("[FireInputController] deinit")
         clean()
@@ -198,23 +188,11 @@ class FireInputController: IMKInputController {
         return nil
     }
 
-    private func punctuationKeyHandler(event: NSEvent) -> Bool? {
-        // 获取输入的字符
-        let string = event.characters!
-
-        // 如果输入的字符是标点符号，转换标点符号为中文符号
-        if inputMode == .zhhans, let result = Fire.shared.transformPunctuation(string) {
-            insertText(result)
-            return true
-        }
-        return nil
-    }
-
     private func charKeyHandler(event: NSEvent) -> Bool? {
         // 获取输入的字符
         let string = event.characters!
 
-        guard let reg = try? NSRegularExpression(pattern: "^[a-zA-Z]+$") else {
+        guard let reg = try? NSRegularExpression(pattern: "^[a-z]+$") else {
             return nil
         }
         let match = reg.firstMatch(
@@ -286,6 +264,27 @@ class FireInputController: IMKInputController {
         return nil
     }
 
+    private func punctuationKeyHandler(event: NSEvent) -> Bool? {
+        // 获取输入的字符
+        let string = event.characters!
+        guard inputMode == .zhhans else { return nil }
+
+        if !Defaults[.disableTempEnMode]
+            && _originalString.count <= 0 && string == String(DictManager.shared.tempEnTriggerPunctuation)
+                || string != String(DictManager.shared.tempEnTriggerPunctuation)
+                    && _originalString.first == DictManager.shared.tempEnTriggerPunctuation {
+            _originalString += string
+            return true
+        }
+
+        // 如果输入的字符是标点符号，转换标点符号为中文符号
+        if inputMode == .zhhans, let result = Fire.shared.transformPunctuation(string) {
+            insertText(result)
+            return true
+        }
+        return nil
+    }
+
     // ---- handlers end -------
 
     override func recognizedEvents(_ sender: Any!) -> Int {
@@ -300,6 +299,14 @@ class FireInputController: IMKInputController {
 
     override func handle(_ event: NSEvent!, client sender: Any!) -> Bool {
         NSLog("[FireInputController] handle: \(event.debugDescription)")
+        
+        // 在activateServer中有把IMKInputController绑定给CandidatesWindow
+        // 然而在实际运行中发现，在Safari地址栏输入部分原码后，再按shift切到英文输入模式下时，候选窗消失了，但原码没有上屏
+        // 排查发现，因为shift切换中英文是通过CandidatesWindow调用绑定的inputController方法实现的，而在safari地址栏时，接受键盘输入的inputController
+        // 和CandidatesWindow绑定的inputController并不是同一个，所以出现了此问题
+        // 这里猜测之所以会出现不一致，是因为在Safari地址栏输入场景下，会有多个TextInputClient而创建多个inputController, activateServer也会多次执行
+        // 但是activateServer的调用顺序并不能保证最后调用的就是接受输入事件的TextInputClient对应的inputController, 所以仅是在activateServer中绑定inputController是不行的，需要在此处再绑定一下
+        CandidatesWindow.shared.inputController = self
 
         let handler = Utils.shared.processHandlers(handlers: [
             hotkeyHandler,
@@ -310,10 +317,10 @@ class FireInputController: IMKInputController {
             deleteKeyHandler,
             charKeyHandler,
             numberKeyHandlder,
-            punctuationKeyHandler,
             escKeyHandler,
             enterKeyHandler,
-            spaceKeyHandler
+            spaceKeyHandler,
+            punctuationKeyHandler
         ])
         return handler(event) ?? false
     }

@@ -48,7 +48,7 @@ extension FireInputController {
         previousClientHandler()
 
         CandidatesWindow.shared.inputController = self
-        
+
         if Defaults[.disableEnMode] {
             return
         }
@@ -56,6 +56,7 @@ extension FireInputController {
         activeCurrentClientInputMode()
     }
     override func deactivateServer(_ sender: Any!) {
+        clean()
         NSLog("[FireInputController] deactivate server: \(client()?.bundleIdentifier() ?? "no client deactivate")")
     }
 }
