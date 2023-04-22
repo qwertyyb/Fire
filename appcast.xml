@@ -3,18 +3,18 @@
     <channel>
         <title>Fire</title>
         <item>
-            <title>v0.14.0</title>
-            <pubDate>Sat, 15 Apr 2023 11:28:38 +0000</pubDate>
+            <title>v0.15.0</title>
+            <pubDate>Sat, 22 Apr 2023 07:50:55 +0000</pubDate>
             <sparkle:minimumSystemVersion>10.15</sparkle:minimumSystemVersion>
             <description><![CDATA[
-                <h3 id="features">Features</h3>%0A<ul>%0A<li>优化建表程序 (<a href="https://github.com/qwertyyb/Fire/commit/a08aa80876408e9276b02de2fb7ddb92ce38afa9">a08aa80</a>)</li>%0A<li>在数字后输入句号时，自动转为小数点 (<a href="https://github.com/qwertyyb/Fire/commit/12a9b2fecfec43490682bc25396eb17fc61c6b8c">12a9b2f</a>)</li>%0A</ul>
+                <h3 id="bugfixes">Bug Fixes</h3>%0A<ul>%0A<li>修复某些场景下(safari地址栏)输入时，从中文切到英文模式下时，原码不会上屏和清除的问题 (<a href="https://github.com/qwertyyb/Fire/commit/7c708b370bed44f8f0a082a90ecf79aa280577ad">7c708b3</a>)</li>%0A</ul>%0A<h3 id="features">Features</h3>%0A<ul>%0A<li>支持临时英文模式(在中文输入模式下，按;键可以开启临时英文模式，输入英文字符和半角符号) (<a href="https://github.com/qwertyyb/Fire/commit/fe9df0086228839d7fca991ef539f808b0421ba8">fe9df00</a>)</li>%0A</ul>
             ]]>
             </description>
             <enclosure url="https://github.com/qwertyyb/Fire/releases/latest/download/FireInstaller.zip"
-              sparkle:version="20230415112459"
-              sparkle:shortVersionString="v0.14.0"
-              length="5606214"
-              sparkle:edSignature="4WkJWY9FXjFwOi0azZf1YTsjlqUqbNr15UObhsK1Z8+ObqlneCO/AYTigmdIK3nW+oYKNpBXRJ8KNPgou+clBg=="
+              sparkle:version="20230422074740"
+              sparkle:shortVersionString="v0.15.0"
+              length="5606645"
+              sparkle:edSignature="bzeZCgUm+4g8Yu06hxVcCCqqavKKqhV2uESgmJquukniHZH6KaVdJMz/UgRanDWg1sWmR1RnzkM0pMDHMTgfBA=="
               type="application/octet-stream"/>
         </item>
     </channel>
