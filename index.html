@@ -20,6 +20,19 @@
   a {
     text-decoration: none;
   }
+  .keyboard-key {
+    display: inline-block;
+    background-color: rgba(27,31,35,.05);
+    border-radius: 2px;
+    color: #476582;
+    padding: 0.125em 0.25em;
+    box-sizing: border-box;
+    border: 1px solid #ddd;
+    font-size: 12px;
+    font-family: 'Courier New', Courier, monospace;
+    height: fit-content;
+    margin: 0 0.5em;
+  }
   .download-btn {
     display: block;
     width: 200px;
@@ -124,6 +137,9 @@
     height: 120px;
     width: 280px;
     margin-right: 20px;
+  }
+  .feature-summary-list .feature-summary-item:last-child {
+    margin-right: auto;
   }
   .feature-summary-list .feature-summary-item .feature-title {
     font-size: 24px;
@@ -302,7 +318,7 @@
     </li>
     <li class="feature-summary-item">
       <h3 class="feature-title">调整候选词顺序</h3>
-      <div class="feature-desc">使用 control + 数字键，快速把对应的候选词调至最前，提高输入效率</div>
+      <div class="feature-desc">使用 <span class="keyboard-key">control</span> + <span class="keyboard-key">数字键</span>，快速把对应的候选词调至最前，提高输入效率</div>
     </li>
     <li class="feature-summary-item">
       <h3 class="feature-title">应用输入模式</h3>
@@ -322,7 +338,7 @@
     </li>
     <li class="feature-summary-item">
       <h3 class="feature-title">Z键查询</h3>
-      <div class="feature-desc">支持五笔的万能学习键－z键，一切未知的编码都可以用Z键代替</div>
+      <div class="feature-desc">支持五笔的万能学习键－<span class="keyboard-key">z</span>键，一切未知的编码都可以用Z键代替</div>
     </li>
     <li class="feature-summary-item">
       <h3 class="feature-title">候选词方向</h3>
@@ -335,6 +351,10 @@
     <li class="feature-summary-item">
       <h3 class="feature-title">标点符号</h3>
       <div class="feature-desc">标点符号支持半角、全角和自定义三种输入方案</div>
+    </li>
+    <li class="feature-summary-item">
+      <h3 class="feature-title">临时英文</h3>
+      <div class="feature-desc">中文模式下，按<span class="keyboard-key">;</span>键进入临时英文模式，可快速输入英文字符和半角符号</div>
     </li>
   </ul>
   <ul class="feature-list">
