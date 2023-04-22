@@ -33,7 +33,7 @@ class Fire: NSObject {
 
     var inputMode: InputMode = .zhhans
 
-    func transformPunctuation(_ origin: String)-> String? {
+    func transformPunctuation(_ origin: String) -> String? {
         let isPunctuation = punctuation.keys.contains(origin)
         if !isPunctuation {
             return nil

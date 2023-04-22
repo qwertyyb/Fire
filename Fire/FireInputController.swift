@@ -31,16 +31,6 @@ class FireInputController: IMKInputController {
         monitorList: []
     )
 
-    override init() {
-        super.init()
-        NSLog("[FireInputController] init without params")
-    }
-
-    override init!(server: IMKServer!, delegate: Any!, client inputClient: Any!) {
-        super.init(server: server, delegate: delegate, client: inputClient)
-        NSLog("[FireInputController] init with params")
-    }
-
     deinit {
         NSLog("[FireInputController] deinit")
         clean()
@@ -198,23 +188,11 @@ class FireInputController: IMKInputController {
         return nil
     }
 
-    private func punctuationKeyHandler(event: NSEvent) -> Bool? {
-        // 获取输入的字符
-        let string = event.characters!
-
-        // 如果输入的字符是标点符号，转换标点符号为中文符号
-        if inputMode == .zhhans, let result = Fire.shared.transformPunctuation(string) {
-            insertText(result)
-            return true
-        }
-        return nil
-    }
-
     private func charKeyHandler(event: NSEvent) -> Bool? {
         // 获取输入的字符
         let string = event.characters!
 
-        guard let reg = try? NSRegularExpression(pattern: "^[a-zA-Z]+$") else {
+        guard let reg = try? NSRegularExpression(pattern: "^[a-z]+$") else {
             return nil
         }
         let match = reg.firstMatch(
@@ -286,6 +264,27 @@ class FireInputController: IMKInputController {
         return nil
     }
 
+    private func punctuationKeyHandler(event: NSEvent) -> Bool? {
+        // 获取输入的字符
+        let string = event.characters!
+        guard inputMode == .zhhans else { return nil }
+
+        if !Defaults[.disableTempEnMode]
+            && _originalString.count <= 0 && string == String(DictManager.shared.tempEnTriggerPunctuation)
+                || string != String(DictManager.shared.tempEnTriggerPunctuation)
+                    && _originalString.first == DictManager.shared.tempEnTriggerPunctuation {
+            _originalString += string
+            return true
+        }
+
+        // 如果输入的字符是标点符号，转换标点符号为中文符号
+        if inputMode == .zhhans, let result = Fire.shared.transformPunctuation(string) {
+            insertText(result)
+            return true
+        }
+        return nil
+    }
+
     // ---- handlers end -------
 
     override func recognizedEvents(_ sender: Any!) -> Int {
@@ -310,10 +309,10 @@ class FireInputController: IMKInputController {
             deleteKeyHandler,
             charKeyHandler,
             numberKeyHandlder,
-            punctuationKeyHandler,
             escKeyHandler,
             enterKeyHandler,
-            spaceKeyHandler
+            spaceKeyHandler,
+            punctuationKeyHandler
         ])
         return handler(event) ?? false
     }

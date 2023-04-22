@@ -60,7 +60,7 @@ class StatusBar {
                 self.refreshTitle()
             }
     }
-    
+
     private func stopEventListener() {
         inputSourceChangedSubscription?.cancel()
         inputModeChangedSubscription?.cancel()

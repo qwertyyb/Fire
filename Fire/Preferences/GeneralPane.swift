@@ -22,6 +22,7 @@ struct GeneralPane: View {
     @Default(.zKeyQuery) private var zKeyQuery
     @Default(.toggleInputModeKey) private var toggleInputModeKey
     @Default(.disableEnMode) private var disableEnMode
+    @Default(.disableTempEnMode) private var disableTempEnMode
     @Default(.showInputModeStatus) private var showInputModeStatus
 
     var body: some View {
@@ -82,6 +83,8 @@ struct GeneralPane: View {
                             }
                             HStack {
                                 Toggle("禁止切换英文", isOn: $disableEnMode)
+                                Spacer()
+                                Toggle("禁用;键临时英文模式", isOn: $disableTempEnMode)
                             }
                             HStack {
                                 Picker("快捷键", selection: $toggleInputModeKey) {

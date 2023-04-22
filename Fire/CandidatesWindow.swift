@@ -46,7 +46,7 @@ class CandidatesWindow: NSWindow, NSWindowDelegate {
         self.orderFront(nil)
 //        NSApp.setActivationPolicy(.prohibited)
     }
-    
+
     func bindEvents() {
         let events: [NotificationObserver] = [
             (CandidatesView.candidateSelected, { notification in

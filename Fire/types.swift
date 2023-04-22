@@ -93,6 +93,8 @@ extension Defaults.Keys {
     // 中英文切换配置
     // 禁止切换英文
     static let disableEnMode = Key<Bool>("diableEnMode", default: false)
+    // 禁止;键临时英文模式
+    static let disableTempEnMode = Key<Bool>("disableTempEnMode", default: false)
     // 切换英文模式的按键
     static let toggleInputModeKey = Key<ModifierKey>("toggleInputModeKey", default: ModifierKey.shift)
     // 中英文切换提示弹窗位置
@@ -145,16 +147,24 @@ enum InputModeSetting: String, Codable {
 }
 
 enum CandidateType: String {
-    case wb = "wb" // 五笔
-    case py = "py" // 拼音
-    case user = "user" // 用户词库
-    case placeholder = "placeholder" // 运行时类型，无匹配时表示占位
+    case wb // 五笔
+    case py // 拼音
+    case user // 用户词库
+    case placeholder // 运行时类型，无匹配时表示占位
 }
 
 struct Candidate: Hashable {
     let code: String
     let text: String
     let type: CandidateType
+    let label: String
+
+    init(code: String, text: String, type: CandidateType, label: String? = nil) {
+        self.code = code
+        self.text = text
+        self.type = type
+        self.label = label ?? text
+    }
 }
 
 enum CodeMode: Int, CaseIterable, Decodable, Encodable {

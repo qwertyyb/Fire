@@ -13,6 +13,7 @@ class DictManager {
     static let shared = DictManager()
     static let userDictUpdated = Notification.Name("DictManager.userDictUpdated")
 
+    let tempEnTriggerPunctuation: Character = ";"
     let userDictFilePath = NSSearchPathForDirectoriesInDomains(
         .applicationSupportDirectory,
         .userDomainMask, true).first! + "/" + Bundle.main.bundleIdentifier! + "/user-dict.txt"
@@ -129,9 +130,21 @@ class DictManager {
             .replacingOccurrences(of: "z", with: "?")) + "*"
     }
 
+    func punctuationCandidates(query: String) -> [Candidate] {
+        let text = query.count == 1 ? query : String(query.suffix(query.count - 1))
+        return [Candidate(
+            code: query,
+            text: text,
+            type: .placeholder,
+            label: "临时英文(空格输出半角符号,连敲;键两下输出全角符号)")]
+    }
+
     func getCandidates(query: String = String(), page: Int = 1) -> (candidates: [Candidate], hasNext: Bool) {
         if query.count <= 0 {
             return ([], false)
+        }
+        if query.first == tempEnTriggerPunctuation {
+            return (candidates: punctuationCandidates(query: query), hasNext: false)
         }
         NSLog("[DictManager] getCandidates origin: \(query)")
         let startTime = CFAbsoluteTimeGetCurrent()

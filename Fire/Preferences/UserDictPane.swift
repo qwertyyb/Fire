@@ -16,7 +16,7 @@ class UserDictTextModel: ObservableObject {
 
     init() {
         refresh()
-        NotificationCenter.default.publisher(for: DictManager.userDictUpdated).sink { notification in
+        NotificationCenter.default.publisher(for: DictManager.userDictUpdated).sink { _ in
             self.refresh()
         }
         .store(in: &cancellable)
