@@ -7,7 +7,15 @@
             <pubDate>Sat, 22 Apr 2023 07:50:55 +0000</pubDate>
             <sparkle:minimumSystemVersion>10.15</sparkle:minimumSystemVersion>
             <description><![CDATA[
-                <h3 id="bugfixes">Bug Fixes</h3>%0A<ul>%0A<li>修复某些场景下(safari地址栏)输入时，从中文切到英文模式下时，原码不会上屏和清除的问题 (<a href="https://github.com/qwertyyb/Fire/commit/7c708b370bed44f8f0a082a90ecf79aa280577ad">7c708b3</a>)</li>%0A</ul>%0A<h3 id="features">Features</h3>%0A<ul>%0A<li>支持临时英文模式(在中文输入模式下，按;键可以开启临时英文模式，输入英文字符和半角符号) (<a href="https://github.com/qwertyyb/Fire/commit/fe9df0086228839d7fca991ef539f808b0421ba8">fe9df00</a>)</li>%0A</ul>
+                <h3 id="bugfixes">Bug Fixes</h3>
+<ul>
+<li>修复某些场景下(safari地址栏)输入时，从中文切到英文模式下时，原码不会上屏和清除的问题 (<a href="https://github.com/qwertyyb/Fire/commit/7c708b370bed44f8f0a082a90ecf79aa280577ad">7c708b3</a>)</li>
+</ul>
+<h3 id="features">Features</h3>
+<ul>
+<li>支持临时英文模式(在中文输入模式下，按;键可以开启临时英文模式，输入英文字符和半角符号) (<a href="https://github.com/qwertyyb/Fire/commit/fe9df0086228839d7fca991ef539f808b0421ba8">fe9df00</a>)</li>
+</ul>
+
             ]]>
             </description>
             <enclosure url="https://github.com/qwertyyb/Fire/releases/latest/download/FireInstaller.zip"
