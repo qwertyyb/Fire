@@ -299,13 +299,14 @@ class FireInputController: IMKInputController {
 
     override func handle(_ event: NSEvent!, client sender: Any!) -> Bool {
         NSLog("[FireInputController] handle: \(event.debugDescription)")
-        
+
         // 在activateServer中有把IMKInputController绑定给CandidatesWindow
         // 然而在实际运行中发现，在Safari地址栏输入部分原码后，再按shift切到英文输入模式下时，候选窗消失了，但原码没有上屏
         // 排查发现，因为shift切换中英文是通过CandidatesWindow调用绑定的inputController方法实现的，而在safari地址栏时，接受键盘输入的inputController
         // 和CandidatesWindow绑定的inputController并不是同一个，所以出现了此问题
         // 这里猜测之所以会出现不一致，是因为在Safari地址栏输入场景下，会有多个TextInputClient而创建多个inputController, activateServer也会多次执行
-        // 但是activateServer的调用顺序并不能保证最后调用的就是接受输入事件的TextInputClient对应的inputController, 所以仅是在activateServer中绑定inputController是不行的，需要在此处再绑定一下
+        // 但是activateServer的调用顺序并不能保证最后调用的就是接受输入事件的TextInputClient对应的inputController
+        // 所以仅是在activateServer中绑定inputController是不行的，需要在此处再绑定一下
         CandidatesWindow.shared.inputController = self
 
         let handler = Utils.shared.processHandlers(handlers: [
@@ -334,12 +335,11 @@ class FireInputController: IMKInputController {
     // 更新候选窗口
     func refreshCandidatesWindow() {
         updateCandidates(client())
-        if Defaults[.wubiAutoCommit] && _candidates.count == 1 && _originalString.count >= 4 {
+        if Defaults[.wubiAutoCommit] && _candidates.count == 1 && _originalString.count >= 4,
+           let candidate = _candidates.first, candidate.type != .placeholder {
             // 满4码唯一候选词自动上屏
-            if let candidate = _candidates.first {
-                insertCandidate(candidate)
-                return
-            }
+            insertCandidate(candidate)
+            return
         }
         if !Defaults[.showCodeInWindow] && _candidates.count <= 0 {
             // 不在候选框显示输入码时，如果候选词为空，则不显示候选框
