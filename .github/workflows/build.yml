@@ -125,9 +125,6 @@ jobs:
       id: load_changelog
       run: |
         changelog=`cat tmp/changelog_html`
-        changelog="${changelog//'%'/%25}"
-        changelog="${changelog//$'\n'/%0A}"
-        changelog="${changelog//$'\r'/%0D}"
         echo "changelog_html=${changelog}" >> $GITHUB_OUTPUT
 
     - name: generate appcast.xml
