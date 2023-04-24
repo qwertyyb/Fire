@@ -3,26 +3,18 @@
     <channel>
         <title>Fire</title>
         <item>
-            <title>v0.15.0</title>
-            <pubDate>Sat, 22 Apr 2023 07:50:55 +0000</pubDate>
+            <title>v0.15.1</title>
+            <pubDate>Mon, 24 Apr 2023 05:22:13 +0000</pubDate>
             <sparkle:minimumSystemVersion>10.15</sparkle:minimumSystemVersion>
             <description><![CDATA[
-                <h3 id="bugfixes">Bug Fixes</h3>
-<ul>
-<li>修复某些场景下(safari地址栏)输入时，从中文切到英文模式下时，原码不会上屏和清除的问题 (<a href="https://github.com/qwertyyb/Fire/commit/7c708b370bed44f8f0a082a90ecf79aa280577ad">7c708b3</a>)</li>
-</ul>
-<h3 id="features">Features</h3>
-<ul>
-<li>支持临时英文模式(在中文输入模式下，按;键可以开启临时英文模式，输入英文字符和半角符号) (<a href="https://github.com/qwertyyb/Fire/commit/fe9df0086228839d7fca991ef539f808b0421ba8">fe9df00</a>)</li>
-</ul>
-
+                <h3 id="bugfixes">Bug Fixes</h3>%0A<ul>%0A<li>修复当开启满4码唯一候选词上屏和临时英文功能冲突的问题 (<a href="https://github.com/qwertyyb/Fire/commit/ab4393d11715d11fa6c6c3144b3acb7143cf9193">ab4393d</a>)</li>%0A</ul>
             ]]>
             </description>
             <enclosure url="https://github.com/qwertyyb/Fire/releases/latest/download/FireInstaller.zip"
-              sparkle:version="20230422074740"
-              sparkle:shortVersionString="v0.15.0"
-              length="5606645"
-              sparkle:edSignature="bzeZCgUm+4g8Yu06hxVcCCqqavKKqhV2uESgmJquukniHZH6KaVdJMz/UgRanDWg1sWmR1RnzkM0pMDHMTgfBA=="
+              sparkle:version="20230424051824"
+              sparkle:shortVersionString="v0.15.1"
+              length="5606856"
+              sparkle:edSignature="biQo8Fxu3gEAgVZX8kAh0hgSYoIo/VncbLvC9E7pJ6wC6qZyX671pGCQAFkfDW1+kc/ErQO1jZ9v7zGa81NGDg=="
               type="application/octet-stream"/>
         </item>
     </channel>
