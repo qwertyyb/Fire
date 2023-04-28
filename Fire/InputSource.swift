@@ -20,9 +20,12 @@ class InputSource {
     let kInputModeID = "com.qwertyyb.inputmethod.Fire"
 
     func registerInputSource() {
-        let installedLocationURL = NSURL(fileURLWithPath: installLocation)
-        TISRegisterInputSource(installedLocationURL as CFURL)
-        NSLog("register input source")
+        if !isEnabled() {
+            // 全新安装或未启用过，需要Register, 已启用的，不需要再次启用
+            let installedLocationURL = NSURL(fileURLWithPath: installLocation)
+            TISRegisterInputSource(installedLocationURL as CFURL)
+            NSLog("register input source")
+        }
     }
 
     private func transformTargetSource(_ inputSource: TISInputSource)
@@ -49,7 +52,6 @@ class InputSource {
                 let enableable = CFBooleanGetValue(Unmanaged<CFBoolean>.fromOpaque(
                     TISGetInputSourceProperty(result.inputSource, kTISPropertyInputSourceIsEnableCapable)
                 ).takeUnretainedValue())
-                NSLog("find input source: %@, enableable: \(enableable), selectable: \(selectable)", result.sourceID)
                 if forUsage == .enable && enableable {
                     return result
                 }
@@ -64,8 +66,16 @@ class InputSource {
         return nil
     }
 
-    func selectInputSource() {
+    func selectInputSource(callback: @escaping (Bool) -> Void) {
+        let maxTryTimes = 30
+        var tryTimes = 0
         Timer.scheduledTimer(withTimeInterval: 1, repeats: true) { timer in
+            if tryTimes > maxTryTimes {
+                timer.invalidate()
+                callback(false)
+                return
+            }
+            tryTimes += 1
             guard let result = self.findInputSource(forUsage: .selected) else {
                 return
             }
@@ -76,7 +86,7 @@ class InputSource {
             NSLog("Selected input source: %@, selected: \(isSelected)", result.sourceID)
             if isSelected {
                 timer.invalidate()
-                NSApp.terminate(nil)
+                callback(true)
             }
         }
     }
@@ -92,7 +102,6 @@ class InputSource {
             TISEnableInputSource(result.inputSource)
             NSLog("Enabled input source: %@", result.sourceID)
         }
-        selectInputSource()
     }
 
     func deactivateInputSource() {
@@ -102,6 +111,19 @@ class InputSource {
         TISDeselectInputSource(source.inputSource)
         TISDisableInputSource(source.inputSource)
         NSLog("Disable input source: %@", source.sourceID)
+    }
+
+    func onSelectChanged(callback: @escaping (Bool) -> Void) -> NSObjectProtocol {
+        let observer = DistributedNotificationCenter.default()
+            .addObserver(
+                forName: .init(String(kTISNotifySelectedKeyboardInputSourceChanged)),
+                 object: nil,
+                 queue: nil,
+                 using: { _ in
+                    callback(self.isSelected())
+                }
+            )
+        return observer
     }
 
     func isSelected() -> Bool {
@@ -115,6 +137,19 @@ class InputSource {
         let isSelected = CFBooleanGetValue(Unmanaged<CFBoolean>.fromOpaque(unsafeIsSelected).takeUnretainedValue())
 
         return isSelected
+    }
+
+    func isEnabled() -> Bool {
+        guard let result = findInputSource(forUsage: .enable) else {
+            return false
+        }
+        let unsafeIsEnabled = TISGetInputSourceProperty(
+            result.inputSource,
+            kTISPropertyInputSourceIsEnabled
+        ).assumingMemoryBound(to: CFBoolean.self)
+        let isEnabled = CFBooleanGetValue(Unmanaged<CFBoolean>.fromOpaque(unsafeIsEnabled).takeUnretainedValue())
+
+        return isEnabled
     }
 
     static let shared = InputSource()

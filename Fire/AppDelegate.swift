@@ -14,13 +14,15 @@ class AppDelegate: NSObject, NSApplicationDelegate {
 
     var fire: Fire!
     var statistics: Statistics!
-    let statusBar = StatusBar.shared
+    var statusBar: StatusBar!
 
     func installInputSource() {
         print("install input source")
-//        InputSource.shared.deactivateInputSource()
         InputSource.shared.registerInputSource()
         InputSource.shared.activateInputSource()
+        InputSource.shared.selectInputSource { _ in
+            NSApp.terminate(self)
+        }
     }
 
     func stop() {
@@ -62,6 +64,7 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         NSLog("[Fire] app is running")
         fire = Fire.shared
         statistics = Statistics.shared
+        statusBar = StatusBar.shared
     }
 
     func applicationWillTerminate(_ aNotification: Notification) {
