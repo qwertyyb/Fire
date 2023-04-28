@@ -11,6 +11,8 @@ import Defaults
 import Sparkle
 import SwiftUI
 
+internal let SQLITE_TRANSIENT = unsafeBitCast(-1, to: sqlite3_destructor_type.self)
+
 enum CandidatesDirection: Int, Decodable, Encodable {
     case vertical
     case horizontal

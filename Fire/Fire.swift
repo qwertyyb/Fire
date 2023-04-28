@@ -24,8 +24,6 @@ extension UserDefaults {
     }
 }
 
-internal let SQLITE_TRANSIENT = unsafeBitCast(-1, to: sqlite3_destructor_type.self)
-
 class Fire: NSObject {
     // 逻辑
     static let candidateInserted = Notification.Name("Fire.candidateInserted")
@@ -51,6 +49,16 @@ class Fire: NSObject {
         return nil
     }
 
+    override init() {
+        super.init()
+        _ = InputSource.shared.onSelectChanged { selected in
+            StatusBar.shared.refresh()
+            if selected {
+                self.toastCurrentMode()
+            }
+        }
+    }
+
     func toggleInputMode(_ nextInputMode: InputMode? = nil) {
         if nextInputMode != nil, self.inputMode == nextInputMode {
             return
@@ -61,11 +69,34 @@ class Fire: NSObject {
         } else {
             self.inputMode = inputMode == .enUS ? .zhhans : .enUS
         }
+        toastCurrentMode()
+        StatusBar.shared.refresh()
         NotificationCenter.default.post(name: Fire.inputModeChanged, object: nil, userInfo: [
             "oldVal": oldVal,
             "val": self.inputMode,
             "label": self.inputMode == .enUS ? "英" : "中"
         ])
+    }
+
+    func toastCurrentMode() {
+        let text = inputMode == .enUS ? "英" : "中"
+
+        // 针对当前界面没有输入框，或者有输入框，但是有可能导致提示窗超出屏幕无法显示的场景，兜底在鼠标前显示提示窗
+        var position = CandidatesWindow.shared.inputController?.getOriginPoint() ?? NSPoint.zero
+
+        let isVisible = NSScreen.screens.contains { screen in
+            let frame = screen.frame
+            return frame.minX < position.x && position.x < frame.maxX
+                && frame.minY < position.y && position.y < frame.maxY
+        }
+
+        NSLog("position: \(position), \(isVisible), \(NSEvent.mouseLocation)")
+
+        if !isVisible {
+            position = NSPoint(x: NSEvent.mouseLocation.x - 30, y: NSEvent.mouseLocation.y)
+        }
+
+        Utils.shared.toast?.show(text, position: position)
     }
 
     var server: IMKServer = IMKServer.init(name: kConnectionName, bundleIdentifier: Bundle.main.bundleIdentifier)
