@@ -13,17 +13,6 @@ import Defaults
 
 let kConnectionName = "Fire_1_Connection"
 
-extension UserDefaults {
-    @objc dynamic var codeMode: Int {
-        get {
-            return integer(forKey: "codeMode")
-        }
-        set {
-            set(newValue, forKey: "codeMode")
-        }
-    }
-}
-
 class Fire: NSObject {
     // 逻辑
     static let candidateInserted = Notification.Name("Fire.candidateInserted")
@@ -59,7 +48,7 @@ class Fire: NSObject {
         }
     }
 
-    func toggleInputMode(_ nextInputMode: InputMode? = nil) {
+    func toggleInputMode(_ nextInputMode: InputMode? = nil, showTip: Bool = true) {
         if nextInputMode != nil, self.inputMode == nextInputMode {
             return
         }
@@ -69,7 +58,9 @@ class Fire: NSObject {
         } else {
             self.inputMode = inputMode == .enUS ? .zhhans : .enUS
         }
-        toastCurrentMode()
+        if showTip {
+            toastCurrentMode()
+        }
         StatusBar.shared.refresh()
         NotificationCenter.default.post(name: Fire.inputModeChanged, object: nil, userInfo: [
             "oldVal": oldVal,
@@ -81,20 +72,9 @@ class Fire: NSObject {
     func toastCurrentMode() {
         let text = inputMode == .enUS ? "英" : "中"
 
-        // 针对当前界面没有输入框，或者有输入框，但是有可能导致提示窗超出屏幕无法显示的场景，兜底在鼠标前显示提示窗
-        var position = CandidatesWindow.shared.inputController?.getOriginPoint() ?? NSPoint.zero
-
-        let isVisible = NSScreen.screens.contains { screen in
-            let frame = screen.frame
-            return frame.minX < position.x && position.x < frame.maxX
-                && frame.minY < position.y && position.y < frame.maxY
-        }
-
-        NSLog("position: \(position), \(isVisible), \(NSEvent.mouseLocation)")
-
-        if !isVisible {
-            position = NSPoint(x: NSEvent.mouseLocation.x - 30, y: NSEvent.mouseLocation.y)
-        }
+        // 不用考虑getOriginPoint返回的坐标位于屏幕外的情况
+        // 这种情况一般说明，当前没有输入框可以输入，不需要关注输入法，所以提示窗显示在屏幕外也没有关系
+        let position = CandidatesWindow.shared.inputController?.getOriginPoint() ?? NSEvent.mouseLocation
 
         Utils.shared.toast?.show(text, position: position)
     }

@@ -20,14 +20,14 @@ extension FireInputController {
         guard let identifier = client()?.bundleIdentifier() else { return false }
         if let appSetting = Defaults[.appSettings][identifier],
          let mode = InputMode(rawValue: appSetting.inputModeSetting.rawValue) {
-            print("[FireInputController] activeClientInputMode from setting : \(identifier), \(mode)")
-            Fire.shared.toggleInputMode(mode)
+            NSLog("[FireInputController] activeClientInputMode from setting : \(identifier), \(mode)")
+            Fire.shared.toggleInputMode(mode, showTip: false)
             return currentMode != Fire.shared.inputMode
         }
         // 启用APP缓存设置
         if Defaults[.keepAppInputMode], let mode = inputModeCache[identifier] {
-            print("[FireInputController] activeClientInputMode from cache: \(identifier), \(mode)")
-            Fire.shared.toggleInputMode(mode)
+            NSLog("[FireInputController] activeClientInputMode from cache: \(identifier), \(mode)")
+            Fire.shared.toggleInputMode(mode, showTip: false)
             return currentMode != Fire.shared.inputMode
         }
         return false
@@ -58,7 +58,7 @@ extension FireInputController {
 
         let changed = activeCurrentClientInputMode()
 
-        if changed {
+        if changed && Defaults[.appInputModeTipShowTime] != .none || Defaults[.appInputModeTipShowTime] == .always {
             Fire.shared.toastCurrentMode()
         }
     }
