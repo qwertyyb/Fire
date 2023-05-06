@@ -84,6 +84,7 @@ struct ApplicationPane: View {
     @Default(.keepAppInputMode) private var keepAppInputMode
     @Default(.appSettings) private var appSettings
     @Default(.disableEnMode) private var disableEnMode
+    @Default(.appInputModeTipShowTime) private var appInputModeTipShowTime
 
     private func addApp() {
         let openPanel = NSOpenPanel()
@@ -114,6 +115,15 @@ struct ApplicationPane: View {
                         Text("自动切换")
                         Toggle("保持应用最后使用的输入模式", isOn: $keepAppInputMode)
                             .padding(.leading, 12)
+                    }
+                    HStack {
+                        Picker("显示提示", selection: $appInputModeTipShowTime) {
+                            Text("仅在变化时显示").tag(AppInputModeTipShowTime.onlyChanged)
+                            Text("总是显示").tag(AppInputModeTipShowTime.always)
+                            Text("不显示")
+                                .tag(AppInputModeTipShowTime.none)
+                        }
+                        Spacer(minLength: 240)
                     }
                     HStack {
                         Text("应用设置")

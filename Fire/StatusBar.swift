@@ -16,8 +16,6 @@ class StatusBar {
     static let shared = StatusBar()
 
     let statusItem: NSStatusItem
-    private var inputSourceChangedSubscription: AnyCancellable?
-    private var inputModeChangedSubscription: AnyCancellable?
     private var showInputModeStatusSubscript: AnyCancellable?
     private init() {
         // 输入法变化时，根据当前选中状态切换显示
@@ -28,44 +26,14 @@ class StatusBar {
 
         refreshVisibleStatus()
 
-        startEventsListener()
-
-        showInputModeStatusSubscript = Defaults.publisher(.showInputModeStatus).sink { event in
-            if event.newValue {
-                self.startEventsListener()
-            } else {
-                self.stopEventListener()
-            }
-            self.refreshVisibleStatus()
+        showInputModeStatusSubscript = Defaults.publisher(.showInputModeStatus).sink { _ in
+            self.refresh()
         }
     }
 
     deinit {
-        stopEventListener()
         showInputModeStatusSubscript?.cancel()
         showInputModeStatusSubscript = nil
-    }
-
-    private func startEventsListener() {
-        stopEventListener()
-        inputSourceChangedSubscription = DistributedNotificationCenter.default()
-            .publisher(for: Notification.Name(kTISNotifySelectedKeyboardInputSourceChanged as String))
-            .sink { _ in
-                self.statusItem.isVisible = InputSource.shared.isSelected()
-            }
-
-        // inputMode变化时，刷新标题
-        inputModeChangedSubscription = NotificationCenter.default.publisher(for: Fire.inputModeChanged)
-            .sink { _ in
-                self.refreshTitle()
-            }
-    }
-
-    private func stopEventListener() {
-        inputSourceChangedSubscription?.cancel()
-        inputModeChangedSubscription?.cancel()
-        inputModeChangedSubscription = nil
-        inputSourceChangedSubscription = nil
     }
 
     @objc func changeInputMode() {
@@ -77,6 +45,12 @@ class StatusBar {
     }
 
     private func refreshVisibleStatus() {
+        NSLog("StatusBar.refreshVisibleStatus: \(InputSource.shared.isSelected())")
         statusItem.isVisible = Defaults[.showInputModeStatus] && InputSource.shared.isSelected()
+    }
+
+    func refresh() {
+        refreshVisibleStatus()
+        refreshTitle()
     }
 }

@@ -11,6 +11,8 @@ import Defaults
 import Sparkle
 import SwiftUI
 
+internal let SQLITE_TRANSIENT = unsafeBitCast(-1, to: sqlite3_destructor_type.self)
+
 enum CandidatesDirection: Int, Decodable, Encodable {
     case vertical
     case horizontal
@@ -20,6 +22,13 @@ enum InputModeTipWindowType: Int, Decodable, Encodable {
     case followInput
     case centerScreen
     case none
+}
+
+// 应用切换时，显示输入模式框时机
+enum AppInputModeTipShowTime: Int, Decodable, Encodable {
+    case onlyChanged // 仅在切换后的输入模式与之前不一致时显示
+    case always // 应用切换即显示，无论有没有变化
+    case none // 不显示
 }
 
 enum ModifierKey: String, Codable {
@@ -110,6 +119,7 @@ extension Defaults.Keys {
 
     // 应用输入配置
     static let keepAppInputMode = Key<Bool>("keepAppInputMode", default: true)
+    static let appInputModeTipShowTime = Key<AppInputModeTipShowTime>("appInputModeTipShowTime", default: .onlyChanged)
     static let appSettings = Key<[String: ApplicationSettingItem]>(
         "AppSettings",
         default: [:]

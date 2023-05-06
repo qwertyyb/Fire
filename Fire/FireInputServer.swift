@@ -15,19 +15,22 @@ extension FireInputController {
     /**
     * 根据当前输入的应用改变输入模式
     */
-    private func activeCurrentClientInputMode() {
-        guard let identifier = client()?.bundleIdentifier() else { return }
+    private func activeCurrentClientInputMode() -> Bool {
+        let currentMode = Fire.shared.inputMode
+        guard let identifier = client()?.bundleIdentifier() else { return false }
         if let appSetting = Defaults[.appSettings][identifier],
          let mode = InputMode(rawValue: appSetting.inputModeSetting.rawValue) {
-            print("[FireInputController] activeClientInputMode from setting : \(identifier), \(mode)")
-            Fire.shared.toggleInputMode(mode)
-            return
+            NSLog("[FireInputController] activeClientInputMode from setting : \(identifier), \(mode)")
+            Fire.shared.toggleInputMode(mode, showTip: false)
+            return currentMode != Fire.shared.inputMode
         }
         // 启用APP缓存设置
         if Defaults[.keepAppInputMode], let mode = inputModeCache[identifier] {
-          print("[FireInputController] activeClientInputMode from cache: \(identifier), \(mode)")
-          Fire.shared.toggleInputMode(mode)
-      }
+            NSLog("[FireInputController] activeClientInputMode from cache: \(identifier), \(mode)")
+            Fire.shared.toggleInputMode(mode, showTip: false)
+            return currentMode != Fire.shared.inputMode
+        }
+        return false
     }
 
     private func savePreviousClientInputMode() {
@@ -53,7 +56,11 @@ extension FireInputController {
             return
         }
 
-        activeCurrentClientInputMode()
+        let changed = activeCurrentClientInputMode()
+
+        if changed && Defaults[.appInputModeTipShowTime] != .none || Defaults[.appInputModeTipShowTime] == .always {
+            Fire.shared.toastCurrentMode()
+        }
     }
     override func deactivateServer(_ sender: Any!) {
         clean()

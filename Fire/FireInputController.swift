@@ -115,11 +115,6 @@ class FireInputController: IMKInputController {
             insertText(_originalString)
 
             Fire.shared.toggleInputMode()
-
-            let text = inputMode == .zhhans ? "中" : "英"
-
-            // 在输入坐标处，显示中英切换提示
-            Utils.shared.toast?.show(text, position: getOriginPoint())
             return true
         }
         // 监听.flagsChanged事件只为切换中英文，其它情况不处理
@@ -389,7 +384,7 @@ class FireInputController: IMKInputController {
     }
 
     // 获取当前输入的光标位置
-    private func getOriginPoint() -> NSPoint {
+    func getOriginPoint() -> NSPoint {
         let xd: CGFloat = 0
         let yd: CGFloat = 4
         var rect = NSRect()
