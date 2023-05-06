@@ -3,6 +3,7 @@
 PROJECT_ROOT="$(cd "$(dirname "$BASH_SOURCE")/.."; pwd)"
 TARGET="Fire"
 WORKSPACE="$PROJECT_ROOT/${TARGET}.xcworkspace"
+APP_NAME="业火输入法"
 
 EXPORT_PATH="$PROJECT_ROOT/dist"
 EXPORT_ARCHIVE="$EXPORT_PATH/archive.xcarchive"

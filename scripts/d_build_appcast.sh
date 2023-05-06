@@ -40,7 +40,7 @@ cat>$EXPORT_PATH/appcast.xml<<EOF
 <?xml version="1.0" standalone="yes"?>
 <rss xmlns:sparkle="http://www.andymatuschak.org/xml-namespaces/sparkle" version="2.0">
     <channel>
-        <title>Fire</title>
+        <title>${APP_NAME}</title>
         <item>
             <title>${version}</title>
             <pubDate>$(date -R)</pubDate>

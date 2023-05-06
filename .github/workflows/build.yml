@@ -13,7 +13,7 @@ on:
 jobs:
   create_release:
     runs-on: ubuntu-latest
-    if: github.event.pull_request.merged == true && github.event.pull_request.base.ref == 'master'
+    if: github.event.pull_request.merged == true && github.event.pull_request.base.ref == 'master' || github.event_name == 'workflow_dispatch'
     steps:
       - uses: actions/checkout@v2
 
@@ -124,7 +124,7 @@ jobs:
     - name: load changelog to env
       id: load_changelog
       run: |
-        changelog=`cat tmp/changelog_html`
+        changelog=`cat tmp/changelog_html | xargs`
         echo "changelog_html=${changelog}" >> $GITHUB_OUTPUT
 
     - name: generate appcast.xml
