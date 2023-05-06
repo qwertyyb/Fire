@@ -72,9 +72,18 @@ class Fire: NSObject {
     func toastCurrentMode() {
         let text = inputMode == .enUS ? "英" : "中"
 
-        // 不用考虑getOriginPoint返回的坐标位于屏幕外的情况
-        // 这种情况一般说明，当前没有输入框可以输入，不需要关注输入法，所以提示窗显示在屏幕外也没有关系
-        let position = CandidatesWindow.shared.inputController?.getOriginPoint() ?? NSEvent.mouseLocation
+        // 针对当前界面没有输入框，或者有输入框，但是有可能导致提示窗超出屏幕无法显示的场景，不显示提示窗
+        let position = CandidatesWindow.shared.inputController?.getOriginPoint() ?? NSPoint.zero
+
+        let isVisible = NSScreen.screens.contains { screen in
+            let frame = screen.frame
+            return frame.minX < position.x && position.x < frame.maxX
+                && frame.minY < position.y && position.y < frame.maxY
+        }
+
+        if !isVisible {
+            return
+        }
 
         Utils.shared.toast?.show(text, position: position)
     }
