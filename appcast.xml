@@ -1,20 +1,20 @@
 <?xml version="1.0" standalone="yes"?>
 <rss xmlns:sparkle="http://www.andymatuschak.org/xml-namespaces/sparkle" version="2.0">
     <channel>
-        <title>Fire</title>
+        <title>业火输入法</title>
         <item>
-            <title>v0.15.1</title>
-            <pubDate>Mon, 24 Apr 2023 05:22:13 +0000</pubDate>
+            <title>v0.16.0</title>
+            <pubDate>Sat, 06 May 2023 05:24:02 +0000</pubDate>
             <sparkle:minimumSystemVersion>10.15</sparkle:minimumSystemVersion>
             <description><![CDATA[
-                <h3 id="bugfixes">Bug Fixes</h3>%0A<ul>%0A<li>修复当开启满4码唯一候选词上屏和临时英文功能冲突的问题 (<a href="https://github.com/qwertyyb/Fire/commit/ab4393d11715d11fa6c6c3144b3acb7143cf9193">ab4393d</a>)</li>%0A</ul>
+                <h3 id=bugfixes>Bug Fixes</h3> <ul> <li>修复安装后不可选中的问题，修复安装时可能卡死的问题 (<a href=https://github.com/qwertyyb/Fire/commit/c5970f29ea4a43abbd70f195be758ad750c776fa>c5970f2</a>)</li> <li>当没有输入框时，不显示中/英提示窗 (<a href=https://github.com/qwertyyb/Fire/commit/f5f52a594b29e5370cbdd3079a0abe1b1a207d79>f5f52a5</a>)</li> </ul> <h3 id=features>Features</h3> <ul> <li>从其它输入法切到当前输入法时，显示提示窗; 在切换应用时，输入模式有变化，显示提示窗 (<a href=https://github.com/qwertyyb/Fire/commit/23efdef3b104ba23f626dd32ec91fe6f53a8df80>23efdef</a>)</li> <li>支持配置是否在应用切换时，显示提示窗 (<a href=https://github.com/qwertyyb/Fire/commit/09e436fdb5ee1daf54795ea28448e38fa87cc403>09e436f</a>)</li> </ul>
             ]]>
             </description>
             <enclosure url="https://github.com/qwertyyb/Fire/releases/latest/download/FireInstaller.zip"
-              sparkle:version="20230424051824"
-              sparkle:shortVersionString="v0.15.1"
-              length="5606856"
-              sparkle:edSignature="biQo8Fxu3gEAgVZX8kAh0hgSYoIo/VncbLvC9E7pJ6wC6qZyX671pGCQAFkfDW1+kc/ErQO1jZ9v7zGa81NGDg=="
+              sparkle:version="20230506052003"
+              sparkle:shortVersionString="v0.16.0"
+              length="5608937"
+              sparkle:edSignature="3NtoOjLqP+J7276Lmi8/G7aKUHbUM6Y1a8xiR5effacJH6Z85uU8UdsUj/eNv2NHTJL78h6AuAatW5y2SWzgDA=="
               type="application/octet-stream"/>
         </item>
     </channel>
