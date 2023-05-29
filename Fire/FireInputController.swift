@@ -293,6 +293,7 @@ class FireInputController: IMKInputController {
     }
 
     override func handle(_ event: NSEvent!, client sender: Any!) -> Bool {
+        guard let event = event else { return }
         NSLog("[FireInputController] handle: \(event.debugDescription)")
 
         // 在activateServer中有把IMKInputController绑定给CandidatesWindow
