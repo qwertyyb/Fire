@@ -18,9 +18,41 @@ class FireInputController: IMKInputController {
     private var _candidates: [Candidate] = []
     private var _hasNext: Bool = false
     private var _lastInputIsNumber = false
+    internal var _isActivated = false
     internal var inputMode: InputMode {
         get { Fire.shared.inputMode }
         set(value) { Fire.shared.inputMode = value }
+    }
+
+    // MARK: - Constructor
+
+    /// 對用以設定委任物件的控制器型別進行初期化處理。
+    override public init() {
+        super.init()
+        construct(client: client())
+    }
+
+    /// 对用以设定委任物件的控制器型别进行初期化处理。
+    ///
+    /// inputClient 参数是客体应用侧存在的用以借由 IMKServer 伺服器向输入法传讯的物件。该物件始终遵守 IMKTextInput 协定。
+    /// - Remark: 所有由委任物件实装的「被协定要求实装的方法」都会有一个用来接受客体物件的参数。在 IMKInputController 内部的型别不需要接受这个参数，因为已经有「client()」这个参数存在了。
+    /// - Parameters:
+    ///   - server: IMKServer
+    ///   - delegate: 客体物件
+    ///   - inputClient: 用以接受输入的客体应用物件
+    override public init!(server: IMKServer!, delegate: Any!, client inputClient: Any!) {
+        super.init(server: server, delegate: delegate, client: inputClient)
+        let theClient = inputClient as? (IMKTextInput & NSObjectProtocol)
+        construct(client: theClient)
+    }
+
+    /// 所有建构子都会执行的共用部分，在 super.init() 之后执行。
+    private func construct(client theClient: (IMKTextInput & NSObjectProtocol)? = nil) {
+        DispatchQueue.main.async { [self] in
+            // 下述两行很有必要，否则输入法会在手动重启之后无法立刻生效。
+            let maybeClient = theClient ?? client()
+            activateServer(maybeClient)
+        }
     }
 
     internal var temp: (
