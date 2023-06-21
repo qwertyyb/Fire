@@ -241,8 +241,13 @@ class FireInputController: IMKInputController {
     private func enterKeyHandler(event: NSEvent) -> Bool? {
         // 回车键输入原字符
         if event.keyCode == kVK_Return && _originalString.count > 0 {
-            // 插入原字符
-            insertText(_originalString)
+            // 临时英文模式时，回车时删除前面的分号
+            if _originalString.first == DictManager.shared.tempEnTriggerPunctuation, let first = self._candidates.first {
+                insertCandidate(first)
+            } else {
+                // 插入原字符
+                insertText(_originalString)
+            }
             return true
         }
         return nil
