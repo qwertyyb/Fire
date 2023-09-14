@@ -6,10 +6,10 @@
 //  Copyright © 2020 qwertyyb. All rights reserved.
 //
 
-import Cocoa
-import SwiftUI
-import InputMethodKit
+import AppKit
 import Defaults
+import InputMethodKit
+import SwiftUI
 
 enum HandlerStatus {
     case next

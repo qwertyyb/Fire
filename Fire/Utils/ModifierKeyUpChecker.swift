@@ -6,9 +6,8 @@
 //  Copyright © 2020 qwertyyb. All rights reserved.
 //
 
-import Foundation
+import AppKit
 import Carbon
-import Cocoa
 
 extension Date {
     static func - (lhs: Date, rhs: Date) -> TimeInterval {

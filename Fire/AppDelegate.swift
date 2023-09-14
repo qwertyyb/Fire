@@ -6,7 +6,7 @@
 //  Copyright © 2019 qwertyyb. All rights reserved.
 //
 
-import Cocoa
+import AppKit
 import InputMethodKit
 
 @NSApplicationMain
