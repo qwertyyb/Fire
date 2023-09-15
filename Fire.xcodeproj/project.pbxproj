@@ -3,7 +3,7 @@
 	archiveVersion = 1;
 	classes = {
 	};
-	objectVersion = 52;
+	objectVersion = 53;
 	objects = {
 
 /* Begin PBXBuildFile section */
@@ -11,21 +11,25 @@
 		4500AC64286F2B42006F3FCC /* UserDictPane.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4500AC63286F2B42006F3FCC /* UserDictPane.swift */; };
 		4500AC68287036CB006F3FCC /* DictManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4500AC67287036CB006F3FCC /* DictManager.swift */; };
 		450B7D9A26A2847D00808A4D /* ApplicationPane.swift in Sources */ = {isa = PBXBuildFile; fileRef = 450B7D9926A2847D00808A4D /* ApplicationPane.swift */; };
+		451733772AB46FC200327482 /* Security.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 451733762AB46FC200327482 /* Security.framework */; };
 		451E6048232E227B007B0463 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 451E6047232E227B007B0463 /* AppDelegate.swift */; };
 		451E6056232E24A5007B0463 /* FireInputController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 451E6055232E24A5007B0463 /* FireInputController.swift */; };
 		451E605D232E3A3C007B0463 /* MainMenu.xib in Resources */ = {isa = PBXBuildFile; fileRef = 451E605C232E3A3C007B0463 /* MainMenu.xib */; };
 		451E605F232E400B007B0463 /* Fire.swift in Sources */ = {isa = PBXBuildFile; fileRef = 451E605E232E400B007B0463 /* Fire.swift */; };
 		453377E52849E76A0064E4F2 /* StatusBar.swift in Sources */ = {isa = PBXBuildFile; fileRef = 453377E42849E76A0064E4F2 /* StatusBar.swift */; };
 		45449B4C23535ED000C9EFEF /* InputMethodKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 451E6058232E2787007B0463 /* InputMethodKit.framework */; };
+		454E1C062AB47A1E00918552 /* Security.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 451733762AB46FC200327482 /* Security.framework */; };
 		45577E502543F03F0064325B /* build.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45577E4F2543F03F0064325B /* build.swift */; };
 		45577E562543F4060064325B /* wb_table.txt in Resources */ = {isa = PBXBuildFile; fileRef = 45577E552543F4060064325B /* wb_table.txt */; };
-		45577E6225442E240064325B /* main.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 45577E6125442E240064325B /* main.cpp */; };
 		45577E8425443E290064325B /* TableBuilder in CopyFiles */ = {isa = PBXBuildFile; fileRef = 45577E5F25442E240064325B /* TableBuilder */; settings = {ATTRIBUTES = (CodeSignOnCopy, ); }; };
 		45577E92254448B80064325B /* py_table.txt in Resources */ = {isa = PBXBuildFile; fileRef = 45577E91254448B80064325B /* py_table.txt */; };
 		45577EA1254552110064325B /* ThesaurusPane.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45577EA0254552110064325B /* ThesaurusPane.swift */; };
 		45577EB0254575480064325B /* types.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45577EAF254575480064325B /* types.swift */; };
 		45577EB4254576720064325B /* FirePreferencesController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45577EB3254576720064325B /* FirePreferencesController.swift */; };
 		45587F2D24E8FBFB005F291B /* Utils.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45587F2C24E8FBFB005F291B /* Utils.swift */; };
+		456985AA2AB482910054AAF1 /* main.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 45577E6125442E240064325B /* main.cpp */; };
+		456985AB2AB482A10054AAF1 /* sqlite3.c in Sources */ = {isa = PBXBuildFile; fileRef = 456985A72AB4813D0054AAF1 /* sqlite3.c */; };
+		456985AC2AB482A70054AAF1 /* sqlite3.h in Sources */ = {isa = PBXBuildFile; fileRef = 456985A82AB4813D0054AAF1 /* sqlite3.h */; };
 		45752EBE253C98AB0009F2F0 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 45752EBD253C98AB0009F2F0 /* Assets.xcassets */; };
 		459DE990232EB26600A3ACD1 /* CandidatesView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 459DE98E232EB26500A3ACD1 /* CandidatesView.swift */; };
 		459DE991232EB26600A3ACD1 /* CandidatesWindow.swift in Sources */ = {isa = PBXBuildFile; fileRef = 459DE98F232EB26500A3ACD1 /* CandidatesWindow.swift */; };
@@ -87,6 +91,7 @@
 		4500AC63286F2B42006F3FCC /* UserDictPane.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserDictPane.swift; sourceTree = "<group>"; };
 		4500AC67287036CB006F3FCC /* DictManager.swift */ = {isa = PBXFileReference; indentWidth = 4; lastKnownFileType = sourcecode.swift; path = DictManager.swift; sourceTree = "<group>"; };
 		450B7D9926A2847D00808A4D /* ApplicationPane.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ApplicationPane.swift; sourceTree = "<group>"; };
+		451733762AB46FC200327482 /* Security.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Security.framework; path = System/Library/Frameworks/Security.framework; sourceTree = SDKROOT; };
 		451E6044232E227B007B0463 /* Fire.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Fire.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		451E6047232E227B007B0463 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		451E604F232E227C007B0463 /* Fire.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = Fire.entitlements; sourceTree = "<group>"; };
@@ -104,6 +109,9 @@
 		45577EAF254575480064325B /* types.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = types.swift; sourceTree = "<group>"; };
 		45577EB3254576720064325B /* FirePreferencesController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FirePreferencesController.swift; sourceTree = "<group>"; };
 		45587F2C24E8FBFB005F291B /* Utils.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Utils.swift; sourceTree = "<group>"; };
+		4569859D2AB47BAD0054AAF1 /* sqlite3.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = sqlite3.h; path = TableBuilder/SQLCipher/sqlite3.h; sourceTree = "<group>"; };
+		456985A72AB4813D0054AAF1 /* sqlite3.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = sqlite3.c; sourceTree = "<group>"; };
+		456985A82AB4813D0054AAF1 /* sqlite3.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = sqlite3.h; sourceTree = "<group>"; };
 		45752EBD253C98AB0009F2F0 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		459DE98E232EB26500A3ACD1 /* CandidatesView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CandidatesView.swift; sourceTree = "<group>"; };
 		459DE98F232EB26500A3ACD1 /* CandidatesWindow.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CandidatesWindow.swift; sourceTree = "<group>"; };
@@ -131,6 +139,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				451733772AB46FC200327482 /* Security.framework in Frameworks */,
 				676C7E912AB3640B008C72D4 /* NanoID in Frameworks */,
 				676C7E8B2AB362D7008C72D4 /* Defaults in Frameworks */,
 				45449B4C23535ED000C9EFEF /* InputMethodKit.framework in Frameworks */,
@@ -144,6 +153,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				454E1C062AB47A1E00918552 /* Security.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -203,6 +213,8 @@
 		451E6057232E2786007B0463 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				4569859D2AB47BAD0054AAF1 /* sqlite3.h */,
+				451733762AB46FC200327482 /* Security.framework */,
 				451E6058232E2787007B0463 /* InputMethodKit.framework */,
 			);
 			name = Frameworks;
@@ -229,6 +241,7 @@
 		45577E6025442E240064325B /* TableBuilder */ = {
 			isa = PBXGroup;
 			children = (
+				456985A62AB4813D0054AAF1 /* SQLCipher */,
 				45577E6125442E240064325B /* main.cpp */,
 			);
 			path = TableBuilder;
@@ -247,6 +260,15 @@
 				4500AC63286F2B42006F3FCC /* UserDictPane.swift */,
 			);
 			path = Preferences;
+			sourceTree = "<group>";
+		};
+		456985A62AB4813D0054AAF1 /* SQLCipher */ = {
+			isa = PBXGroup;
+			children = (
+				456985A72AB4813D0054AAF1 /* sqlite3.c */,
+				456985A82AB4813D0054AAF1 /* sqlite3.h */,
+			);
+			path = SQLCipher;
 			sourceTree = "<group>";
 		};
 		45DB6EC527E5B8AB00A39925 /* Theme */ = {
@@ -321,9 +343,10 @@
 		451E603C232E227B007B0463 /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
+				BuildIndependentTargetsInParallel = YES;
 				DefaultBuildSystemTypeForWorkspace = Latest;
 				LastSwiftUpdateCheck = 1030;
-				LastUpgradeCheck = 1200;
+				LastUpgradeCheck = 1430;
 				ORGANIZATIONNAME = qwertyyb;
 				TargetAttributes = {
 					451E6043232E227B007B0463 = {
@@ -442,7 +465,9 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				45577E6225442E240064325B /* main.cpp in Sources */,
+				456985AC2AB482A70054AAF1 /* sqlite3.h in Sources */,
+				456985AB2AB482A10054AAF1 /* sqlite3.c in Sources */,
+				456985AA2AB482910054AAF1 /* main.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -528,6 +553,7 @@
 				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
 				MTL_FAST_MATH = YES;
 				ONLY_ACTIVE_ARCH = YES;
+				OTHER_LDFLAGS = "$(inherited)";
 				SDKROOT = macosx;
 				SWIFT_ACTIVE_COMPILATION_CONDITIONS = DEBUG;
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
@@ -585,6 +611,7 @@
 				MACOSX_DEPLOYMENT_TARGET = 10.15;
 				MTL_ENABLE_DEBUG_INFO = NO;
 				MTL_FAST_MATH = YES;
+				OTHER_LDFLAGS = "$(inherited)";
 				SDKROOT = macosx;
 				SWIFT_COMPILATION_MODE = wholemodule;
 				SWIFT_OPTIMIZATION_LEVEL = "-O";
@@ -604,6 +631,11 @@
 				DEVELOPMENT_TEAM = T68XK6867P;
 				ENABLE_HARDENED_RUNTIME = YES;
 				EXCLUDED_ARCHS = "";
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+					"SQLITE_HAS_CODEC=1",
+				);
 				INFOPLIST_FILE = Fire/Info.plist;
 				LD_MAP_FILE_PATH = "";
 				LD_RUNPATH_SEARCH_PATHS = (
@@ -611,6 +643,12 @@
 					"@executable_path/../Frameworks",
 				);
 				MACOSX_DEPLOYMENT_TARGET = 10.15;
+				OTHER_CFLAGS = (
+					"-DSQLITE_HAS_CODEC",
+					"-DSQLITE_TEMP_STORE=3",
+					"-DSQLCIPHER_CRYPTO_CC",
+					"-DNDEBUG",
+				);
 				PODS_CONFIGURATION_BUILD_DIR = "${PODS_BUILD_DIR}/$(CONFIGURATION)$(EFFECTIVE_PLATFORM_NAME)";
 				PRODUCT_BUNDLE_IDENTIFIER = com.qwertyyb.inputmethod.Fire;
 				PRODUCT_NAME = "$(TARGET_NAME)";
@@ -633,6 +671,7 @@
 				DEVELOPMENT_TEAM = T68XK6867P;
 				ENABLE_HARDENED_RUNTIME = YES;
 				EXCLUDED_ARCHS = "";
+				GCC_PREPROCESSOR_DEFINITIONS = "SQLITE_HAS_CODEC=1";
 				INFOPLIST_FILE = Fire/Info.plist;
 				LD_MAP_FILE_PATH = "";
 				LD_RUNPATH_SEARCH_PATHS = (
@@ -641,6 +680,12 @@
 				);
 				MACOSX_DEPLOYMENT_TARGET = 10.15;
 				ONLY_ACTIVE_ARCH = NO;
+				OTHER_CFLAGS = (
+					"-DSQLITE_HAS_CODEC",
+					"-DSQLITE_TEMP_STORE=3",
+					"-DSQLCIPHER_CRYPTO_CC",
+					"-DNDEBUG",
+				);
 				PRODUCT_BUNDLE_IDENTIFIER = com.qwertyyb.inputmethod.Fire;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
@@ -654,10 +699,24 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				CODE_SIGN_IDENTITY = "Apple Development";
+				"CODE_SIGN_IDENTITY[sdk=macosx*]" = "-";
 				CODE_SIGN_STYLE = Automatic;
+				DEAD_CODE_STRIPPING = YES;
 				DEVELOPMENT_TEAM = T68XK6867P;
 				ENABLE_HARDENED_RUNTIME = YES;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+					"SQLITE_HAS_CODEC=1",
+				);
 				MACH_O_TYPE = mh_execute;
+				MACOSX_DEPLOYMENT_TARGET = 10.15;
+				OTHER_CFLAGS = (
+					"-DSQLITE_HAS_CODEC",
+					"-DSQLITE_TEMP_STORE=3",
+					"-DSQLCIPHER_CRYPTO_CC",
+					"-DNDEBUG",
+				);
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
 				SKIP_INSTALL = YES;
@@ -669,9 +728,17 @@
 			buildSettings = {
 				CODE_SIGN_IDENTITY = "Developer ID Application";
 				CODE_SIGN_STYLE = Manual;
+				DEAD_CODE_STRIPPING = YES;
 				DEVELOPMENT_TEAM = T68XK6867P;
 				ENABLE_HARDENED_RUNTIME = YES;
 				MACH_O_TYPE = mh_execute;
+				MACOSX_DEPLOYMENT_TARGET = 10.15;
+				OTHER_CFLAGS = (
+					"-DSQLITE_HAS_CODEC",
+					"-DSQLITE_TEMP_STORE=3",
+					"-DSQLCIPHER_CRYPTO_CC",
+					"-DNDEBUG",
+				);
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
 				SKIP_INSTALL = YES;
