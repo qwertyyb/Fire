@@ -5,8 +5,6 @@ source "$PROJECT_ROOT/scripts/common.sh"
 
 INSTALLER_ROOT="$EXPORT_PATH/installer"
 
-BUNDLE_IDENTIFIER='com.qwertyyb.inputmethod.Fire'
-INSTALL_LOCATION='/Library/Input Methods'
 Version=`date "+%Y%m%d%H%M%S"`
 
 if [[ $EXPORT_PATH == "" ]]

@@ -2,8 +2,11 @@
 
 PROJECT_ROOT="$(cd "$(dirname "$BASH_SOURCE")/.."; pwd)"
 TARGET="Fire"
-WORKSPACE="$PROJECT_ROOT/${TARGET}.xcworkspace"
+PROJECT="$PROJECT_ROOT/${TARGET}.xcodeproj"
 APP_NAME="业火输入法"
+
+BUNDLE_IDENTIFIER="com.qwertyyb.inputmethod.Fire"
+INSTALL_LOCATION="/Library/Input Methods"
 
 EXPORT_PATH="$PROJECT_ROOT/dist"
 EXPORT_ARCHIVE="$EXPORT_PATH/archive.xcarchive"
@@ -13,3 +16,4 @@ EXPORT_INSTALLER="$EXPORT_PATH/FireInstaller.pkg"
 EXPORT_INSTALLER_ZIP="$EXPORT_PATH/FireInstaller.zip"
 
 echo "PROJECT_ROOT=$PROJECT_ROOT"
+echo "EXPORT_PATH=$EXPORT_PATH"
