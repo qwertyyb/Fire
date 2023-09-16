@@ -23,12 +23,12 @@ echo "version"
 echo $version
 echo $vv
 
-xcodebuild archive -project "$PROJECT" -scheme Fire -archivePath "$EXPORT_ARCHIVE" -configuration Release || { echo "Archive Failed:"; exit 1; }
+xcodebuild archive -project "$PROJECT" -scheme Fire -archivePath "$EXPORT_ARCHIVE" -configuration Release $BUILD_FLAG || { echo "Archive Failed:"; exit 1; }
 
 # # cp -a ./archive.xcarchive/Products/Applications/*.app "${BUILD_DIR}"
 
 # # rm -rf ./archive.xcarchive
 
-/usr/bin/xcodebuild -exportArchive -archivePath "$EXPORT_ARCHIVE" -exportOptionsPlist "$PROJECT_ROOT/scripts/ExportOptions.plist" -exportPath "$EXPORT_PATH" || { echo "Export Archive Failed : xcodebuild exportArchive action failed"; exit 1; }
+/usr/bin/xcodebuild -exportArchive -archivePath "$EXPORT_ARCHIVE" -exportOptionsPlist "$PROJECT_ROOT/scripts/ExportOptions.plist" -exportPath "$EXPORT_PATH" $BUILD_FLAG || { echo "Export Archive Failed : xcodebuild exportArchive action failed"; exit 1; }
 
 ditto -c -k --sequesterRsrc --keepParent "$EXPORT_APP" "$EXPORT_ZIP"

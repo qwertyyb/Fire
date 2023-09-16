@@ -9,6 +9,7 @@
 /* Begin PBXBuildFile section */
 		6753419E2AB54A3A00757F76 /* main.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 6753419D2AB54A3A00757F76 /* main.cpp */; };
 		675341A72AB54AEA00757F76 /* sqlite3.c in Sources */ = {isa = PBXBuildFile; fileRef = 675341A52AB54AEA00757F76 /* sqlite3.c */; };
+		67B514142AB590710084C42B /* TableBuilder in CopyFiles */ = {isa = PBXBuildFile; fileRef = 6753419B2AB54A3A00757F76 /* TableBuilder */; settings = {ATTRIBUTES = (CodeSignOnCopy, ); }; };
 		67C99FEC2AB53DB2000B5281 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 67C99FEB2AB53DB2000B5281 /* AppDelegate.swift */; };
 		67C99FEE2AB53DB4000B5281 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 67C99FED2AB53DB4000B5281 /* Assets.xcassets */; };
 		67C99FFD2AB53E62000B5281 /* ToastWindow.swift in Sources */ = {isa = PBXBuildFile; fileRef = 67C99FF92AB53E62000B5281 /* ToastWindow.swift */; };
@@ -59,6 +60,7 @@
 			dstPath = "";
 			dstSubfolderSpec = 6;
 			files = (
+				67B514142AB590710084C42B /* TableBuilder in CopyFiles */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -469,10 +471,11 @@
 		675341A02AB54A3A00757F76 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				CODE_SIGN_STYLE = Automatic;
-				DEVELOPMENT_TEAM = T68XK6867P;
+				CODE_SIGN_STYLE = Manual;
+				DEVELOPMENT_TEAM = "";
 				ENABLE_HARDENED_RUNTIME = YES;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE_SPECIFIER = "";
 				SKIP_INSTALL = YES;
 			};
 			name = Debug;
@@ -480,10 +483,13 @@
 		675341A12AB54A3A00757F76 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				CODE_SIGN_STYLE = Automatic;
-				DEVELOPMENT_TEAM = T68XK6867P;
+				"CODE_SIGN_IDENTITY[sdk=macosx*]" = "Developer ID Application";
+				CODE_SIGN_STYLE = Manual;
+				DEVELOPMENT_TEAM = "";
+				"DEVELOPMENT_TEAM[sdk=macosx*]" = T68XK6867P;
 				ENABLE_HARDENED_RUNTIME = YES;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE_SPECIFIER = "";
 				SKIP_INSTALL = YES;
 			};
 			name = Release;
@@ -607,6 +613,7 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_ENTITLEMENTS = Fire/Fire.entitlements;
+				"CODE_SIGN_IDENTITY[sdk=macosx*]" = "-";
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
 				CURRENT_PROJECT_VERSION = 1;
@@ -652,11 +659,13 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_ENTITLEMENTS = Fire/Fire.entitlements;
-				CODE_SIGN_STYLE = Automatic;
+				"CODE_SIGN_IDENTITY[sdk=macosx*]" = "Developer ID Application";
+				CODE_SIGN_STYLE = Manual;
 				COMBINE_HIDPI_IMAGES = YES;
 				CURRENT_PROJECT_VERSION = 1;
 				DEPLOYMENT_LOCATION = NO;
-				DEVELOPMENT_TEAM = T68XK6867P;
+				DEVELOPMENT_TEAM = "";
+				"DEVELOPMENT_TEAM[sdk=macosx*]" = T68XK6867P;
 				DSTROOT = "/tmp/$(PROJECT_NAME).dst";
 				ENABLE_HARDENED_RUNTIME = YES;
 				GCC_PREPROCESSOR_DEFINITIONS = "SQLITE_HAS_CODEC=1";
@@ -679,6 +688,7 @@
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = cn.qwertyyb.inputmethod.Fire;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE_SPECIFIER = "";
 				SKIP_INSTALL = NO;
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_OBJC_BRIDGING_HEADER = "Fire/Bridging-Header.h";

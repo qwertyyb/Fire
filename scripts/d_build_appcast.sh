@@ -13,7 +13,7 @@ download_url='https://github.com/qwertyyb/Fire/releases/latest/download/FireInst
 
 version=$(git describe --tags `git rev-list --tags --max-count=1`)
 
-str=$($PROJECT_ROOT/Pods/Sparkle/bin/sign_update -s "${sparkle_key}" "$EXPORT_INSTALLER_ZIP")
+str=$($PROJECT_ROOT/bin/sign_update -s "${sparkle_key}" "$EXPORT_INSTALLER_ZIP")
 
 sign=$(echo $str | grep "edSignature=\"[^\"]*" -o | grep "\"[^\"]*" -o)
 sign=${sign#\"}

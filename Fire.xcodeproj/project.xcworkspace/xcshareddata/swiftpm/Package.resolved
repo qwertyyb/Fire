@@ -1,0 +1,50 @@
+{
+  "pins" : [
+    {
+      "identity" : "defaults",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/sindresorhus/Defaults",
+      "state" : {
+        "branch" : "main",
+        "revision" : "3efef5a28ebdbbe922d4a2049493733ed14475a6"
+      }
+    },
+    {
+      "identity" : "keychain-swift",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/evgenyneu/keychain-swift.git",
+      "state" : {
+        "revision" : "d108a1fa6189e661f91560548ef48651ed8d93b9",
+        "version" : "20.0.0"
+      }
+    },
+    {
+      "identity" : "nanoid",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/Tundaware/NanoID.git",
+      "state" : {
+        "revision" : "88fbf9ae2cb3962f0085ff29ad3b4a908df31f1f",
+        "version" : "1.0.4"
+      }
+    },
+    {
+      "identity" : "settings",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/sindresorhus/Settings",
+      "state" : {
+        "revision" : "b99f45cba818a9d483fb58e9b31de5dee799e315",
+        "version" : "3.0.3"
+      }
+    },
+    {
+      "identity" : "sparkle",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/sparkle-project/Sparkle",
+      "state" : {
+        "revision" : "c0933a516b420806e9216e71bd13ba76c54f0de6",
+        "version" : "1.26.0"
+      }
+    }
+  ],
+  "version" : 2
+}

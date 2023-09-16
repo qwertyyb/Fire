@@ -6,36 +6,34 @@ on:
       - master
   pull_request:
     types: [opened, reopened, synchronize]
+  workflow_dispatch:
+    inputs:
+      disable_sign:
+        description: '禁用签名'
+        required: false
+        type: boolean
 
 jobs:
   build-test:
-    runs-on: macOS-latest
+    runs-on: macos-13
     
     steps:
     - uses: actions/checkout@v1
 
     - name: switch xcode version
-      run: sudo xcode-select --switch /Applications/Xcode_13.2.1.app
-    
-    - uses: actions/cache@v2
-      with:
-        path: Pods
-        key: ${{ runner.os }}-pods-${{ hashFiles('**/Podfile.lock') }}
-        restore-keys: |
-          ${{ runner.os }}-pods-
-
-    - name: install depencies
-      run: pod install
+      run: sudo xcode-select --switch /Applications/Xcode_14.3.1.app
     
     - name: import application certificate
       id: keychain
       uses: apple-actions/import-codesign-certs@v1
+      if: ${{ !inputs.disable_sign && github.actor_id == github.repository_owner_id }}
       with: 
         p12-file-base64: ${{ secrets.CERTIFICATES_P12 }}
         p12-password: ${{ secrets.CERTIFICATES_P12_PASSWORD }}
 
     - name: import installer certificate
       uses: apple-actions/import-codesign-certs@v1
+      if: ${{ !inputs.disable_sign && github.actor_id == github.repository_owner_id }}
       with:
         create-keychain: false
         keychain-password: ${{ steps.keychain.outputs.keychain-password }}
@@ -43,12 +41,15 @@ jobs:
         p12-password: ${{ secrets.CERTIFICATES_INSTALLER_P12_PASSWORD }}
 
     - name: build Fire.app
+      env:
+        USE_CODE_SIGN: ${{ !inputs.disable_sign && github.actor_id == github.repository_owner_id && 'enable' || 'disable' }}
       run: ./scripts/a_build_app.sh
 
     - name: build FireInstaller.pkg
       run: ./scripts/b_build_installer.sh
 
     - name: generate appcast.xml
+      if: ${{ !inputs.disable_sign && github.actor_id == github.repository_owner_id }}
       env:
         sparkle_key: ${{ secrets.sparkle_key }}
       run: ./scripts/d_build_appcast.sh
