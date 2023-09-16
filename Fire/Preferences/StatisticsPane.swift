@@ -7,7 +7,7 @@
 //
 
 import SwiftUI
-import Preferences
+import Settings
 import Defaults
 import Combine
 
@@ -223,8 +223,8 @@ struct StatisticsPane: View {
     }
 
     var body: some View {
-        Preferences.Container(contentWidth: 450) {
-            Preferences.Section(title: "") {
+        Settings.Container(contentWidth: 450) {
+            Settings.Section(title: "") {
                 VStack(alignment: .leading) {
                     HStack(alignment: .center) {
                         Toggle("启用统计", isOn: $enableStatistics)

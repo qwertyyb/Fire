@@ -9,7 +9,6 @@
 import SwiftUI
 import InputMethodKit
 import Sparkle
-import Preferences
 import Defaults
 
 typealias NotificationObserver = (name: Notification.Name, callback: (_ notification: Notification) -> Void)
@@ -293,7 +292,7 @@ class FireInputController: IMKInputController {
     }
 
     override func handle(_ event: NSEvent!, client sender: Any!) -> Bool {
-        guard let event = event else { return }
+        guard let event = event else { return false }
         NSLog("[FireInputController] handle: \(event.debugDescription)")
 
         // 在activateServer中有把IMKInputController绑定给CandidatesWindow

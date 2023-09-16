@@ -60,7 +60,7 @@ jobs:
           retention-days: 2
 
   build_binary:
-    runs-on: macOS-latest
+    runs-on: macos-13
     needs: create_release
 
     steps:
@@ -76,17 +76,7 @@ jobs:
         git checkout $version
 
     - name: switch xcode version
-      run: sudo xcode-select --switch /Applications/Xcode_13.2.1.app
-    
-    - uses: actions/cache@v2
-      with:
-        path: Pods
-        key: ${{ runner.os }}-pods-${{ hashFiles('**/Podfile.lock') }}
-        restore-keys: |
-          ${{ runner.os }}-pods-
-  
-    - name: install depencies
-      run: pod install
+      run: sudo xcode-select --switch /Applications/Xcode_14.3.1.app
     
     - name: import application certificate
       id: keychain

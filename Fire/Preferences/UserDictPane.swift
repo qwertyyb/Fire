@@ -7,7 +7,7 @@
 //
 
 import SwiftUI
-import Preferences
+import Settings
 import Combine
 
 class UserDictTextModel: ObservableObject {
@@ -32,8 +32,8 @@ struct UserDictPane: View {
     @StateObject private var userDictTextModel = UserDictTextModel()
     @State private var saved = false
     var body: some View {
-        Preferences.Container(contentWidth: 450) {
-            Preferences.Section(title: "") {
+        Settings.Container(contentWidth: 450) {
+            Settings.Section(title: "") {
                 Text("用户词库")
                 if #available(macOS 11.0, *) {
                     TextEditor(text: $userDictTextModel.text)

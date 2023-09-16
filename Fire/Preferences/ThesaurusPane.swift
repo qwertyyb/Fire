@@ -7,7 +7,7 @@
 //
 
 import SwiftUI
-import Preferences
+import Settings
 import Defaults
 
 struct ThesaurusPane: View {
@@ -34,8 +34,8 @@ struct ThesaurusPane: View {
     }
 
     var body: some View {
-        Preferences.Container(contentWidth: 450.0) {
-            Preferences.Section(title: "") {
+        Settings.Container(contentWidth: 450.0) {
+            Settings.Section(title: "") {
                 VStack(alignment: .leading) {
                     GroupBox(label: Text("词库设置")) {
                         VStack(spacing: 6) {

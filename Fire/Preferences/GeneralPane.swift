@@ -7,7 +7,7 @@
 //
 
 import SwiftUI
-import Preferences
+import Settings
 import Defaults
 
 struct GeneralPane: View {
@@ -26,8 +26,8 @@ struct GeneralPane: View {
     @Default(.showInputModeStatus) private var showInputModeStatus
 
     var body: some View {
-        Preferences.Container(contentWidth: 450.0) {
-            Preferences.Section(title: "") {
+        Settings.Container(contentWidth: 450.0) {
+            Settings.Section(title: "") {
                 VStack(alignment: .leading, spacing: 18) {
                     GroupBox(label: Text("编码")) {
                         VStack(spacing: 12) {

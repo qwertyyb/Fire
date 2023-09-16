@@ -13,25 +13,25 @@ import SwiftUI
 
 internal let SQLITE_TRANSIENT = unsafeBitCast(-1, to: sqlite3_destructor_type.self)
 
-enum CandidatesDirection: Int, Decodable, Encodable {
+enum CandidatesDirection: Int, Decodable, Encodable, Defaults.Serializable {
     case vertical
     case horizontal
 }
 
-enum InputModeTipWindowType: Int, Decodable, Encodable {
+enum InputModeTipWindowType: Int, Decodable, Encodable, Defaults.Serializable {
     case followInput
     case centerScreen
     case none
 }
 
 // 应用切换时，显示输入模式框时机
-enum AppInputModeTipShowTime: Int, Decodable, Encodable {
+enum AppInputModeTipShowTime: Int, Decodable, Encodable, Defaults.Serializable {
     case onlyChanged // 仅在切换后的输入模式与之前不一致时显示
     case always // 应用切换即显示，无论有没有变化
     case none // 不显示
 }
 
-enum ModifierKey: String, Codable {
+enum ModifierKey: String, Codable, Defaults.Serializable {
   case shift
   case leftShift
   case rightShift
@@ -41,7 +41,7 @@ enum ModifierKey: String, Codable {
   case function
 }
 
-class ApplicationSettingItem: ObservableObject, Codable, Identifiable {
+class ApplicationSettingItem: ObservableObject, Codable, Identifiable, Defaults.Serializable {
 //    let identifier: String = ""
 
     @Published var bundleIdentifier: String = ""
@@ -81,7 +81,7 @@ class ApplicationSettingItem: ObservableObject, Codable, Identifiable {
     }
 }
 
-enum PunctuationMode: Codable {
+enum PunctuationMode: Codable, Defaults.Serializable {
     case enUs // 半角
     case zhhans // 全角
     case custom // 自定义
@@ -177,7 +177,7 @@ struct Candidate: Hashable {
     }
 }
 
-enum CodeMode: Int, CaseIterable, Decodable, Encodable {
+enum CodeMode: Int, CaseIterable, Decodable, Encodable, Defaults.Serializable {
     case wubi
     case pinyin
     case wubiPinyin

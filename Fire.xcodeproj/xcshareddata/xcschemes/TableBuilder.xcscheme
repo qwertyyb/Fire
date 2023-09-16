@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Scheme
-   LastUpgradeVersion = "1200"
-   version = "1.3">
+   LastUpgradeVersion = "1430"
+   version = "1.7">
    <BuildAction
       parallelizeBuildables = "YES"
       buildImplicitDependencies = "YES">
@@ -14,7 +14,7 @@
             buildForAnalyzing = "YES">
             <BuildableReference
                BuildableIdentifier = "primary"
-               BlueprintIdentifier = "45577E5E25442E240064325B"
+               BlueprintIdentifier = "6753419A2AB54A3A00757F76"
                BuildableName = "TableBuilder"
                BlueprintName = "TableBuilder"
                ReferencedContainer = "container:Fire.xcodeproj">
@@ -26,9 +26,8 @@
       buildConfiguration = "Debug"
       selectedDebuggerIdentifier = "Xcode.DebuggerFoundation.Debugger.LLDB"
       selectedLauncherIdentifier = "Xcode.DebuggerFoundation.Launcher.LLDB"
-      shouldUseLaunchSchemeArgsEnv = "YES">
-      <Testables>
-      </Testables>
+      shouldUseLaunchSchemeArgsEnv = "YES"
+      shouldAutocreateTestPlan = "YES">
    </TestAction>
    <LaunchAction
       buildConfiguration = "Debug"
@@ -39,12 +38,13 @@
       ignoresPersistentStateOnLaunch = "NO"
       debugDocumentVersioning = "YES"
       debugServiceExtension = "internal"
-      allowLocationSimulation = "YES">
+      allowLocationSimulation = "YES"
+      viewDebuggingEnabled = "No">
       <BuildableProductRunnable
          runnableDebuggingMode = "0">
          <BuildableReference
             BuildableIdentifier = "primary"
-            BlueprintIdentifier = "45577E5E25442E240064325B"
+            BlueprintIdentifier = "6753419A2AB54A3A00757F76"
             BuildableName = "TableBuilder"
             BlueprintName = "TableBuilder"
             ReferencedContainer = "container:Fire.xcodeproj">
@@ -61,7 +61,7 @@
          runnableDebuggingMode = "0">
          <BuildableReference
             BuildableIdentifier = "primary"
-            BlueprintIdentifier = "45577E5E25442E240064325B"
+            BlueprintIdentifier = "6753419A2AB54A3A00757F76"
             BuildableName = "TableBuilder"
             BlueprintName = "TableBuilder"
             ReferencedContainer = "container:Fire.xcodeproj">

@@ -56,7 +56,9 @@ DerivedData/
 !default.mode2v3
 *.perspectivev3
 !default.perspectivev3
-xcuserdata/
+# xcode构建有bug,需要把runner.xcuserdatad目录提交上来才，github action才能正常构建
+/Fire.xcodeproj/project.xcworkspace/xcuserdata/*
+!runner.xcuserdatad
 
 ## Other
 *.moved-aside
@@ -86,7 +88,7 @@ playground.xcworkspace
 # https://guides.cocoapods.org/using/using-cocoapods.html#should-i-check-the-pods-directory-into-source-control
 Pods/
 # Add this line if you want to avoid checking in source code from the Xcode workspace
-*.xcworkspace
+# *.xcworkspace
 
 # Carthage
 # Add this line if you want to avoid checking in source code from Carthage dependencies.

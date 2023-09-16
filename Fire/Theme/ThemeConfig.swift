@@ -59,7 +59,7 @@ struct ApperanceThemeConfig: Codable {
     let fontSize: Float
 }
 
-struct ThemeConfig: Codable {
+struct ThemeConfig: Codable, Defaults.Serializable {
     let id: String
     let name: String
     let author: String
