@@ -6,10 +6,10 @@
 //  Copyright © 2019 qwertyyb. All rights reserved.
 //
 
-import Cocoa
+import AppKit
+import Defaults
 import InputMethodKit
 import Sparkle
-import Defaults
 
 let kConnectionName = "Fire_1_Connection"
 
