@@ -67,8 +67,9 @@
 # 下载项目到本地
 git clone https://github.com/qwertyyb/Fire.git
 
-# 安装依赖
-pod install
-
 # 使用Xcode打开项目启动开发
+open Fire.xcodeproj
+
+# 由于调试时，APP运行目录在/Library/Input Methods, 所以需要添加权限
+sudo chmod -R 777 /Library/Input Methods
 ```
