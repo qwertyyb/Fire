@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Scheme
    LastUpgradeVersion = "1430"
-   version = "1.3">
+   version = "1.7">
    <BuildAction
-      parallelizeBuildables = "NO"
+      parallelizeBuildables = "YES"
       buildImplicitDependencies = "YES">
       <BuildActionEntries>
          <BuildActionEntry
@@ -14,7 +14,7 @@
             buildForAnalyzing = "YES">
             <BuildableReference
                BuildableIdentifier = "primary"
-               BlueprintIdentifier = "451E6043232E227B007B0463"
+               BlueprintIdentifier = "67C99FE72AB53DB2000B5281"
                BuildableName = "Fire.app"
                BlueprintName = "Fire"
                ReferencedContainer = "container:Fire.xcodeproj">
@@ -26,9 +26,8 @@
       buildConfiguration = "Debug"
       selectedDebuggerIdentifier = "Xcode.DebuggerFoundation.Debugger.LLDB"
       selectedLauncherIdentifier = "Xcode.DebuggerFoundation.Launcher.LLDB"
-      shouldUseLaunchSchemeArgsEnv = "YES">
-      <Testables>
-      </Testables>
+      shouldUseLaunchSchemeArgsEnv = "YES"
+      shouldAutocreateTestPlan = "YES">
    </TestAction>
    <LaunchAction
       buildConfiguration = "Debug"
@@ -53,7 +52,7 @@
          runnableDebuggingMode = "0">
          <BuildableReference
             BuildableIdentifier = "primary"
-            BlueprintIdentifier = "451E6043232E227B007B0463"
+            BlueprintIdentifier = "67C99FE72AB53DB2000B5281"
             BuildableName = "Fire.app"
             BlueprintName = "Fire"
             ReferencedContainer = "container:Fire.xcodeproj">
@@ -70,7 +69,7 @@
          runnableDebuggingMode = "0">
          <BuildableReference
             BuildableIdentifier = "primary"
-            BlueprintIdentifier = "451E6043232E227B007B0463"
+            BlueprintIdentifier = "67C99FE72AB53DB2000B5281"
             BuildableName = "Fire.app"
             BlueprintName = "Fire"
             ReferencedContainer = "container:Fire.xcodeproj">

@@ -7,7 +7,7 @@
 //
 
 import SwiftUI
-import Preferences
+import Settings
 import Defaults
 
 struct ThemeConfigView: View {
@@ -83,8 +83,8 @@ struct ThemePane: View {
     }
 
     var body: some View {
-        Preferences.Container(contentWidth: 450.0) {
-            Preferences.Section(title: "") {
+        Settings.Container(contentWidth: 450.0) {
+            Settings.Section(title: "") {
                 HStack {
                     Button("创建主题") {
                         if let url = URL(string: "https://qwertyyb.github.io/Fire/theme.html") {

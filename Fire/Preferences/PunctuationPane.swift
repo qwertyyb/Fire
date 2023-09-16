@@ -7,7 +7,7 @@
 //
 
 import SwiftUI
-import Preferences
+import Settings
 import Defaults
 
 struct PunctuationPane: View {
@@ -15,8 +15,8 @@ struct PunctuationPane: View {
     @Default(.customPunctuationSettings) private var customPunctuationSettings
     @Default(.enableDotAfterNumber) private var enableDotAfterNumber
     var body: some View {
-        Preferences.Container(contentWidth: 450) {
-            Preferences.Section(title: "") {
+        Settings.Container(contentWidth: 450) {
+            Settings.Section(title: "") {
                 HStack {
                     Picker("标点符号方案", selection: $punctuationMode) {
                         Text("半角").tag(PunctuationMode.enUs)
