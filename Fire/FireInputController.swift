@@ -371,7 +371,7 @@ class FireInputController: IMKInputController {
     func insertText(_ text: String) {
         NSLog("insertText: %@", text)
         let value = NSAttributedString(string: text)
-        try client()?.insertText(value, replacementRange: replacementRange())
+        client()?.insertText(value, replacementRange: replacementRange())
         _lastInputIsNumber = text.last != nil && Int(String(text.last!)) != nil
         clean()
     }
