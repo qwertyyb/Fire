@@ -6,7 +6,7 @@
 //  Copyright © 2020 qwertyyb. All rights reserved.
 //
 
-import Cocoa
+import AppKit
 import SwiftUI
 
 class ToastWindow: NSWindow, ToastWindowProtocol {
