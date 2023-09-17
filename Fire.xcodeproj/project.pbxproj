@@ -9,6 +9,7 @@
 /* Begin PBXBuildFile section */
 		6753419E2AB54A3A00757F76 /* main.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 6753419D2AB54A3A00757F76 /* main.cpp */; };
 		675341A72AB54AEA00757F76 /* sqlite3.c in Sources */ = {isa = PBXBuildFile; fileRef = 675341A52AB54AEA00757F76 /* sqlite3.c */; };
+		67AA47FF2AB733860073AC86 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 67C9A0232AB53ED3000B5281 /* Assets.xcassets */; };
 		67B514142AB590710084C42B /* TableBuilder in CopyFiles */ = {isa = PBXBuildFile; fileRef = 6753419B2AB54A3A00757F76 /* TableBuilder */; settings = {ATTRIBUTES = (CodeSignOnCopy, ); }; };
 		67C99FEC2AB53DB2000B5281 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 67C99FEB2AB53DB2000B5281 /* AppDelegate.swift */; };
 		67C99FFD2AB53E62000B5281 /* ToastWindow.swift in Sources */ = {isa = PBXBuildFile; fileRef = 67C99FF92AB53E62000B5281 /* ToastWindow.swift */; };
@@ -386,6 +387,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				67AA47FF2AB733860073AC86 /* Assets.xcassets in Resources */,
 				67C9A0312AB53ED3000B5281 /* InfoPlist.strings in Resources */,
 				67C9A0382AB53ED3000B5281 /* py_table.txt in Resources */,
 				67C9A0372AB53ED3000B5281 /* wb_table.txt in Resources */,

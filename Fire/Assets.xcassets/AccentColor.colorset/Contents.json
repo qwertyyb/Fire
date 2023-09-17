@@ -1,10 +1,6 @@
 {
   "colors" : [
     {
-      "color" : {
-        "platform" : "osx",
-        "reference" : "controlAccentColor"
-      },
       "idiom" : "universal"
     },
     {
