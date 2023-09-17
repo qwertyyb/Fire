@@ -17,7 +17,7 @@ class StatusBar {
 
     let statusItem: NSStatusItem
     private var showInputModeStatusSubscript: AnyCancellable?
-    private init() {
+    init() {
         // 输入法变化时，根据当前选中状态切换显示
         statusItem = NSStatusBar.system.statusItem(withLength: NSStatusItem.variableLength)
         statusItem.button?.title = "中"
