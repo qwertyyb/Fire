@@ -3,18 +3,18 @@
     <channel>
         <title>业火输入法</title>
         <item>
-            <title>v0.17.0</title>
-            <pubDate>Sat, 16 Sep 2023 12:38:36 +0000</pubDate>
+            <title>v0.17.1</title>
+            <pubDate>Sun, 17 Sep 2023 04:36:46 +0000</pubDate>
             <sparkle:minimumSystemVersion>10.15</sparkle:minimumSystemVersion>
             <description><![CDATA[
-                <h3 id=bugfixes>Bug Fixes</h3> <ul> <li>ci (<a href=https://github.com/qwertyyb/Fire/commit/9f79a6a6f59b1c18c88545dd8e5e52cf3e9de505>9f79a6a</a>)</li> <li>不再处理可能是 nil 的 NSEvent 传入参数 (<a href=https://github.com/qwertyyb/Fire/commit/621a3c5685655c0c8d19efa99855d1172b7d1105>621a3c5</a>)</li> <li>添加sqlcipher (<a href=https://github.com/qwertyyb/Fire/commit/fcea75a3d527ff84aeb005de06add5b62ba7e246>fcea75a</a>)</li> </ul> <h3 id=features>Features</h3> <ul> <li>cocoapods to swift package manager (<a href=https://github.com/qwertyyb/Fire/commit/e087b0d297085fa43c349b244597856dffb152bf>e087b0d</a>)</li> <li>完善ci脚本 (<a href=https://github.com/qwertyyb/Fire/commit/7fffbf17f952e292af64d0b681757103bac3f2d1>7fffbf1</a>)</li> <li>迁移项目依赖至swift package manager (<a href=https://github.com/qwertyyb/Fire/commit/01bef0856d6a2e5482a4664c6d631ca71713480b>01bef08</a>)</li> </ul>
+                <h3 id=bugfixes>Bug Fixes</h3> <ul> <li>修复安装后无法启用输入法的问题 (<a href=https://github.com/qwertyyb/Fire/commit/a18d07d040b258baf58df4c3138b4f213d4200c2>a18d07d</a>)</li> <li>修复客态流水线运行不成功的问题 (<a href=https://github.com/qwertyyb/Fire/commit/81c94a9937d98e40343779579613fcbb6615218c>81c94a9</a>)</li> </ul>
             ]]>
             </description>
             <enclosure url="https://github.com/qwertyyb/Fire/releases/latest/download/FireInstaller.zip"
-              sparkle:version="20230916123628"
-              sparkle:shortVersionString="v0.17.0"
-              length="5013469"
-              sparkle:edSignature="pfPobJlJ7guAhaMv5Jpkqaw9qNwIXV4Cj147Co8ZnyKPaoSboVhm0o4TX9v3wwVxC4vBe/NfJWeLqIFf29YsCQ=="
+              sparkle:version="20230917043401"
+              sparkle:shortVersionString="v0.17.1"
+              length="5708593"
+              sparkle:edSignature="kzIa2DTlXAFIXN2W0Vg420kFxL5Aho1Ao1rSU7WEeqoleOyJd3O/4ChlPRy4GZuIrrGe7zkFd18PpVg4/1KoAw=="
               type="application/octet-stream"/>
         </item>
     </channel>
