@@ -12,9 +12,9 @@ import InputMethodKit
 @NSApplicationMain
 class AppDelegate: NSObject, NSApplicationDelegate {
 
-    var fire: Fire!
-    var statistics: Statistics!
-    var statusBar: StatusBar!
+    var fire: Fire = .init()
+    var statistics: Statistics = .init()
+    var statusBar: StatusBar = .init()
 
     func installInputSource() {
         print("install input source")
