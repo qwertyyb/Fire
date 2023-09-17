@@ -11,7 +11,6 @@
 		675341A72AB54AEA00757F76 /* sqlite3.c in Sources */ = {isa = PBXBuildFile; fileRef = 675341A52AB54AEA00757F76 /* sqlite3.c */; };
 		67B514142AB590710084C42B /* TableBuilder in CopyFiles */ = {isa = PBXBuildFile; fileRef = 6753419B2AB54A3A00757F76 /* TableBuilder */; settings = {ATTRIBUTES = (CodeSignOnCopy, ); }; };
 		67C99FEC2AB53DB2000B5281 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 67C99FEB2AB53DB2000B5281 /* AppDelegate.swift */; };
-		67C99FEE2AB53DB4000B5281 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 67C99FED2AB53DB4000B5281 /* Assets.xcassets */; };
 		67C99FFD2AB53E62000B5281 /* ToastWindow.swift in Sources */ = {isa = PBXBuildFile; fileRef = 67C99FF92AB53E62000B5281 /* ToastWindow.swift */; };
 		67C99FFE2AB53E62000B5281 /* Statistics.swift in Sources */ = {isa = PBXBuildFile; fileRef = 67C99FFA2AB53E62000B5281 /* Statistics.swift */; };
 		67C99FFF2AB53E62000B5281 /* TipsWindow.swift in Sources */ = {isa = PBXBuildFile; fileRef = 67C99FFB2AB53E62000B5281 /* TipsWindow.swift */; };
@@ -73,7 +72,6 @@
 		675341A62AB54AEA00757F76 /* sqlite3.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = sqlite3.h; sourceTree = "<group>"; };
 		67C99FE82AB53DB2000B5281 /* Fire.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Fire.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		67C99FEB2AB53DB2000B5281 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
-		67C99FED2AB53DB4000B5281 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		67C99FF22AB53DB4000B5281 /* Fire.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = Fire.entitlements; sourceTree = "<group>"; };
 		67C99FF92AB53E62000B5281 /* ToastWindow.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ToastWindow.swift; sourceTree = "<group>"; };
 		67C99FFA2AB53E62000B5281 /* Statistics.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Statistics.swift; sourceTree = "<group>"; };
@@ -204,7 +202,6 @@
 				67C9A0032AB53E83000B5281 /* Utils.swift */,
 				67C99FF82AB53E62000B5281 /* Utils */,
 				67C99FEB2AB53DB2000B5281 /* AppDelegate.swift */,
-				67C99FED2AB53DB4000B5281 /* Assets.xcassets */,
 				67C99FF22AB53DB4000B5281 /* Fire.entitlements */,
 			);
 			path = Fire;
@@ -389,7 +386,6 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				67C99FEE2AB53DB4000B5281 /* Assets.xcassets in Resources */,
 				67C9A0312AB53ED3000B5281 /* InfoPlist.strings in Resources */,
 				67C9A0382AB53ED3000B5281 /* py_table.txt in Resources */,
 				67C9A0372AB53ED3000B5281 /* wb_table.txt in Resources */,
