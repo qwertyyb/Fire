@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		5B2C86B72AB72CDE00F2CD19 /* FireInput-MainAssembly in Frameworks */ = {isa = PBXBuildFile; productRef = 5B2C86B62AB72CDE00F2CD19 /* FireInput-MainAssembly */; };
 		5B44584A2AB7190A007FEA5A /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 67C9A0232AB53ED3000B5281 /* Assets.xcassets */; };
 		6753419E2AB54A3A00757F76 /* main.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 6753419D2AB54A3A00757F76 /* main.cpp */; };
 		675341A72AB54AEA00757F76 /* sqlite3.c in Sources */ = {isa = PBXBuildFile; fileRef = 675341A52AB54AEA00757F76 /* sqlite3.c */; };
@@ -68,6 +69,7 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		5BB803702AB72B8300E15B66 /* FireInput-MainAssembly */ = {isa = PBXFileReference; lastKnownFileType = wrapper; name = "FireInput-MainAssembly"; path = "swift-packages/FireInput-MainAssembly"; sourceTree = "<group>"; };
 		6753419B2AB54A3A00757F76 /* TableBuilder */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = TableBuilder; sourceTree = BUILT_PRODUCTS_DIR; };
 		6753419D2AB54A3A00757F76 /* main.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = main.cpp; sourceTree = "<group>"; };
 		675341A52AB54AEA00757F76 /* sqlite3.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = sqlite3.c; sourceTree = "<group>"; };
@@ -131,6 +133,7 @@
 				67C9A0542AB53F79000B5281 /* Sparkle in Frameworks */,
 				67C9A04E2AB53F37000B5281 /* KeychainSwift in Frameworks */,
 				67C9A04B2AB53F20000B5281 /* Defaults in Frameworks */,
+				5B2C86B72AB72CDE00F2CD19 /* FireInput-MainAssembly in Frameworks */,
 				67C9A0482AB53EF5000B5281 /* Settings in Frameworks */,
 				67C9A0512AB53F51000B5281 /* NanoID in Frameworks */,
 			);
@@ -139,6 +142,14 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		5BB8036F2AB72B8300E15B66 /* Packages */ = {
+			isa = PBXGroup;
+			children = (
+				5BB803702AB72B8300E15B66 /* FireInput-MainAssembly */,
+			);
+			name = Packages;
+			sourceTree = "<group>";
+		};
 		6753419C2AB54A3A00757F76 /* TableBuilder */ = {
 			isa = PBXGroup;
 			children = (
@@ -160,6 +171,7 @@
 		67C99FDF2AB53DB2000B5281 = {
 			isa = PBXGroup;
 			children = (
+				5BB8036F2AB72B8300E15B66 /* Packages */,
 				67C99FEA2AB53DB2000B5281 /* Fire */,
 				6753419C2AB54A3A00757F76 /* TableBuilder */,
 				67C99FE92AB53DB2000B5281 /* Products */,
@@ -333,6 +345,7 @@
 				67C9A04D2AB53F37000B5281 /* KeychainSwift */,
 				67C9A0502AB53F51000B5281 /* NanoID */,
 				67C9A0532AB53F79000B5281 /* Sparkle */,
+				5B2C86B62AB72CDE00F2CD19 /* FireInput-MainAssembly */,
 			);
 			productName = Fire;
 			productReference = 67C99FE82AB53DB2000B5281 /* Fire.app */;
@@ -774,6 +787,10 @@
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
+		5B2C86B62AB72CDE00F2CD19 /* FireInput-MainAssembly */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = "FireInput-MainAssembly";
+		};
 		67C9A0472AB53EF5000B5281 /* Settings */ = {
 			isa = XCSwiftPackageProductDependency;
 			package = 67C9A0462AB53EF5000B5281 /* XCRemoteSwiftPackageReference "Settings" */;
