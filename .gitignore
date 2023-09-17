@@ -56,6 +56,7 @@ DerivedData/
 !default.mode2v3
 *.perspectivev3
 !default.perspectivev3
+/Fire.xcodeproj/xcuserdata
 # xcode构建有bug,需要把runner.xcuserdatad目录提交上来才，github action才能正常构建
 /Fire.xcodeproj/project.xcworkspace/xcuserdata/*
 !runner.xcuserdatad
