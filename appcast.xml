@@ -4,17 +4,17 @@
         <title>业火输入法</title>
         <item>
             <title>v0.17.1</title>
-            <pubDate>Sun, 17 Sep 2023 04:36:46 +0000</pubDate>
+            <pubDate>Sun, 17 Sep 2023 09:52:25 +0000</pubDate>
             <sparkle:minimumSystemVersion>10.15</sparkle:minimumSystemVersion>
             <description><![CDATA[
-                <h3 id=bugfixes>Bug Fixes</h3> <ul> <li>修复安装后无法启用输入法的问题 (<a href=https://github.com/qwertyyb/Fire/commit/a18d07d040b258baf58df4c3138b4f213d4200c2>a18d07d</a>)</li> <li>修复客态流水线运行不成功的问题 (<a href=https://github.com/qwertyyb/Fire/commit/81c94a9937d98e40343779579613fcbb6615218c>81c94a9</a>)</li> </ul>
+                <h3 id=bugfixes>Bug Fixes</h3> <ul> <li>修复安装后无法启用输入法的问题 (<a href=https://github.com/qwertyyb/Fire/commit/a18d07d040b258baf58df4c3138b4f213d4200c2>a18d07d</a>)</li> <li>修复客态流水线运行不成功的问题 (<a href=https://github.com/qwertyyb/Fire/commit/81c94a9937d98e40343779579613fcbb6615218c>81c94a9</a>)</li> <li>修复运行时报错的问题 (<a href=https://github.com/qwertyyb/Fire/commit/20056cb835418775f61077dd29de76bdbb16f1c0>20056cb</a>)</li> </ul>
             ]]>
             </description>
             <enclosure url="https://github.com/qwertyyb/Fire/releases/latest/download/FireInstaller.zip"
-              sparkle:version="20230917043401"
+              sparkle:version="20230917094934"
               sparkle:shortVersionString="v0.17.1"
-              length="5708593"
-              sparkle:edSignature="kzIa2DTlXAFIXN2W0Vg420kFxL5Aho1Ao1rSU7WEeqoleOyJd3O/4ChlPRy4GZuIrrGe7zkFd18PpVg4/1KoAw=="
+              length="5195553"
+              sparkle:edSignature="9NmdKHdOkFegTjUrCzX3ncVptt10o1DwNdO5Ietx8GDkdaVP9x7d2rqwsSzdNYjq1BI5IDSSfyc+A4g5Elb3DA=="
               type="application/octet-stream"/>
         </item>
     </channel>
