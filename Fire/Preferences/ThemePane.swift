@@ -47,7 +47,7 @@ struct ThemePane: View {
         openPanel.canChooseDirectories = false
         openPanel.canCreateDirectories = false
         openPanel.canChooseFiles = true
-        openPanel.allowedFileTypes = ["json"]
+        openPanel.allowedContentTypes = [.json]
         let result = openPanel.runModal()
         if result != NSApplication.ModalResponse.OK { return }
         let selectedPath = openPanel.url!.path

@@ -16,11 +16,7 @@ struct ApplicationSettingItemView: View {
     let onChange: () -> Void
 
     private func getDisplayName(_ identifier: String) -> String {
-        guard let path = NSWorkspace.shared.absolutePathForApplication(
-                withBundleIdentifier: identifier
-        ) else { return identifier }
-        guard let bundle = Bundle(path: path) else { return identifier }
-        guard let info = bundle.localizedInfoDictionary ?? bundle.infoDictionary else { return identifier }
+        guard let info = Bundle.main.localizedInfoDictionary ?? Bundle.main.infoDictionary else { return identifier }
         guard let displayName = (
                 info["CFBundleDisplayName"] ??
                     info["CFBundleName"]) as? String else { return identifier }
@@ -28,11 +24,7 @@ struct ApplicationSettingItemView: View {
     }
 
     private func getIcon(_ identifier: String) -> NSImage {
-        guard let path = NSWorkspace.shared.absolutePathForApplication(
-                withBundleIdentifier: identifier
-        ) else { return NSImage() }
-        let image = NSWorkspace.shared.icon(forFile: path)
-        return image
+        return NSWorkspace.shared.icon(forFile: Bundle.main.bundlePath)
     }
 
     var body: some View {
@@ -94,7 +86,7 @@ struct ApplicationPane: View {
         openPanel.canChooseDirectories = false
         openPanel.canCreateDirectories = false
         openPanel.canChooseFiles = true
-        openPanel.allowedFileTypes = ["app"]
+        openPanel.allowedContentTypes = [.applicationBundle]
         let result = openPanel.runModal()
         if result != NSApplication.ModalResponse.OK { return }
         let selectedPath = openPanel.url!.path

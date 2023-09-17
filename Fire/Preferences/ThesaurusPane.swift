@@ -22,7 +22,7 @@ struct ThesaurusPane: View {
         openPanel.canChooseDirectories = false
         openPanel.canCreateDirectories = false
         openPanel.canChooseFiles = true
-        openPanel.allowedFileTypes = ["txt"]
+        openPanel.allowedContentTypes = [.text]
         let result = openPanel.runModal()
         if result == NSApplication.ModalResponse.OK {
             let selectedPath = openPanel.url!.path
