@@ -63,6 +63,9 @@ jobs:
     runs-on: macos-13
     needs: create_release
 
+    env:
+      USE_CODE_SIGN: ${{ !inputs.disable_sign && github.actor_id == github.repository_owner_id && 'enable' || 'disable' }}
+
     steps:
     - uses: actions/checkout@v2
 

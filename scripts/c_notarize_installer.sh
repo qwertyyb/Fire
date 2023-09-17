@@ -19,15 +19,9 @@ if [[ $TEAM_ID == "" ]]; then
   exit 1
 fi
 
-
-
 PROJECT_ROOT="$(cd "$(dirname "$BASH_SOURCE")/.."; pwd)"
 source "$PROJECT_ROOT/scripts/common.sh"
 
-PRODUCT_BUNDLE_IDENTIFIER="com.qwertyyb.inputmethod.Fire"
-
-# Submit the finished deliverables for notarization. The "--primary-bundle-id" 
-# argument is only used for the response email. 
 echo "notarize app"
 
 notarize_response=`xcrun notarytool submit ${EXPORT_INSTALLER} --apple-id "$AC_USERNAME" --password "$AC_PASSWORD" --team-id "$TEAM_ID" --wait --progress`

@@ -16,6 +16,9 @@ on:
 jobs:
   build-test:
     runs-on: macos-13
+
+    env:
+      USE_CODE_SIGN: ${{ !inputs.disable_sign && github.actor_id == github.repository_owner_id && 'enable' || 'disable' }}
     
     steps:
     - uses: actions/checkout@v1
@@ -41,8 +44,6 @@ jobs:
         p12-password: ${{ secrets.CERTIFICATES_INSTALLER_P12_PASSWORD }}
 
     - name: build Fire.app
-      env:
-        USE_CODE_SIGN: ${{ !inputs.disable_sign && github.actor_id == github.repository_owner_id && 'enable' || 'disable' }}
       run: ./scripts/a_build_app.sh
 
     - name: build FireInstaller.pkg

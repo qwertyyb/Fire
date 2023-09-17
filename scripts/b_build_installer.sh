@@ -24,16 +24,13 @@ mkdir -p "${INSTALLER_ROOT}"
 cp -R "$EXPORT_PATH/${TARGET}.app" "${INSTALLER_ROOT}"
 echo $INSTALLER_ROOT
 
-pkgbuild \
-    --info "${PROJECT_ROOT}/package/PackageInfo" \
-    --root "${INSTALLER_ROOT}" \
-    --component-plist "${PROJECT_ROOT}/package/component.plist" \
-    --identifier "${BUNDLE_IDENTIFIER}" \
-    --version "${Version}" \
-    --install-location "${INSTALL_LOCATION}" \
-    --scripts "${PROJECT_ROOT}/package/scripts" \
-    --sign "Developer ID Installer: Yongbang Yang" \
-    "$EXPORT_INSTALLER"
+if [[ $USE_CODE_SIGN == "disable" ]]
+then
+    echo "build installer without signing"
+    pkgbuild --info "${PROJECT_ROOT}/package/PackageInfo" --root "${INSTALLER_ROOT}" --component-plist "${PROJECT_ROOT}/package/component.plist" --identifier "${BUNDLE_IDENTIFIER}" --version "${Version}" --install-location "${INSTALL_LOCATION}" --scripts "${PROJECT_ROOT}/package/scripts" "$EXPORT_INSTALLER"
+else
+    pkgbuild --info "${PROJECT_ROOT}/package/PackageInfo" --root "${INSTALLER_ROOT}" --component-plist "${PROJECT_ROOT}/package/component.plist" --identifier "${BUNDLE_IDENTIFIER}" --version "${Version}" --install-location "${INSTALL_LOCATION}" --scripts "${PROJECT_ROOT}/package/scripts" --sign "Developer ID Installer: Yongbang Yang" "$EXPORT_INSTALLER"
+fi
 
 # pack zip for update
 zip "$EXPORT_INSTALLER_ZIP" "$EXPORT_INSTALLER"
