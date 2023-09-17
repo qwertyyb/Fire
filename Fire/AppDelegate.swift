@@ -12,9 +12,9 @@ import InputMethodKit
 @NSApplicationMain
 class AppDelegate: NSObject, NSApplicationDelegate {
 
-    var fire: Fire = .init()
-    var statistics: Statistics = .init()
-    var statusBar: StatusBar = .init()
+    static var fire: Fire = .init()
+    static var statistics: Statistics = .init()
+    static var statusBar: StatusBar = .init()
 
     func installInputSource() {
         print("install input source")
@@ -62,9 +62,9 @@ class AppDelegate: NSObject, NSApplicationDelegate {
             buildDict()
         }
         NSLog("[Fire] app is running")
-        fire = Fire.shared
-        statistics = Statistics.shared
-        statusBar = StatusBar.shared
+        Self.fire = Fire.shared
+        Self.statistics = Statistics.shared
+        Self.statusBar = StatusBar.shared
     }
 
     func applicationWillTerminate(_ aNotification: Notification) {
