@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		45B76CA92AEA6042009AFABD /* PunctuationConversion.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45B76CA82AEA6042009AFABD /* PunctuationConversion.swift */; };
 		6753419E2AB54A3A00757F76 /* main.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 6753419D2AB54A3A00757F76 /* main.cpp */; };
 		675341A72AB54AEA00757F76 /* sqlite3.c in Sources */ = {isa = PBXBuildFile; fileRef = 675341A52AB54AEA00757F76 /* sqlite3.c */; };
 		67AA47FF2AB733860073AC86 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 67C9A0232AB53ED3000B5281 /* Assets.xcassets */; };
@@ -67,6 +68,7 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		45B76CA82AEA6042009AFABD /* PunctuationConversion.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PunctuationConversion.swift; sourceTree = "<group>"; };
 		6753419B2AB54A3A00757F76 /* TableBuilder */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = TableBuilder; sourceTree = BUILT_PRODUCTS_DIR; };
 		6753419D2AB54A3A00757F76 /* main.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = main.cpp; sourceTree = "<group>"; };
 		675341A52AB54AEA00757F76 /* sqlite3.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = sqlite3.c; sourceTree = "<group>"; };
@@ -196,6 +198,7 @@
 				67C9A0062AB53E83000B5281 /* Fire.swift */,
 				67C9A0222AB53ED3000B5281 /* FireInputServer.swift */,
 				67C9A0072AB53E83000B5281 /* FireInputController.swift */,
+				45B76CA82AEA6042009AFABD /* PunctuationConversion.swift */,
 				67C9A0022AB53E83000B5281 /* InputSource.swift */,
 				67C9A0012AB53E83000B5281 /* MainMenu.xib */,
 				67C9A0042AB53E83000B5281 /* StatusBar.swift */,
@@ -432,6 +435,7 @@
 				67C9A0422AB53ED3000B5281 /* ThesaurusPane.swift in Sources */,
 				67C9A0002AB53E62000B5281 /* ModifierKeyUpChecker.swift in Sources */,
 				67C9A0442AB53ED3000B5281 /* CandidatesWindow.swift in Sources */,
+				45B76CA92AEA6042009AFABD /* PunctuationConversion.swift in Sources */,
 				67C9A0362AB53ED3000B5281 /* DictManager.swift in Sources */,
 				67C9A0582AB5429B000B5281 /* sqlite3.c in Sources */,
 				67C99FFD2AB53E62000B5281 /* ToastWindow.swift in Sources */,
@@ -619,7 +623,7 @@
 				CURRENT_PROJECT_VERSION = 1;
 				DEPLOYMENT_LOCATION = YES;
 				DEVELOPMENT_TEAM = T68XK6867P;
-				DSTROOT = "/Library/Input Methods";
+				DSTROOT = "$HOME/Library/Input Methods";
 				ENABLE_HARDENED_RUNTIME = YES;
 				GCC_PREPROCESSOR_DEFINITIONS = (
 					"DEBUG=1",
