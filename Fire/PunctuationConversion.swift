@@ -13,29 +13,55 @@ protocol Conversion {
 }
 
 class PunctuationConversion: Conversion {
-    // 左引号暂存栈
-    private var parisPunctuationStack: [String] = []
-    private let MAX_STACK_SIZE = 30 // 暂存栈大小，防止随着使用出现内存上涨
+    private var quoteCount = [
+        "‘": 0,
+        "“": 0,
+    ]
+    private var squareBracketsCount = [
+        "「": 0,
+        "」": 0
+    ]
     
-    private func transformResult(_ result: String) -> String {
+    // 转换单双引号
+    // 基本思路: 第一次按引号输入左引号，第二次按输入右引号
+    private func transformQuoteResult(_ result: String) -> String {
+        if !quoteCount.keys.contains(result) {
+            return result
+        }
         let resultMap = [
             "‘": "’",
             "“": "”"
         ]
-        // 存在需要待匹配的左侧引号，并且当前输出和待匹配的引号一致，把结果转为对应的右侧引号
-        if resultMap.keys.contains(result) && result == parisPunctuationStack.last {
-            _ = parisPunctuationStack.popLast()
-            return resultMap[result] ?? result
-        }
-        // 没有待匹配的引号，并且输入了左侧引号，存入待匹配区
-        if resultMap.keys.contains(result) {
-            parisPunctuationStack.append(result)
-            if parisPunctuationStack.count > MAX_STACK_SIZE {
-                parisPunctuationStack.removeFirst()
-            }
-            return result
+        quoteCount[result] = (quoteCount[result]! + 1) % 2
+        if quoteCount[result] == 0 {
+            return resultMap[result]!
         }
         return result
+    }
+    
+    // 转换方括号
+    // 基本思路: 第一次按{输出「，第二次按{输出『，按}时，以左括号为优先进行匹配
+    private func transformSquareBrackets(_ result: String) -> String {
+        if !squareBracketsCount.keys.contains(result) {
+            return result
+        }
+        let resultMap = [
+            "「": "『",
+            "」": "』"
+        ]
+        
+        squareBracketsCount[result] = (squareBracketsCount[result]! + 1) % 2
+        if result == "「" {
+            squareBracketsCount["」"] = (squareBracketsCount[result]! + 1) % 2
+        }
+        if squareBracketsCount[result] == 0 {
+            return resultMap[result]!
+        }
+        return result
+    }
+    
+    private func transformResult(_ result: String) -> String {
+        return transformQuoteResult(transformSquareBrackets(result))
     }
     
     func conversion(_ origin: String) -> String? {
