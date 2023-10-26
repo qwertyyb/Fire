@@ -27,9 +27,9 @@ echo $INSTALLER_ROOT
 if [[ $USE_CODE_SIGN == "disable" ]]
 then
     echo "build installer without signing"
-    pkgbuild --info "${PROJECT_ROOT}/package/PackageInfo" --root "${INSTALLER_ROOT}" --component-plist "${PROJECT_ROOT}/package/component.plist" --identifier "${BUNDLE_IDENTIFIER}" --version "${Version}" --install-location "${INSTALL_LOCATION}" --scripts "${PROJECT_ROOT}/package/scripts" "$EXPORT_INSTALLER"
+    pkgbuild --info "${PROJECT_ROOT}/package/PackageInfo" --root "${INSTALLER_ROOT}" --identifier "${BUNDLE_IDENTIFIER}" --version "${Version}" --install-location "${INSTALL_LOCATION}" --scripts "${PROJECT_ROOT}/package/scripts" "$EXPORT_INSTALLER" || { echo "build installer failed"; exit 1; }
 else
-    pkgbuild --info "${PROJECT_ROOT}/package/PackageInfo" --root "${INSTALLER_ROOT}" --component-plist "${PROJECT_ROOT}/package/component.plist" --identifier "${BUNDLE_IDENTIFIER}" --version "${Version}" --install-location "${INSTALL_LOCATION}" --scripts "${PROJECT_ROOT}/package/scripts" --sign "Developer ID Installer: Yongbang Yang" "$EXPORT_INSTALLER"
+    pkgbuild --info "${PROJECT_ROOT}/package/PackageInfo" --root "${INSTALLER_ROOT}" --identifier "${BUNDLE_IDENTIFIER}" --version "${Version}" --install-location "${INSTALL_LOCATION}" --scripts "${PROJECT_ROOT}/package/scripts" --sign "Developer ID Installer: Yongbang Yang" "$EXPORT_INSTALLER" || { echo "build installer failed"; exit 1; }
 fi
 
 # pack zip for update
