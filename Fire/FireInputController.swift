@@ -272,7 +272,7 @@ class FireInputController: IMKInputController {
         }
 
         // 如果输入的字符是标点符号，转换标点符号为中文符号
-        if inputMode == .zhhans, let result = Fire.shared.transformPunctuation(string) {
+        if inputMode == .zhhans, let result = PunctuationConversion.shared.conversion(string) {
             insertText(result)
             return true
         }

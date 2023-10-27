@@ -20,24 +20,6 @@ class Fire: NSObject {
 
     var inputMode: InputMode = .zhhans
 
-    func transformPunctuation(_ origin: String) -> String? {
-        let isPunctuation = punctuation.keys.contains(origin)
-        if !isPunctuation {
-            return nil
-        }
-        let mode = Defaults[.punctuationMode]
-        if mode == .enUs {
-            return origin
-        }
-        if mode == .zhhans {
-            return punctuation[origin]
-        }
-        if mode == .custom {
-            return Defaults[.customPunctuationSettings][origin]
-        }
-        return nil
-    }
-
     override init() {
         super.init()
         _ = InputSource.shared.onSelectChanged { selected in
