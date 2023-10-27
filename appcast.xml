@@ -3,18 +3,18 @@
     <channel>
         <title>业火输入法</title>
         <item>
-            <title>v0.17.2</title>
-            <pubDate>Sun, 17 Sep 2023 13:28:40 +0000</pubDate>
+            <title>v0.18.0</title>
+            <pubDate>Fri, 27 Oct 2023 02:22:38 +0000</pubDate>
             <sparkle:minimumSystemVersion>10.15</sparkle:minimumSystemVersion>
             <description><![CDATA[
-                <h3 id=bugfixes>Bug Fixes</h3> <ul> <li>修复图标无法显示的问题 (<a href=https://github.com/qwertyyb/Fire/commit/978a0267d7a7b276f48f201cfdd5d33778c4a698>978a026</a>), closes <a href=https://github.com/qwertyyb/Fire/issues/117>#117</a></li> </ul>
+                <h3 id=features>Features</h3> <ul> <li><strong>punctuation:</strong> 支持输入右单引号和右双引号 (<a href=https://github.com/qwertyyb/Fire/commit/d3eb4297502b2f0160a00dc8e49c4282b22fef90>d3eb429</a>)</li> <li>方括号支持「、『、』、」输出 (<a href=https://github.com/qwertyyb/Fire/commit/a84085d9f350bf606aba779a7150d2d06c4e7f77>a84085d</a>)</li> </ul>
             ]]>
             </description>
             <enclosure url="https://github.com/qwertyyb/Fire/releases/latest/download/FireInstaller.zip"
-              sparkle:version="20230917132618"
-              sparkle:shortVersionString="v0.17.2"
-              length="5708330"
-              sparkle:edSignature="k2xdHk3okwkSTZ5t/Cv1XYcoLpgZS4RjXwt3YQrMwGOvoZHKTuxKHXyyplV/S/5UxYNQymlH9ZAYuYOCRReiCQ=="
+              sparkle:version="20231027021946"
+              sparkle:shortVersionString="v0.18.0"
+              length="5709902"
+              sparkle:edSignature="VJE4NvnhrIdorfmg8ahOY5LVG44TdkbThjBS7mcox5b6QFH3t7S4Qvn1xGKdOibh2KhQl3pSV+HdWksiNgHEDg=="
               type="application/octet-stream"/>
         </item>
     </channel>
