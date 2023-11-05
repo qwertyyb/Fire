@@ -16,15 +16,18 @@ struct ApplicationSettingItemView: View {
     let onChange: () -> Void
 
     private func getDisplayName(_ identifier: String) -> String {
-        guard let info = Bundle.main.localizedInfoDictionary ?? Bundle.main.infoDictionary else { return identifier }
-        guard let displayName = (
-                info["CFBundleDisplayName"] ??
-                    info["CFBundleName"]) as? String else { return identifier }
+        guard let url = NSWorkspace.shared.urlForApplication(withBundleIdentifier: identifier) else {
+            return identifier
+        }
+        let displayName = FileManager.default.displayName(atPath: url.path)
         return "\(displayName)(\(identifier))"
     }
 
     private func getIcon(_ identifier: String) -> NSImage {
-        return NSWorkspace.shared.icon(forFile: Bundle.main.bundlePath)
+        guard let url = NSWorkspace.shared.urlForApplication(withBundleIdentifier: identifier) else {
+            return NSWorkspace.shared.icon(forFile: Bundle.main.bundlePath)
+        }
+        return NSWorkspace.shared.icon(forFile: url.path)
     }
 
     var body: some View {
