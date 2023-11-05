@@ -58,7 +58,7 @@ class ModifierKeyUpChecker {
         }
     }
 
-    private let delayInterval = 0.3
+    private let delayInterval = 0.2
 
     private var lastTime: Date = Date()
 
