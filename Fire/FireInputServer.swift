@@ -63,6 +63,7 @@ extension FireInputController {
         }
     }
     override func deactivateServer(_ sender: Any!) {
+        insertOriginText()
         clean()
         NSLog("[FireInputController] deactivate server: \(client()?.bundleIdentifier() ?? "no client deactivate")")
     }
