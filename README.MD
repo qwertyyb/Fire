@@ -1,4 +1,5 @@
 ![业火五笔输入法](https://github.com/qwertyyb/Fire/blob/ee8546aad395e4e6b3b1b756cfbd4f908c5dfe89/Fire/Assets.xcassets/AppIcon.appiconset/icon-256.png)
+[![FOSSA Status](https://app.fossa.com/api/projects/git%2Bgithub.com%2Fqwertyyb%2FFire.svg?type=shield)](https://app.fossa.com/projects/git%2Bgithub.com%2Fqwertyyb%2FFire?ref=badge_shield)
 
 # 业火五笔输入法
 ![](https://github.com/qwertyyb/FireWubi/workflows/CI/badge.svg)
@@ -73,3 +74,7 @@ open Fire.xcodeproj
 # 由于调试时，APP运行目录在/Library/Input Methods, 所以需要添加权限
 sudo chmod -R 777 /Library/Input Methods
 ```
+
+
+## License
+[![FOSSA Status](https://app.fossa.com/api/projects/git%2Bgithub.com%2Fqwertyyb%2FFire.svg?type=large)](https://app.fossa.com/projects/git%2Bgithub.com%2Fqwertyyb%2FFire?ref=badge_large)
