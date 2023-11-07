@@ -109,10 +109,16 @@ struct ApplicationPane: View {
                     HStack {
                         Text("自动切换")
                         Toggle("保持应用最后使用的输入模式", isOn: $keepAppInputMode)
-                            .padding(.leading, 12)
+                            .padding(.leading, 10)
                     }
                     HStack {
-                        Picker("显示提示", selection: $appInputModeTipShowTime) {
+                        Text("仅保留最近使用的\(InputModeCache.shared.capacity)个应用的输入模式")
+                            .font(.footnote)
+                            .padding(.leading, 70)
+                    }
+                    HStack {
+                        Text("显示提示")
+                        Picker("", selection: $appInputModeTipShowTime) {
                             Text("仅在变化时显示").tag(AppInputModeTipShowTime.onlyChanged)
                             Text("总是显示").tag(AppInputModeTipShowTime.always)
                             Text("不显示")
@@ -130,7 +136,7 @@ struct ApplicationPane: View {
                                 Text("添加")
                             }
                         }
-                        .padding(.leading, 12)
+                        .padding(.leading, 8)
                     }
                     ScrollView(.vertical) {
                         if appSettings.count > 0 {

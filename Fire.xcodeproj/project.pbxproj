@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		451A556A2AF9F92D00AF57C1 /* InputModeCache.swift in Sources */ = {isa = PBXBuildFile; fileRef = 451A55692AF9F92D00AF57C1 /* InputModeCache.swift */; };
 		45B76CA92AEA6042009AFABD /* PunctuationConversion.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45B76CA82AEA6042009AFABD /* PunctuationConversion.swift */; };
 		6753419E2AB54A3A00757F76 /* main.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 6753419D2AB54A3A00757F76 /* main.cpp */; };
 		675341A72AB54AEA00757F76 /* sqlite3.c in Sources */ = {isa = PBXBuildFile; fileRef = 675341A52AB54AEA00757F76 /* sqlite3.c */; };
@@ -68,6 +69,7 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		451A55692AF9F92D00AF57C1 /* InputModeCache.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InputModeCache.swift; sourceTree = "<group>"; };
 		45B76CA82AEA6042009AFABD /* PunctuationConversion.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PunctuationConversion.swift; sourceTree = "<group>"; };
 		6753419B2AB54A3A00757F76 /* TableBuilder */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = TableBuilder; sourceTree = BUILT_PRODUCTS_DIR; };
 		6753419D2AB54A3A00757F76 /* main.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = main.cpp; sourceTree = "<group>"; };
@@ -207,6 +209,7 @@
 				67C99FF82AB53E62000B5281 /* Utils */,
 				67C99FEB2AB53DB2000B5281 /* AppDelegate.swift */,
 				67C99FF22AB53DB4000B5281 /* Fire.entitlements */,
+				451A55692AF9F92D00AF57C1 /* InputModeCache.swift */,
 			);
 			path = Fire;
 			sourceTree = "<group>";
@@ -442,6 +445,7 @@
 				67C9A0412AB53ED3000B5281 /* ThemePane.swift in Sources */,
 				67C9A03E2AB53ED3000B5281 /* UserDictPane.swift in Sources */,
 				67C9A03F2AB53ED3000B5281 /* GeneralPane.swift in Sources */,
+				451A556A2AF9F92D00AF57C1 /* InputModeCache.swift in Sources */,
 				67C9A00E2AB53E83000B5281 /* Fire.swift in Sources */,
 				67C9A0102AB53E83000B5281 /* types.swift in Sources */,
 				67C99FFF2AB53E62000B5281 /* TipsWindow.swift in Sources */,

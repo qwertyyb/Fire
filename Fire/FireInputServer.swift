@@ -9,8 +9,6 @@
 import Foundation
 import Defaults
 
-private var inputModeCache: [String: InputMode] = [:]
-
 extension FireInputController {
     /**
     * 根据当前输入的应用改变输入模式
@@ -25,7 +23,7 @@ extension FireInputController {
             return currentMode != Fire.shared.inputMode
         }
         // 启用APP缓存设置
-        if Defaults[.keepAppInputMode], let mode = inputModeCache[identifier] {
+        if Defaults[.keepAppInputMode], let mode = InputModeCache.shared.get(identifier) {
             NSLog("[FireInputController] activeClientInputMode from cache: \(identifier), \(mode)")
             Fire.shared.toggleInputMode(mode, showTip: false)
             return currentMode != Fire.shared.inputMode
@@ -34,9 +32,11 @@ extension FireInputController {
     }
 
     private func savePreviousClientInputMode() {
-        if let identifier = CandidatesWindow.shared.inputController?.client()?.bundleIdentifier() {
+        if Defaults[.keepAppInputMode],
+           let identifier = CandidatesWindow.shared.inputController?.client()?.bundleIdentifier(),
+           Defaults[.appSettings][identifier] == nil {
             // 缓存当前输入模式
-            inputModeCache.updateValue(inputMode, forKey: identifier)
+            InputModeCache.shared.put(identifier, inputMode)
         }
     }
 

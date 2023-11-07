@@ -119,11 +119,11 @@ extension Defaults.Keys {
 
     // 应用输入配置
     static let keepAppInputMode = Key<Bool>("keepAppInputMode", default: true)
+    static let keepAppInputMode_keys = Key<[String]>("keepAppInputMode_keys", default: [])
+    static let keepAppInputMode_cache = Key<[String: InputMode]>("keepAppInputMode_cache", default: [:])
+
     static let appInputModeTipShowTime = Key<AppInputModeTipShowTime>("appInputModeTipShowTime", default: .onlyChanged)
-    static let appSettings = Key<[String: ApplicationSettingItem]>(
-        "AppSettings",
-        default: [:]
-    )
+    static let appSettings = Key<[String: ApplicationSettingItem]>("AppSettings", default: [:])
     // 标点符号配置
     static let punctuationMode = Key<PunctuationMode>("punctuationMode", default: PunctuationMode.zhhans)
     static let customPunctuationSettings = Key<[String: String]>("customPunctuationSettings", default: punctuation)
@@ -145,7 +145,7 @@ extension Defaults.Keys {
     //           Key          Type   UserDefaults name   Default value
 }
 
-enum InputMode: String {
+enum InputMode: String, Defaults.Serializable {
     case zhhans
     case enUS
 }
