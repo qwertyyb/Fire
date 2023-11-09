@@ -186,7 +186,7 @@ class FireInputController: IMKInputController {
         // 获取输入的字符
         let string = event.characters!
 
-        guard let reg = try? NSRegularExpression(pattern: "^[a-z]+$") else {
+        guard let reg = try? NSRegularExpression(pattern: "^[a-zA-Z]+$") else {
             return nil
         }
         let match = reg.firstMatch(
