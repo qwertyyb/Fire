@@ -16,15 +16,18 @@ struct ApplicationSettingItemView: View {
     let onChange: () -> Void
 
     private func getDisplayName(_ identifier: String) -> String {
-        guard let info = Bundle.main.localizedInfoDictionary ?? Bundle.main.infoDictionary else { return identifier }
-        guard let displayName = (
-                info["CFBundleDisplayName"] ??
-                    info["CFBundleName"]) as? String else { return identifier }
+        guard let url = NSWorkspace.shared.urlForApplication(withBundleIdentifier: identifier) else {
+            return identifier
+        }
+        let displayName = FileManager.default.displayName(atPath: url.path)
         return "\(displayName)(\(identifier))"
     }
 
     private func getIcon(_ identifier: String) -> NSImage {
-        return NSWorkspace.shared.icon(forFile: Bundle.main.bundlePath)
+        guard let url = NSWorkspace.shared.urlForApplication(withBundleIdentifier: identifier) else {
+            return NSWorkspace.shared.icon(forFile: Bundle.main.bundlePath)
+        }
+        return NSWorkspace.shared.icon(forFile: url.path)
     }
 
     var body: some View {
@@ -106,10 +109,16 @@ struct ApplicationPane: View {
                     HStack {
                         Text("自动切换")
                         Toggle("保持应用最后使用的输入模式", isOn: $keepAppInputMode)
-                            .padding(.leading, 12)
+                            .padding(.leading, 10)
                     }
                     HStack {
-                        Picker("显示提示", selection: $appInputModeTipShowTime) {
+                        Text("仅保留最近使用的\(InputModeCache.shared.capacity)个应用的输入模式")
+                            .font(.footnote)
+                            .padding(.leading, 70)
+                    }
+                    HStack {
+                        Text("显示提示")
+                        Picker("", selection: $appInputModeTipShowTime) {
                             Text("仅在变化时显示").tag(AppInputModeTipShowTime.onlyChanged)
                             Text("总是显示").tag(AppInputModeTipShowTime.always)
                             Text("不显示")
@@ -127,7 +136,7 @@ struct ApplicationPane: View {
                                 Text("添加")
                             }
                         }
-                        .padding(.leading, 12)
+                        .padding(.leading, 8)
                     }
                     ScrollView(.vertical) {
                         if appSettings.count > 0 {
