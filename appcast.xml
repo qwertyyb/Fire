@@ -3,18 +3,18 @@
     <channel>
         <title>业火输入法</title>
         <item>
-            <title>v0.19.0</title>
-            <pubDate>Fri, 10 Nov 2023 02:48:08 +0000</pubDate>
+            <title>v0.19.1</title>
+            <pubDate>Wed, 15 Nov 2023 03:42:36 +0000</pubDate>
             <sparkle:minimumSystemVersion>10.15</sparkle:minimumSystemVersion>
             <description><![CDATA[
-                <h3 id=bugfixes>Bug Fixes</h3> <ul> <li>修复首选项中的应用设置应用名和图标显示不正确的问题 (<a href=https://github.com/qwertyyb/Fire/commit/2367b7e63ba2889087d10db7cf87e13223464305>2367b7e</a>)</li> <li>考虑到会增加输入负担，中文模式下输入大写字母时，不再直接上屏处理 (<a href=https://github.com/qwertyyb/Fire/commit/0b513933e42b24d65d1a73c482e836be1d070bbe>0b51393</a>)</li> <li>调短shift按键的检测的时间间隔为0.2s,防止在中文输入时误触发 (<a href=https://github.com/qwertyyb/Fire/commit/21ebba0d1ffa5b2a006e52d90025c5f55f0aa6f1>21ebba0</a>)</li> </ul> <h3 id=features>Features</h3> <ul> <li><strong>app:</strong> 保持应用最后使用的输入模式状态持久化，支持应用重启后仍能获取之前的状态 (<a href=https://github.com/qwertyyb/Fire/commit/a46a3d724799161b17afefeff5bd52c59d79f581>a46a3d7</a>)</li> <li><strong>menu:</strong> 添加设置应用预设的菜单项，可一键设置正在输入的应用的预设输入模式 (<a href=https://github.com/qwertyyb/Fire/commit/e24e9c3f81db51ddded61fa1ec926d35236de487>e24e9c3</a>)</li> <li>加入失去焦点时写入原码的逻辑 (<a href=https://github.com/qwertyyb/Fire/commit/23b7102e3bcca62c127a6e447ceab473572c51f2>23b7102</a>)</li> </ul>
+                <h3 id=bugfixes>Bug Fixes</h3> <ul> <li>修复菜单栏的中英文状态显示按钮位置不能保存的问题 (<a href=https://github.com/qwertyyb/Fire/commit/b45d475ede631f9d3ed57a554f4182802b27bd1f>b45d475</a>)</li> </ul>
             ]]>
             </description>
             <enclosure url="https://github.com/qwertyyb/Fire/releases/latest/download/FireInstaller.zip"
-              sparkle:version="20231110024443"
-              sparkle:shortVersionString="v0.19.0"
-              length="5727917"
-              sparkle:edSignature="9VdM0TTBcViDDhsGGFcMXYYdmzI0cM2rHeZACTYXhKcLrPsJ5RMqbgPAPICOLcASyaU7U6iSXaY2P6cgGtlzDQ=="
+              sparkle:version="20231115033940"
+              sparkle:shortVersionString="v0.19.1"
+              length="5733830"
+              sparkle:edSignature="D+NcHfMhjil64f2Wj8wc4FMGxDGlE6GvfoZNyWAKBttYi7oiSMDPMQ4n/X0+WY0eZRryb4N/fwucNudLQttyBA=="
               type="application/octet-stream"/>
         </item>
     </channel>
