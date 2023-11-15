@@ -19,7 +19,7 @@ class StatusBar {
     private var showInputModeStatusSubscript: AnyCancellable?
     private init() {
         // 输入法变化时，根据当前选中状态切换显示
-        statusItem = NSStatusBar.system.statusItem(withLength: NSStatusItem.variableLength)
+        statusItem = StatusBarController.system.statusItem(autosaveName: "status-indicator", width: NSStatusItem.variableLength)
         statusItem.button?.title = "中"
         statusItem.button?.action = #selector(changeInputMode)
         statusItem.button?.target = self

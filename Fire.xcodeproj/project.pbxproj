@@ -53,6 +53,7 @@
 		67C9A0542AB53F79000B5281 /* Sparkle in Frameworks */ = {isa = PBXBuildFile; productRef = 67C9A0532AB53F79000B5281 /* Sparkle */; };
 		67C9A0582AB5429B000B5281 /* sqlite3.c in Sources */ = {isa = PBXBuildFile; fileRef = 67C9A0562AB5429B000B5281 /* sqlite3.c */; };
 		67C9A05B2AB5445E000B5281 /* Security.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 67C9A05A2AB5445E000B5281 /* Security.framework */; };
+		67F0B0D32AFFC282006F835D /* StatusBarController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 67F0B0D22AFFC282006F835D /* StatusBarController.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -116,6 +117,7 @@
 		67C9A0562AB5429B000B5281 /* sqlite3.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = sqlite3.c; sourceTree = "<group>"; };
 		67C9A0572AB5429B000B5281 /* sqlite3.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = sqlite3.h; sourceTree = "<group>"; };
 		67C9A05A2AB5445E000B5281 /* Security.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Security.framework; path = System/Library/Frameworks/Security.framework; sourceTree = SDKROOT; };
+		67F0B0D22AFFC282006F835D /* StatusBarController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StatusBarController.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -203,6 +205,7 @@
 				45B76CA82AEA6042009AFABD /* PunctuationConversion.swift */,
 				67C9A0022AB53E83000B5281 /* InputSource.swift */,
 				67C9A0012AB53E83000B5281 /* MainMenu.xib */,
+				67F0B0D22AFFC282006F835D /* StatusBarController.swift */,
 				67C9A0042AB53E83000B5281 /* StatusBar.swift */,
 				67C9A0082AB53E83000B5281 /* types.swift */,
 				67C9A0032AB53E83000B5281 /* Utils.swift */,
@@ -433,6 +436,7 @@
 				67C9A03C2AB53ED3000B5281 /* StatisticsPane.swift in Sources */,
 				67C9A0322AB53ED3000B5281 /* CandidatesView.swift in Sources */,
 				67C9A00B2AB53E83000B5281 /* Utils.swift in Sources */,
+				67F0B0D32AFFC282006F835D /* StatusBarController.swift in Sources */,
 				67C9A0402AB53ED3000B5281 /* ApplicationPane.swift in Sources */,
 				67C9A0132AB53EB0000B5281 /* build.swift in Sources */,
 				67C9A0422AB53ED3000B5281 /* ThesaurusPane.swift in Sources */,
