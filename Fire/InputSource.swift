@@ -22,8 +22,8 @@ class InputSource {
         if !isEnabled() {
             // 全新安装或未启用过，需要Register, 已启用的，不需要再次启用
             let installedLocationURL = NSURL(fileURLWithPath: installLocation)
-            TISRegisterInputSource(installedLocationURL as CFURL)
-            NSLog("register input source")
+            let err = TISRegisterInputSource(installedLocationURL as CFURL)
+            NSLog("register input source: \(err)")
         }
     }
 
@@ -69,11 +69,11 @@ class InputSource {
             guard let result = self.findInputSource(forUsage: .selected) else {
                 return
             }
-            TISSelectInputSource(result)
+            let err = TISSelectInputSource(result)
+            NSLog("select input source: \(err)")
             let isSelected = CFBooleanGetValue(Unmanaged<CFBoolean>.fromOpaque(
                 TISGetInputSourceProperty(result, kTISPropertyInputSourceIsSelected)
             ).takeUnretainedValue())
-            NSLog("Selected input source")
             if isSelected {
                 timer.invalidate()
                 callback(true)
@@ -89,8 +89,8 @@ class InputSource {
             TISGetInputSourceProperty(result, kTISPropertyInputSourceIsEnabled)
         ).takeUnretainedValue())
         if !enabled {
-            TISEnableInputSource(result)
-            NSLog("Enabled input source")
+            let err = TISEnableInputSource(result)
+            NSLog("Enabled input source: \(err)")
         }
     }
 
