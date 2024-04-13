@@ -3,18 +3,18 @@
     <channel>
         <title>业火输入法</title>
         <item>
-            <title>v0.19.1</title>
-            <pubDate>Wed, 15 Nov 2023 03:42:36 +0000</pubDate>
+            <title>v0.20.0</title>
+            <pubDate>Sat, 13 Apr 2024 11:59:27 +0000</pubDate>
             <sparkle:minimumSystemVersion>10.15</sparkle:minimumSystemVersion>
             <description><![CDATA[
-                <h3 id=bugfixes>Bug Fixes</h3> <ul> <li>修复菜单栏的中英文状态显示按钮位置不能保存的问题 (<a href=https://github.com/qwertyyb/Fire/commit/b45d475ede631f9d3ed57a554f4182802b27bd1f>b45d475</a>)</li> </ul>
+                <h3 id=features>Features</h3> <ul> <li>添加输入法相关日志 (<a href=https://github.com/qwertyyb/Fire/commit/8c09bfb103a372fa1044e5a58a957a2aaec99533>8c09bfb</a>)</li> </ul>
             ]]>
             </description>
             <enclosure url="https://github.com/qwertyyb/Fire/releases/latest/download/FireInstaller.zip"
-              sparkle:version="20231115033940"
-              sparkle:shortVersionString="v0.19.1"
-              length="5733830"
-              sparkle:edSignature="D+NcHfMhjil64f2Wj8wc4FMGxDGlE6GvfoZNyWAKBttYi7oiSMDPMQ4n/X0+WY0eZRryb4N/fwucNudLQttyBA=="
+              sparkle:version="20240413115749"
+              sparkle:shortVersionString="v0.20.0"
+              length="5734141"
+              sparkle:edSignature="Lv5DoPp1uV6t1vOGknRsySOgHFugR1I32Moz6wqiJ8z0OfPb5w7U/0vTlu2oxrYZlFEbydMByjbnyhxw0m6xCg=="
               type="application/octet-stream"/>
         </item>
     </channel>
