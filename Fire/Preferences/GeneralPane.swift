@@ -24,6 +24,7 @@ struct GeneralPane: View {
     @Default(.disableEnMode) private var disableEnMode
     @Default(.disableTempEnMode) private var disableTempEnMode
     @Default(.showInputModeStatus) private var showInputModeStatus
+    @Default(.enableWhitespaceBetweenZhEn) private var enableWhitespaceBetweenZhEn
 
     var body: some View {
         Settings.Container(contentWidth: 450.0) {
@@ -79,10 +80,12 @@ struct GeneralPane: View {
                     GroupBox(label: Text("中英文切换")) {
                         VStack(alignment: .leading, spacing: 12) {
                             HStack {
+                                Toggle("禁止切换英文", isOn: $disableEnMode)
+                                Spacer()
                                 Toggle("状态栏显示", isOn: $showInputModeStatus)
                             }
                             HStack {
-                                Toggle("禁止切换英文", isOn: $disableEnMode)
+                                Toggle("中文与英文/数字之间插入空格", isOn: $enableWhitespaceBetweenZhEn)
                                 Spacer()
                                 Toggle("禁用;键临时英文模式", isOn: $disableTempEnMode)
                             }
