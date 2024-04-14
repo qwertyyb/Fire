@@ -3,18 +3,18 @@
     <channel>
         <title>业火输入法</title>
         <item>
-            <title>v0.20.0</title>
-            <pubDate>Sat, 13 Apr 2024 12:18:50 +0000</pubDate>
+            <title>v0.21.0</title>
+            <pubDate>Sun, 14 Apr 2024 08:00:39 +0000</pubDate>
             <sparkle:minimumSystemVersion>10.15</sparkle:minimumSystemVersion>
             <description><![CDATA[
-                <h3 id=features>Features</h3> <ul> <li>添加输入法相关日志 (<a href=https://github.com/qwertyyb/Fire/commit/8c09bfb103a372fa1044e5a58a957a2aaec99533>8c09bfb</a>)</li> </ul>
+                <h3 id=features>Features</h3> <ul> <li>支持在中文和英文/数字间插入空格 (<a href=https://github.com/qwertyyb/Fire/commit/3a63b9e48753d368437cac0095a1dd3295d912ab>3a63b9e</a>)</li> </ul>
             ]]>
             </description>
             <enclosure url="https://github.com/qwertyyb/Fire/releases/latest/download/FireInstaller.zip"
-              sparkle:version="20240413121639"
-              sparkle:shortVersionString="v0.20.0"
-              length="5734123"
-              sparkle:edSignature="fA6Cc3MEw8Uhdy+VNQeCx8wy9+BPYWo4YAgd+TMRRtFHtaBDN3j8+rjEVPzHDrmUHNMetiN9ZntTLY3MqzGNCA=="
+              sparkle:version="20240414075833"
+              sparkle:shortVersionString="v0.21.0"
+              length="5738145"
+              sparkle:edSignature="92KbxoXh5xlCeQb+nrHo+LSGzr3cBL6g3VhYDTwZtXFgpsQxD8PQsJCus8ip8AeZ/U0kitmEwmzRk9uQFihnDg=="
               type="application/octet-stream"/>
         </item>
     </channel>
