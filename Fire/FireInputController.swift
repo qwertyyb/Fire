@@ -17,6 +17,7 @@ class FireInputController: IMKInputController {
     private var _candidates: [Candidate] = []
     private var _hasNext: Bool = false
     private var _lastInputIsNumber = false
+    private var _lastInputText = ""
     internal var inputMode: InputMode {
         get { Fire.shared.inputMode }
         set(value) { Fire.shared.inputMode = value }
@@ -132,6 +133,8 @@ class FireInputController: IMKInputController {
     private func enModeHandler(event: NSEvent) -> Bool? {
         // 英文输入模式, 不做任何处理
         if inputMode == .enUS {
+            NSLog("[FireInputController] enModeHandler, in en mode: \(event.characters ?? "")")
+            _lastInputText = event.characters ?? ""
             return false
         }
         return nil
@@ -252,6 +255,8 @@ class FireInputController: IMKInputController {
         if event.keyCode == kVK_Space && _originalString.count > 0 {
             if let first = self._candidates.first {
                 insertCandidate(first)
+            } else {
+                _lastInputText = " "
             }
             return true
         }
@@ -370,9 +375,17 @@ class FireInputController: IMKInputController {
     // 往输入框插入当前字符
     func insertText(_ text: String) {
         NSLog("insertText: %@", text)
-        let value = NSAttributedString(string: text)
-        client()?.insertText(value, replacementRange: replacementRange())
-        _lastInputIsNumber = text.last != nil && Int(String(text.last!)) != nil
+        if text.count > 0 {
+            var newText = text
+            if Defaults[.enableWhitespaceBetweenZhEn] && Utils.shared.shouldConcatWithWhitespace(_lastInputText, text) {
+                newText = " " + newText
+                NSLog("[FireInputController] insertCandidate should append whitespace: \(newText)")
+            }
+            let value = NSAttributedString(string: newText)
+            client()?.insertText(value, replacementRange: replacementRange())
+            _lastInputIsNumber = newText.last != nil && Int(String(newText.last!)) != nil
+            _lastInputText = newText
+        }
         clean()
     }
 

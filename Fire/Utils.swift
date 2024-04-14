@@ -61,6 +61,28 @@ class Utils {
         }
         return NSScreen.main
     }
+    
+    // 根据上次输入的字符，判断插入的新字符是否要前加空格
+    func shouldConcatWithWhitespace(_ lastText: String, _ nextText: String) -> Bool {
+        NSLog("[Utils] shouldConcatWithWhitespace, lastText: \(lastText), nextText: \(nextText)")
+        if lastText.count <= 0 || nextText.count <= 0 {
+            return false
+        }
+        guard let firstEnReg = try? NSRegularExpression(pattern: "[a-zA-Z0-9]$"),
+              let nextCnReg = try? NSRegularExpression(pattern: "^[\\u4e00-\\u9fa5]") else {
+            return false
+        }
+        if firstEnReg.numberOfMatches(in: lastText, range: NSMakeRange(0, lastText.count)) > 0
+            && nextCnReg.numberOfMatches(in: nextText, range: NSMakeRange(0, nextText.count)) > 0 {
+            return true
+        }
+        guard let firstCnReg = try? NSRegularExpression(pattern: "[\\u4e00-\\u9fa5]$"),
+              let nextEnReg = try? NSRegularExpression(pattern: "^[a-zA-Z0-9]") else {
+            return false
+        }
+        return firstCnReg.numberOfMatches(in: lastText, range: NSMakeRange(0, lastText.count)) > 0
+            && nextEnReg.numberOfMatches(in: nextText, range: NSMakeRange(0, nextText.count)) > 0
+    }
 
     static let shared = Utils()
 }
