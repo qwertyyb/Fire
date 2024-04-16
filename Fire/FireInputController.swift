@@ -240,6 +240,11 @@ class FireInputController: IMKInputController {
                 return true
             }
             _lastInputIsNumber = true
+            if Utils.shared.shouldConcatWithWhitespace(_lastInputText, string) {
+                // 中文后输入了数字，先插入一个空格
+                insertText(" ")
+            }
+            _lastInputText = event.characters!
         }
         return nil
     }
