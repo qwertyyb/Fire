@@ -141,12 +141,25 @@ class FireInputController: IMKInputController {
     }
 
     private func predictorHandler(event: NSEvent) -> Bool? {
+        // 在数字后输入。号自动转换为小数点
         if Defaults[.enableDotAfterNumber] && event.keyCode == kVK_ANSI_Period && _lastInputIsNumber {
             insertText(".")
             _lastInputIsNumber = false
             return true
         }
         _lastInputIsNumber = false
+
+        // 若预期操作不在白名单范围内，则把lastInputText置空
+        let match = try? NSRegularExpression(pattern: "^[a-zA-Z0-9]+$")
+            .firstMatch(
+                in: event.characters ?? "",
+                range: NSMakeRange(0, (event.characters ?? "").count)
+            )
+        if match == nil
+            && event.keyCode != kVK_Space
+            && (event.keyCode != kVK_Return || (event.keyCode == kVK_Return && _originalString.count <= 0)) {
+            _lastInputText = ""
+        }
         return nil
     }
 
