@@ -82,7 +82,15 @@ class FireInputController: IMKInputController {
     
     private func getPreviousText(_ count: Int = 1) -> String {
         // 中文输入模式下，markedRange 会跟随输入字符变化
-        let previousLocation = client().selectedRange().location - client().markedRange().length - 1
+        // 不同APP下，对selectedRange的location处理不同，有的把location放在组字区后，比如备忘录APP，有的把location放在组字区前，比如Chrome浏览器，此处根据大小判断一下
+        let selectedRange = client().selectedRange()
+        let markedRange = client().markedRange()
+        // 默认认为 location 在组字区后
+        var previousLocation = selectedRange.location - markedRange.length - 1
+        if selectedRange.location < markedRange.location + markedRange.length {
+            // selectedRange的location在组字区前
+            previousLocation = selectedRange.location - 1
+        }
         if previousLocation <= 0 {
             return ""
         }
