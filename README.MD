@@ -66,7 +66,10 @@
 ## 开发
 ```bash
 # 下载项目到本地
-git clone https://github.com/qwertyyb/Fire.git
+git clone --recursive https://github.com/qwertyyb/Fire.git
+
+# 构建 sqlcipher
+./scripts/0_prepare_sqlcipher.sh
 
 # 使用Xcode打开项目启动开发
 open Fire.xcodeproj
