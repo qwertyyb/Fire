@@ -19,8 +19,8 @@ if [[ $USE_CODE_SIGN == "enable" ]]
 then
     echo "enable code sign"
     BUILD_FLAG=''
-elif [[ $USE_CODE_SIGN == "disable" ]]
-then
+else
+    USE_CODE_SIGN="disable"
     echo "disable code sign"
     BUILD_FLAG='CODE_SIGN_IDENTITY="" CODE_SIGNING_REQUIRED=NO CODE_SIGNING_ALLOWED=NO'
 fi
