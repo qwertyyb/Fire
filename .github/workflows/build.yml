@@ -13,9 +13,13 @@ on:
 jobs:
   create_release:
     runs-on: ubuntu-latest
+    permission:
+      contents: write # 创建 release 需要此权限
     if: github.event.pull_request.merged == true && github.event.pull_request.base.ref == 'master' || github.event_name == 'workflow_dispatch'
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v4
+        with:
+          submodules: true
 
       - name: Conventional Changelog Action
         id: changelog
@@ -53,7 +57,7 @@ jobs:
           changelog_html: ${{ steps.create_html.outputs.html }}
         run: echo "$changelog_html" > tmp/changelog_html
 
-      - uses: actions/upload-artifact@v2
+      - uses: actions/upload-artifact@v4
         with:
           name: tmp
           path: ./tmp/
@@ -67,7 +71,9 @@ jobs:
       USE_CODE_SIGN: ${{ !inputs.disable_sign && github.actor_id == github.repository_owner_id && 'enable' || 'disable' }}
 
     steps:
-    - uses: actions/checkout@v2
+    - uses: actions/checkout@v4
+      with:
+        submodules: true
 
     - name: checkout tag
       run: |
@@ -83,18 +89,21 @@ jobs:
     
     - name: import application certificate
       id: keychain
-      uses: apple-actions/import-codesign-certs@v1
+      uses: apple-actions/import-codesign-certs@v2
       with: 
         p12-file-base64: ${{ secrets.CERTIFICATES_P12 }}
         p12-password: ${{ secrets.CERTIFICATES_P12_PASSWORD }}
 
     - name: import installer certificate
-      uses: apple-actions/import-codesign-certs@v1
+      uses: apple-actions/import-codesign-certs@v2
       with:
         create-keychain: false
         keychain-password: ${{ steps.keychain.outputs.keychain-password }}
         p12-file-base64: ${{ secrets.CERTIFICATES_INSTALLER_P12 }}
         p12-password: ${{ secrets.CERTIFICATES_INSTALLER_P12_PASSWORD }}
+
+    - name: prepare sqlcipher
+      run: ./scripts/0_prepare_sqlcipher.sh
 
     - name: build Fire.app
       run: ./scripts/a_build_app.sh
@@ -109,7 +118,7 @@ jobs:
         team_id: ${{ secrets.TEAM_ID }}
       run: ./scripts/c_notarize_installer.sh
     
-    - uses: actions/download-artifact@v2
+    - uses: actions/download-artifact@v4
       with:
         name: tmp
         path: ./tmp
@@ -129,7 +138,7 @@ jobs:
     - name: gather artifact
       run: cp ./Fire/Info.plist ./dist/
 
-    - uses: actions/upload-artifact@v2
+    - uses: actions/upload-artifact@v4
       with:
         name: dist
         path: ./dist/
@@ -137,16 +146,20 @@ jobs:
 
   upload_publish:
     runs-on: ubuntu-latest
+    permission:
+      contents: write # 创建 release 需要此权限
     needs: build_binary
     steps:
-    - uses: actions/checkout@v2
+    - uses: actions/checkout@v4
+      with:
+        submodules: true
 
-    - uses: actions/download-artifact@v2
+    - uses: actions/download-artifact@v4
       with:
         name: dist
         path: ./dist
 
-    - uses: actions/download-artifact@v2
+    - uses: actions/download-artifact@v4
       with:
         name: tmp
         path: ./tmp

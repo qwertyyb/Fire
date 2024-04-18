@@ -21,27 +21,32 @@ jobs:
       USE_CODE_SIGN: ${{ !inputs.disable_sign && github.actor_id == github.repository_owner_id && 'enable' || 'disable' }}
     
     steps:
-    - uses: actions/checkout@v1
+    - uses: actions/checkout@v4
+      with:
+        submodules: true
 
     - name: switch xcode version
       run: sudo xcode-select --switch /Applications/Xcode_14.3.1.app
     
     - name: import application certificate
       id: keychain
-      uses: apple-actions/import-codesign-certs@v1
+      uses: apple-actions/import-codesign-certs@v2
       if: ${{ !inputs.disable_sign && github.actor_id == github.repository_owner_id }}
       with: 
         p12-file-base64: ${{ secrets.CERTIFICATES_P12 }}
         p12-password: ${{ secrets.CERTIFICATES_P12_PASSWORD }}
 
     - name: import installer certificate
-      uses: apple-actions/import-codesign-certs@v1
+      uses: apple-actions/import-codesign-certs@v2
       if: ${{ !inputs.disable_sign && github.actor_id == github.repository_owner_id }}
       with:
         create-keychain: false
         keychain-password: ${{ steps.keychain.outputs.keychain-password }}
         p12-file-base64: ${{ secrets.CERTIFICATES_INSTALLER_P12 }}
         p12-password: ${{ secrets.CERTIFICATES_INSTALLER_P12_PASSWORD }}
+
+    - name: prepare sqlcipher
+      run: ./scripts/0_prepare_sqlcipher.sh
 
     - name: build Fire.app
       run: ./scripts/a_build_app.sh
@@ -55,7 +60,7 @@ jobs:
         sparkle_key: ${{ secrets.sparkle_key }}
       run: ./scripts/d_build_appcast.sh
 
-    - uses: actions/upload-artifact@v2
+    - uses: actions/upload-artifact@v4
       with:
         name: dist
         path: ./dist/

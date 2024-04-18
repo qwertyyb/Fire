@@ -79,6 +79,23 @@ class FireInputController: IMKInputController {
             client()?.setMarkedText(text, selectionRange: selectionRange(), replacementRange: replacementRange())
         }
     }
+    
+    private func getPreviousText(_ count: Int = 1) -> String {
+        // 中文输入模式下，markedRange 会跟随输入字符变化
+        // 不同APP下，对selectedRange的location处理不同，有的把location放在组字区后，比如备忘录APP，有的把location放在组字区前，比如Chrome浏览器，此处根据大小判断一下
+        let selectedRange = client().selectedRange()
+        let markedRange = client().markedRange()
+        // 默认认为 location 在组字区后
+        var previousLocation = selectedRange.location - markedRange.length - 1
+        if selectedRange.location < markedRange.location + markedRange.length {
+            // selectedRange的location在组字区前
+            previousLocation = selectedRange.location - 1
+        }
+        if previousLocation <= 0 {
+            return ""
+        }
+        return client().attributedSubstring(from: NSMakeRange(previousLocation, 1))?.string ?? ""
+    }
 
     // ---- handlers begin -----
 
@@ -133,20 +150,24 @@ class FireInputController: IMKInputController {
     private func enModeHandler(event: NSEvent) -> Bool? {
         // 英文输入模式, 不做任何处理
         if inputMode == .enUS {
-            NSLog("[FireInputController] enModeHandler, in en mode: \(event.characters ?? "")")
-            _lastInputText = event.characters ?? ""
             return false
         }
         return nil
     }
 
     private func predictorHandler(event: NSEvent) -> Bool? {
+        // 在数字后输入。号自动转换为小数点
         if Defaults[.enableDotAfterNumber] && event.keyCode == kVK_ANSI_Period && _lastInputIsNumber {
             insertText(".")
             _lastInputIsNumber = false
             return true
         }
         _lastInputIsNumber = false
+        
+        _lastInputText = getPreviousText()
+        NSLog("[FireInputController] predictorHandler range, selectionRange: \(selectionRange()), replacementRange: \(replacementRange()), client.selectedRange: \(client().selectedRange()), client.markedRange: \(client().markedRange())")
+        NSLog("[FireInputController] predictorHandler previous text, \(_lastInputText)")
+
         return nil
     }
 
@@ -227,6 +248,10 @@ class FireInputController: IMKInputController {
                 return true
             }
             _lastInputIsNumber = true
+            if Defaults[.enableWhitespaceBetweenZhEn] && Utils.shared.shouldConcatWithWhitespace(_lastInputText, string) {
+                // 中文后输入了数字，先插入一个空格
+                insertText(" ")
+            }
         }
         return nil
     }
@@ -255,8 +280,6 @@ class FireInputController: IMKInputController {
         if event.keyCode == kVK_Space && _originalString.count > 0 {
             if let first = self._candidates.first {
                 insertCandidate(first)
-            } else {
-                _lastInputText = " "
             }
             return true
         }
@@ -384,7 +407,6 @@ class FireInputController: IMKInputController {
             let value = NSAttributedString(string: newText)
             client()?.insertText(value, replacementRange: replacementRange())
             _lastInputIsNumber = newText.last != nil && Int(String(newText.last!)) != nil
-            _lastInputText = newText
         }
         clean()
     }
