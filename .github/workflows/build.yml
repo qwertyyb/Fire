@@ -57,7 +57,7 @@ jobs:
           changelog_html: ${{ steps.create_html.outputs.html }}
         run: echo "$changelog_html" > tmp/changelog_html
 
-      - uses: actions/upload-artifact@v2
+      - uses: actions/upload-artifact@v4
         with:
           name: tmp
           path: ./tmp/
@@ -89,13 +89,13 @@ jobs:
     
     - name: import application certificate
       id: keychain
-      uses: apple-actions/import-codesign-certs@v1
+      uses: apple-actions/import-codesign-certs@v2
       with: 
         p12-file-base64: ${{ secrets.CERTIFICATES_P12 }}
         p12-password: ${{ secrets.CERTIFICATES_P12_PASSWORD }}
 
     - name: import installer certificate
-      uses: apple-actions/import-codesign-certs@v1
+      uses: apple-actions/import-codesign-certs@v2
       with:
         create-keychain: false
         keychain-password: ${{ steps.keychain.outputs.keychain-password }}
@@ -118,7 +118,7 @@ jobs:
         team_id: ${{ secrets.TEAM_ID }}
       run: ./scripts/c_notarize_installer.sh
     
-    - uses: actions/download-artifact@v2
+    - uses: actions/download-artifact@v4
       with:
         name: tmp
         path: ./tmp
@@ -138,7 +138,7 @@ jobs:
     - name: gather artifact
       run: cp ./Fire/Info.plist ./dist/
 
-    - uses: actions/upload-artifact@v2
+    - uses: actions/upload-artifact@v4
       with:
         name: dist
         path: ./dist/
@@ -154,12 +154,12 @@ jobs:
       with:
         submodules: true
 
-    - uses: actions/download-artifact@v2
+    - uses: actions/download-artifact@v4
       with:
         name: dist
         path: ./dist
 
-    - uses: actions/download-artifact@v2
+    - uses: actions/download-artifact@v4
       with:
         name: tmp
         path: ./tmp
