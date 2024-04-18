@@ -21,7 +21,9 @@ jobs:
       USE_CODE_SIGN: ${{ !inputs.disable_sign && github.actor_id == github.repository_owner_id && 'enable' || 'disable' }}
     
     steps:
-    - uses: actions/checkout@v1
+    - uses: actions/checkout@v4
+      with:
+        submodules: true
 
     - name: switch xcode version
       run: sudo xcode-select --switch /Applications/Xcode_14.3.1.app

@@ -13,9 +13,13 @@ on:
 jobs:
   create_release:
     runs-on: ubuntu-latest
+    permission:
+      contents: write # 创建 release 需要此权限
     if: github.event.pull_request.merged == true && github.event.pull_request.base.ref == 'master' || github.event_name == 'workflow_dispatch'
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v4
+        with:
+          submodules: true
 
       - name: Conventional Changelog Action
         id: changelog
@@ -67,7 +71,9 @@ jobs:
       USE_CODE_SIGN: ${{ !inputs.disable_sign && github.actor_id == github.repository_owner_id && 'enable' || 'disable' }}
 
     steps:
-    - uses: actions/checkout@v2
+    - uses: actions/checkout@v4
+      with:
+        submodules: true
 
     - name: checkout tag
       run: |
@@ -140,9 +146,13 @@ jobs:
 
   upload_publish:
     runs-on: ubuntu-latest
+    permission:
+      contents: write # 创建 release 需要此权限
     needs: build_binary
     steps:
-    - uses: actions/checkout@v2
+    - uses: actions/checkout@v4
+      with:
+        submodules: true
 
     - uses: actions/download-artifact@v2
       with:
