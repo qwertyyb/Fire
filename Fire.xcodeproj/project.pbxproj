@@ -8,9 +8,10 @@
 
 /* Begin PBXBuildFile section */
 		451A556A2AF9F92D00AF57C1 /* InputModeCache.swift in Sources */ = {isa = PBXBuildFile; fileRef = 451A55692AF9F92D00AF57C1 /* InputModeCache.swift */; };
+		4572854E2BD0EAF90048D67E /* Credits.html in Resources */ = {isa = PBXBuildFile; fileRef = 4572854D2BD0EAF90048D67E /* Credits.html */; };
 		45B76CA92AEA6042009AFABD /* PunctuationConversion.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45B76CA82AEA6042009AFABD /* PunctuationConversion.swift */; };
 		6753419E2AB54A3A00757F76 /* main.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 6753419D2AB54A3A00757F76 /* main.cpp */; };
-		675341A72AB54AEA00757F76 /* sqlite3.c in Sources */ = {isa = PBXBuildFile; fileRef = 675341A52AB54AEA00757F76 /* sqlite3.c */; };
+		675341A72AB54AEA00757F76 /* sqlite3.c in Sources */ = {isa = PBXBuildFile; fileRef = 675341A52AB54AEA00757F76 /* sqlite3.c */; settings = {COMPILER_FLAGS = "-w"; }; };
 		67AA47FF2AB733860073AC86 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 67C9A0232AB53ED3000B5281 /* Assets.xcassets */; };
 		67B514142AB590710084C42B /* TableBuilder in CopyFiles */ = {isa = PBXBuildFile; fileRef = 6753419B2AB54A3A00757F76 /* TableBuilder */; settings = {ATTRIBUTES = (CodeSignOnCopy, ); }; };
 		67C99FEC2AB53DB2000B5281 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 67C99FEB2AB53DB2000B5281 /* AppDelegate.swift */; };
@@ -51,7 +52,7 @@
 		67C9A04E2AB53F37000B5281 /* KeychainSwift in Frameworks */ = {isa = PBXBuildFile; productRef = 67C9A04D2AB53F37000B5281 /* KeychainSwift */; };
 		67C9A0512AB53F51000B5281 /* NanoID in Frameworks */ = {isa = PBXBuildFile; productRef = 67C9A0502AB53F51000B5281 /* NanoID */; };
 		67C9A0542AB53F79000B5281 /* Sparkle in Frameworks */ = {isa = PBXBuildFile; productRef = 67C9A0532AB53F79000B5281 /* Sparkle */; };
-		67C9A0582AB5429B000B5281 /* sqlite3.c in Sources */ = {isa = PBXBuildFile; fileRef = 67C9A0562AB5429B000B5281 /* sqlite3.c */; };
+		67C9A0582AB5429B000B5281 /* sqlite3.c in Sources */ = {isa = PBXBuildFile; fileRef = 67C9A0562AB5429B000B5281 /* sqlite3.c */; settings = {COMPILER_FLAGS = "-w"; }; };
 		67C9A05B2AB5445E000B5281 /* Security.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 67C9A05A2AB5445E000B5281 /* Security.framework */; };
 		67F0B0D32AFFC282006F835D /* StatusBarController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 67F0B0D22AFFC282006F835D /* StatusBarController.swift */; };
 /* End PBXBuildFile section */
@@ -71,6 +72,7 @@
 
 /* Begin PBXFileReference section */
 		451A55692AF9F92D00AF57C1 /* InputModeCache.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InputModeCache.swift; sourceTree = "<group>"; };
+		4572854D2BD0EAF90048D67E /* Credits.html */ = {isa = PBXFileReference; lastKnownFileType = text.html; path = Credits.html; sourceTree = "<group>"; };
 		45B76CA82AEA6042009AFABD /* PunctuationConversion.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PunctuationConversion.swift; sourceTree = "<group>"; };
 		6753419B2AB54A3A00757F76 /* TableBuilder */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = TableBuilder; sourceTree = BUILT_PRODUCTS_DIR; };
 		6753419D2AB54A3A00757F76 /* main.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = main.cpp; sourceTree = "<group>"; };
@@ -213,6 +215,7 @@
 				67C99FEB2AB53DB2000B5281 /* AppDelegate.swift */,
 				67C99FF22AB53DB4000B5281 /* Fire.entitlements */,
 				451A55692AF9F92D00AF57C1 /* InputModeCache.swift */,
+				4572854D2BD0EAF90048D67E /* Credits.html */,
 			);
 			path = Fire;
 			sourceTree = "<group>";
@@ -400,6 +403,7 @@
 				67C9A0312AB53ED3000B5281 /* InfoPlist.strings in Resources */,
 				67C9A0382AB53ED3000B5281 /* py_table.txt in Resources */,
 				67C9A0372AB53ED3000B5281 /* wb_table.txt in Resources */,
+				4572854E2BD0EAF90048D67E /* Credits.html in Resources */,
 				67C9A00D2AB53E83000B5281 /* fire.pdf in Resources */,
 				67C9A0392AB53ED3000B5281 /* wb_98_table.txt in Resources */,
 				67C9A0092AB53E83000B5281 /* MainMenu.xib in Resources */,
