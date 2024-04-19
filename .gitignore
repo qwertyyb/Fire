@@ -7,6 +7,8 @@
 /tmp
 /Fire/SQLCipher/sqlite3.c
 /Fire/SQLCipher/sqlite3.h
+/TableBuilder/SQLCipher/sqlite3.c
+/TableBuilder/SQLCipher/sqlite3.h
 
 
 # Created by https://www.gitignore.io/api/swift,macos
