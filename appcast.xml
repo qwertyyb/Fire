@@ -3,18 +3,18 @@
     <channel>
         <title>业火输入法</title>
         <item>
-            <title>v0.21.1</title>
-            <pubDate>Thu, 18 Apr 2024 11:35:15 +0000</pubDate>
+            <title>v0.22.0</title>
+            <pubDate>Mon, 09 Sep 2024 07:26:54 +0000</pubDate>
             <sparkle:minimumSystemVersion>10.15</sparkle:minimumSystemVersion>
             <description><![CDATA[
-                <h3 id=bugfixes>Bug Fixes</h3> <ul> <li>修复中文和数字之间不会插入空格的问题 <a href=https://github.com/qwertyyb/Fire/issues/129>#129</a> (<a href=https://github.com/qwertyyb/Fire/commit/a1a4bd44127bc0badf0b1c2ed6c467f96e86c287>a1a4bd4</a>)</li> <li>修复部分非预期场景下仍然在英文和中文间插入了空格的问题，关联issue <a href=https://github.com/qwertyyb/Fire/issues/129>#129</a> ,修复1，3 (<a href=https://github.com/qwertyyb/Fire/commit/7ba5189e48fe66c1c24f0b44688f79af09db3f45>7ba5189</a>)</li> <li>兼容 chrome 浏览器等 APP 把 selectedRange 放在组字区之后的场景 (<a href=https://github.com/qwertyyb/Fire/commit/1e17ec1fef4210d5313d689ca835c8bc7352a4f8>1e17ec1</a>)</li> </ul>
+                <h3 id=bugfixes>Bug Fixes</h3> <ul> <li>修复 SPM 版本导致流水线构建报错的问题 (<a href=https://github.com/qwertyyb/Fire/commit/3fc433171a28a89f17ba12b44846bb9d03480e22>3fc4331</a>)</li> <li>移除无用的依赖项 (<a href=https://github.com/qwertyyb/Fire/commit/40d87aefbc342982ddba6325b634270d4cc2ab7a>40d87ae</a>)</li> </ul> <h3 id=features>Features</h3> <ul> <li>从其它输入法切换至此输入法时，把输入模式设置为中文输入 (<a href=https://github.com/qwertyyb/Fire/commit/748c6b01c65993693983cfbc1efe0401094755de>748c6b0</a>)</li> </ul>
             ]]>
             </description>
             <enclosure url="https://github.com/qwertyyb/Fire/releases/latest/download/FireInstaller.zip"
-              sparkle:version="20240418113300"
-              sparkle:shortVersionString="v0.21.1"
-              length="5756411"
-              sparkle:edSignature="HXzRitrFOAuQAfonct4Y7PTRMu38joOoz6HpxYs+w+XYU56zmEBT617F8FatceYOGXGlX22TdnrV0KB4Knd7DQ=="
+              sparkle:version="20240909072435"
+              sparkle:shortVersionString="v0.22.0"
+              length="5775627"
+              sparkle:edSignature="Eb0Af8IaY/ZuFz3/vkeIeOY1xaixcMwDHpYzAH+MSk98A7K01OHdqJAvfHo8ty7UYX8dGPZTECYydgs2orDTDA=="
               type="application/octet-stream"/>
         </item>
     </channel>
