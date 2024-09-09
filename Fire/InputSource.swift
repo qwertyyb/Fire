@@ -8,7 +8,6 @@
 
 import Carbon
 import AppKit
-import Sauce
 
 enum InputSourceUsage {
     case enable
