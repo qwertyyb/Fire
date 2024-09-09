@@ -45,7 +45,7 @@ class StatusBar {
     }
 
     private func refreshVisibleStatus() {
-        NSLog("StatusBar.refreshVisibleStatus: \(InputSource.shared.isSelected())")
+        NSLog("[StatusBar] refreshVisibleStatus: \(InputSource.shared.isSelected())")
         statusItem.isVisible = Defaults[.showInputModeStatus] && InputSource.shared.isSelected()
     }
 
