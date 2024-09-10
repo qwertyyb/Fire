@@ -10,6 +10,14 @@
 		451A556A2AF9F92D00AF57C1 /* InputModeCache.swift in Sources */ = {isa = PBXBuildFile; fileRef = 451A55692AF9F92D00AF57C1 /* InputModeCache.swift */; };
 		4572854E2BD0EAF90048D67E /* Credits.html in Resources */ = {isa = PBXBuildFile; fileRef = 4572854D2BD0EAF90048D67E /* Credits.html */; };
 		45B76CA92AEA6042009AFABD /* PunctuationConversion.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45B76CA82AEA6042009AFABD /* PunctuationConversion.swift */; };
+		45BB574C2C90295B00A3756C /* FireXPCService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45BB574B2C90295B00A3756C /* FireXPCService.swift */; };
+		45BB574E2C90295B00A3756C /* FireXPCServiceProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45BB574D2C90295B00A3756C /* FireXPCServiceProtocol.swift */; };
+		45BB57502C90295B00A3756C /* main.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45BB574F2C90295B00A3756C /* main.swift */; };
+		45BB57552C90295B00A3756C /* FireXPCService.xpc in Embed XPC Services */ = {isa = PBXBuildFile; fileRef = 45BB57492C90295B00A3756C /* FireXPCService.xpc */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
+		45BB575F2C90400500A3756C /* MainAppServer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45BB575E2C90400500A3756C /* MainAppServer.swift */; };
+		45BB57612C90498700A3756C /* MainAppXPCService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45BB57602C90498700A3756C /* MainAppXPCService.swift */; };
+		45BB57632C904E6D00A3756C /* FireXPCClient.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45BB57622C904E6D00A3756C /* FireXPCClient.swift */; };
+		45BB57642C905DA300A3756C /* MainAppXPCServiceProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45BB575B2C90300C00A3756C /* MainAppXPCServiceProtocol.swift */; };
 		6753419E2AB54A3A00757F76 /* main.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 6753419D2AB54A3A00757F76 /* main.cpp */; };
 		675341A72AB54AEA00757F76 /* sqlite3.c in Sources */ = {isa = PBXBuildFile; fileRef = 675341A52AB54AEA00757F76 /* sqlite3.c */; settings = {COMPILER_FLAGS = "-w"; }; };
 		67AA47FF2AB733860073AC86 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 67C9A0232AB53ED3000B5281 /* Assets.xcassets */; };
@@ -57,7 +65,28 @@
 		67F0B0D32AFFC282006F835D /* StatusBarController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 67F0B0D22AFFC282006F835D /* StatusBarController.swift */; };
 /* End PBXBuildFile section */
 
+/* Begin PBXContainerItemProxy section */
+		45BB57532C90295B00A3756C /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 67C99FE02AB53DB2000B5281 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 45BB57482C90295B00A3756C;
+			remoteInfo = FireXPCService;
+		};
+/* End PBXContainerItemProxy section */
+
 /* Begin PBXCopyFilesBuildPhase section */
+		45BB57562C90295B00A3756C /* Embed XPC Services */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "$(CONTENTS_FOLDER_PATH)/XPCServices";
+			dstSubfolderSpec = 16;
+			files = (
+				45BB57552C90295B00A3756C /* FireXPCService.xpc in Embed XPC Services */,
+			);
+			name = "Embed XPC Services";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		67B514132AB5866E0084C42B /* CopyFiles */ = {
 			isa = PBXCopyFilesBuildPhase;
 			buildActionMask = 2147483647;
@@ -74,6 +103,16 @@
 		451A55692AF9F92D00AF57C1 /* InputModeCache.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InputModeCache.swift; sourceTree = "<group>"; };
 		4572854D2BD0EAF90048D67E /* Credits.html */ = {isa = PBXFileReference; lastKnownFileType = text.html; path = Credits.html; sourceTree = "<group>"; };
 		45B76CA82AEA6042009AFABD /* PunctuationConversion.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PunctuationConversion.swift; sourceTree = "<group>"; };
+		45BB57492C90295B00A3756C /* FireXPCService.xpc */ = {isa = PBXFileReference; explicitFileType = "wrapper.xpc-service"; includeInIndex = 0; path = FireXPCService.xpc; sourceTree = BUILT_PRODUCTS_DIR; };
+		45BB574B2C90295B00A3756C /* FireXPCService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FireXPCService.swift; sourceTree = "<group>"; };
+		45BB574D2C90295B00A3756C /* FireXPCServiceProtocol.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FireXPCServiceProtocol.swift; sourceTree = "<group>"; };
+		45BB574F2C90295B00A3756C /* main.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = main.swift; sourceTree = "<group>"; };
+		45BB57512C90295B00A3756C /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		45BB57522C90295B00A3756C /* FireXPCService.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = FireXPCService.entitlements; sourceTree = "<group>"; };
+		45BB575B2C90300C00A3756C /* MainAppXPCServiceProtocol.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainAppXPCServiceProtocol.swift; sourceTree = "<group>"; };
+		45BB575E2C90400500A3756C /* MainAppServer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainAppServer.swift; sourceTree = "<group>"; };
+		45BB57602C90498700A3756C /* MainAppXPCService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainAppXPCService.swift; sourceTree = "<group>"; };
+		45BB57622C904E6D00A3756C /* FireXPCClient.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FireXPCClient.swift; sourceTree = "<group>"; };
 		6753419B2AB54A3A00757F76 /* TableBuilder */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = TableBuilder; sourceTree = BUILT_PRODUCTS_DIR; };
 		6753419D2AB54A3A00757F76 /* main.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = main.cpp; sourceTree = "<group>"; };
 		675341A52AB54AEA00757F76 /* sqlite3.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = sqlite3.c; sourceTree = "<group>"; };
@@ -123,6 +162,13 @@
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
+		45BB57462C90295B00A3756C /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		675341982AB54A3A00757F76 /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
@@ -146,6 +192,29 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		45BB574A2C90295B00A3756C /* FireXPCService */ = {
+			isa = PBXGroup;
+			children = (
+				45BB574D2C90295B00A3756C /* FireXPCServiceProtocol.swift */,
+				45BB574B2C90295B00A3756C /* FireXPCService.swift */,
+				45BB574F2C90295B00A3756C /* main.swift */,
+				45BB57512C90295B00A3756C /* Info.plist */,
+				45BB57522C90295B00A3756C /* FireXPCService.entitlements */,
+			);
+			path = FireXPCService;
+			sourceTree = "<group>";
+		};
+		45BB575A2C902FD800A3756C /* XPC */ = {
+			isa = PBXGroup;
+			children = (
+				45BB575B2C90300C00A3756C /* MainAppXPCServiceProtocol.swift */,
+				45BB57602C90498700A3756C /* MainAppXPCService.swift */,
+				45BB575E2C90400500A3756C /* MainAppServer.swift */,
+				45BB57622C904E6D00A3756C /* FireXPCClient.swift */,
+			);
+			path = XPC;
+			sourceTree = "<group>";
+		};
 		6753419C2AB54A3A00757F76 /* TableBuilder */ = {
 			isa = PBXGroup;
 			children = (
@@ -169,6 +238,7 @@
 			children = (
 				67C99FEA2AB53DB2000B5281 /* Fire */,
 				6753419C2AB54A3A00757F76 /* TableBuilder */,
+				45BB574A2C90295B00A3756C /* FireXPCService */,
 				67C99FE92AB53DB2000B5281 /* Products */,
 				67C9A0592AB5445E000B5281 /* Frameworks */,
 			);
@@ -179,6 +249,7 @@
 			children = (
 				67C99FE82AB53DB2000B5281 /* Fire.app */,
 				6753419B2AB54A3A00757F76 /* TableBuilder */,
+				45BB57492C90295B00A3756C /* FireXPCService.xpc */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -186,6 +257,7 @@
 		67C99FEA2AB53DB2000B5281 /* Fire */ = {
 			isa = PBXGroup;
 			children = (
+				45BB575A2C902FD800A3756C /* XPC */,
 				67C9A0552AB5429B000B5281 /* SQLCipher */,
 				67C9A0232AB53ED3000B5281 /* Assets.xcassets */,
 				67C9A0172AB53ED2000B5281 /* Bridging-Header.h */,
@@ -308,6 +380,23 @@
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
+		45BB57482C90295B00A3756C /* FireXPCService */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 45BB57592C90295B00A3756C /* Build configuration list for PBXNativeTarget "FireXPCService" */;
+			buildPhases = (
+				45BB57452C90295B00A3756C /* Sources */,
+				45BB57462C90295B00A3756C /* Frameworks */,
+				45BB57472C90295B00A3756C /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = FireXPCService;
+			productName = FireXPCService;
+			productReference = 45BB57492C90295B00A3756C /* FireXPCService.xpc */;
+			productType = "com.apple.product-type.xpc-service";
+		};
 		6753419A2AB54A3A00757F76 /* TableBuilder */ = {
 			isa = PBXNativeTarget;
 			buildConfigurationList = 6753419F2AB54A3A00757F76 /* Build configuration list for PBXNativeTarget "TableBuilder" */;
@@ -332,10 +421,12 @@
 				67C99FE52AB53DB2000B5281 /* Frameworks */,
 				67C99FE62AB53DB2000B5281 /* Resources */,
 				67B514132AB5866E0084C42B /* CopyFiles */,
+				45BB57562C90295B00A3756C /* Embed XPC Services */,
 			);
 			buildRules = (
 			);
 			dependencies = (
+				45BB57542C90295B00A3756C /* PBXTargetDependency */,
 			);
 			name = Fire;
 			packageProductDependencies = (
@@ -356,9 +447,12 @@
 			isa = PBXProject;
 			attributes = {
 				BuildIndependentTargetsInParallel = 1;
-				LastSwiftUpdateCheck = 1430;
+				LastSwiftUpdateCheck = 1540;
 				LastUpgradeCheck = 1430;
 				TargetAttributes = {
+					45BB57482C90295B00A3756C = {
+						CreatedOnToolsVersion = 15.4;
+					};
 					6753419A2AB54A3A00757F76 = {
 						CreatedOnToolsVersion = 14.3.1;
 					};
@@ -390,11 +484,19 @@
 			targets = (
 				67C99FE72AB53DB2000B5281 /* Fire */,
 				6753419A2AB54A3A00757F76 /* TableBuilder */,
+				45BB57482C90295B00A3756C /* FireXPCService */,
 			);
 		};
 /* End PBXProject section */
 
 /* Begin PBXResourcesBuildPhase section */
+		45BB57472C90295B00A3756C /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		67C99FE62AB53DB2000B5281 /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -414,6 +516,16 @@
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
+		45BB57452C90295B00A3756C /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				45BB574C2C90295B00A3756C /* FireXPCService.swift in Sources */,
+				45BB574E2C90295B00A3756C /* FireXPCServiceProtocol.swift in Sources */,
+				45BB57502C90295B00A3756C /* main.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		675341972AB54A3A00757F76 /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -433,12 +545,14 @@
 				67C9A00A2AB53E83000B5281 /* InputSource.swift in Sources */,
 				67C9A0352AB53ED3000B5281 /* ThemeConfig.swift in Sources */,
 				67C99FFE2AB53E62000B5281 /* Statistics.swift in Sources */,
+				45BB57642C905DA300A3756C /* MainAppXPCServiceProtocol.swift in Sources */,
 				67C9A0432AB53ED3000B5281 /* PunctuationPane.swift in Sources */,
 				67C9A0342AB53ED3000B5281 /* FireMenu.swift in Sources */,
 				67C9A00C2AB53E83000B5281 /* StatusBar.swift in Sources */,
 				67C9A03D2AB53ED3000B5281 /* FirePreferencesController.swift in Sources */,
 				67C9A03C2AB53ED3000B5281 /* StatisticsPane.swift in Sources */,
 				67C9A0322AB53ED3000B5281 /* CandidatesView.swift in Sources */,
+				45BB57632C904E6D00A3756C /* FireXPCClient.swift in Sources */,
 				67C9A00B2AB53E83000B5281 /* Utils.swift in Sources */,
 				67F0B0D32AFFC282006F835D /* StatusBarController.swift in Sources */,
 				67C9A0402AB53ED3000B5281 /* ApplicationPane.swift in Sources */,
@@ -447,6 +561,7 @@
 				67C9A0002AB53E62000B5281 /* ModifierKeyUpChecker.swift in Sources */,
 				67C9A0442AB53ED3000B5281 /* CandidatesWindow.swift in Sources */,
 				45B76CA92AEA6042009AFABD /* PunctuationConversion.swift in Sources */,
+				45BB57612C90498700A3756C /* MainAppXPCService.swift in Sources */,
 				67C9A0362AB53ED3000B5281 /* DictManager.swift in Sources */,
 				67C9A0582AB5429B000B5281 /* sqlite3.c in Sources */,
 				67C99FFD2AB53E62000B5281 /* ToastWindow.swift in Sources */,
@@ -455,12 +570,21 @@
 				67C9A03F2AB53ED3000B5281 /* GeneralPane.swift in Sources */,
 				451A556A2AF9F92D00AF57C1 /* InputModeCache.swift in Sources */,
 				67C9A00E2AB53E83000B5281 /* Fire.swift in Sources */,
+				45BB575F2C90400500A3756C /* MainAppServer.swift in Sources */,
 				67C9A0102AB53E83000B5281 /* types.swift in Sources */,
 				67C99FFF2AB53E62000B5281 /* TipsWindow.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXSourcesBuildPhase section */
+
+/* Begin PBXTargetDependency section */
+		45BB57542C90295B00A3756C /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 45BB57482C90295B00A3756C /* FireXPCService */;
+			targetProxy = 45BB57532C90295B00A3756C /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
 
 /* Begin PBXVariantGroup section */
 		67C9A0152AB53ED2000B5281 /* InfoPlist.strings */ = {
@@ -482,6 +606,61 @@
 /* End PBXVariantGroup section */
 
 /* Begin XCBuildConfiguration section */
+		45BB57572C90295B00A3756C /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
+				CODE_SIGN_ENTITLEMENTS = FireXPCService/FireXPCService.entitlements;
+				CODE_SIGN_STYLE = Automatic;
+				COMBINE_HIDPI_IMAGES = YES;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = T68XK6867P;
+				ENABLE_HARDENED_RUNTIME = YES;
+				ENABLE_USER_SCRIPT_SANDBOXING = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu17;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = FireXPCService/Info.plist;
+				INFOPLIST_KEY_CFBundleDisplayName = FireXPCService;
+				INFOPLIST_KEY_NSHumanReadableCopyright = "";
+				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
+				MACOSX_DEPLOYMENT_TARGET = 11.0;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.qwertyyb.inputmethod.Fire.FireXPCService;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SKIP_INSTALL = YES;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "DEBUG $(inherited)";
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 5.0;
+			};
+			name = Debug;
+		};
+		45BB57582C90295B00A3756C /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
+				CODE_SIGN_ENTITLEMENTS = FireXPCService/FireXPCService.entitlements;
+				CODE_SIGN_STYLE = Automatic;
+				COMBINE_HIDPI_IMAGES = YES;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = "";
+				ENABLE_HARDENED_RUNTIME = YES;
+				ENABLE_USER_SCRIPT_SANDBOXING = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu17;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = FireXPCService/Info.plist;
+				INFOPLIST_KEY_CFBundleDisplayName = FireXPCService;
+				INFOPLIST_KEY_NSHumanReadableCopyright = "";
+				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
+				MACOSX_DEPLOYMENT_TARGET = 11.0;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.qwertyyb.inputmethod.Fire.FireXPCService;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SKIP_INSTALL = YES;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 5.0;
+			};
+			name = Release;
+		};
 		675341A02AB54A3A00757F76 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
@@ -626,6 +805,7 @@
 		67C99FF62AB53DB4000B5281 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_ENTITLEMENTS = Fire/Fire.entitlements;
@@ -672,6 +852,7 @@
 		67C99FF72AB53DB4000B5281 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_ENTITLEMENTS = Fire/Fire.entitlements;
@@ -715,6 +896,15 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
+		45BB57592C90295B00A3756C /* Build configuration list for PBXNativeTarget "FireXPCService" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				45BB57572C90295B00A3756C /* Debug */,
+				45BB57582C90295B00A3756C /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
 		6753419F2AB54A3A00757F76 /* Build configuration list for PBXNativeTarget "TableBuilder" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (

@@ -15,6 +15,7 @@ class AppDelegate: NSObject, NSApplicationDelegate {
     var fire: Fire!
     var statistics: Statistics!
     var statusBar: StatusBar!
+    var mainAppService: MainAppServer!
 
     func installInputSource() {
         print("install input source")
@@ -49,6 +50,20 @@ class AppDelegate: NSObject, NSApplicationDelegate {
                 stop()
                 return false
             }
+            if command == "--get-mode" {
+                connectToMainApp { mainApp in
+                    mainApp.getMode { mode in
+                        print(mode)
+                    }
+                }
+                return false
+            }
+            if command == "--set-mode" {
+                connectToMainApp { mainApp in
+                    mainApp.setMode(inputMode: CommandLine.arguments[2], showTip: CommandLine.arguments[3] == "true")
+                }
+                return false
+            }
         }
         return true
     }
@@ -65,6 +80,7 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         fire = Fire.shared
         statistics = Statistics.shared
         statusBar = StatusBar.shared
+        mainAppService = MainAppServer.shared
     }
 
     func applicationWillTerminate(_ aNotification: Notification) {
