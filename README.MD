@@ -45,7 +45,20 @@
 12. 支持自定义主题
 13. 支持数据统计
 14. 支持临时英文模式(在中文输入模式下，按;键可以开启临时英文模式，输入英文字符和半角符号)
+15. 命令行
 
+## 命令行使用
+
+```bash
+# 输出当前输入模式
+/Library/Input\ Methods/Fire.app/Contents/MacOS/Fire --get-mode
+
+# 设置输入模式并显示提示
+/Library/Input\ Methods/Fire.app/Contents/MacOS/Fire --set-mode enUS 或 zhhans
+
+# 设置输入模式不显示提示
+/Library/Input\ Methods/Fire.app/Contents/MacOS/Fire --set-mode enUS 或 zhhans false
+```
 
 ## 安装
 > [下载地址](https://github.com/qwertyyb/Fire/releases)
