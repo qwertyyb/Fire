@@ -84,9 +84,13 @@ class FireInputController: IMKInputController {
         // 中文输入模式下，markedRange 会跟随输入字符变化
         // 不同APP下，对selectedRange的location处理不同，有的把location放在组字区后，比如备忘录APP，有的把location放在组字区前，比如Chrome浏览器，此处根据大小判断一下
         let selectedRange = client().selectedRange()
-        let markedRange = client().markedRange()
+        var markedRange = client().markedRange()
         // 默认认为 location 在组字区后
+        if (markedRange.location > 1000000) {
+            markedRange = NSRange(location: 0, length: 0)
+        }
         var previousLocation = selectedRange.location - markedRange.length - 1
+        // 某些场景下，markedRange的location和length不正常，此处按大小判断一下
         if selectedRange.location < markedRange.location + markedRange.length {
             // selectedRange的location在组字区前
             previousLocation = selectedRange.location - 1
