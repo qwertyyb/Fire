@@ -15,6 +15,7 @@ class AppDelegate: NSObject, NSApplicationDelegate {
     var fire: Fire!
     var statistics: Statistics!
     var statusBar: StatusBar!
+    var cliServer: FireCLIServer!
 
     func installInputSource() {
         print("install input source")
@@ -32,21 +33,38 @@ class AppDelegate: NSObject, NSApplicationDelegate {
 
     private func commandHandler() -> Bool {
         if CommandLine.arguments.count > 1 {
-            print("[Fire] launch argument: \(CommandLine.arguments[1])")
             let command = CommandLine.arguments[1]
             if command == "--install" {
+                print("[Fire] launch argument: \(command)")
                 installInputSource()
                 return false
             }
             if command == "--build-dict" {
+                print("[Fire] launch argument: \(command)")
                 print("[Fire] build dict")
                 buildDict()
                 NSApp.terminate(nil)
                 return false
             }
             if command == "--stop" {
+                print("[Fire] launch argument: \(command)")
                 print("[Fire] stop")
                 stop()
+                return false
+            }
+            if command == "--get-mode" {
+                let cli = FireCLI()
+                cli.getMode()
+                return false
+            }
+            if command == "--set-mode" {
+                if CommandLine.arguments.count < 2 {
+                    print("[Fire] commandHandler: no mode specifiy (enUs/zhhans)")
+                }
+                let mode = CommandLine.arguments[2]
+                let showTip = CommandLine.arguments.count > 3 ? CommandLine.arguments[3] != "false" : true
+                let cli = FireCLI()
+                cli.setMode(mode, showTip: showTip)
                 return false
             }
         }
@@ -65,6 +83,7 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         fire = Fire.shared
         statistics = Statistics.shared
         statusBar = StatusBar.shared
+        cliServer = FireCLIServer()
     }
 
     func applicationWillTerminate(_ aNotification: Notification) {
