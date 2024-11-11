@@ -56,9 +56,11 @@ class Fire: NSObject {
 
     func toastCurrentMode() {
         let text = inputMode == .enUS ? "英" : "中"
+        NSLog("[Fire] ToastCurrentMode: \(text)")
 
         // 针对当前界面没有输入框，或者有输入框，但是有可能导致提示窗超出屏幕无法显示的场景，不显示提示窗
         let position = CandidatesWindow.shared.inputController?.getOriginPoint() ?? NSPoint.zero
+        NSLog("[Fire] ToastCurrentMode position: \(position)")
 
         let isVisible = NSScreen.screens.contains { screen in
             let frame = screen.frame
