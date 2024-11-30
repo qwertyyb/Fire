@@ -20,10 +20,12 @@ extension FireInputController {
     }
     @objc func checkForUpdates(_ sender: Any!) {
         NSApp.setActivationPolicy(.accessory)
+        NSApp.activate(ignoringOtherApps: true)
         SUUpdater.shared()?.checkForUpdates(sender)
     }
     override func showPreferences(_ sender: Any!) {
         NSApp.setActivationPolicy(.accessory)
+        NSApp.activate(ignoringOtherApps: true)
         FirePreferencesController.shared.show()
     }
     @objc func showUserDictPrefs(_ sender: Any!) {
