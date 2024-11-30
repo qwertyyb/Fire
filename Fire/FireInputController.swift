@@ -104,6 +104,7 @@ class FireInputController: IMKInputController {
     // ---- handlers begin -----
 
     private func hotkeyHandler(event: NSEvent) -> Bool? {
+        NSLog("[FireInputController] hotkeyHandler")
         if event.type == .flagsChanged {
             return nil
         }
@@ -125,11 +126,9 @@ class FireInputController: IMKInputController {
     }
 
      func flagChangedHandler(event: NSEvent) -> Bool? {
-        if Defaults[.disableEnMode] {
-            return nil
-        }
+         NSLog("[FireInputController] flagChangedHandler")
         // 只有在shift keyup时，才切换中英文输入, 否则会导致shift+[a-z]大写的功能失效
-        if Utils.shared.toggleInputModeKeyUpChecker.check(event) {
+        if !Defaults[.disableEnMode] && Utils.shared.toggleInputModeKeyUpChecker.check(event) {
             NSLog("[FireInputController]toggle mode: \(inputMode)")
 
             // 把当前未上屏的原始code上屏处理
@@ -138,20 +137,21 @@ class FireInputController: IMKInputController {
             Fire.shared.toggleInputMode()
             return true
         }
-        // 监听.flagsChanged事件只为切换中英文，其它情况不处理
-        // 当用户已经按下了非shift的修饰键时，不处理
-        if event.type == .flagsChanged ||
-            (event.modifierFlags != .init(rawValue: 0) &&
-             event.modifierFlags != .shift &&
-            // 方向键的modifierFlags
-             event.modifierFlags != .init(arrayLiteral: .numericPad, .function)
+        // 监听.flagsChanged事件只为切换中英文，其它情况不处理需要返回 false 以避免快捷键不生效
+        if event.type == .flagsChanged || (
+            event.modifierFlags != .init(rawValue: 0)
+            // 输入法需要处理方向键做翻页，所以需要排除方向键
+            && event.modifierFlags != .init(arrayLiteral: .numericPad, .function)
         ) {
+            
+            NSLog("[FireInputController] flagChangedHandler no need handle")
             return false
         }
         return nil
     }
 
     private func enModeHandler(event: NSEvent) -> Bool? {
+        NSLog("[FireInputController] enModeHandler")
         // 英文输入模式, 不做任何处理
         if inputMode == .enUS {
             return false
