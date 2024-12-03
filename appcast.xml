@@ -3,18 +3,18 @@
     <channel>
         <title>业火输入法</title>
         <item>
-            <title>v0.23.0</title>
-            <pubDate>Mon, 11 Nov 2024 08:45:15 +0000</pubDate>
+            <title>v0.23.1</title>
+            <pubDate>Tue, 03 Dec 2024 10:50:14 +0000</pubDate>
             <sparkle:minimumSystemVersion>10.15</sparkle:minimumSystemVersion>
             <description><![CDATA[
-                <h3 id=features>Features</h3> <ul> <li>兼容 MacOS 15.1 版本 <a href=https://github.com/qwertyyb/Fire/issues/137>#137</a> (<a href=https://github.com/qwertyyb/Fire/commit/b090ec65eafa713656da398ee11ea25a2e2de5fb>b090ec6</a>)</li> <li>支持命令行获取或设置输入模式 (<a href=https://github.com/qwertyyb/Fire/commit/831354aa2bcc30edac40a900893606399c7aeecc>831354a</a>)</li> </ul>
+                <h3 id=bugfixes>Bug Fixes</h3> <ul> <li>修复禁止切换中英文后，在 chrome 浏览器或 electron 应用中快捷捷无法使用的问题 <a href=https://github.com/qwertyyb/Fire/issues/132>#132</a> (<a href=https://github.com/qwertyyb/Fire/commit/2d66064d31aa16931b4d795ab26bb80dd0989675>2d66064</a>)</li> <li><strong>ci:</strong> 恢复版本以修复 CI 执行失败的问题 (<a href=https://github.com/qwertyyb/Fire/commit/14c2c3bc28f50a87ef815d7e56d960ee957259cc>14c2c3b</a>)</li> <li>修复打开首选项时，不在最前方显示的问题 (<a href=https://github.com/qwertyyb/Fire/commit/b2584a9d47b85b43705b56764da16b659ceb7be3>b2584a9</a>)</li> </ul>
             ]]>
             </description>
             <enclosure url="https://github.com/qwertyyb/Fire/releases/latest/download/FireInstaller.zip"
-              sparkle:version="20241111084157"
-              sparkle:shortVersionString="v0.23.0"
-              length="5783913"
-              sparkle:edSignature="7E6H3ohW6xicGBATpYLPKU2L5EVoaciZmAGpUUGjyeM7sQu/caMUMn+6ndAY8xmzAgdpCemZx9mTPiEcsPd+Dw=="
+              sparkle:version="20241203104700"
+              sparkle:shortVersionString="v0.23.1"
+              length="5783988"
+              sparkle:edSignature="g+9Iio+X6eUyvJq6KRZRvUD20WQ8YqvQ2oEPJH+uZlZzfVsGqUDHMGaFlIn059vn4AlcuCGk28zeRE+rU2aVCQ=="
               type="application/octet-stream"/>
         </item>
     </channel>
