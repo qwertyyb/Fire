@@ -52,8 +52,8 @@ class DictManager {
                 type, min(query) as query
             from wb_py_dict
             where query glob :queryLike \(
-                codeMode == .wubi ? "and type = 'wb'"
-                                : codeMode == .pinyin ? "and type = 'py'" : "")
+                codeMode == .wubi ? "and type in ('wb', 'user')"
+                                : codeMode == .pinyin ? "and type in ('py', 'user')" : "")
             group by text
             order by query, id
             limit :offset, \(candidateCount + 1)
@@ -246,8 +246,10 @@ class DictManager {
         sqlite3_exec(database, "delete from wb_py_dict where type = '\(CandidateType.user.rawValue)'", nil, nil, nil)
         // 2. 添加用户词库
         let lines = dictContent.split(whereSeparator: \.isNewline)
+        NSLog("[DictManager] updateUserDict: \(lines)");
         let candidates = lines.map { (line) -> [Candidate] in
             let strs = line.split(whereSeparator: \.isWhitespace)
+            NSLog("[DictManager] line: \(line), strs: \(strs)")
             if strs.count <= 1 {
                 return []
             }
@@ -302,7 +304,7 @@ class DictManager {
             }
         }
         let content = list.map { dictItem in
-            ([dictItem.code] + dictItem.texts).joined(separator: "\t")
+            ([dictItem.code] + dictItem.texts).joined(separator: " ")
         }
         .joined(separator: "\n")
         return content
