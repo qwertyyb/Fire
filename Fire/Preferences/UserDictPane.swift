@@ -37,17 +37,17 @@ struct UserDictPane: View {
                 Text("用户词库")
                 if #available(macOS 11.0, *) {
                     TextEditor(text: $userDictTextModel.text)
-                        .font(Font.system(size: 14))
+                        .font(Font.custom("Monaco", size: 14))
                         .frame(height: 400)
                         .lineSpacing(6)
                     Text("1. 编码需在行首")
-                        .font(Font.system(size: 11))
+                        .font(Font.system(size: 12))
                     Text("2. 编码和候选项之间需用空格分隔")
-                        .font(Font.system(size: 11))
+                        .font(Font.system(size: 12))
                     Text("3. 可以有多个候选项，每个候选项使用空格分隔")
-                        .font(Font.system(size: 11))
+                        .font(Font.system(size: 12))
                     Text("4. 候选项可使用{yyyy}/{MM}/{dd}/{HH}/{mm}/{ss}代替当前年/月/日/时/分/秒")
-                        .font(Font.system(size: 11))
+                        .font(Font.system(size: 12))
                     HStack {
                         Spacer()
                         if #available(macOS 12.0, *) {
