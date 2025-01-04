@@ -244,7 +244,7 @@ class FireInputController: IMKInputController {
         if let pos = Int(string) {
             if _originalString.count > 0 {
                 let index = pos - 1
-                if index < _candidates.count {
+                if index >= 0 && index < _candidates.count {
                     insertCandidate(_candidates[index])
                 } else {
                     _originalString += string

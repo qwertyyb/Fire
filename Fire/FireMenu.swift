@@ -30,6 +30,7 @@ extension FireInputController {
     }
     @objc func showUserDictPrefs(_ sender: Any!) {
         NSApp.setActivationPolicy(.accessory)
+        NSApp.activate(ignoringOtherApps: true)
         FirePreferencesController.shared.showPane("用户词库")
     }
     @objc func setAppicationMode(_ sender: Any!) {
