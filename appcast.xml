@@ -3,18 +3,18 @@
     <channel>
         <title>业火输入法</title>
         <item>
-            <title>v0.23.1</title>
-            <pubDate>Tue, 03 Dec 2024 10:50:14 +0000</pubDate>
+            <title>v0.23.2</title>
+            <pubDate>Sat, 04 Jan 2025 12:31:56 +0000</pubDate>
             <sparkle:minimumSystemVersion>10.15</sparkle:minimumSystemVersion>
             <description><![CDATA[
-                <h3 id=bugfixes>Bug Fixes</h3> <ul> <li>修复禁止切换中英文后，在 chrome 浏览器或 electron 应用中快捷捷无法使用的问题 <a href=https://github.com/qwertyyb/Fire/issues/132>#132</a> (<a href=https://github.com/qwertyyb/Fire/commit/2d66064d31aa16931b4d795ab26bb80dd0989675>2d66064</a>)</li> <li><strong>ci:</strong> 恢复版本以修复 CI 执行失败的问题 (<a href=https://github.com/qwertyyb/Fire/commit/14c2c3bc28f50a87ef815d7e56d960ee957259cc>14c2c3b</a>)</li> <li>修复打开首选项时，不在最前方显示的问题 (<a href=https://github.com/qwertyyb/Fire/commit/b2584a9d47b85b43705b56764da16b659ceb7be3>b2584a9</a>)</li> </ul>
+                <h3 id=bugfixes>Bug Fixes</h3> <ul> <li>修复有候选词怦吓输入 0 会导致crash 的问题；修复点击用户词库无法显示的问题 (<a href=https://github.com/qwertyyb/Fire/commit/15fccd683e869508924b2df72ca4a3c439155202>15fccd6</a>)</li> <li>修复用户词库不生效的问题 (<a href=https://github.com/qwertyyb/Fire/commit/e7877517cf76a7979b17a54b98b1efef6cb356e8>e787751</a>), closes <a href=https://github.com/qwertyyb/Fire/issues/143>#143</a></li> </ul>
             ]]>
             </description>
             <enclosure url="https://github.com/qwertyyb/Fire/releases/latest/download/FireInstaller.zip"
-              sparkle:version="20241203104700"
-              sparkle:shortVersionString="v0.23.1"
-              length="5783988"
-              sparkle:edSignature="g+9Iio+X6eUyvJq6KRZRvUD20WQ8YqvQ2oEPJH+uZlZzfVsGqUDHMGaFlIn059vn4AlcuCGk28zeRE+rU2aVCQ=="
+              sparkle:version="20250104122916"
+              sparkle:shortVersionString="v0.23.2"
+              length="5785124"
+              sparkle:edSignature="efmHrpc5lTK9ci+/+NSB5QxpKcqoQLffsoQ2fo/Te6+8AQiL12/nPbx9WiMkdOuoFoBQC5fJJbkcz0jcyDJuDw=="
               type="application/octet-stream"/>
         </item>
     </channel>
