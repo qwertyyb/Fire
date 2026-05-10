@@ -138,12 +138,23 @@ class FireInputController: IMKInputController {
             return true
         }
         // 监听.flagsChanged事件只为切换中英文，其它情况不处理需要返回 false 以避免快捷键不生效
+        // 放行规则：先把 Shift / CapsLock 这类不属于"快捷键修饰键"的位剔除，再要求剩余位
+        //   - 为空(无修饰键，如 a、,、.)，或
+        //   - 恰好是 .numericPad|.function (方向键、用于翻页)
+        // 其它情况（含 Cmd/Ctrl/Option/单独 .function 的 F 键、单独 .numericPad 的数字小键盘等）
+        // 全部交给系统处理，避免无谓的 handler 链空跑(predictorHandler 会读 client 的 IPC 状态)。
+        // Shift / CapsLock 必须放行的原因：
+        //   - Shift+标点是常规中文标点输入路径(Shift+1=! 等)，需要继续走到 punctuationKeyHandler 完成全角转换
+        //   - Shift+字母由 charKeyHandler 处理(commit 0b51393 起，大写字母会被附加到原码而不直接上屏)
+        // .deviceIndependentFlagsMask 用来过滤低位"设备相关"标志，避免极少数键盘场景下的脏数据误判。
+        // 关联 issue #149 #152，回归源 commit 2d66064。
+        let modifiers = event.modifierFlags
+            .intersection(.deviceIndependentFlagsMask)
+            .subtracting([.shift, .capsLock])
         if event.type == .flagsChanged || (
-            event.modifierFlags != .init(rawValue: 0)
-            // 输入法需要处理方向键做翻页，所以需要排除方向键
-            && event.modifierFlags != .init(arrayLiteral: .numericPad, .function)
+            !modifiers.isEmpty
+            && modifiers != .init(arrayLiteral: .numericPad, .function)
         ) {
-            
             NSLog("[FireInputController] flagChangedHandler no need handle")
             return false
         }
