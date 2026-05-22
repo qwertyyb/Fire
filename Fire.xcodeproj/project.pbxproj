@@ -683,7 +683,6 @@
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_OBJC_BRIDGING_HEADER = "Fire/Bridging-Header.h";
 				SWIFT_VERSION = 5.0;
-				SYMROOT = build;
 			};
 			name = Debug;
 		};
