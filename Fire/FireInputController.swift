@@ -310,6 +310,43 @@ class FireInputController: IMKInputController {
         return nil
     }
 
+    private func extraCandidateKeyHandler(event: NSEvent) -> Bool? {
+        guard inputMode == .zhhans,
+              _originalString.count > 0,
+              !isTempEnModeActive(),
+              let string = event.characters else {
+            return nil
+        }
+
+        let mode = Defaults[.extraCandidateSelectKeys]
+        guard mode != .disabled else { return nil }
+
+        let index: Int?
+        switch mode {
+        case .semicolonQuote:
+            switch string {
+            case ";": index = 1
+            case "'": index = 2
+            default: index = nil
+            }
+        case .commaPeriod:
+            switch string {
+            case ",": index = 1
+            case ".": index = 2
+            default: index = nil
+            }
+        case .disabled:
+            index = nil
+        }
+
+        guard let index = index, index < _candidates.count else {
+            return nil
+        }
+
+        insertCandidate(_candidates[index])
+        return true
+    }
+
     private func punctuationKeyHandler(event: NSEvent) -> Bool? {
         // 获取输入的字符
         let string = event.characters!
@@ -368,6 +405,7 @@ class FireInputController: IMKInputController {
             escKeyHandler,
             enterKeyHandler,
             spaceKeyHandler,
+            extraCandidateKeyHandler,
             punctuationKeyHandler
         ])
         return handler(event) ?? false

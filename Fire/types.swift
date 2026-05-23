@@ -18,6 +18,12 @@ enum CandidatesDirection: Int, Decodable, Encodable, Defaults.Serializable {
     case horizontal
 }
 
+enum ExtraCandidateSelectKeys: String, Codable, Defaults.Serializable {
+    case disabled
+    case semicolonQuote
+    case commaPeriod
+}
+
 enum InputModeTipWindowType: Int, Decodable, Encodable, Defaults.Serializable {
     case followInput
     case centerScreen
@@ -97,6 +103,10 @@ extension Defaults.Keys {
     static let wubiCodeTip = Key<Bool>("wubiCodeTip", default: true)
     static let wubiAutoCommit = Key<Bool>("wubiAutoCommit", default: false)
     static let candidateCount = Key<Int>("candidateCount", default: 5)
+    static let extraCandidateSelectKeys = Key<ExtraCandidateSelectKeys>(
+        "extraCandidateSelectKeys",
+        default: .semicolonQuote
+    )
     static let codeMode = Key<CodeMode>("codeMode", default: CodeMode.wubiPinyin)
 
     // 中英文切换配置
