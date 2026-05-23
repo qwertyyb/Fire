@@ -3,18 +3,18 @@
     <channel>
         <title>业火输入法</title>
         <item>
-            <title>v0.23.3</title>
-            <pubDate>Sat, 23 May 2026 02:51:18 +0000</pubDate>
+            <title>v0.24.0</title>
+            <pubDate>Sat, 23 May 2026 07:25:42 +0000</pubDate>
             <sparkle:minimumSystemVersion>10.15</sparkle:minimumSystemVersion>
             <description><![CDATA[
-                <h3 id=bugfixes>Bug Fixes</h3> <ul> <li>修复中文模式下 Shift 组合标点未转为全角的问题 <a href=https://github.com/qwertyyb/Fire/issues/149>#149</a> <a href=https://github.com/qwertyyb/Fire/issues/152>#152</a> (<a href=https://github.com/qwertyyb/Fire/commit/e929b1ffcce08e41e5435927549dd7b62f8093df>e929b1f</a>)</li> <li>移除 Debug 的 SYMROOT 以修复 SPM 包解析失败 (<a href=https://github.com/qwertyyb/Fire/commit/8c67df75c18785e5420570a73b02e42b6b655b78>8c67df7</a>)</li> </ul>
+                <h3 id=bugfixes>Bug Fixes</h3> <ul> <li>修复临时英文模式下，输入回车会带分号一起上屏的问题 <a href=https://github.com/qwertyyb/Fire/issues/138>#138</a> (<a href=https://github.com/qwertyyb/Fire/commit/089201370464bff555ee46d29ad55ec746f64e35>0892013</a>)</li> </ul> <h3 id=features>Features</h3> <ul> <li>增加 z 键重复上次输入的功能 <a href=https://github.com/qwertyyb/Fire/issues/133>#133</a> <a href=https://github.com/qwertyyb/Fire/issues/146>#146</a> (<a href=https://github.com/qwertyyb/Fire/commit/65543a66e709df8ad8322c3241240312377c08b1>65543a6</a>)</li> <li>增加分号引号/逗号句号选择第二三个候选词的功能 <a href=https://github.com/qwertyyb/Fire/issues/150>#150</a> (<a href=https://github.com/qwertyyb/Fire/commit/6d3d4f80397db3a3a10cc4043f26b3d4b185f161>6d3d4f8</a>)</li> <li>增加输入符号时首个候选词和标点符号一起上屏的功能 (<a href=https://github.com/qwertyyb/Fire/commit/30def8c2fb73d88123b27e170f9e6322414ad7e5>30def8c</a>)</li> </ul>
             ]]>
             </description>
             <enclosure url="https://github.com/qwertyyb/Fire/releases/latest/download/FireInstaller.zip"
-              sparkle:version="20260523024935"
-              sparkle:shortVersionString="v0.23.3"
-              length="5775811"
-              sparkle:edSignature="dOC1WTdd9kicU+kqPGJkvVu0dKkunfWOEP/iE8tXJQpToPCUeBimtU39XkmubTlNdqZYdwHGOuAtBWNNetvwAA=="
+              sparkle:version="20260523072412"
+              sparkle:shortVersionString="v0.24.0"
+              length="5779653"
+              sparkle:edSignature="QydolkcBeJWVhDaM5AS2LzmP5tDfYnAy1oRkuUradRWPhpQtFpiWCcejJOgtEPtqAvr8bAa0WRxweKJTnD7CCg=="
               type="application/octet-stream"/>
         </item>
     </channel>
