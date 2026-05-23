@@ -362,7 +362,15 @@ class FireInputController: IMKInputController {
 
         // 如果输入的字符是标点符号，转换标点符号为中文符号
         if inputMode == .zhhans, let result = PunctuationConversion.shared.conversion(string) {
-            insertText(result)
+            if _originalString.count > 0,
+               !isTempEnModeActive(),
+               let first = _candidates.first,
+               first.type != .placeholder {
+                insertCandidate(first)
+                insertText(result)
+            } else {
+                insertText(result)
+            }
             return true
         }
         return nil
