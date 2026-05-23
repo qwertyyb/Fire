@@ -280,11 +280,20 @@ class FireInputController: IMKInputController {
         return nil
     }
 
+    private func isTempEnModeActive() -> Bool {
+        !Defaults[.disableTempEnMode]
+            && !_originalString.isEmpty
+            && _originalString.first == DictManager.shared.tempEnTriggerPunctuation
+    }
+
     private func enterKeyHandler(event: NSEvent) -> Bool? {
         // 回车键输入原字符
         if event.keyCode == kVK_Return && _originalString.count > 0 {
-            // 插入原字符
-            insertText(_originalString)
+            if isTempEnModeActive(), let first = _candidates.first {
+                insertCandidate(first)
+            } else {
+                insertText(_originalString)
+            }
             return true
         }
         return nil
