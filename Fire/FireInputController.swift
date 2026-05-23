@@ -400,6 +400,7 @@ class FireInputController: IMKInputController {
     }
 
     func insertCandidate(_ candidate: Candidate) {
+        Fire.shared.lastCommittedText = candidate.text
         insertText(candidate.text)
         let notification = Notification(
             name: Fire.candidateInserted,
