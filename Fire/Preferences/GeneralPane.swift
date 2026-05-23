@@ -18,6 +18,7 @@ struct GeneralPane: View {
     @Default(.wubiCodeTip) private var wubiCodeTip
     @Default(.showCodeInWindow) private var showCodeInWindow
     @Default(.candidatesDirection) private var candidatesDirection
+    @Default(.extraCandidateSelectKeys) private var extraCandidateSelectKeys
     @Default(.inputModeTipWindowType) private var inputModeTipWindowType
     @Default(.zKeyQuery) private var zKeyQuery
     @Default(.toggleInputModeKey) private var toggleInputModeKey
@@ -73,6 +74,14 @@ struct GeneralPane: View {
                             }
                             HStack {
                                 Toggle("候选框显示输入码", isOn: $showCodeInWindow)
+                                Spacer(minLength: 20)
+                            }
+                            HStack {
+                                Picker("二三候选词额外选择键", selection: $extraCandidateSelectKeys) {
+                                    Text("禁用").tag(ExtraCandidateSelectKeys.disabled)
+                                    Text(";'").tag(ExtraCandidateSelectKeys.semicolonQuote)
+                                    Text(",.").tag(ExtraCandidateSelectKeys.commaPeriod)
+                                }
                                 Spacer(minLength: 20)
                             }
                         }

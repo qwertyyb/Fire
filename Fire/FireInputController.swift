@@ -280,11 +280,20 @@ class FireInputController: IMKInputController {
         return nil
     }
 
+    private func isTempEnModeActive() -> Bool {
+        !Defaults[.disableTempEnMode]
+            && !_originalString.isEmpty
+            && _originalString.first == DictManager.shared.tempEnTriggerPunctuation
+    }
+
     private func enterKeyHandler(event: NSEvent) -> Bool? {
         // 回车键输入原字符
         if event.keyCode == kVK_Return && _originalString.count > 0 {
-            // 插入原字符
-            insertText(_originalString)
+            if isTempEnModeActive(), let first = _candidates.first {
+                insertCandidate(first)
+            } else {
+                insertText(_originalString)
+            }
             return true
         }
         return nil
@@ -299,6 +308,43 @@ class FireInputController: IMKInputController {
             return true
         }
         return nil
+    }
+
+    private func extraCandidateKeyHandler(event: NSEvent) -> Bool? {
+        guard inputMode == .zhhans,
+              _originalString.count > 0,
+              !isTempEnModeActive(),
+              let string = event.characters else {
+            return nil
+        }
+
+        let mode = Defaults[.extraCandidateSelectKeys]
+        guard mode != .disabled else { return nil }
+
+        let index: Int?
+        switch mode {
+        case .semicolonQuote:
+            switch string {
+            case ";": index = 1
+            case "'": index = 2
+            default: index = nil
+            }
+        case .commaPeriod:
+            switch string {
+            case ",": index = 1
+            case ".": index = 2
+            default: index = nil
+            }
+        case .disabled:
+            index = nil
+        }
+
+        guard let index = index, index < _candidates.count else {
+            return nil
+        }
+
+        insertCandidate(_candidates[index])
+        return true
     }
 
     private func punctuationKeyHandler(event: NSEvent) -> Bool? {
@@ -316,7 +362,15 @@ class FireInputController: IMKInputController {
 
         // 如果输入的字符是标点符号，转换标点符号为中文符号
         if inputMode == .zhhans, let result = PunctuationConversion.shared.conversion(string) {
-            insertText(result)
+            if _originalString.count > 0,
+               !isTempEnModeActive(),
+               let first = _candidates.first,
+               first.type != .placeholder {
+                insertCandidate(first)
+                insertText(result)
+            } else {
+                insertText(result)
+            }
             return true
         }
         return nil
@@ -359,6 +413,7 @@ class FireInputController: IMKInputController {
             escKeyHandler,
             enterKeyHandler,
             spaceKeyHandler,
+            extraCandidateKeyHandler,
             punctuationKeyHandler
         ])
         return handler(event) ?? false
@@ -400,6 +455,7 @@ class FireInputController: IMKInputController {
     }
 
     func insertCandidate(_ candidate: Candidate) {
+        Fire.shared.lastCommittedText = candidate.text
         insertText(candidate.text)
         let notification = Notification(
             name: Fire.candidateInserted,

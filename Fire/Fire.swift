@@ -19,6 +19,7 @@ class Fire: NSObject {
     static let inputModeChanged = Notification.Name("Fire.inputModeChanged")
 
     var inputMode: InputMode = .zhhans
+    var lastCommittedText: String = ""
 
     override init() {
         super.init()
@@ -79,6 +80,11 @@ class Fire: NSObject {
     func getCandidates(origin: String = String(), page: Int = 1) -> (candidates: [Candidate], hasNext: Bool) {
         if origin.count <= 0 {
             return ([], false)
+        }
+        if origin == "z" {
+            let text = lastCommittedText.isEmpty ? "业火五笔输入法" : lastCommittedText
+            let candidate = Candidate(code: "z", text: text, type: .user)
+            return ([candidate], false)
         }
         let (candidates, hasNext) = DictManager.shared.getCandidates(query: origin, page: page)
         let transformed = candidates.map { (candidate) -> Candidate in
