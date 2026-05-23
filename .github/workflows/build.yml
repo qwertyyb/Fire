@@ -64,7 +64,7 @@ jobs:
           retention-days: 2
 
   build_binary:
-    runs-on: macos-13
+    runs-on: macos-latest
     needs: create_release
 
     env:
@@ -84,8 +84,8 @@ jobs:
         echo $version
         git checkout $version
 
-    - name: switch xcode version
-      run: sudo xcode-select --switch /Applications/Xcode_14.3.1.app
+    # - name: switch xcode version
+    #   run: sudo xcode-select --switch /Applications/Xcode_14.3.1.app
     
     - name: import application certificate
       id: keychain
