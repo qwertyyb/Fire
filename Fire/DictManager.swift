@@ -224,6 +224,29 @@ class DictManager {
         return false
     }
 
+    func deleteCandidate(_ candidate: Candidate) {
+        // candidate.code 实际取自 wb_py_dict 的 wbcode 列(见 getCandidates)
+        // 按 text + wbcode 精确删除，可同时清掉同一字/词的 wb 与 py 记录
+        let sql = "delete from wb_py_dict where text = :text and wbcode = :code"
+        var stmt: OpaquePointer?
+        if sqlite3_prepare_v2(database, sql, -1, &stmt, nil) == SQLITE_OK {
+            sqlite3_bind_text(stmt,
+                              sqlite3_bind_parameter_index(stmt, ":text"),
+                              candidate.text, -1, SQLITE_TRANSIENT)
+            sqlite3_bind_text(stmt,
+                              sqlite3_bind_parameter_index(stmt, ":code"),
+                              candidate.code, -1, SQLITE_TRANSIENT)
+            if sqlite3_step(stmt) != SQLITE_DONE {
+                print("[DictManager.deleteCandidate] errmsg: \(String(cString: sqlite3_errmsg(database)!))")
+            }
+        } else {
+            print("[DictManager.deleteCandidate] prepare errmsg: \(String(cString: sqlite3_errmsg(database)!))")
+        }
+        sqlite3_finalize(stmt)
+        stmt = nil
+        NotificationQueue.default.enqueue(Notification(name: DictManager.userDictUpdated), postingStyle: .whenIdle)
+    }
+
     func prependCandidates(candidates: [Candidate]) {
         if candidates.count <= 0 {
             return

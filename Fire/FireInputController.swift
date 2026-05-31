@@ -18,6 +18,8 @@ class FireInputController: IMKInputController {
     private var _hasNext: Bool = false
     private var _lastInputIsNumber = false
     private var _lastInputText = ""
+    // 待二次确认删除的候选词，非 nil 时候选窗处于删除确认态
+    private var _pendingDeleteCandidate: Candidate?
     internal var inputMode: InputMode {
         get { Fire.shared.inputMode }
         set(value) { Fire.shared.inputMode = value }
@@ -108,6 +110,32 @@ class FireInputController: IMKInputController {
         if event.type == .flagsChanged {
             return nil
         }
+        // Ctrl+Shift+数字：从词库删除对应候选词
+        // 按住 Shift 时数字键的 charactersIgnoringModifiers 会变成符号(如 Shift+1 -> !)，
+        // 无法用 Int 解析，这里改用 keyCode 映射数字
+        let digitByKeyCode: [UInt16: Int] = [
+            UInt16(kVK_ANSI_1): 1, UInt16(kVK_ANSI_2): 2, UInt16(kVK_ANSI_3): 3,
+            UInt16(kVK_ANSI_4): 4, UInt16(kVK_ANSI_5): 5, UInt16(kVK_ANSI_6): 6,
+            UInt16(kVK_ANSI_7): 7, UInt16(kVK_ANSI_8): 8, UInt16(kVK_ANSI_9): 9
+        ]
+        let modifiers = event.modifierFlags.intersection(.deviceIndependentFlagsMask)
+        if modifiers == [.control, .shift],
+           let deleteIndex = digitByKeyCode[event.keyCode],
+           deleteIndex <= _candidates.count {
+            let target = _candidates[deleteIndex - 1]
+            if target.type != .placeholder {
+                NSLog("hotkey: control + shift + \(deleteIndex), delete confirm: \(target.text)")
+                if _pendingDeleteCandidate == target {
+                    // 再按一次同一组合键 = 确认删除
+                    confirmDelete(target)
+                } else {
+                    // 首次按下或切换删除目标，进入二次确认态
+                    _pendingDeleteCandidate = target
+                    showDeleteConfirm(target)
+                }
+            }
+            return true
+        }
         if event.charactersIgnoringModifiers == nil {
             return nil
         }
@@ -122,6 +150,57 @@ class FireInputController: IMKInputController {
             self.refreshCandidatesWindow()
             return true
         }
+        return nil
+    }
+
+    // 在候选窗中以 placeholder 形式展示删除确认提示
+    private func showDeleteConfirm(_ target: Candidate) {
+        let tip = Candidate(
+            code: _originalString,  // code 设为原码，避免 getShownCode 显示多余的"()"
+            text: "",               // text 置空，防止鼠标点按候选时误插入文字
+            type: .placeholder,
+            label: "确认删除「\(target.text)」? Enter键确认， Esc键取消"
+        )
+        CandidatesWindow.shared.setCandidates(
+            (list: [tip], hasPrev: false, hasNext: false),
+            originalString: _originalString,
+            topLeft: getOriginPoint()
+        )
+    }
+
+    // 确认删除并恢复正常候选窗
+    private func confirmDelete(_ target: Candidate) {
+        NSLog("[FireInputController] confirmDelete: \(target.text)")
+        DictManager.shared.deleteCandidate(target)
+        Utils.shared.showMessage("已删除「\(target.text)」")
+        _pendingDeleteCandidate = nil
+        self.curPage = 1
+        self.refreshCandidatesWindow()
+    }
+
+    // 删除确认态下的按键处理：回车确认、Esc 取消、组合键透传、其它键取消并照常处理
+    private func deleteConfirmHandler(event: NSEvent) -> Bool? {
+        guard let pending = _pendingDeleteCandidate else { return nil }
+        // 放行 flagsChanged(如 shift 切中英文)，相关清理由 clean() 完成
+        if event.type == .flagsChanged { return nil }
+        // 回车确认删除
+        if event.keyCode == kVK_Return {
+            confirmDelete(pending)
+            return true
+        }
+        // 组合键(Ctrl+Shift+数字)透传给 hotkeyHandler 处理：同号确认、换号切目标
+        let modifiers = event.modifierFlags.intersection(.deviceIndependentFlagsMask)
+        if modifiers == [.control, .shift] {
+            return nil
+        }
+        // 其余按键一律取消确认，恢复真实候选
+        _pendingDeleteCandidate = nil
+        self.refreshCandidatesWindow()
+        // Esc 仅取消，不清空已输入的原码
+        if event.keyCode == kVK_Escape {
+            return true
+        }
+        // 其它键取消后继续走正常处理链
         return nil
     }
 
@@ -402,6 +481,7 @@ class FireInputController: IMKInputController {
         CandidatesWindow.shared.inputController = self
 
         let handler = Utils.shared.processHandlers(handlers: [
+            deleteConfirmHandler,
             hotkeyHandler,
             flagChangedHandler,
             enModeHandler,
@@ -502,6 +582,7 @@ class FireInputController: IMKInputController {
         NSLog("[FireInputController] clean")
         _originalString = ""
         curPage = 1
+        _pendingDeleteCandidate = nil
         CandidatesWindow.shared.close()
     }
 }

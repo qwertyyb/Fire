@@ -21,6 +21,20 @@ class Utils {
 
     var toast: ToastWindowProtocol?
 
+    // 用于删除/组词等操作的小字文本提示，独立于中英文切换提示，不受 inputModeTipWindowType 影响
+    // 低频操作，按需创建、隐藏后释放
+    private var messageToast: ToastWindow?
+
+    // 显示一段小字文本提示(居中)，提示消失后释放窗口
+    func showMessage(_ text: String) {
+        if messageToast == nil {
+            messageToast = ToastWindow()
+        }
+        messageToast?.showToast(text) { [weak self] in
+            self?.messageToast = nil
+        }
+    }
+
     private func initToastWindow() {
         toast = Defaults[.inputModeTipWindowType] == .centerScreen
             ? ToastWindow()
