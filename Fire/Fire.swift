@@ -20,6 +20,8 @@ class Fire: NSObject {
 
     var inputMode: InputMode = .zhhans
     var lastCommittedText: String = ""
+    // 最近上屏的中文候选词文本，用于"快速加词"组词，仅保留最近若干个
+    var recentCommittedTexts: [String] = []
 
     override init() {
         super.init()

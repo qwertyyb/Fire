@@ -247,6 +247,51 @@ class DictManager {
         NotificationQueue.default.enqueue(Notification(name: DictManager.userDictUpdated), postingStyle: .whenIdle)
     }
 
+    // 查询单个汉字的五笔全码(按长度降序取全码，避免拿到一码简码导致首根不全)
+    func getCharFullWubiCode(_ char: String) -> String? {
+        let sql = """
+            select wbcode from wb_py_dict
+            where text = :text and type = 'wb'
+            order by length(wbcode) desc, id asc limit 1
+        """
+        var stmt: OpaquePointer?
+        var result: String?
+        if sqlite3_prepare_v2(database, sql, -1, &stmt, nil) == SQLITE_OK {
+            sqlite3_bind_text(stmt,
+                              sqlite3_bind_parameter_index(stmt, ":text"),
+                              char, -1, SQLITE_TRANSIENT)
+            if sqlite3_step(stmt) == SQLITE_ROW {
+                result = String(cString: sqlite3_column_text(stmt, 0))
+            }
+        }
+        sqlite3_finalize(stmt)
+        stmt = nil
+        return result
+    }
+
+    // 按五笔词组取码规则为多字词生成编码：
+    // 2 字: 字1前2 + 字2前2; 3 字: 字1首 + 字2首 + 字3前2; >=4 字: 字1首 + 字2首 + 字3首 + 末字首
+    // 任一字查不到五笔码则返回 nil
+    func makeWubiWordCode(for text: String) -> String? {
+        let chars = text.map { String($0) }
+        guard chars.count >= 2 else { return nil }
+        let codes = chars.map { getCharFullWubiCode($0) }
+        guard codes.allSatisfy({ $0 != nil }) else { return nil }
+        let fullCodes = codes.compactMap { $0 }
+        func prefix(_ code: String, _ n: Int) -> String {
+            return String(code.prefix(n))
+        }
+        switch fullCodes.count {
+        case 2:
+            return prefix(fullCodes[0], 2) + prefix(fullCodes[1], 2)
+        case 3:
+            return prefix(fullCodes[0], 1) + prefix(fullCodes[1], 1) + prefix(fullCodes[2], 2)
+        default:
+            return prefix(fullCodes[0], 1) + prefix(fullCodes[1], 1)
+                + prefix(fullCodes[2], 1) + prefix(fullCodes[fullCodes.count - 1], 1)
+        }
+    }
+
     func prependCandidates(candidates: [Candidate]) {
         if candidates.count <= 0 {
             return

@@ -20,6 +20,8 @@ class FireInputController: IMKInputController {
     private var _lastInputText = ""
     // 待二次确认删除的候选词，非 nil 时候选窗处于删除确认态
     private var _pendingDeleteCandidate: Candidate?
+    // 组词模式下当前组合的字数，非 nil 时处于"快速加词"组词态
+    private var _combineCount: Int?
     internal var inputMode: InputMode {
         get { Fire.shared.inputMode }
         set(value) { Fire.shared.inputMode = value }
@@ -136,6 +138,16 @@ class FireInputController: IMKInputController {
             }
             return true
         }
+        // Ctrl+= ：在无正在输入原码时进入"快速加词"组词模式
+        if modifiers == .control, event.keyCode == UInt16(kVK_ANSI_Equal), _originalString.isEmpty {
+            if Fire.shared.recentCommittedTexts.count >= 2 {
+                _combineCount = 2
+                showCombinePreview()
+            } else {
+                Utils.shared.showMessage("请先输入至少两个字，再按 Ctrl+= 组词")
+            }
+            return true
+        }
         if event.charactersIgnoringModifiers == nil {
             return nil
         }
@@ -202,6 +214,77 @@ class FireInputController: IMKInputController {
         }
         // 其它键取消后继续走正常处理链
         return nil
+    }
+
+    // 组词模式当前合成的文本(最近 count 个上屏项按原顺序拼接)
+    private func combineText(_ count: Int) -> String {
+        return Fire.shared.recentCommittedTexts.suffix(count).joined()
+    }
+
+    // 在候选窗中以 placeholder 形式预览组词结果及其五笔码
+    private func showCombinePreview() {
+        guard let count = _combineCount else { return }
+        let text = combineText(count)
+        // 五笔码显示在候选窗原码区；code 与 origin 保持一致以避免出现多余的"()"
+        let codeStr = DictManager.shared.makeWubiWordCode(for: text) ?? "无法取码"
+        let tip = Candidate(
+            code: codeStr,
+            text: "",
+            type: .placeholder,
+            label: "[快速加词]\(text)，←键增字， →键减字，Enter键确认， Esc键取消"
+        )
+        CandidatesWindow.shared.setCandidates(
+            (list: [tip], hasPrev: false, hasNext: false),
+            originalString: codeStr,
+            topLeft: getOriginPoint()
+        )
+    }
+
+    // 确认组词：生成五笔码并写入用户词库
+    private func confirmCombine() {
+        guard let count = _combineCount else { return }
+        let text = combineText(count)
+        _combineCount = nil
+        guard let code = DictManager.shared.makeWubiWordCode(for: text) else {
+            Utils.shared.showMessage("无法为「\(text)」生成五笔码")
+            CandidatesWindow.shared.close()
+            return
+        }
+        _ = DictManager.shared.prependCandidate(
+            candidate: Candidate(code: code, text: text, type: .user))
+        NotificationQueue.default.enqueue(
+            Notification(name: DictManager.userDictUpdated), postingStyle: .whenIdle)
+        Utils.shared.showMessage("已添加新词「\(text)」\(code)")
+        CandidatesWindow.shared.close()
+    }
+
+    // 组词模式下的按键处理：Left 增、Right 减、Enter 确认、Esc 退出，其它键退出后照常处理
+    private func combineHandler(event: NSEvent) -> Bool? {
+        guard let count = _combineCount else { return nil }
+        if event.type == .flagsChanged { return nil }
+        let bufCount = Fire.shared.recentCommittedTexts.count
+        switch Int(event.keyCode) {
+        case kVK_LeftArrow:
+            _combineCount = min(count + 1, bufCount)
+            showCombinePreview()
+            return true
+        case kVK_RightArrow:
+            _combineCount = max(count - 1, 2)
+            showCombinePreview()
+            return true
+        case kVK_Return:
+            confirmCombine()
+            return true
+        case kVK_Escape:
+            _combineCount = nil
+            CandidatesWindow.shared.close()
+            return true
+        default:
+            // 其它键退出组词模式后继续走正常处理链
+            _combineCount = nil
+            CandidatesWindow.shared.close()
+            return nil
+        }
     }
 
      func flagChangedHandler(event: NSEvent) -> Bool? {
@@ -482,6 +565,7 @@ class FireInputController: IMKInputController {
 
         let handler = Utils.shared.processHandlers(handlers: [
             deleteConfirmHandler,
+            combineHandler,
             hotkeyHandler,
             flagChangedHandler,
             enModeHandler,
@@ -536,6 +620,13 @@ class FireInputController: IMKInputController {
 
     func insertCandidate(_ candidate: Candidate) {
         Fire.shared.lastCommittedText = candidate.text
+        // 记录中文候选词上屏，供"快速加词"组词使用
+        if candidate.type != .placeholder, candidate.text.contains(where: { $0.isChineseChar }) {
+            Fire.shared.recentCommittedTexts.append(candidate.text)
+            if Fire.shared.recentCommittedTexts.count > 20 {
+                Fire.shared.recentCommittedTexts.removeFirst()
+            }
+        }
         insertText(candidate.text)
         let notification = Notification(
             name: Fire.candidateInserted,
@@ -583,6 +674,14 @@ class FireInputController: IMKInputController {
         _originalString = ""
         curPage = 1
         _pendingDeleteCandidate = nil
+        _combineCount = nil
         CandidatesWindow.shared.close()
+    }
+}
+
+extension Character {
+    // 是否为 CJK 统一表意文字(常用汉字区)
+    var isChineseChar: Bool {
+        unicodeScalars.allSatisfy { (0x4E00...0x9FFF).contains($0.value) }
     }
 }
