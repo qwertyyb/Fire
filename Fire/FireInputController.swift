@@ -83,6 +83,15 @@ class FireInputController: IMKInputController {
             client()?.setMarkedText(text, selectionRange: selectionRange(), replacementRange: replacementRange())
         }
     }
+
+    // 组词模式下用一个空格占位标记合成串，保持合成态，确保方向键等被输入法消费而不传给应用
+    private func markCombineText() {
+        let attrs = mark(forStyle: kTSMHiliteConvertedText, at: NSRange(location: NSNotFound, length: 0))
+        if let attributes = attrs as? [NSAttributedString.Key: Any] {
+            let text = NSAttributedString(string: " ", attributes: attributes)
+            client()?.setMarkedText(text, selectionRange: selectionRange(), replacementRange: replacementRange())
+        }
+    }
     
     private func getPreviousText(_ count: Int = 1) -> String {
         // 中文输入模式下，markedRange 会跟随输入字符变化
@@ -142,6 +151,7 @@ class FireInputController: IMKInputController {
         if modifiers == .control, event.keyCode == UInt16(kVK_ANSI_Equal), _originalString.isEmpty {
             if Fire.shared.recentCommittedTexts.count >= 2 {
                 _combineCount = 2
+                markCombineText()
                 showCombinePreview()
             } else {
                 Utils.shared.showMessage("请先输入至少两个字，再按 Ctrl+= 组词")
@@ -231,7 +241,7 @@ class FireInputController: IMKInputController {
             code: codeStr,
             text: "",
             type: .placeholder,
-            label: "[快速加词]\(text)，←键增字， →键减字，Enter键确认， Esc键取消"
+            label: "【\(text)】，←键增字， →键减字，Enter键确认， Esc键取消"
         )
         CandidatesWindow.shared.setCandidates(
             (list: [tip], hasPrev: false, hasNext: false),
@@ -244,18 +254,17 @@ class FireInputController: IMKInputController {
     private func confirmCombine() {
         guard let count = _combineCount else { return }
         let text = combineText(count)
-        _combineCount = nil
-        guard let code = DictManager.shared.makeWubiWordCode(for: text) else {
-            Utils.shared.showMessage("无法为「\(text)」生成五笔码")
-            CandidatesWindow.shared.close()
-            return
+        if let code = DictManager.shared.makeWubiWordCode(for: text) {
+            _ = DictManager.shared.prependCandidate(
+                candidate: Candidate(code: code, text: text, type: .user))
+            NotificationQueue.default.enqueue(
+                Notification(name: DictManager.userDictUpdated), postingStyle: .whenIdle)
+            Utils.shared.showMessage("已添加新词【\(text)】\(code)")
+        } else {
+            Utils.shared.showMessage("无法为【\(text)】生成五笔码")
         }
-        _ = DictManager.shared.prependCandidate(
-            candidate: Candidate(code: code, text: text, type: .user))
-        NotificationQueue.default.enqueue(
-            Notification(name: DictManager.userDictUpdated), postingStyle: .whenIdle)
-        Utils.shared.showMessage("已添加新词「\(text)」\(code)")
-        CandidatesWindow.shared.close()
+        // clean() 会清空 _originalString 触发 markText 清除组词占位的合成串，并重置 _combineCount、关闭候选窗
+        clean()
     }
 
     // 组词模式下的按键处理：Left 增、Right 减、Enter 确认、Esc 退出，其它键退出后照常处理
@@ -276,13 +285,11 @@ class FireInputController: IMKInputController {
             confirmCombine()
             return true
         case kVK_Escape:
-            _combineCount = nil
-            CandidatesWindow.shared.close()
+            clean()
             return true
         default:
             // 其它键退出组词模式后继续走正常处理链
-            _combineCount = nil
-            CandidatesWindow.shared.close()
+            clean()
             return nil
         }
     }
@@ -612,6 +619,10 @@ class FireInputController: IMKInputController {
     }
 
     override func selectionRange() -> NSRange {
+        if _combineCount != nil {
+            // 组词模式下为 1 长度的占位合成串，与 markCombineText 保持一致
+            return NSRange(location: 0, length: 1)
+        }
         if Defaults[.showCodeInWindow] {
             return NSRange(location: 0, length: min(1, _originalString.count))
         }
