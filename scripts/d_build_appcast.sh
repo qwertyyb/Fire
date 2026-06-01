@@ -44,7 +44,7 @@ cat>$EXPORT_PATH/appcast.xml<<EOF
         <item>
             <title>${version}</title>
             <pubDate>$(date -R)</pubDate>
-            <sparkle:minimumSystemVersion>10.15</sparkle:minimumSystemVersion>
+            <sparkle:minimumSystemVersion>11.0</sparkle:minimumSystemVersion>
             <description><![CDATA[
                 ${update_notes}
             ]]>
