@@ -3,18 +3,18 @@
     <channel>
         <title>业火输入法</title>
         <item>
-            <title>v0.25.0</title>
-            <pubDate>Tue, 02 Jun 2026 10:39:35 +0000</pubDate>
-            <sparkle:minimumSystemVersion>10.15</sparkle:minimumSystemVersion>
+            <title>v0.26.0</title>
+            <pubDate>Tue, 02 Jun 2026 12:18:50 +0000</pubDate>
+            <sparkle:minimumSystemVersion>11.0</sparkle:minimumSystemVersion>
             <description><![CDATA[
-                <h3 id=bugfixes>Bug Fixes</h3> <ul> <li>修复颜色显示不正确的问题 (<a href=https://github.com/qwertyyb/Fire/commit/3df207b919d1467341abaf33fe5eb88caed33240>3df207b</a>)</li> </ul> <h3 id=features>Features</h3> <ul> <li>优化自定义主题使用体验 (<a href=https://github.com/qwertyyb/Fire/commit/80be9cb1cf1b1dcadc11d28bd5954daa4430dcce>80be9cb</a>)</li> </ul>
+                <h3 id=bugfixes>Bug Fixes</h3> <ul> <li>完善 Ctrl+= 快速加词的合成串占位与退出清理 (<a href=https://github.com/qwertyyb/Fire/commit/7f49bfef63ac3ef9942c8c535ee4bb42e96866b9>7f49bfe</a>)</li> </ul> <h3 id=features>Features</h3> <ul> <li>增加 Ctrl+= 快速加词功能 (<a href=https://github.com/qwertyyb/Fire/commit/9f33ddcee50c825b2fedea8e55d007d33469c324>9f33ddc</a>)</li> <li>增加 Ctrl+Shift+数字 删除候选词功能 (<a href=https://github.com/qwertyyb/Fire/commit/647f7021a5efe8cb1833f1b5a07756c706d927fa>647f702</a>)</li> </ul>
             ]]>
             </description>
             <enclosure url="https://github.com/qwertyyb/Fire/releases/latest/download/FireInstaller.zip"
-              sparkle:version="20260602103706"
-              sparkle:shortVersionString="v0.25.0"
-              length="5801800"
-              sparkle:edSignature="6btIUeYoIv/fVz4dortI4Wj/QQfacy+Sl3sk/Q4xPko70BOGCVqSq8SADYmqmk9QCeZ9fXh4BbW4zZIUnY1xBA=="
+              sparkle:version="20260602121651"
+              sparkle:shortVersionString="v0.26.0"
+              length="5818298"
+              sparkle:edSignature="l3s+VWEKI+lNIgsBYcDgNe+1HH49VeCzx/6qXzA4IpbYhMuWgKa2yKgtf0w/IQrhSH8OZNP6WDf70TnyJciBCg=="
               type="application/octet-stream"/>
         </item>
     </channel>
