@@ -3,18 +3,18 @@
     <channel>
         <title>业火输入法</title>
         <item>
-            <title>v0.24.0</title>
-            <pubDate>Sat, 23 May 2026 07:25:42 +0000</pubDate>
+            <title>v0.25.0</title>
+            <pubDate>Tue, 02 Jun 2026 10:39:35 +0000</pubDate>
             <sparkle:minimumSystemVersion>10.15</sparkle:minimumSystemVersion>
             <description><![CDATA[
-                <h3 id=bugfixes>Bug Fixes</h3> <ul> <li>修复临时英文模式下，输入回车会带分号一起上屏的问题 <a href=https://github.com/qwertyyb/Fire/issues/138>#138</a> (<a href=https://github.com/qwertyyb/Fire/commit/089201370464bff555ee46d29ad55ec746f64e35>0892013</a>)</li> </ul> <h3 id=features>Features</h3> <ul> <li>增加 z 键重复上次输入的功能 <a href=https://github.com/qwertyyb/Fire/issues/133>#133</a> <a href=https://github.com/qwertyyb/Fire/issues/146>#146</a> (<a href=https://github.com/qwertyyb/Fire/commit/65543a66e709df8ad8322c3241240312377c08b1>65543a6</a>)</li> <li>增加分号引号/逗号句号选择第二三个候选词的功能 <a href=https://github.com/qwertyyb/Fire/issues/150>#150</a> (<a href=https://github.com/qwertyyb/Fire/commit/6d3d4f80397db3a3a10cc4043f26b3d4b185f161>6d3d4f8</a>)</li> <li>增加输入符号时首个候选词和标点符号一起上屏的功能 (<a href=https://github.com/qwertyyb/Fire/commit/30def8c2fb73d88123b27e170f9e6322414ad7e5>30def8c</a>)</li> </ul>
+                <h3 id=bugfixes>Bug Fixes</h3> <ul> <li>修复颜色显示不正确的问题 (<a href=https://github.com/qwertyyb/Fire/commit/3df207b919d1467341abaf33fe5eb88caed33240>3df207b</a>)</li> </ul> <h3 id=features>Features</h3> <ul> <li>优化自定义主题使用体验 (<a href=https://github.com/qwertyyb/Fire/commit/80be9cb1cf1b1dcadc11d28bd5954daa4430dcce>80be9cb</a>)</li> </ul>
             ]]>
             </description>
             <enclosure url="https://github.com/qwertyyb/Fire/releases/latest/download/FireInstaller.zip"
-              sparkle:version="20260523072412"
-              sparkle:shortVersionString="v0.24.0"
-              length="5779653"
-              sparkle:edSignature="QydolkcBeJWVhDaM5AS2LzmP5tDfYnAy1oRkuUradRWPhpQtFpiWCcejJOgtEPtqAvr8bAa0WRxweKJTnD7CCg=="
+              sparkle:version="20260602103706"
+              sparkle:shortVersionString="v0.25.0"
+              length="5801800"
+              sparkle:edSignature="6btIUeYoIv/fVz4dortI4Wj/QQfacy+Sl3sk/Q4xPko70BOGCVqSq8SADYmqmk9QCeZ9fXh4BbW4zZIUnY1xBA=="
               type="application/octet-stream"/>
         </item>
     </channel>
