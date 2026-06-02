@@ -77,8 +77,8 @@
     }
 
     .page-indicator-item {
-      height: 10px;
       font-size: 0;
+      line-height: 0;
       margin-top: auto
     }
     .page-indicator-item:last-child {
@@ -138,11 +138,11 @@
               </div>
               <div class="page-indicator flex flex-col items-center">
                 <div class="page-indicator-item">
-                  <svg t="1647879424228" class="icon" viewBox="0 0 1765 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="82046" width="10" height="10"><path d="M882.468812 341.347341L241.376231 982.608011a141.405121 141.405121 0 0 1-199.984242-199.94222l741.273802-741.273802a141.405121 141.405121 0 0 1 199.94222 0l741.231779 741.273802a141.405121 141.405121 0 0 1-199.942219 199.94222z" p-id="82047" :style="style.indicator.disabled"></path></svg>
+                  <svg t="1647879424228" class="icon" viewBox="0 0 1765 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="82046" :width="indicatorSize(themeConfig)" :height="indicatorSize(themeConfig)"><path d="M882.468812 341.347341L241.376231 982.608011a141.405121 141.405121 0 0 1-199.984242-199.94222l741.273802-741.273802a141.405121 141.405121 0 0 1 199.94222 0l741.231779 741.273802a141.405121 141.405121 0 0 1-199.942219 199.94222z" p-id="82047" :style="style.indicator.disabled"></path></svg>
                 </div>
                 <div class="page-indicator-item"
                   :style="style.indicator.defaults">
-                  <svg t="1647879201778" class="icon" viewBox="0 0 1765 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="75307" width="10" height="10"><path d="M882.440095 682.698561L241.368376 41.416738A141.40052 141.40052 0 0 0 41.390643 241.394471l741.249679 741.207659a141.40052 141.40052 0 0 0 199.935713 0L1723.783693 241.394471a141.40052 141.40052 0 0 0-199.935713-199.977733z" p-id="75308" :style="style.indicator.defaults"></path></svg>
+                  <svg t="1647879201778" class="icon" viewBox="0 0 1765 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="75307" :width="indicatorSize(themeConfig)" :height="indicatorSize(themeConfig)"><path d="M882.440095 682.698561L241.368376 41.416738A141.40052 141.40052 0 0 0 41.390643 241.394471l741.249679 741.207659a141.40052 141.40052 0 0 0 199.935713 0L1723.783693 241.394471a141.40052 141.40052 0 0 0-199.935713-199.977733z" p-id="75308" :style="style.indicator.defaults"></path></svg>
                 </div>
               </div>
             </div>
@@ -153,8 +153,11 @@
         <h1 class="text-center">创建主题</h1>
         <div class="menu sticky top-0 bg-white flex justify-between bg-light-gray items-center" style="padding: 8px 20px">
           <button @click="importConfig">导入</button>
-          <span>使用方式: 首选项 -> 主题 -> 导入 -> 选择导出的文件 -> 使用</span>
-          <button @click="exportConfig">导出</button>
+          <span>一键导入需 Fire ≥ v0.18；旧版本请使用「导出 → 在 Fire 中手动导入」</span>
+          <div class="flex" style="gap: 8px">
+            <button @click="oneClickImport">一键导入到 Fire</button>
+            <button @click="exportConfig">导出</button>
+          </div>
         </div>
         <br>
         <div class="setting-container">
@@ -187,6 +190,10 @@
                   <div class="form-label">窗口背景</div>
                   <div v-scope="ColorPicker({ colorData: themeConfig.windowBackgroundColor })"
                     class="flex"></div>
+                </div>
+                <div class="form-item flex items-center w-half">
+                  <div class="form-label">字号</div>
+                  <input type="number" min="1" v-model.number="themeConfig.fontSize">
                 </div>
                 <div class="form-item flex items-center w-half">
                   <div class="form-label">行间距</div>
@@ -322,13 +329,53 @@
       const getHex = num => Math.round(255 * num).toString(16).padStart(2, '0');
       return `#${getHex(red)}${getHex(green)}${getHex(blue)}${useOpacity ? getHex(opacity) : ''}`.toUpperCase();
     }
+    // 输出 hex 字符串：opacity = 1 时 6 位，否则 8 位。用于导出 JSON。
+    const colorData2HexCompact = (colorData) => {
+      const { opacity } = colorData;
+      return colorData2Hex(colorData, Math.abs(opacity - 1) > 1e-6);
+    }
     const hex2ColorData = (hex = '#ffffffff') => {
-      const hex2Num = hex => parseInt(hex, 16);
-      const hex2RGB = hex => {
-        const [r, g, b, a] = hex.slice(1).match(/.{2}/g).map(hex2Num);
-        return { red: r / 255, green: g / 255, blue: b / 255, opacity: a / 255 };
+      let s = String(hex).trim();
+      if (s.startsWith('#')) s = s.slice(1);
+      const expand = c => c + c;
+      if (s.length === 3) s = s.split('').map(expand).join('') + 'ff';
+      else if (s.length === 4) s = s.split('').map(expand).join('');
+      else if (s.length === 6) s = s + 'ff';
+      else if (s.length !== 8) return { red: 1, green: 1, blue: 1, opacity: 1 };
+      const hex2Num = h => parseInt(h, 16);
+      const [r, g, b, a] = s.match(/.{2}/g).map(hex2Num);
+      return { red: r / 255, green: g / 255, blue: b / 255, opacity: a / 255 };
+    }
+    // 把任意颜色值（对象 / hex 字符串）归一化为对象形式
+    const normalizeColor = (value) => {
+      if (typeof value === 'string') return hex2ColorData(value);
+      if (value && typeof value === 'object' && 'red' in value) {
+        const { red = 0, green = 0, blue = 0, opacity = 1 } = value;
+        return { red, green, blue, opacity };
       }
-      return hex2RGB(hex);
+      return { red: 1, green: 1, blue: 1, opacity: 1 };
+    }
+    // 一份外观配置里所有颜色字段
+    const COLOR_FIELDS = [
+      'windowBackgroundColor', 'originCodeColor',
+      'candidateIndexColor', 'candidateTextColor', 'candidateCodeColor',
+      'selectedIndexColor', 'selectedTextColor', 'selectedCodeColor',
+      'pageIndicatorColor', 'pageIndicatorDisabledColor'
+    ];
+    const normalizeAppearance = (appearance) => {
+      if (!appearance) return appearance;
+      const out = { ...appearance };
+      COLOR_FIELDS.forEach(key => {
+        if (key in out) out[key] = normalizeColor(out[key]);
+      });
+      return out;
+    }
+    const appearanceColorsToHex = (appearance) => {
+      const out = { ...appearance };
+      COLOR_FIELDS.forEach(key => {
+        if (key in out) out[key] = colorData2HexCompact(out[key]);
+      });
+      return out;
     }
     const transUnit = (num) => num + 'px'
 
@@ -597,40 +644,69 @@
           }
         }
       },
-      exportConfig() {
+      indicatorSize(themeConfig) {
+        const fontSize = Number(themeConfig && themeConfig.fontSize) || 20;
+        return Math.max(1, Math.round(fontSize * 0.5));
+      },
+      buildExportConfig() {
+        const light = appearanceColorsToHex(this.themeConfig);
+        const dark = this.formValue.darkSameLight
+          ? light
+          : appearanceColorsToHex(this.darkThemeConfig);
+        return {
+          schemaVersion: 1,
+          id: this.formValue.id,
+          name: this.formValue.name,
+          author: this.formValue.author,
+          light,
+          dark,
+        };
+      },
+      validateBeforeExport() {
         const containerEls = Array.from(document.querySelectorAll('.theme-preview-container'));
-        containerEls.forEach(containerEl => {
+        for (const containerEl of containerEls) {
           const containerRect = containerEl.getBoundingClientRect();
           const windowEl = containerEl.querySelector('.candidate-window');
           const windowRect = windowEl.getBoundingClientRect();
           const isInContainer = containerRect.top < windowRect.top && containerRect.bottom > windowRect.bottom && containerRect.left < windowRect.left && containerRect.right > windowRect.right;
           if (!isInContainer) {
-            if(!window.confirm('主题应用后候选窗口过大，确认导出吗？')) {
-              return
+            if (!window.confirm('主题应用后候选窗口过大，确认继续吗？')) {
+              return false;
             }
+            break;
           }
-        })
+        }
         if (!this.formValue.id || !this.formValue.name || !this.formValue.author) {
-          alert('请先填写完整信息');
-          return;
+          alert('请先填写完整信息（ID、名字、作者）');
+          return false;
         }
-        const config = {
-          ...this.formValue,
-          light: this.themeConfig,
-          dark: this.darkThemeConfig,
-        }
-        if (this.formValue.darkSameLight) {
-          config.dark = config.light;
-        }
+        return true;
+      },
+      exportConfig() {
+        if (!this.validateBeforeExport()) return;
+        const config = this.buildExportConfig();
         const blob = new Blob([JSON.stringify(config, null, 2)], {
           type: 'application/json'
         });
         const url = URL.createObjectURL(blob);
         const a = document.createElement('a');
         a.href = url;
-        const name = `${this.formValue.name}-${this.formValue.id}-${this.formValue.author}.json`;
-        a.download = name;
+        a.download = `${this.formValue.name}-${this.formValue.id}-${this.formValue.author}.json`;
         a.click();
+        URL.revokeObjectURL(url);
+      },
+      oneClickImport() {
+        if (!this.validateBeforeExport()) return;
+        const json = JSON.stringify(this.buildExportConfig());
+        // UTF-8 安全的 base64-url
+        const bytes = new TextEncoder().encode(json);
+        let binary = '';
+        bytes.forEach(b => binary += String.fromCharCode(b));
+        const data = btoa(binary)
+          .replace(/\+/g, '-')
+          .replace(/\//g, '_')
+          .replace(/=+$/, '');
+        window.location.href = `fire://theme/import?data=${data}`;
       },
       installJSColor() {
         jscolor.install();
@@ -647,8 +723,8 @@
             this.formValue.id = config.id;
             this.formValue.name = config.name;
             this.formValue.author = config.author;
-            this.themeConfig = config.light;
-            this.darkThemeConfig = config.dark;
+            this.themeConfig = normalizeAppearance(config.light);
+            this.darkThemeConfig = normalizeAppearance(config.dark || config.light);
             this.formValue.darkSameLight = JSON.stringify(this.themeConfig) === JSON.stringify(this.darkThemeConfig);
             this.installJSColor();
           }
