@@ -3,18 +3,18 @@
     <channel>
         <title>业火输入法</title>
         <item>
-            <title>v0.26.0</title>
-            <pubDate>Tue, 02 Jun 2026 12:18:50 +0000</pubDate>
+            <title>v0.27.0</title>
+            <pubDate>Fri, 05 Jun 2026 12:46:24 +0000</pubDate>
             <sparkle:minimumSystemVersion>11.0</sparkle:minimumSystemVersion>
             <description><![CDATA[
-                <h3 id=bugfixes>Bug Fixes</h3> <ul> <li>完善 Ctrl+= 快速加词的合成串占位与退出清理 (<a href=https://github.com/qwertyyb/Fire/commit/7f49bfef63ac3ef9942c8c535ee4bb42e96866b9>7f49bfe</a>)</li> </ul> <h3 id=features>Features</h3> <ul> <li>增加 Ctrl+= 快速加词功能 (<a href=https://github.com/qwertyyb/Fire/commit/9f33ddcee50c825b2fedea8e55d007d33469c324>9f33ddc</a>)</li> <li>增加 Ctrl+Shift+数字 删除候选词功能 (<a href=https://github.com/qwertyyb/Fire/commit/647f7021a5efe8cb1833f1b5a07756c706d927fa>647f702</a>)</li> </ul>
+                <h3 id=features>Features</h3> <ul> <li>增加密码自动切换至英文模式功能 (<a href=https://github.com/qwertyyb/Fire/commit/e8f73558ea612903b3d80ded88820b236e5b6623>e8f7355</a>)</li> <li>支持数字后输入全角冒号时自动转为半角 (<a href=https://github.com/qwertyyb/Fire/commit/7e79416023bc3402ba285538305e922f361a0f40>7e79416</a>)</li> </ul>
             ]]>
             </description>
             <enclosure url="https://github.com/qwertyyb/Fire/releases/latest/download/FireInstaller.zip"
-              sparkle:version="20260602121651"
-              sparkle:shortVersionString="v0.26.0"
-              length="5818298"
-              sparkle:edSignature="l3s+VWEKI+lNIgsBYcDgNe+1HH49VeCzx/6qXzA4IpbYhMuWgKa2yKgtf0w/IQrhSH8OZNP6WDf70TnyJciBCg=="
+              sparkle:version="20260605124434"
+              sparkle:shortVersionString="v0.27.0"
+              length="5821440"
+              sparkle:edSignature="OxohD4XOS0Ag1V0sgHrF/XQS3phchQkwXjAjWnZ5QmTrBb2KalM63ZxWh36SmgEPqhNaDsoHW06DSFleGzrYCQ=="
               type="application/octet-stream"/>
         </item>
     </channel>
