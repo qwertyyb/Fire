@@ -79,6 +79,10 @@ class FirePreferencesController: NSObject, NSWindowDelegate {
         )
         self.controller?.window?.delegate = self
     }
+    
+    func windowWillClose(_ notification: Notification) {
+        self.controller = nil
+    }
 
     func showPane(_ name: String) {
         initController()
