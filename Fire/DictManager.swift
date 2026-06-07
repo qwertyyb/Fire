@@ -8,6 +8,7 @@
 
 import Foundation
 import Defaults
+import OSLog
 
 class DictManager {
     static let shared = DictManager()
@@ -60,11 +61,33 @@ class DictManager {
         """
         return sql
     }
+    
+    private func enableSQLiteProfile(_ db: OpaquePointer?) {
+        guard let db = db else { return }
+        
+        // 注册 profile 回调
+        sqlite3_profile(db, { _, sql, nanoseconds in
+            /*
+             * SQLite 内部计时精度 = 微秒级 / 毫秒级，不是纳秒级！
+             * 虽然 sqlite3_profile 给你的单位是 纳秒（UInt64），
+             * 但 SQLite 内部真正计时精度并没有那么高。
+             * 它的时间来源是：
+             * Windows：GetTickCount 精度 1ms ~ 16ms
+             * macOS / iOS：mach_absolute_time 转成后对齐到毫秒级别
+             */
+            let ms = Double(nanoseconds) / 1_000_000
+            let sqlStr = String(cString: sql!)
+            
+            // 直接用你的 Perf 日志输出
+            Logger.performance.notice("[SQL] duration: \(ms)ms, sql: \(sqlStr, privacy: .public)")
+        }, nil)
+    }
 
     private func prepareStatement() {
         if database == nil {
             sqlite3_open_v2(getDatabaseURL().path, &database, SQLITE_OPEN_READWRITE, nil)
             sqlite3_exec(database, "PRAGMA case_sensitive_like=ON;", nil, nil, nil)
+            enableSQLiteProfile(database)
         }
         if queryStatement != nil {
             sqlite3_finalize(queryStatement)
@@ -140,52 +163,50 @@ class DictManager {
     }
 
     func getCandidates(query: String = String(), page: Int = 1) -> (candidates: [Candidate], hasNext: Bool) {
-        if query.count <= 0 {
-            return ([], false)
-        }
-        if query.first == tempEnTriggerPunctuation {
-            return (candidates: punctuationCandidates(query: query), hasNext: false)
-        }
-        NSLog("[DictManager] getCandidates origin: \(query)")
-        let startTime = CFAbsoluteTimeGetCurrent()
-        let queryLike = getQueryLike(query)
-        var candidates: [Candidate] = []
-        sqlite3_reset(queryStatement)
-        sqlite3_clear_bindings(queryStatement)
-        sqlite3_bind_text(queryStatement,
-                        sqlite3_bind_parameter_index(queryStatement, ":code"),
-                        query, -1,
-                        SQLITE_TRANSIENT
-        )
-        sqlite3_bind_text(queryStatement,
-                          sqlite3_bind_parameter_index(queryStatement, ":queryLike"),
-                          queryLike, -1,
-                          SQLITE_TRANSIENT
-        )
-        sqlite3_bind_int(queryStatement,
-                         sqlite3_bind_parameter_index(queryStatement, ":offset"),
-                         Int32((page - 1) * Defaults[.candidateCount])
-        )
-        while sqlite3_step(queryStatement) == SQLITE_ROW {
-            let code = String.init(cString: sqlite3_column_text(queryStatement, 0))
-            var text = String.init(cString: sqlite3_column_text(queryStatement, 1))
-            let type = CandidateType(rawValue: String.init(cString: sqlite3_column_text(queryStatement, 2)))!
-            if type == .user {
-                text = replaceTextWithVars(text)
+        return Performance.measure(["query": query, "page": page]) {
+            if query.count <= 0 {
+                return ([], false)
             }
-            let candidate = Candidate(code: code, text: text, type: type)
-            candidates.append(candidate)
+            if query.first == tempEnTriggerPunctuation {
+                return (candidates: punctuationCandidates(query: query), hasNext: false)
+            }
+            let queryLike = getQueryLike(query)
+            var candidates: [Candidate] = []
+            sqlite3_reset(queryStatement)
+            sqlite3_clear_bindings(queryStatement)
+            sqlite3_bind_text(queryStatement,
+                              sqlite3_bind_parameter_index(queryStatement, ":code"),
+                              query, -1,
+                              SQLITE_TRANSIENT
+            )
+            sqlite3_bind_text(queryStatement,
+                              sqlite3_bind_parameter_index(queryStatement, ":queryLike"),
+                              queryLike, -1,
+                              SQLITE_TRANSIENT
+            )
+            sqlite3_bind_int(queryStatement,
+                             sqlite3_bind_parameter_index(queryStatement, ":offset"),
+                             Int32((page - 1) * Defaults[.candidateCount])
+            )
+            while sqlite3_step(queryStatement) == SQLITE_ROW {
+                let code = String.init(cString: sqlite3_column_text(queryStatement, 0))
+                var text = String.init(cString: sqlite3_column_text(queryStatement, 1))
+                let type = CandidateType(rawValue: String.init(cString: sqlite3_column_text(queryStatement, 2)))!
+                if type == .user {
+                    text = replaceTextWithVars(text)
+                }
+                let candidate = Candidate(code: code, text: text, type: type)
+                candidates.append(candidate)
+            }
+            let count = Defaults[.candidateCount]
+            let allCount = candidates.count
+            candidates = Array(candidates.prefix(count))
+            
+            if candidates.isEmpty {
+                candidates.append(Candidate(code: query, text: query, type: CandidateType.placeholder))
+            }
+            return (candidates, hasNext: allCount > count)
         }
-        let count = Defaults[.candidateCount]
-        let allCount = candidates.count
-        candidates = Array(candidates.prefix(count))
-
-        if candidates.isEmpty {
-            candidates.append(Candidate(code: query, text: query, type: CandidateType.placeholder))
-        }
-        let duration = CFAbsoluteTimeGetCurrent() - startTime
-        NSLog("[DictManager] getCandidates query: \(query) , duration: \(duration)")
-        return (candidates, hasNext: allCount > count)
     }
 
     func setCandidateToFirst(query: String, candidate: Candidate) {

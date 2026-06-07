@@ -8,9 +8,17 @@
 
 /* Begin PBXBuildFile section */
 		451A556A2AF9F92D00AF57C1 /* InputModeCache.swift in Sources */ = {isa = PBXBuildFile; fileRef = 451A55692AF9F92D00AF57C1 /* InputModeCache.swift */; };
+		4559A2792FD4077E00CCDB61 /* Logger.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4559A2782FD4077E00CCDB61 /* Logger.swift */; };
+		4559A27C2FD4104500CCDB61 /* Performance.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4559A27B2FD4104500CCDB61 /* Performance.swift */; };
 		4569ED0B2C92C4360075CF8F /* CLI.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4569ED0A2C92C4360075CF8F /* CLI.swift */; };
 		4569ED0D2C92CE090075CF8F /* CLIServer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4569ED0C2C92CE090075CF8F /* CLIServer.swift */; };
 		4572854E2BD0EAF90048D67E /* Credits.html in Resources */ = {isa = PBXBuildFile; fileRef = 4572854D2BD0EAF90048D67E /* Credits.html */; };
+		457F6E122FD587020073AF0F /* OpenTelemetryApi in Frameworks */ = {isa = PBXBuildFile; productRef = 457F6E112FD587020073AF0F /* OpenTelemetryApi */; };
+		457F6E142FD587020073AF0F /* OpenTelemetryConcurrency in Frameworks */ = {isa = PBXBuildFile; productRef = 457F6E132FD587020073AF0F /* OpenTelemetryConcurrency */; };
+		457F6E162FD587020073AF0F /* OpenTelemetrySdk in Frameworks */ = {isa = PBXBuildFile; productRef = 457F6E152FD587020073AF0F /* OpenTelemetrySdk */; };
+		457F6E182FD587020073AF0F /* StdoutExporter in Frameworks */ = {isa = PBXBuildFile; productRef = 457F6E172FD587020073AF0F /* StdoutExporter */; };
+		457F6E1A2FD587020073AF0F /* ConcurrencyContext in Frameworks */ = {isa = PBXBuildFile; productRef = 457F6E192FD587020073AF0F /* ConcurrencyContext */; };
+		457F6E1D2FD5915E0073AF0F /* ResourceExtension in Frameworks */ = {isa = PBXBuildFile; productRef = 457F6E1C2FD5915E0073AF0F /* ResourceExtension */; };
 		45B76CA92AEA6042009AFABD /* PunctuationConversion.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45B76CA82AEA6042009AFABD /* PunctuationConversion.swift */; };
 		6753419E2AB54A3A00757F76 /* main.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 6753419D2AB54A3A00757F76 /* main.cpp */; };
 		675341A72AB54AEA00757F76 /* sqlite3.c in Sources */ = {isa = PBXBuildFile; fileRef = 675341A52AB54AEA00757F76 /* sqlite3.c */; settings = {COMPILER_FLAGS = "-w"; }; };
@@ -74,6 +82,8 @@
 
 /* Begin PBXFileReference section */
 		451A55692AF9F92D00AF57C1 /* InputModeCache.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InputModeCache.swift; sourceTree = "<group>"; };
+		4559A2782FD4077E00CCDB61 /* Logger.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Logger.swift; sourceTree = "<group>"; };
+		4559A27B2FD4104500CCDB61 /* Performance.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Performance.swift; sourceTree = "<group>"; };
 		4569ED0A2C92C4360075CF8F /* CLI.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CLI.swift; sourceTree = "<group>"; };
 		4569ED0C2C92CE090075CF8F /* CLIServer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CLIServer.swift; sourceTree = "<group>"; };
 		4572854D2BD0EAF90048D67E /* Credits.html */ = {isa = PBXFileReference; lastKnownFileType = text.html; path = Credits.html; sourceTree = "<group>"; };
@@ -138,12 +148,18 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				457F6E142FD587020073AF0F /* OpenTelemetryConcurrency in Frameworks */,
 				67C9A05B2AB5445E000B5281 /* Security.framework in Frameworks */,
+				457F6E1D2FD5915E0073AF0F /* ResourceExtension in Frameworks */,
 				67C9A0542AB53F79000B5281 /* Sparkle in Frameworks */,
+				457F6E162FD587020073AF0F /* OpenTelemetrySdk in Frameworks */,
+				457F6E1A2FD587020073AF0F /* ConcurrencyContext in Frameworks */,
 				67C9A04E2AB53F37000B5281 /* KeychainSwift in Frameworks */,
 				67C9A04B2AB53F20000B5281 /* Defaults in Frameworks */,
+				457F6E182FD587020073AF0F /* StdoutExporter in Frameworks */,
 				67C9A0482AB53EF5000B5281 /* Settings in Frameworks */,
 				67C9A0512AB53F51000B5281 /* NanoID in Frameworks */,
+				457F6E122FD587020073AF0F /* OpenTelemetryApi in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -237,10 +253,12 @@
 		67C99FF82AB53E62000B5281 /* Utils */ = {
 			isa = PBXGroup;
 			children = (
+				4559A2782FD4077E00CCDB61 /* Logger.swift */,
 				67C99FF92AB53E62000B5281 /* ToastWindow.swift */,
 				67C99FFA2AB53E62000B5281 /* Statistics.swift */,
 				67C99FFB2AB53E62000B5281 /* TipsWindow.swift */,
 				67C99FFC2AB53E62000B5281 /* ModifierKeyUpChecker.swift */,
+				4559A27B2FD4104500CCDB61 /* Performance.swift */,
 			);
 			path = Utils;
 			sourceTree = "<group>";
@@ -358,6 +376,12 @@
 				67C9A04D2AB53F37000B5281 /* KeychainSwift */,
 				67C9A0502AB53F51000B5281 /* NanoID */,
 				67C9A0532AB53F79000B5281 /* Sparkle */,
+				457F6E112FD587020073AF0F /* OpenTelemetryApi */,
+				457F6E132FD587020073AF0F /* OpenTelemetryConcurrency */,
+				457F6E152FD587020073AF0F /* OpenTelemetrySdk */,
+				457F6E172FD587020073AF0F /* StdoutExporter */,
+				457F6E192FD587020073AF0F /* ConcurrencyContext */,
+				457F6E1C2FD5915E0073AF0F /* ResourceExtension */,
 			);
 			productName = Fire;
 			productReference = 67C99FE82AB53DB2000B5281 /* Fire.app */;
@@ -397,6 +421,8 @@
 				67C9A04C2AB53F37000B5281 /* XCRemoteSwiftPackageReference "keychain-swift" */,
 				67C9A04F2AB53F51000B5281 /* XCRemoteSwiftPackageReference "NanoID" */,
 				67C9A0522AB53F79000B5281 /* XCRemoteSwiftPackageReference "Sparkle" */,
+				457F6E102FD587020073AF0F /* XCRemoteSwiftPackageReference "opentelemetry-swift-core" */,
+				457F6E1B2FD5915E0073AF0F /* XCRemoteSwiftPackageReference "opentelemetry-swift" */,
 			);
 			productRefGroup = 67C99FE92AB53DB2000B5281 /* Products */;
 			projectDirPath = "";
@@ -442,6 +468,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				67C9A03A2AB53ED3000B5281 /* FireInputServer.swift in Sources */,
+				4559A2792FD4077E00CCDB61 /* Logger.swift in Sources */,
 				67C9A00F2AB53E83000B5281 /* FireInputController.swift in Sources */,
 				67C99FEC2AB53DB2000B5281 /* AppDelegate.swift in Sources */,
 				67C9A00A2AB53E83000B5281 /* InputSource.swift in Sources */,
@@ -454,6 +481,7 @@
 				67C9A03C2AB53ED3000B5281 /* StatisticsPane.swift in Sources */,
 				67C9A0322AB53ED3000B5281 /* CandidatesView.swift in Sources */,
 				4569ED0B2C92C4360075CF8F /* CLI.swift in Sources */,
+				4559A27C2FD4104500CCDB61 /* Performance.swift in Sources */,
 				67C9A00B2AB53E83000B5281 /* Utils.swift in Sources */,
 				67F0B0D32AFFC282006F835D /* StatusBarController.swift in Sources */,
 				67C9A0402AB53ED3000B5281 /* ApplicationPane.swift in Sources */,
@@ -762,6 +790,22 @@
 /* End XCConfigurationList section */
 
 /* Begin XCRemoteSwiftPackageReference section */
+		457F6E102FD587020073AF0F /* XCRemoteSwiftPackageReference "opentelemetry-swift-core" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/open-telemetry/opentelemetry-swift-core";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 2.5.0;
+			};
+		};
+		457F6E1B2FD5915E0073AF0F /* XCRemoteSwiftPackageReference "opentelemetry-swift" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/open-telemetry/opentelemetry-swift";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 2.4.1;
+			};
+		};
 		67C9A0462AB53EF5000B5281 /* XCRemoteSwiftPackageReference "Settings" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/sindresorhus/Settings";
@@ -805,6 +849,36 @@
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
+		457F6E112FD587020073AF0F /* OpenTelemetryApi */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 457F6E102FD587020073AF0F /* XCRemoteSwiftPackageReference "opentelemetry-swift-core" */;
+			productName = OpenTelemetryApi;
+		};
+		457F6E132FD587020073AF0F /* OpenTelemetryConcurrency */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 457F6E102FD587020073AF0F /* XCRemoteSwiftPackageReference "opentelemetry-swift-core" */;
+			productName = OpenTelemetryConcurrency;
+		};
+		457F6E152FD587020073AF0F /* OpenTelemetrySdk */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 457F6E102FD587020073AF0F /* XCRemoteSwiftPackageReference "opentelemetry-swift-core" */;
+			productName = OpenTelemetrySdk;
+		};
+		457F6E172FD587020073AF0F /* StdoutExporter */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 457F6E102FD587020073AF0F /* XCRemoteSwiftPackageReference "opentelemetry-swift-core" */;
+			productName = StdoutExporter;
+		};
+		457F6E192FD587020073AF0F /* ConcurrencyContext */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 457F6E102FD587020073AF0F /* XCRemoteSwiftPackageReference "opentelemetry-swift-core" */;
+			productName = ConcurrencyContext;
+		};
+		457F6E1C2FD5915E0073AF0F /* ResourceExtension */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 457F6E1B2FD5915E0073AF0F /* XCRemoteSwiftPackageReference "opentelemetry-swift" */;
+			productName = ResourceExtension;
+		};
 		67C9A0472AB53EF5000B5281 /* Settings */ = {
 			isa = XCSwiftPackageProductDependency;
 			package = 67C9A0462AB53EF5000B5281 /* XCRemoteSwiftPackageReference "Settings" */;
