@@ -163,7 +163,7 @@ class DictManager {
     }
 
     func getCandidates(query: String = String(), page: Int = 1) -> (candidates: [Candidate], hasNext: Bool) {
-        return Performance.measure(["query": query, "page": page]) {
+        return Performance.shared.span(["query": query, "page": page]) { _ in
             if query.count <= 0 {
                 return ([], false)
             }

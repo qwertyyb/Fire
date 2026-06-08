@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		4512C27D2FD683C90017FAC3 /* JSONSpanExporter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4512C27C2FD683B20017FAC3 /* JSONSpanExporter.swift */; };
 		451A556A2AF9F92D00AF57C1 /* InputModeCache.swift in Sources */ = {isa = PBXBuildFile; fileRef = 451A55692AF9F92D00AF57C1 /* InputModeCache.swift */; };
 		4559A2792FD4077E00CCDB61 /* Logger.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4559A2782FD4077E00CCDB61 /* Logger.swift */; };
 		4559A27C2FD4104500CCDB61 /* Performance.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4559A27B2FD4104500CCDB61 /* Performance.swift */; };
@@ -18,7 +19,6 @@
 		457F6E162FD587020073AF0F /* OpenTelemetrySdk in Frameworks */ = {isa = PBXBuildFile; productRef = 457F6E152FD587020073AF0F /* OpenTelemetrySdk */; };
 		457F6E182FD587020073AF0F /* StdoutExporter in Frameworks */ = {isa = PBXBuildFile; productRef = 457F6E172FD587020073AF0F /* StdoutExporter */; };
 		457F6E1A2FD587020073AF0F /* ConcurrencyContext in Frameworks */ = {isa = PBXBuildFile; productRef = 457F6E192FD587020073AF0F /* ConcurrencyContext */; };
-		457F6E1D2FD5915E0073AF0F /* ResourceExtension in Frameworks */ = {isa = PBXBuildFile; productRef = 457F6E1C2FD5915E0073AF0F /* ResourceExtension */; };
 		45B76CA92AEA6042009AFABD /* PunctuationConversion.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45B76CA82AEA6042009AFABD /* PunctuationConversion.swift */; };
 		6753419E2AB54A3A00757F76 /* main.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 6753419D2AB54A3A00757F76 /* main.cpp */; };
 		675341A72AB54AEA00757F76 /* sqlite3.c in Sources */ = {isa = PBXBuildFile; fileRef = 675341A52AB54AEA00757F76 /* sqlite3.c */; settings = {COMPILER_FLAGS = "-w"; }; };
@@ -81,6 +81,7 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		4512C27C2FD683B20017FAC3 /* JSONSpanExporter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JSONSpanExporter.swift; sourceTree = "<group>"; };
 		451A55692AF9F92D00AF57C1 /* InputModeCache.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InputModeCache.swift; sourceTree = "<group>"; };
 		4559A2782FD4077E00CCDB61 /* Logger.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Logger.swift; sourceTree = "<group>"; };
 		4559A27B2FD4104500CCDB61 /* Performance.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Performance.swift; sourceTree = "<group>"; };
@@ -150,7 +151,6 @@
 			files = (
 				457F6E142FD587020073AF0F /* OpenTelemetryConcurrency in Frameworks */,
 				67C9A05B2AB5445E000B5281 /* Security.framework in Frameworks */,
-				457F6E1D2FD5915E0073AF0F /* ResourceExtension in Frameworks */,
 				67C9A0542AB53F79000B5281 /* Sparkle in Frameworks */,
 				457F6E162FD587020073AF0F /* OpenTelemetrySdk in Frameworks */,
 				457F6E1A2FD587020073AF0F /* ConcurrencyContext in Frameworks */,
@@ -166,6 +166,15 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		4512C27B2FD6809F0017FAC3 /* OpenTelemetry */ = {
+			isa = PBXGroup;
+			children = (
+				4559A27B2FD4104500CCDB61 /* Performance.swift */,
+				4512C27C2FD683B20017FAC3 /* JSONSpanExporter.swift */,
+			);
+			path = OpenTelemetry;
+			sourceTree = "<group>";
+		};
 		4569ED092C92C4180075CF8F /* cli */ = {
 			isa = PBXGroup;
 			children = (
@@ -215,6 +224,7 @@
 		67C99FEA2AB53DB2000B5281 /* Fire */ = {
 			isa = PBXGroup;
 			children = (
+				4512C27B2FD6809F0017FAC3 /* OpenTelemetry */,
 				4569ED092C92C4180075CF8F /* cli */,
 				67C9A0552AB5429B000B5281 /* SQLCipher */,
 				67C9A0232AB53ED3000B5281 /* Assets.xcassets */,
@@ -258,7 +268,6 @@
 				67C99FFA2AB53E62000B5281 /* Statistics.swift */,
 				67C99FFB2AB53E62000B5281 /* TipsWindow.swift */,
 				67C99FFC2AB53E62000B5281 /* ModifierKeyUpChecker.swift */,
-				4559A27B2FD4104500CCDB61 /* Performance.swift */,
 			);
 			path = Utils;
 			sourceTree = "<group>";
@@ -381,7 +390,6 @@
 				457F6E152FD587020073AF0F /* OpenTelemetrySdk */,
 				457F6E172FD587020073AF0F /* StdoutExporter */,
 				457F6E192FD587020073AF0F /* ConcurrencyContext */,
-				457F6E1C2FD5915E0073AF0F /* ResourceExtension */,
 			);
 			productName = Fire;
 			productReference = 67C99FE82AB53DB2000B5281 /* Fire.app */;
@@ -422,7 +430,6 @@
 				67C9A04F2AB53F51000B5281 /* XCRemoteSwiftPackageReference "NanoID" */,
 				67C9A0522AB53F79000B5281 /* XCRemoteSwiftPackageReference "Sparkle" */,
 				457F6E102FD587020073AF0F /* XCRemoteSwiftPackageReference "opentelemetry-swift-core" */,
-				457F6E1B2FD5915E0073AF0F /* XCRemoteSwiftPackageReference "opentelemetry-swift" */,
 			);
 			productRefGroup = 67C99FE92AB53DB2000B5281 /* Products */;
 			projectDirPath = "";
@@ -490,6 +497,7 @@
 				67C9A0002AB53E62000B5281 /* ModifierKeyUpChecker.swift in Sources */,
 				67C9A0442AB53ED3000B5281 /* CandidatesWindow.swift in Sources */,
 				45B76CA92AEA6042009AFABD /* PunctuationConversion.swift in Sources */,
+				4512C27D2FD683C90017FAC3 /* JSONSpanExporter.swift in Sources */,
 				67C9A0362AB53ED3000B5281 /* DictManager.swift in Sources */,
 				67C9A0582AB5429B000B5281 /* sqlite3.c in Sources */,
 				67C99FFD2AB53E62000B5281 /* ToastWindow.swift in Sources */,
@@ -529,7 +537,7 @@
 		675341A02AB54A3A00757F76 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				"CODE_SIGN_IDENTITY[sdk=macosx*]" = "Mac Developer";
+				"CODE_SIGN_IDENTITY[sdk=macosx*]" = "-";
 				CODE_SIGN_STYLE = Manual;
 				DEVELOPMENT_TEAM = "";
 				"DEVELOPMENT_TEAM[sdk=macosx*]" = T68XK6867P;
@@ -673,7 +681,7 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_ENTITLEMENTS = Fire/Fire.entitlements;
-				"CODE_SIGN_IDENTITY[sdk=macosx*]" = "Mac Developer";
+				"CODE_SIGN_IDENTITY[sdk=macosx*]" = "-";
 				CODE_SIGN_STYLE = Manual;
 				COMBINE_HIDPI_IMAGES = YES;
 				CURRENT_PROJECT_VERSION = 1;
@@ -798,14 +806,6 @@
 				minimumVersion = 2.5.0;
 			};
 		};
-		457F6E1B2FD5915E0073AF0F /* XCRemoteSwiftPackageReference "opentelemetry-swift" */ = {
-			isa = XCRemoteSwiftPackageReference;
-			repositoryURL = "https://github.com/open-telemetry/opentelemetry-swift";
-			requirement = {
-				kind = upToNextMajorVersion;
-				minimumVersion = 2.4.1;
-			};
-		};
 		67C9A0462AB53EF5000B5281 /* XCRemoteSwiftPackageReference "Settings" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/sindresorhus/Settings";
@@ -873,11 +873,6 @@
 			isa = XCSwiftPackageProductDependency;
 			package = 457F6E102FD587020073AF0F /* XCRemoteSwiftPackageReference "opentelemetry-swift-core" */;
 			productName = ConcurrencyContext;
-		};
-		457F6E1C2FD5915E0073AF0F /* ResourceExtension */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = 457F6E1B2FD5915E0073AF0F /* XCRemoteSwiftPackageReference "opentelemetry-swift" */;
-			productName = ResourceExtension;
 		};
 		67C9A0472AB53EF5000B5281 /* Settings */ = {
 			isa = XCSwiftPackageProductDependency;

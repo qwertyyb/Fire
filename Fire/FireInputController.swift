@@ -23,6 +23,7 @@ class FireInputController: IMKInputController {
     private var _pendingDeleteCandidate: Candidate?
     // 组词模式下当前组合的字数，非 nil 时处于"快速加词"组词态
     private var _combineCount: Int?
+    private var isDestroyed = false
     internal var inputMode: InputMode {
         get { Fire.shared.inputMode }
         set(value) { Fire.shared.inputMode = value }
@@ -38,11 +39,16 @@ class FireInputController: IMKInputController {
 
     deinit {
         Logger.inputController.notice("[FireInputController] deinit, client: \(self.client()?.bundleIdentifier() ?? "nil", privacy: .public)")
+        self.isDestroyed = true
         clean()
     }
 
     private var _originalString = "" {
         didSet {
+            if (self.isDestroyed) {
+                CandidatesWindow.shared.close()
+                return
+            }
             if self.curPage != 1 {
                 // code被重新设置时，还原页码为1
                 self.curPage = 1
@@ -62,6 +68,10 @@ class FireInputController: IMKInputController {
     }
     private var curPage: Int = 1 {
         didSet(old) {
+            if (self.isDestroyed) {
+                CandidatesWindow.shared.close()
+                return
+            }
             guard old == self.curPage else {
                 Logger.inputController.notice("[FireInputHandler] page changed, newPage: \(self.curPage, privacy: .public)")
                 self.refreshCandidatesWindow()
@@ -78,23 +88,22 @@ class FireInputController: IMKInputController {
 
     private func markText() {
         // 测试发现 setMarkedText 耗时比较久，不要阻塞 handle 流程
-        DispatchQueue.main.async { [weak self] in
-            Logger.inputController.warning("markText, \(self)")
-            guard let self = self else { return }
-            Performance.measure {
-                let attrs = self.mark(forStyle: kTSMHiliteConvertedText, at: NSRange(location: NSNotFound, length: 0))
-                if let attributes = attrs as? [NSAttributedString.Key: Any] {
-                    var selected = self._originalString
-                    if Defaults[.showCodeInWindow] {
-                        selected = self._originalString.count > 0 ? " " : ""
-                    }
-                    let text = NSAttributedString(string: selected, attributes: attributes)
-                    Performance.measure(["action": "setMarkedText"]) {
-                        self.client()?.setMarkedText(text, selectionRange: self.selectionRange(), replacementRange: self.replacementRange())
-                    }
+//        DispatchQueue.main.async { [weak self] in
+        Performance.shared.span { span in
+            let attrs = self.mark(forStyle: kTSMHiliteConvertedText, at: NSRange(location: NSNotFound, length: 0))
+            if let attributes = attrs as? [NSAttributedString.Key: Any] {
+                var selected = self._originalString
+                if Defaults[.showCodeInWindow] {
+                    selected = self._originalString.count > 0 ? " " : ""
+                }
+                let text = NSAttributedString(string: selected, attributes: attributes)
+                
+                Performance.shared.span(name: "client.setMarkedText(_:selectionRange:replacementRange:)") { span in
+                    self.client()?.setMarkedText(text, selectionRange: self.selectionRange(), replacementRange: self.replacementRange())
                 }
             }
         }
+//        }
     }
 
     // 组词模式下用一个空格占位标记合成串，保持合成态，确保方向键等被输入法消费而不传给应用
@@ -107,7 +116,7 @@ class FireInputController: IMKInputController {
     }
     
     private func getPreviousText(_ count: Int = 1) -> String {
-        Performance.measure {
+        Performance.shared.span { _ in
             guard let client = client() else {
                 return ""
             }
@@ -135,7 +144,7 @@ class FireInputController: IMKInputController {
     // ---- handlers begin -----
 
     private func hotkeyHandler(event: NSEvent) -> Bool? {
-        return Performance.measure {
+        return Performance.shared.span { _ in
             Logger.inputController.notice("[FireInputController] hotkeyHandler")
             if event.type == .flagsChanged {
                 return nil
@@ -222,7 +231,7 @@ class FireInputController: IMKInputController {
 
     // 删除确认态下的按键处理：回车确认、Esc 取消、组合键透传、其它键取消并照常处理
     private func deleteConfirmHandler(event: NSEvent) -> Bool? {
-        return Performance.measure {
+        return Performance.shared.span { _ in
             guard let pending = _pendingDeleteCandidate else { return nil }
             // 放行 flagsChanged(如 shift 切中英文)，相关清理由 clean() 完成
             if event.type == .flagsChanged { return nil }
@@ -292,7 +301,7 @@ class FireInputController: IMKInputController {
     // 组词模式下的按键处理：Left 增、Right 减、Enter 确认、Esc 退出，其它键退出后照常处理
     private func combineHandler(event: NSEvent) -> Bool? {
         
-        return Performance.measure {
+        return Performance.shared.span { _ in
             guard let count = _combineCount else { return nil }
             if event.type == .flagsChanged { return nil }
             let bufCount = Fire.shared.recentCommittedTexts.count
@@ -321,7 +330,7 @@ class FireInputController: IMKInputController {
 
      func flagChangedHandler(event: NSEvent) -> Bool? {
          
-         return Performance.measure {
+         return Performance.shared.span { _ in
              Logger.inputController.notice("[FireInputController] flagChangedHandler")
              // 只有在shift keyup时，才切换中英文输入, 否则会导致shift+[a-z]大写的功能失效
              if !Defaults[.disableEnMode] && Utils.shared.toggleInputModeKeyUpChecker.check(event) {
@@ -359,7 +368,7 @@ class FireInputController: IMKInputController {
     }
 
     private func enModeHandler(event: NSEvent) -> Bool? {
-        return Performance.measure {
+        return Performance.shared.span { _ in
             Logger.inputController.notice("[FireInputController] enModeHandler")
             // 英文输入模式, 不做任何处理
             if inputMode == .enUS {
@@ -370,7 +379,7 @@ class FireInputController: IMKInputController {
     }
 
     private func predictorHandler(event: NSEvent) -> Bool? {
-        return Performance.measure {
+        return Performance.shared.span { _ in
             // 在数字后输入。号自动转换为小数点
             if Defaults[.enableDotAfterNumber] && event.keyCode == kVK_ANSI_Period && _lastInputIsNumber {
                 insertText(".")
@@ -394,7 +403,7 @@ class FireInputController: IMKInputController {
     }
 
     private func pageKeyHandler(event: NSEvent) -> Bool? {
-        return Performance.measure {
+        return Performance.shared.span { _ in
             // +/-/arrowdown/arrowup翻页
             let keyCode = event.keyCode
             if inputMode == .zhhans && _originalString.count > 0 {
@@ -419,7 +428,7 @@ class FireInputController: IMKInputController {
     }
 
     private func deleteKeyHandler(event: NSEvent) -> Bool? {
-        return Performance.measure {
+        return Performance.shared.span { _ in
             // 删除键删除字符
             if event.keyCode == kVK_Delete {
                 if _originalString.count > 0 {
@@ -433,7 +442,7 @@ class FireInputController: IMKInputController {
     }
 
     private func charKeyHandler(event: NSEvent) -> Bool? {
-        return Performance.measure {
+        return Performance.shared.span { _ in
             // 获取输入的字符
             let string = event.characters!
             
@@ -462,7 +471,7 @@ class FireInputController: IMKInputController {
     }
 
     private func numberKeyHandlder(event: NSEvent) -> Bool? {
-        return Performance.measure {
+        return Performance.shared.span { _ in
             // 获取输入的字符
             let string = event.characters!
             // 当前输入的是数字,选择当前候选列表中的第N个字符 v
@@ -487,7 +496,7 @@ class FireInputController: IMKInputController {
     }
 
     private func escKeyHandler(event: NSEvent) -> Bool? {
-        return Performance.measure {
+        return Performance.shared.span { _ in
             // ESC键取消所有输入
             if event.keyCode == kVK_Escape, _originalString.count > 0 {
                 clean()
@@ -504,7 +513,7 @@ class FireInputController: IMKInputController {
     }
 
     private func enterKeyHandler(event: NSEvent) -> Bool? {
-        return Performance.measure {
+        return Performance.shared.span { _ in
             // 回车键输入原字符
             if event.keyCode == kVK_Return && _originalString.count > 0 {
                 if isTempEnModeActive(), let first = _candidates.first {
@@ -519,7 +528,7 @@ class FireInputController: IMKInputController {
     }
 
     private func spaceKeyHandler(event: NSEvent) -> Bool? {
-        return Performance.measure {
+        return Performance.shared.span { _ in
             // 空格键输入转换后的中文字符
             if event.keyCode == kVK_Space && _originalString.count > 0 {
                 if let first = self._candidates.first {
@@ -532,7 +541,7 @@ class FireInputController: IMKInputController {
     }
 
     private func extraCandidateKeyHandler(event: NSEvent) -> Bool? {
-        return Performance.measure {
+        return Performance.shared.span { _ in
             guard inputMode == .zhhans,
                   _originalString.count > 0,
                   !isTempEnModeActive(),
@@ -571,7 +580,7 @@ class FireInputController: IMKInputController {
     }
 
     private func punctuationKeyHandler(event: NSEvent) -> Bool? {
-        return Performance.measure {
+        return Performance.shared.span { _ in
             // 获取输入的字符
             let string = event.characters!
             guard inputMode == .zhhans else { return nil }
@@ -614,7 +623,7 @@ class FireInputController: IMKInputController {
     }
 
     override func handle(_ event: NSEvent!, client sender: Any!) -> Bool {
-        Performance.shared.span {
+        Performance.shared.span { _ in
             guard let event = event else { return false }
             Logger.inputController.notice("[FireInputController] handle: \(event.debugDescription, privacy: .public)")
             
@@ -649,7 +658,7 @@ class FireInputController: IMKInputController {
     }
 
     func updateCandidates(_ sender: Any!) {
-        Performance.measure(["origin": self._originalString, "page": curPage]) {
+        Performance.shared.span(["origin": self._originalString, "page": curPage]) { _ in
             let (candidates, hasNext) = Fire.shared.getCandidates(origin: self._originalString, page: curPage)
             _candidates = candidates
             _hasNext = hasNext
@@ -658,7 +667,7 @@ class FireInputController: IMKInputController {
 
     // 更新候选窗口
     func refreshCandidatesWindow() {
-        Performance.measure {
+        Performance.shared.span { _ in
             updateCandidates(client())
             if Defaults[.wubiAutoCommit] && _candidates.count == 1 && _originalString.count >= 4,
                let candidate = _candidates.first, candidate.type != .placeholder {
@@ -672,11 +681,16 @@ class FireInputController: IMKInputController {
                 return
             }
             let candidatesData = (list: _candidates, hasPrev: curPage > 1, hasNext: _hasNext)
-            Performance.measure(["action": "CandidatesWindow.shared.setCandidates"]) {
+            let originPoint = getOriginPoint()
+            Performance.shared.span(name: "FireInputController.refreshCandidatesWindow.setCandidates(:originalString:topLeft:)", [
+                "candidates": candidatesData,
+                "originalString": _originalString,
+                "topLeft": originPoint
+            ]) { _ in
                 CandidatesWindow.shared.setCandidates(
                     candidatesData,
                     originalString: _originalString,
-                    topLeft: getOriginPoint()
+                    topLeft: originPoint
                 )
             }
         }
@@ -745,12 +759,19 @@ class FireInputController: IMKInputController {
     }
 
     func clean() {
-        Logger.inputController.notice("[FireInputController] clean")
-        _originalString = ""
-        curPage = 1
-        _pendingDeleteCandidate = nil
-        _combineCount = nil
-        CandidatesWindow.shared.close()
+        Performance.shared.span { span in
+            Logger.inputController.notice("[FireInputController] clean")
+            span.addEvent(name: "empty original string")
+            _originalString = ""
+            span.addEvent(name: "reset cur page")
+            curPage = 1
+            span.addEvent(name: "reset pending delete candidate")
+            _pendingDeleteCandidate = nil
+            span.addEvent(name: "reset pending _combineCount")
+            _combineCount = nil
+            span.addEvent(name: "close candidates window")
+            CandidatesWindow.shared.close()
+        }
     }
 }
 
