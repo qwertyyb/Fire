@@ -7,11 +7,12 @@
             <pubDate>Fri, 05 Jun 2026 12:46:24 +0000</pubDate>
             <sparkle:minimumSystemVersion>11.0</sparkle:minimumSystemVersion>
             <description><![CDATA[
-                <h3 id="httpsgithubcomqwertyybfire"><a href="https://github.com/qwertyyb/Fire#-打赏支持">💰 打赏支持</a></h3>
-<p>如果本项目对你有帮助，欢迎请作者喝杯咖啡，你的支持是持续更新的动力~</p>
-<p>| 微信 | 支付宝 |
-| ---- | ---- |
-| <img alt="微信赞赏码" src="https://cdn.qwertyyb.cn/static/wx.jpg" width="240"> | <img alt="支付宝收款码" src="https://cdn.qwertyyb.cn/static/alipay.jpg" width="240"> |</p>
+                <h3><a href="https://github.com/qwertyyb/Fire#-打赏支持">💰 打赏支持</a></h3>
+          <p>如果本项目对你有帮助，欢迎请作者喝杯咖啡，你的支持是持续更新的动力~</p>
+          <table><tr>
+          <td align="center">微信<br><img alt="微信赞赏码" src="https://cdn.qwertyyb.cn/static/wx.jpg" width="240"></td>
+          <td align="center">支付宝<br><img alt="支付宝收款码" src="https://cdn.qwertyyb.cn/static/alipay.jpg" width="240"></td>
+          </tr></table>
                 <h3 id=features>Features</h3> <ul> <li>增加密码自动切换至英文模式功能 (<a href=https://github.com/qwertyyb/Fire/commit/e8f73558ea612903b3d80ded88820b236e5b6623>e8f7355</a>)</li> <li>支持数字后输入全角冒号时自动转为半角 (<a href=https://github.com/qwertyyb/Fire/commit/7e79416023bc3402ba285538305e922f361a0f40>7e79416</a>)</li> </ul>
             ]]>
             </description>
