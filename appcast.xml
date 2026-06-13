@@ -7,10 +7,10 @@
             <pubDate>Fri, 05 Jun 2026 12:46:24 +0000</pubDate>
             <sparkle:minimumSystemVersion>11.0</sparkle:minimumSystemVersion>
             <description><![CDATA[
-                <h3>💰 打赏支持</h3>
-          <p>如果本项目对你有帮助，欢迎<a href="https://github.com/qwertyyb/Fire#-打赏支持">请作者喝杯咖啡</a>，你的支持是持续更新的动力~</p>
-          <div><img alt="微信赞赏码" src="https://cdn.qwertyyb.cn/static/wx.jpg" width="200"></div>
                 <h3 id=features>Features</h3> <ul> <li>增加密码自动切换至英文模式功能 (<a href=https://github.com/qwertyyb/Fire/commit/e8f73558ea612903b3d80ded88820b236e5b6623>e8f7355</a>)</li> <li>支持数字后输入全角冒号时自动转为半角 (<a href=https://github.com/qwertyyb/Fire/commit/7e79416023bc3402ba285538305e922f361a0f40>7e79416</a>)</li> </ul>
+                <h3 id="">💰 打赏支持</h3>
+  <p>如果本项目对你有帮助，欢迎<a href="https://github.com/qwertyyb/Fire#-打赏支持">请作者喝杯咖啡</a>，你的支持是持续更新的动力~</p>
+  <p><img alt="微信赞赏码" src="https://cdn.qwertyyb.cn/static/wx.jpg" width="200"></p>
             ]]>
             </description>
             <enclosure url="https://github.com/qwertyyb/Fire/releases/latest/download/FireInstaller.zip"
