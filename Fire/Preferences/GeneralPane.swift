@@ -26,6 +26,7 @@ struct GeneralPane: View {
     @Default(.disableTempEnMode) private var disableTempEnMode
     @Default(.showInputModeStatus) private var showInputModeStatus
     @Default(.enableWhitespaceBetweenZhEn) private var enableWhitespaceBetweenZhEn
+    @Default(.enableExtendedCandidates) private var enableExtendedCandidates
 
     var body: some View {
         Settings.Container(contentWidth: 450.0) {
@@ -74,7 +75,9 @@ struct GeneralPane: View {
                             }
                             HStack {
                                 Toggle("候选框显示输入码", isOn: $showCodeInWindow)
-                                Spacer(minLength: 20)
+                                Spacer(minLength: 50)
+                                Toggle("输出扩展集汉字", isOn: $enableExtendedCandidates)
+                                Spacer(minLength: 50)
                             }
                             HStack {
                                 Picker("二三候选词额外选择键", selection: $extraCandidateSelectKeys) {
