@@ -130,6 +130,36 @@ class DictManager {
             .replacingOccurrences(of: "z", with: "?")) + "*"
     }
 
+    /// 判断字符是否属于扩展 CJK 表意文字区块（Extension A–H 等）
+    private static func isExtendedCJK(_ char: Character) -> Bool {
+        guard let scalar = char.unicodeScalars.first else { return false }
+        let value = scalar.value
+        // CJK Extension A
+        if value >= 0x3400 && value <= 0x4DBF { return true }
+        // CJK Extension B
+        if value >= 0x20000 && value <= 0x2A6DF { return true }
+        // CJK Extension C
+        if value >= 0x2A700 && value <= 0x2B73F { return true }
+        // CJK Extension D
+        if value >= 0x2B740 && value <= 0x2B81F { return true }
+        // CJK Extension E
+        if value >= 0x2B820 && value <= 0x2CEAF { return true }
+        // CJK Extension F
+        if value >= 0x2CEB0 && value <= 0x2EBEF { return true }
+        // CJK Extension G
+        if value >= 0x30000 && value <= 0x3134F { return true }
+        // CJK Extension H
+        if value >= 0x31350 && value <= 0x323AF { return true }
+        // CJK Compatibility Ideographs Supplement
+        if value >= 0x2F800 && value <= 0x2FA1F { return true }
+        return false
+    }
+
+    /// 判断文本中是否包含扩展集汉字
+    private static func containsExtendedCharacter(_ text: String) -> Bool {
+        return text.contains(where: { isExtendedCJK($0) })
+    }
+
     func punctuationCandidates(query: String) -> [Candidate] {
         let text = query.count == 1 ? query : String(query.suffix(query.count - 1))
         return [Candidate(
@@ -175,6 +205,17 @@ class DictManager {
             }
             let candidate = Candidate(code: code, text: text, type: type)
             candidates.append(candidate)
+        }
+
+        // 如果关闭了扩展集汉字输出，仅过滤掉单个的扩展集汉字，
+        // 词组和非汉字直接跳过该判断
+        if !Defaults[.enableExtendedCandidates] {
+            candidates = candidates.filter { candidate in
+                // 词组或非单字直接保留
+                guard candidate.text.count == 1 else { return true }
+                // 单字：仅当是扩展集汉字时才过滤掉
+                return !DictManager.containsExtendedCharacter(candidate.text)
+            }
         }
         let count = Defaults[.candidateCount]
         let allCount = candidates.count

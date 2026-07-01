@@ -154,6 +154,9 @@ extension Defaults.Keys {
         default: Bundle.main.resourceURL?.appendingPathComponent("py_table.txt").path
             ?? "")
 
+    // 扩展集汉字
+    static let enableExtendedCandidates = Key<Bool>("enableExtendedCandidates", default: false)
+
     // 统计配置
     static let enableStatistics = Key<Bool>("enableStatistics", default: true)
     //            ^            ^         ^                ^
