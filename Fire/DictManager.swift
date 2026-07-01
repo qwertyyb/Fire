@@ -130,7 +130,7 @@ class DictManager {
             .replacingOccurrences(of: "z", with: "?")) + "*"
     }
 
-    /// 判断字符是否属于扩展 CJK 表意文字区块（Extension A–H 等）
+    /// 判断字符是否属于扩展 CJK 表意文字区块（Extension A–J）
     private static func isExtendedCJK(_ char: Character) -> Bool {
         guard let scalar = char.unicodeScalars.first else { return false }
         let value = scalar.value
@@ -150,6 +150,10 @@ class DictManager {
         if value >= 0x30000 && value <= 0x3134F { return true }
         // CJK Extension H
         if value >= 0x31350 && value <= 0x323AF { return true }
+        // CJK Extension I
+        if value >= 0x2EBF0 && value <= 0x2EE5F { return true }
+        // CJK Extension J
+        if value >= 0x323B0 && value <= 0x3347F { return true }
         // CJK Compatibility Ideographs Supplement
         if value >= 0x2F800 && value <= 0x2FA1F { return true }
         return false
