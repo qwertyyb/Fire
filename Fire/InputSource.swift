@@ -16,8 +16,15 @@ enum InputSourceUsage {
 
 class InputSource {
     let installLocation = "/Library/Input Methods/Fire.app"
-    let kSourceID = Bundle.main.bundleIdentifier!
+    let kSourceID = Bundle.main.bundleIdentifier ?? "com.qwertyyb.inputmethod.Fire"
     var selected: Bool? = nil
+
+    /// 从 TISInputSource 属性中读取 CFBoolean 值
+    /// 将重复的 Unmanaged<CFBoolean>.fromOpaque / takeUnretainedValue / CFBooleanGetValue 模式集中处理
+    private func getBoolProperty(_ source: TISInputSource, _ key: CFString) -> Bool {
+        guard let raw = TISGetInputSourceProperty(source, key) else { return false }
+        return CFBooleanGetValue(Unmanaged<CFBoolean>.fromOpaque(raw).takeUnretainedValue())
+    }
 
     func registerInputSource() {
         if !isEnabled() {
@@ -38,12 +45,8 @@ class InputSource {
 
         for index in 0..<sourceList.count {
             let inputSource = sourceList[index]
-            let selectable = CFBooleanGetValue(Unmanaged<CFBoolean>.fromOpaque(
-                TISGetInputSourceProperty(inputSource, kTISPropertyInputSourceIsSelectCapable)
-            ).takeUnretainedValue())
-            let enableable = CFBooleanGetValue(Unmanaged<CFBoolean>.fromOpaque(
-                TISGetInputSourceProperty(inputSource, kTISPropertyInputSourceIsEnableCapable)
-            ).takeUnretainedValue())
+            let selectable = getBoolProperty(inputSource, kTISPropertyInputSourceIsSelectCapable)
+            let enableable = getBoolProperty(inputSource, kTISPropertyInputSourceIsEnableCapable)
             if forUsage == .enable && enableable {
                 return inputSource
             }
@@ -72,9 +75,7 @@ class InputSource {
             }
             let err = TISSelectInputSource(result)
             NSLog("select input source: \(err)")
-            let isSelected = CFBooleanGetValue(Unmanaged<CFBoolean>.fromOpaque(
-                TISGetInputSourceProperty(result, kTISPropertyInputSourceIsSelected)
-            ).takeUnretainedValue())
+            let isSelected = self.getBoolProperty(result, kTISPropertyInputSourceIsSelected)
             if isSelected {
                 timer.invalidate()
                 callback(true)
@@ -86,9 +87,7 @@ class InputSource {
         guard let result = findInputSource() else {
             return
         }
-        let enabled = CFBooleanGetValue(Unmanaged<CFBoolean>.fromOpaque(
-            TISGetInputSourceProperty(result, kTISPropertyInputSourceIsEnabled)
-        ).takeUnretainedValue())
+        let enabled = getBoolProperty(result, kTISPropertyInputSourceIsEnabled)
         if !enabled {
             let err = TISEnableInputSource(result)
             NSLog("Enabled input source: \(err)")

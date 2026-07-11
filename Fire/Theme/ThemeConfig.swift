@@ -11,7 +11,7 @@ import AppKit
 import SwiftUI
 import Defaults
 
-struct ColorData: Codable {
+struct ColorData: Codable, Equatable {
     let red: Double
     let green: Double
     let blue: Double
@@ -123,33 +123,185 @@ extension Color {
     }
 }
 
-struct ApperanceThemeConfig: Codable {
-    let windowBackgroundColor: ColorData
-    let windowPaddingTop: Float
-    let windowPaddingLeft: Float
-    let windowPaddingRight: Float
-    let windowPaddingBottom: Float
-    let windowBorderRadius: Float
+struct AppearanceThemeConfig: Codable, Equatable {
+    var windowBackgroundColor: ColorData
+    var windowPaddingTop: Float
+    var windowPaddingLeft: Float
+    var windowPaddingRight: Float
+    var windowPaddingBottom: Float
+    var windowBorderRadius: Float
 
-    let originCodeColor: ColorData
-    let originCandidatesSpace: Float
-    let candidateSpace: Float
+    var originCodeColor: ColorData
+    var originCandidatesSpace: Float
+    var candidateSpace: Float
 
-    let candidateIndexColor: ColorData
-    let candidateTextColor: ColorData
-    let candidateCodeColor: ColorData
+    var candidateIndexColor: ColorData
+    var candidateTextColor: ColorData
+    var candidateCodeColor: ColorData
 
-    let selectedIndexColor: ColorData
-    let selectedTextColor: ColorData
-    let selectedCodeColor: ColorData
+    var selectedIndexColor: ColorData
+    var selectedTextColor: ColorData
+    var selectedCodeColor: ColorData
+    // 选中候选词的背景高亮色（透明 = 不高亮）
+    var selectedBackgroundColor: ColorData
+    // 选中候选词背景高亮圆角
+    var selectedBackgroundRadius: Float
+    // 选中高亮背景上下左右内边距（0 = 紧贴内容）
+    var selectedPaddingTop: Float
+    var selectedPaddingLeft: Float
+    var selectedPaddingRight: Float
+    var selectedPaddingBottom: Float
 
     // 页面指示器颜色
-    let pageIndicatorColor: ColorData
+    var pageIndicatorColor: ColorData
     // 页面指示器置灰色
-    let pageIndicatorDisabledColor: ColorData
+    var pageIndicatorDisabledColor: ColorData
 
-    let fontName: String
-    let fontSize: Float
+    var fontName: String
+    var fontSize: Float
+    // 候选序号独立字号（与正文 fontSize 解耦，可分别调节）
+    var indexFontSize: Float
+    // 编码提示独立字号
+    var codeFontSize: Float
+    // 毛玻璃效果开关（Liquid Glass 背景材质）
+    var enableLiquidGlass: Bool
+
+    enum CodingKeys: String, CodingKey {
+        case windowBackgroundColor, windowPaddingTop, windowPaddingLeft, windowPaddingRight, windowPaddingBottom
+        case windowBorderRadius
+        case originCodeColor, originCandidatesSpace, candidateSpace
+        case candidateIndexColor, candidateTextColor, candidateCodeColor
+        case selectedIndexColor, selectedTextColor, selectedCodeColor, selectedBackgroundColor, selectedBackgroundRadius
+        case selectedPaddingTop, selectedPaddingLeft, selectedPaddingRight, selectedPaddingBottom
+        case pageIndicatorColor, pageIndicatorDisabledColor
+        case fontName, fontSize, indexFontSize, codeFontSize
+        case enableLiquidGlass
+    }
+
+    init(
+        windowBackgroundColor: ColorData,
+        windowPaddingTop: Float,
+        windowPaddingLeft: Float,
+        windowPaddingRight: Float,
+        windowPaddingBottom: Float,
+        windowBorderRadius: Float,
+        originCodeColor: ColorData,
+        originCandidatesSpace: Float,
+        candidateSpace: Float,
+        candidateIndexColor: ColorData,
+        candidateTextColor: ColorData,
+        candidateCodeColor: ColorData,
+        selectedIndexColor: ColorData,
+        selectedTextColor: ColorData,
+        selectedCodeColor: ColorData,
+        selectedBackgroundColor: ColorData = ColorData(red: 0, green: 0, blue: 0, opacity: 0),
+        selectedBackgroundRadius: Float = 4,
+        selectedPaddingTop: Float = 2,
+        selectedPaddingLeft: Float = 2,
+        selectedPaddingRight: Float = 2,
+        selectedPaddingBottom: Float = 2,
+        pageIndicatorColor: ColorData,
+        pageIndicatorDisabledColor: ColorData,
+        fontName: String,
+        fontSize: Float,
+        indexFontSize: Float,
+        codeFontSize: Float,
+        enableLiquidGlass: Bool
+    ) {
+        self.windowBackgroundColor = windowBackgroundColor
+        self.windowPaddingTop = windowPaddingTop
+        self.windowPaddingLeft = windowPaddingLeft
+        self.windowPaddingRight = windowPaddingRight
+        self.windowPaddingBottom = windowPaddingBottom
+        self.windowBorderRadius = windowBorderRadius
+        self.originCodeColor = originCodeColor
+        self.originCandidatesSpace = originCandidatesSpace
+        self.candidateSpace = candidateSpace
+        self.candidateIndexColor = candidateIndexColor
+        self.candidateTextColor = candidateTextColor
+        self.candidateCodeColor = candidateCodeColor
+        self.selectedIndexColor = selectedIndexColor
+        self.selectedTextColor = selectedTextColor
+        self.selectedCodeColor = selectedCodeColor
+        self.selectedBackgroundColor = selectedBackgroundColor
+        self.selectedBackgroundRadius = selectedBackgroundRadius
+        self.selectedPaddingTop = selectedPaddingTop
+        self.selectedPaddingLeft = selectedPaddingLeft
+        self.selectedPaddingRight = selectedPaddingRight
+        self.selectedPaddingBottom = selectedPaddingBottom
+        self.pageIndicatorColor = pageIndicatorColor
+        self.pageIndicatorDisabledColor = pageIndicatorDisabledColor
+        self.fontName = fontName
+        self.fontSize = fontSize
+        self.indexFontSize = indexFontSize
+        self.codeFontSize = codeFontSize
+        self.enableLiquidGlass = enableLiquidGlass
+    }
+
+    init(from decoder: Decoder) throws {
+        let container = try decoder.container(keyedBy: CodingKeys.self)
+        windowBackgroundColor = try container.decode(ColorData.self, forKey: .windowBackgroundColor)
+        windowPaddingTop = try container.decode(Float.self, forKey: .windowPaddingTop)
+        windowPaddingLeft = try container.decode(Float.self, forKey: .windowPaddingLeft)
+        windowPaddingRight = try container.decode(Float.self, forKey: .windowPaddingRight)
+        windowPaddingBottom = try container.decode(Float.self, forKey: .windowPaddingBottom)
+        windowBorderRadius = try container.decode(Float.self, forKey: .windowBorderRadius)
+        originCodeColor = try container.decode(ColorData.self, forKey: .originCodeColor)
+        originCandidatesSpace = try container.decode(Float.self, forKey: .originCandidatesSpace)
+        candidateSpace = try container.decode(Float.self, forKey: .candidateSpace)
+        candidateIndexColor = try container.decode(ColorData.self, forKey: .candidateIndexColor)
+        candidateTextColor = try container.decode(ColorData.self, forKey: .candidateTextColor)
+        candidateCodeColor = try container.decode(ColorData.self, forKey: .candidateCodeColor)
+        selectedIndexColor = try container.decode(ColorData.self, forKey: .selectedIndexColor)
+        selectedTextColor = try container.decode(ColorData.self, forKey: .selectedTextColor)
+        selectedCodeColor = try container.decode(ColorData.self, forKey: .selectedCodeColor)
+        selectedBackgroundColor = try container.decodeIfPresent(ColorData.self, forKey: .selectedBackgroundColor)
+            ?? ColorData(red: 0, green: 0, blue: 0, opacity: 0)
+        selectedBackgroundRadius = try container.decodeIfPresent(Float.self, forKey: .selectedBackgroundRadius) ?? 4
+        selectedPaddingTop = try container.decodeIfPresent(Float.self, forKey: .selectedPaddingTop) ?? 2
+        selectedPaddingLeft = try container.decodeIfPresent(Float.self, forKey: .selectedPaddingLeft) ?? 2
+        selectedPaddingRight = try container.decodeIfPresent(Float.self, forKey: .selectedPaddingRight) ?? 2
+        selectedPaddingBottom = try container.decodeIfPresent(Float.self, forKey: .selectedPaddingBottom) ?? 2
+        pageIndicatorColor = try container.decode(ColorData.self, forKey: .pageIndicatorColor)
+        pageIndicatorDisabledColor = try container.decode(ColorData.self, forKey: .pageIndicatorDisabledColor)
+        fontName = try container.decode(String.self, forKey: .fontName)
+        fontSize = try container.decode(Float.self, forKey: .fontSize)
+        indexFontSize = try container.decode(Float.self, forKey: .indexFontSize)
+        codeFontSize = try container.decode(Float.self, forKey: .codeFontSize)
+        enableLiquidGlass = try container.decode(Bool.self, forKey: .enableLiquidGlass)
+    }
+
+    func encode(to encoder: Encoder) throws {
+        var container = encoder.container(keyedBy: CodingKeys.self)
+        try container.encode(windowBackgroundColor, forKey: .windowBackgroundColor)
+        try container.encode(windowPaddingTop, forKey: .windowPaddingTop)
+        try container.encode(windowPaddingLeft, forKey: .windowPaddingLeft)
+        try container.encode(windowPaddingRight, forKey: .windowPaddingRight)
+        try container.encode(windowPaddingBottom, forKey: .windowPaddingBottom)
+        try container.encode(windowBorderRadius, forKey: .windowBorderRadius)
+        try container.encode(originCodeColor, forKey: .originCodeColor)
+        try container.encode(originCandidatesSpace, forKey: .originCandidatesSpace)
+        try container.encode(candidateSpace, forKey: .candidateSpace)
+        try container.encode(candidateIndexColor, forKey: .candidateIndexColor)
+        try container.encode(candidateTextColor, forKey: .candidateTextColor)
+        try container.encode(candidateCodeColor, forKey: .candidateCodeColor)
+        try container.encode(selectedIndexColor, forKey: .selectedIndexColor)
+        try container.encode(selectedTextColor, forKey: .selectedTextColor)
+        try container.encode(selectedCodeColor, forKey: .selectedCodeColor)
+        try container.encode(selectedBackgroundColor, forKey: .selectedBackgroundColor)
+        try container.encode(selectedBackgroundRadius, forKey: .selectedBackgroundRadius)
+        try container.encode(selectedPaddingTop, forKey: .selectedPaddingTop)
+        try container.encode(selectedPaddingLeft, forKey: .selectedPaddingLeft)
+        try container.encode(selectedPaddingRight, forKey: .selectedPaddingRight)
+        try container.encode(selectedPaddingBottom, forKey: .selectedPaddingBottom)
+        try container.encode(pageIndicatorColor, forKey: .pageIndicatorColor)
+        try container.encode(pageIndicatorDisabledColor, forKey: .pageIndicatorDisabledColor)
+        try container.encode(fontName, forKey: .fontName)
+        try container.encode(fontSize, forKey: .fontSize)
+        try container.encode(indexFontSize, forKey: .indexFontSize)
+        try container.encode(codeFontSize, forKey: .codeFontSize)
+        try container.encode(enableLiquidGlass, forKey: .enableLiquidGlass)
+    }
 }
 
 struct ThemeConfig: Codable, Defaults.Serializable {
@@ -158,14 +310,10 @@ struct ThemeConfig: Codable, Defaults.Serializable {
     let name: String
     let author: String
 
-    let light: ApperanceThemeConfig
-    let dark: ApperanceThemeConfig?
+    let light: AppearanceThemeConfig
+    let dark: AppearanceThemeConfig?
 
-    var current: ApperanceThemeConfig {
-        light
-    }
-
-    subscript(colorScheme: ColorScheme) -> ApperanceThemeConfig {
+    subscript(colorScheme: ColorScheme) -> AppearanceThemeConfig {
         if let dark = self.dark, colorScheme == .dark {
             return dark
         }
@@ -178,7 +326,7 @@ let defaultThemeConfig = ThemeConfig(
     id: "default",
     name: "默认",
     author: "业火输入法",
-    light: ApperanceThemeConfig(
+    light: AppearanceThemeConfig(
         windowBackgroundColor: ColorData(red: 1, green: 1, blue: 1, opacity: 1),
         windowPaddingTop: 6,
         windowPaddingLeft: 10,
@@ -194,11 +342,20 @@ let defaultThemeConfig = ThemeConfig(
         selectedIndexColor: ColorData(red: 0.863, green: 0.078, blue: 0.235, opacity: 1),
         selectedTextColor: ColorData(red: 0.863, green: 0.078, blue: 0.235, opacity: 1),
         selectedCodeColor: ColorData(red: 0.863, green: 0.078, blue: 0.235, opacity: 0.8),
+        selectedBackgroundColor: ColorData(red: 0, green: 0, blue: 0, opacity: 0.06),
+        selectedBackgroundRadius: 4,
+        selectedPaddingTop: 2,
+        selectedPaddingLeft: 2,
+        selectedPaddingRight: 2,
+        selectedPaddingBottom: 2,
         pageIndicatorColor: ColorData(red: 0.863, green: 0.078, blue: 0.235, opacity: 1),
         pageIndicatorDisabledColor: ColorData(red: 0.863, green: 0.078, blue: 0.235, opacity: 0.4),
         fontName: "system",
-        fontSize: 20),
-    dark: ApperanceThemeConfig(
+        fontSize: 20,
+        indexFontSize: 20,
+        codeFontSize: 20,
+        enableLiquidGlass: true),
+    dark: AppearanceThemeConfig(
         windowBackgroundColor: ColorData(red: 0, green: 0, blue: 0, opacity: 1),
         windowPaddingTop: 6,
         windowPaddingLeft: 10,
@@ -214,17 +371,27 @@ let defaultThemeConfig = ThemeConfig(
         selectedIndexColor: ColorData(red: 0.863, green: 0.078, blue: 0.235, opacity: 1),
         selectedTextColor: ColorData(red: 0.863, green: 0.078, blue: 0.235, opacity: 1),
         selectedCodeColor: ColorData(red: 0.863, green: 0.078, blue: 0.235, opacity: 0.8),
+        selectedBackgroundColor: ColorData(red: 1, green: 1, blue: 1, opacity: 0.08),
+        selectedBackgroundRadius: 4,
+        selectedPaddingTop: 2,
+        selectedPaddingLeft: 2,
+        selectedPaddingRight: 2,
+        selectedPaddingBottom: 2,
         pageIndicatorColor: ColorData(red: 0.863, green: 0.078, blue: 0.235, opacity: 1),
         pageIndicatorDisabledColor: ColorData(red: 0.863, green: 0.078, blue: 0.235, opacity: 0.4),
         fontName: "system",
-        fontSize: 20
+        fontSize: 20,
+        indexFontSize: 20,
+        codeFontSize: 20,
+        enableLiquidGlass: true
     )
 )
 
 func loadThemeConfig(jsonData: String) -> ThemeConfig? {
     let decoder = JSONDecoder()
     do {
-        return try decoder.decode(ThemeConfig.self, from: jsonData.data(using: .utf8)!)
+        guard let jsonData = jsonData.data(using: .utf8) else { return nil }
+        return try decoder.decode(ThemeConfig.self, from: jsonData)
     } catch {
         print(error)
         return nil
@@ -234,7 +401,7 @@ func loadThemeConfig(jsonData: String) -> ThemeConfig? {
 func jsonThemeConfig(config: ThemeConfig) -> String? {
     let encoder = JSONEncoder()
     if let data = try? encoder.encode(config) {
-        return String(data: data, encoding: .utf8)!
+        return String(data: data, encoding: .utf8)
     }
     return nil
 }
@@ -264,6 +431,14 @@ func parseThemeConfig(jsonData: String) -> Result<ThemeConfig, ThemeImportError>
 
 /// 写入导入的主题并立即应用为当前主题
 func applyImportedTheme(_ config: ThemeConfig) {
+    // 同时维护旧版单主题和新版数组
     Defaults[.importedThemeConfig] = config
+    var list = Defaults[.importedThemeConfigs]
+    if let idx = list.firstIndex(where: { $0.id == config.id }) {
+        list[idx] = config
+    } else {
+        list.append(config)
+    }
+    Defaults[.importedThemeConfigs] = list
     Defaults[.themeConfig] = config
 }

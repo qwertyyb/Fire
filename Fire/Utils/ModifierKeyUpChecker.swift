@@ -27,14 +27,13 @@ class ModifierKeyUpChecker {
             return NSEvent.ModifierFlags.command
         case .control:
             return NSEvent.ModifierFlags.control
-        case .shift:
+        case .shift, .leftShift, .rightShift:
+            // leftShift/rightShift 统一映射到 shift 标志位，系统 flagsChanged 事件中左右 Shift 共享同一个 modifier flag
             return NSEvent.ModifierFlags.shift
         case .option:
             return NSEvent.ModifierFlags.option
         case .function:
             return NSEvent.ModifierFlags.function
-        default:
-            return NSEvent.ModifierFlags.shift
         }
     }
     var checkKeyCode: [Int] {
@@ -53,8 +52,6 @@ class ModifierKeyUpChecker {
             return [kVK_Option, kVK_RightOption]
         case .function:
             return [kVK_Function]
-        default:
-            return []
         }
     }
 

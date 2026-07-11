@@ -8,17 +8,69 @@
 
 import SwiftUI
 import Defaults
+import AppKit
 
+// MARK: - 自定义毛玻璃背景（替代内置 .glassEffect()，实现圆角完全可控）
+
+struct GlassEffectView: NSViewRepresentable {
+    let cornerRadius: CGFloat
+    var blendingMode: NSVisualEffectView.BlendingMode = .withinWindow
+
+    func makeNSView(context: Context) -> NSVisualEffectView {
+        let view = NSVisualEffectView()
+        view.blendingMode = blendingMode
+        view.material = .popover
+        view.state = .active
+        view.wantsLayer = true
+        view.layer?.cornerRadius = cornerRadius
+        view.layer?.masksToBounds = true
+        return view
+    }
+
+    func updateNSView(_ view: NSVisualEffectView, context: Context) {
+        view.layer?.cornerRadius = cornerRadius
+        view.layer?.masksToBounds = true
+    }
+}
+
+// MARK: - 玻璃背景 ViewModifier（候选栏与预览浮窗共用）
+
+extension View {
+    @ViewBuilder
+    func glassBackground(config: AppearanceThemeConfig) -> some View {
+        self
+            .background(
+                Group {
+                    if config.enableLiquidGlass {
+                        ZStack {
+                            Color(config.windowBackgroundColor)
+                            GlassEffectView(cornerRadius: CGFloat(config.windowBorderRadius))
+                        }
+                    } else {
+                        Color(config.windowBackgroundColor)
+                    }
+                }
+            )
+            .cornerRadius(CGFloat(config.windowBorderRadius))
+    }
+}
+
+// MARK: - 选中项位置偏好（用于容器级高亮绘制）
+struct SelectedItemFrameKey: PreferenceKey {
+    static let defaultValue: Anchor<CGRect>? = nil
+    static func reduce(value: inout Anchor<CGRect>?, nextValue: () -> Anchor<CGRect>?) {
+        value = value ?? nextValue()
+    }
+}
+
+// MARK: - Liquid Glass Background
 func getShownCode(candidate: Candidate, origin: String) -> String {
     if candidate.type == CandidateType.py || !candidate.code.hasPrefix(origin) {
         return "(\(candidate.code))"
     }
-    if candidate.code.hasPrefix(origin) {
-        return candidate.code.count > origin.count
-            ? "~\(String(candidate.code.suffix(candidate.code.count - origin.count)))"
-            : ""
-    }
-    return ""
+    return candidate.code.count > origin.count
+        ? "~\(String(candidate.code.suffix(candidate.code.count - origin.count)))"
+        : ""
 }
 
 struct CandidateView: View {
@@ -27,33 +79,65 @@ struct CandidateView: View {
     var origin: String
     var selected: Bool = false
     var indexVisible = true
+    var onHover: ((Int) -> Void)?
+    /// 预览模式时传入，替代 @Default(.themeConfig) + @Environment
+    var config: AppearanceThemeConfig?
 
     @Default(.themeConfig) private var themeConfig
-    @Default(.wubiCodeTip) private var wubiCodeTip
+    // 使用自定义候选提示模式，替代原有的 wubiCodeTip Bool 开关
+    // 支持四种模式：none(不提示)、wubiCode(五笔码)、spelling(拆字)、pinyin(拼音)
+    @Default(.candidateHintMode) private var hintMode
     @Environment(\.colorScheme) var colorScheme
+
+    private var effectiveConfig: AppearanceThemeConfig {
+        config ?? themeConfig[colorScheme]
+    }
 
     var body: some View {
         let indexColor = selected
-            ? themeConfig[colorScheme].selectedIndexColor
-            : themeConfig[colorScheme].candidateIndexColor
+            ? effectiveConfig.selectedIndexColor
+            : effectiveConfig.candidateIndexColor
         let textColor = selected
-            ? themeConfig[colorScheme].selectedTextColor
-            : themeConfig[colorScheme].candidateTextColor
+            ? effectiveConfig.selectedTextColor
+            : effectiveConfig.candidateTextColor
         let codeColor = selected
-            ? themeConfig[colorScheme].selectedCodeColor
-            : themeConfig[colorScheme].candidateCodeColor
+            ? effectiveConfig.selectedCodeColor
+            : effectiveConfig.candidateCodeColor
 
         return HStack(alignment: .center, spacing: 2) {
             if indexVisible {
                 Text("\(index + 1).")
-                    .foregroundColor(Color(indexColor))
+                    .font(.system(size: CGFloat(effectiveConfig.indexFontSize)))
+                    .foregroundStyle(Color(indexColor))
             }
             Text(candidate.label)
-                .foregroundColor(Color(textColor))
-            if wubiCodeTip {
-                Text(getShownCode(candidate: candidate, origin: origin))
-                    .foregroundColor(Color(codeColor))
+                .font(.system(size: CGFloat(effectiveConfig.fontSize)))
+                .foregroundStyle(Color(textColor))
+            if hintMode == .spelling,
+               let spelling = candidate.spelling {
+                Text(spelling)
+                    .font(Font.custom("黑体字根", size: 12))
+                    .foregroundStyle(Color(codeColor))
             }
+            if hintMode == .wubiCode {
+                Text(getShownCode(candidate: candidate, origin: origin))
+                    .font(.system(size: CGFloat(effectiveConfig.codeFontSize)))
+                    .foregroundStyle(Color(codeColor))
+            }
+            if hintMode == .pinyin,
+               let pinyin = candidate.pinyin {
+                Text("〔\(pinyin)〕")
+                    .font(.system(size: 12))
+                    .foregroundStyle(Color(codeColor))
+            }
+        }
+        .contentShape(Rectangle())
+        .anchorPreference(key: SelectedItemFrameKey.self, value: .bounds) {
+            selected ? $0 : nil
+        }
+        .onHover { hovering in
+            // 鼠标悬停时高亮跟随
+            if hovering { onHover?(index) }
         }
         .onTapGesture {
             NotificationCenter.default.post(
@@ -65,6 +149,7 @@ struct CandidateView: View {
                 ]
             )
         }
+        .padding(.horizontal, 2)
     }
 }
 
@@ -77,21 +162,58 @@ struct CandidatesView: View {
     var origin: String
     var hasPrev: Bool = false
     var hasNext: Bool = false
+    var selectedIndex: Int = 0
+    /// 鼠标悬停候选词回调，由 CandidatesWindow 注入，同步更新视图和控制器的 selectedIndex
+    var onCandidateHover: ((Int) -> Void)?
+    /// 预览模式覆写：传入后替代 @Default(.themeConfig) + @Environment
+    var previewConfig: AppearanceThemeConfig?
+    /// 预览模式覆写排列方向
+    var previewDirection: CandidatesDirection?
 
     @Default(.candidatesDirection) private var direction
     @Default(.themeConfig) private var themeConfig
     @Default(.showCodeInWindow) private var showCodeInWindow
+    @State private var hoverOutTask: DispatchWorkItem?
     @Environment(\.colorScheme) var colorScheme
 
+    private var originCodeHeight: CGFloat {
+        guard showCodeInWindow else { return 0 }
+        let font = NSFont.systemFont(ofSize: CGFloat(effectiveConfig.fontSize))
+        return font.boundingRectForFont.height.rounded(.up)
+    }
+
+    private var effectiveConfig: AppearanceThemeConfig {
+        previewConfig ?? themeConfig[colorScheme]
+    }
+
+    private var effectiveDirection: CandidatesDirection {
+        previewDirection ?? direction
+    }
+
     var _candidatesView: some View {
-        ForEach(Array(candidates.enumerated()), id: \.offset) { (index, candidate) -> CandidateView in
+        // 使用 Candidate 的 Hashable 实现作为 id，
+        // 避免候选词列表变化时不必要的视图重建（原 \.offset 在增删时会导致整个列表重绘）
+        ForEach(Array(candidates.enumerated()), id: \.element) { (index, candidate) in
             CandidateView(
                 candidate: candidate,
                 index: index,
                 origin: origin,
-                selected: index == 0,
-                indexVisible: candidates.count > 1
+                selected: index == selectedIndex,
+                indexVisible: candidates.count > 1,
+                onHover: onCandidateHover,
+                config: effectiveConfig
             )
+            .frame(maxWidth: effectiveDirection == .vertical ? .infinity : nil,
+                   alignment: .leading)
+        }
+        .onHover { hovering in
+            // 鼠标离开候选列表时延迟复位，避免划过间隙时闪烁
+            hoverOutTask?.cancel()
+            if !hovering {
+                let task = DispatchWorkItem { onCandidateHover?(0) }
+                hoverOutTask = task
+                DispatchQueue.main.asyncAfter(deadline: .now() + 0.15, execute: task)
+            }
         }
     }
 
@@ -101,7 +223,7 @@ struct CandidatesView: View {
         disabled: Bool,
         eventName: Notification.Name
     ) -> some View {
-        let size = CGFloat(themeConfig[colorScheme].fontSize) * 0.5
+        let size = CGFloat(effectiveConfig.fontSize) * 0.5
         return Image(imageName)
             .renderingMode(.template)
             .resizable()
@@ -114,75 +236,114 @@ struct CandidatesView: View {
                     object: nil
                 )
             }
-            .foregroundColor(Color(disabled
-                                   ? themeConfig[colorScheme].pageIndicatorDisabledColor
-                                   : themeConfig[colorScheme].pageIndicatorColor
+            .foregroundStyle(Color(disabled
+                                   ? effectiveConfig.pageIndicatorDisabledColor
+                                   : effectiveConfig.pageIndicatorColor
                                   ))
     }
 
+    @ViewBuilder
     var _indicator: some View {
-        if candidates.count <= 1 {
-            return AnyView(EmptyView())
+        if candidates.count > 1 || hasPrev || hasNext {
+            Group {
+                if effectiveDirection == CandidatesDirection.horizontal {
+                    VStack(spacing: 0) {
+                        getIndicatorIcon(imageName: "arrowUp", direction: direction, disabled: !hasPrev, eventName: CandidatesView.prevPageBtnTapped)
+                        getIndicatorIcon(imageName: "arrowDown", direction: direction, disabled: !hasNext, eventName: CandidatesView.nextPageBtnTapped)
+                    }
+                } else {
+                    HStack(spacing: 4) {
+                        getIndicatorIcon(imageName: "arrowUp", direction: effectiveDirection, disabled: !hasPrev, eventName: CandidatesView.prevPageBtnTapped)
+                        getIndicatorIcon(imageName: "arrowDown", direction: effectiveDirection, disabled: !hasNext, eventName: CandidatesView.nextPageBtnTapped)
+                    }
+                }
+            }
         }
-        let arrowUp = getIndicatorIcon(
-            imageName: "arrowUp",
-            direction: direction,
-            disabled: !hasPrev,
-            eventName: CandidatesView.prevPageBtnTapped
-        )
-        let arrowDown = getIndicatorIcon(
-            imageName: "arrowDown",
-            direction: direction,
-            disabled: !hasNext,
-            eventName: CandidatesView.nextPageBtnTapped
-        )
-        if direction == CandidatesDirection.horizontal {
-            return AnyView(VStack(spacing: 0) { arrowUp; arrowDown })
-        } else {
-            return AnyView(HStack(spacing: 4) { arrowUp; arrowDown })
+    }
+
+    @ViewBuilder
+    private func selectedHighlight(for anchor: Anchor<CGRect>?, in geo: GeometryProxy, isVertical: Bool, isFirstItem: Bool, isLastItem: Bool, hasDivider: Bool, originCodeBottom: CGFloat) -> some View {
+        if let anchor = anchor {
+            let rect = geo[anchor]
+            let topPad = CGFloat(effectiveConfig.selectedPaddingTop)
+            let botPad = CGFloat(effectiveConfig.selectedPaddingBottom)
+            let leftPad = CGFloat(effectiveConfig.selectedPaddingLeft)
+            let rightPad = CGFloat(effectiveConfig.selectedPaddingRight)
+            if isVertical {
+                let yTop: CGFloat = isFirstItem ? topPad : (rect.origin.y - CGFloat(effectiveConfig.candidateSpace))
+                let yBottom: CGFloat = (isLastItem && !hasDivider) ? (geo.size.height - botPad) : (rect.maxY + CGFloat(effectiveConfig.candidateSpace))
+                let h = max(yBottom - yTop, 0)
+                RoundedRectangle(cornerRadius: CGFloat(effectiveConfig.selectedBackgroundRadius))
+                    .fill(Color(effectiveConfig.selectedBackgroundColor))
+                    .frame(width: geo.size.width - leftPad - rightPad,
+                           height: h)
+                    .offset(x: leftPad, y: yTop)
+            } else {
+                let xOffset: CGFloat = isFirstItem ? leftPad : (rect.origin.x - CGFloat(effectiveConfig.candidateSpace))
+                let rightBoundary: CGFloat = (isLastItem && !hasDivider) ? (geo.size.width - rightPad) : (rect.maxX + CGFloat(effectiveConfig.candidateSpace))
+                let w = rightBoundary - xOffset
+                RoundedRectangle(cornerRadius: CGFloat(effectiveConfig.selectedBackgroundRadius))
+                    .fill(Color(effectiveConfig.selectedBackgroundColor))
+                    .frame(width: max(w, 0),
+                           height: geo.size.height - topPad - botPad)
+                    .offset(x: xOffset, y: topPad)
+            }
         }
     }
 
     var body: some View {
-        VStack(alignment: .leading, spacing: CGFloat( themeConfig[colorScheme].originCandidatesSpace), content: {
+        VStack(alignment: .leading, spacing: CGFloat(effectiveConfig.originCandidatesSpace), content: {
             if showCodeInWindow {
                 Text(origin)
-                    .foregroundColor(Color(themeConfig[colorScheme].originCodeColor))
+                    .foregroundStyle(Color(effectiveConfig.originCodeColor))
                     .fixedSize()
             }
-            if direction == CandidatesDirection.horizontal {
-                HStack(alignment: .center, spacing: CGFloat(themeConfig[colorScheme].candidateSpace)) {
-                    _candidatesView
-                    _indicator
+            Group {
+                if effectiveDirection == CandidatesDirection.horizontal {
+                    HStack(alignment: .center, spacing: CGFloat(effectiveConfig.candidateSpace)) {
+                        _candidatesView
+                        if hasPrev || hasNext || candidates.count > 1 {
+                            Divider()
+                        }
+                        _indicator
+                    }
+                    .fixedSize()
+                } else {
+                    VStack(alignment: .leading, spacing: CGFloat(effectiveConfig.candidateSpace)) {
+                        _candidatesView
+                        if hasPrev || hasNext || candidates.count > 1 {
+                            Divider()
+                        }
+                        _indicator
+                    }
                 }
-                .fixedSize()
-            } else {
-                VStack(alignment: .leading, spacing: CGFloat(themeConfig[colorScheme].candidateSpace)) {
-                    _candidatesView
-                    _indicator
-                }
-                .fixedSize()
             }
         })
-            .padding(.top, CGFloat(themeConfig[colorScheme].windowPaddingTop))
-            .padding(.bottom, CGFloat(themeConfig[colorScheme].windowPaddingBottom))
-            .padding(.leading, CGFloat(themeConfig[colorScheme].windowPaddingLeft))
-            .padding(.trailing, CGFloat(themeConfig[colorScheme].windowPaddingRight))
+            .padding(.top, CGFloat(effectiveConfig.windowPaddingTop))
+            .padding(.bottom, CGFloat(effectiveConfig.windowPaddingBottom))
+            .padding(.leading, CGFloat(effectiveConfig.windowPaddingLeft))
+            .padding(.trailing, CGFloat(effectiveConfig.windowPaddingRight))
+//            .frame(minWidth: 80, alignment: .leading)
+            .backgroundPreferenceValue(SelectedItemFrameKey.self) { anchor in
+                GeometryReader { geo in
+                    let isFirst = selectedIndex <= 0
+                    let isLast = selectedIndex + 1 >= candidates.count
+                    let hasDiv = hasPrev || hasNext || candidates.count > 1
+                    selectedHighlight(for: anchor, in: geo, isVertical: effectiveDirection == .vertical, isFirstItem: isFirst, isLastItem: isLast, hasDivider: hasDiv, originCodeBottom: originCodeHeight)
+                }
+            }
             .fixedSize()
-            .font(.system(size: CGFloat(themeConfig[colorScheme].fontSize)))
-            .background(Color(themeConfig[colorScheme].windowBackgroundColor))
-            .cornerRadius(CGFloat(themeConfig[colorScheme].windowBorderRadius), antialiased: true)
+            .font(.system(size: CGFloat(effectiveConfig.fontSize)))
+            .glassBackground(config: effectiveConfig)
     }
 }
 
-struct ContentView_Previews: PreviewProvider {
-    static var previews: some View {
-        CandidatesView(candidates: [
-            Candidate(code: "a", text: "工", type: CandidateType.wb),
-            Candidate(code: "ab", text: "戈", type: CandidateType.wb),
-            Candidate(code: "abc", text: "啊", type: CandidateType.wb),
-            Candidate(code: "abcg", text: "阿", type: CandidateType.wb),
-            Candidate(code: "addd", text: "吖", type: CandidateType.wb)
-        ], origin: "a")
-    }
+#Preview {
+    CandidatesView(candidates: [
+        Candidate(code: "a", text: "工", type: CandidateType.wb),
+        Candidate(code: "ab", text: "戈", type: CandidateType.wb),
+        Candidate(code: "abc", text: "啊", type: CandidateType.wb),
+        Candidate(code: "abcg", text: "阿", type: CandidateType.wb),
+        Candidate(code: "addd", text: "吖", type: CandidateType.wb)
+    ], origin: "a")
 }
