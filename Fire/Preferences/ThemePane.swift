@@ -529,10 +529,10 @@ struct ThemeEditorView: View {
             closePreviewWindow()
             ThemePane.editorWindow = nil
         }
-        .onChange(of: editingDark) { _, _ in updatePreviewWindow() }
-        .onChange(of: showVerticalPreview) { _, _ in updatePreviewWindow() }
-        .onChange(of: light) { _, _ in updatePreviewWindow() }
-        .onChange(of: dark) { _, _ in updatePreviewWindow() }
+        .onChange(of: editingDark) { _ in updatePreviewWindow() }
+        .onChange(of: showVerticalPreview) { _ in updatePreviewWindow() }
+        .onChange(of: light) { _ in updatePreviewWindow() }
+        .onChange(of: dark) { _ in updatePreviewWindow() }
     }
 
     // MARK: - 颜色区域（分解为独立属性以加速类型检查）

@@ -268,7 +268,7 @@ struct UserDictPane: View {
                 Text("确认删除编码「\(rows[idx].code)」及其所有候选项？")
             }
         }
-        .onChange(of: rows) { _, _ in
+        .onChange(of: rows) { _ in
             isModified = (rows != savedSnapshot)
         }
     }

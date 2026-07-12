@@ -83,7 +83,7 @@ struct NativePreferencesView: View {
             NSApp.keyWindow?.title = localSelection
         }
         // 用户点击侧栏 → 写入控制器 + 更新窗口标题
-        .onChange(of: localSelection) { _, newValue in
+        .onChange(of: localSelection) { newValue in
             controller.selectedPane = newValue
             NSApp.keyWindow?.title = newValue
         }
