@@ -11,9 +11,19 @@ import InputMethodKit
 
 typealias CandidatesData = (list: [Candidate], hasPrev: Bool, hasNext: Bool)
 
-class CandidatesWindow: NSWindow, NSWindowDelegate {
+class CandidatesWindow: NSPanel, NSWindowDelegate {
     let hostingView = NSHostingView(rootView: CandidatesView(candidates: [], origin: ""))
     var inputController: FireInputController?
+    private var notificationObservers: [NSObjectProtocol] = []
+    // 保存 globalMonitor 引用以便在 deinit 中移除，防止内存泄漏
+    private var globalMonitor: Any?
+    /// 刷新候选时忽略紧随的悬停事件，防止 SwiftUI 异步触发覆盖复位值
+    private var refreshing = false
+
+    /// 防止鼠标点击候选窗时切换焦点到正在输入的APP（NSPanel + nonactivatingPanel）
+    override var canBecomeKey: Bool { false }
+    /// 防止候选窗成为主窗口，避免输入法 App 被激活
+    override var canBecomeMain: Bool { false }
 
     func windowDidMove(_ notification: Notification) {
         /* windowDidMove会先于windowDidResize调用，所以需要
@@ -34,45 +44,75 @@ class CandidatesWindow: NSWindow, NSWindowDelegate {
     func setCandidates(
         _ candidatesData: CandidatesData,
         originalString: String,
-        topLeft: NSPoint
+        topLeft: NSPoint,
+        selectedIndex: Int = 0
     ) {
+        refreshing = true
         hostingView.rootView.candidates = candidatesData.list
         hostingView.rootView.origin = originalString
         hostingView.rootView.hasNext = candidatesData.hasNext
         hostingView.rootView.hasPrev = candidatesData.hasPrev
+        hostingView.rootView.selectedIndex = selectedIndex
+        hostingView.rootView.onCandidateHover = { [weak self] index in
+            guard let self = self, !self.refreshing else { return }
+            self.hostingView.rootView.selectedIndex = index
+            self.inputController?.selectedIndex = index
+        }
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.2) { [weak self] in
+            self?.refreshing = false
+        }
+        // 从 Fire.shared 获取当前激活的 inputController，确保鼠标点击选词时能找到
+        if inputController == nil {
+            inputController = Fire.shared.activeInputController
+        }
         NSLog("origin top left: \(topLeft)")
         NSLog("candidates: \(candidatesData)")
         self.setFrameTopLeftPoint(topLeft)
-        self.orderFront(nil)
+        self.orderFrontRegardless()
 //        NSApp.setActivationPolicy(.prohibited)
     }
 
     func bindEvents() {
         let events: [NotificationObserver] = [
-            (CandidatesView.candidateSelected, { notification in
+            (CandidatesView.candidateSelected, { [weak self] notification in
                 if let candidate = notification.userInfo?["candidate"] as? Candidate {
-                    self.inputController?.insertCandidate(candidate)
+                    self?.inputController?.insertCandidate(candidate, confirmed: true)
                 }
             }),
-            (CandidatesView.prevPageBtnTapped, { _ in self.inputController?.prevPage() }),
-            (CandidatesView.nextPageBtnTapped, { _ in self.inputController?.nextPage() }),
-            (Fire.inputModeChanged, { notification in
+            (CandidatesView.prevPageBtnTapped, { [weak self] _ in self?.inputController?.prevPage() }),
+            (CandidatesView.nextPageBtnTapped, { [weak self] _ in self?.inputController?.nextPage() }),
+            (Fire.inputModeChanged, { [weak self] notification in
                 if notification.userInfo?["val"] as? InputMode == InputMode.enUS {
-                    self.inputController?.insertOriginText()
+                    self?.inputController?.insertOriginText()
                 }
             })
         ]
-        events.forEach { (observer) in NotificationCenter.default.addObserver(
-          forName: observer.name, object: nil, queue: nil, using: observer.callback
-        )}
+        // 保存 observer token 以便 deinit 时移除，防止通知回调悬挂导致崩溃
+        events.forEach { (observer) in
+            let token = NotificationCenter.default.addObserver(
+                forName: observer.name, object: nil, queue: nil, using: observer.callback)
+            notificationObservers.append(token)
+        }
         // 由于使用IMKInputController recognizedEvents在一些场景下不能监听到flagChanged事件，比如保存文件和lanchPad场景
         // 所以这里需要使用NSEvent.addGlobalMonitorForEvents监听shift键被按下
-        NSEvent.addGlobalMonitorForEvents(matching: .flagsChanged) { (event) in
+        // 保存 globalMonitor 引用，用于 deinit 时移除
+        // 全局 flagsChanged 监视器在后台线程回调，需派发到主线程再操作 UI
+        globalMonitor = NSEvent.addGlobalMonitorForEvents(matching: .flagsChanged) { [weak self] (event) in
             NSLog("[CandidatesWindow] globalMonitorForEvents flagsChanged: \(event)")
             if !InputSource.shared.isSelected() {
                 return
             }
-            _ = self.inputController?.flagChangedHandler(event: event)
+            DispatchQueue.main.async {
+                _ = self?.inputController?.flagChangedHandler(event: event)
+            }
+        }
+    }
+
+    deinit {
+        // 移除所有通知监听器和全局事件监视器，防止对象释放后仍有回调被执行
+        notificationObservers.forEach { NotificationCenter.default.removeObserver($0) }
+        if let monitor = globalMonitor {
+            NSEvent.removeMonitor(monitor)
         }
     }
 
@@ -85,9 +125,13 @@ class CandidatesWindow: NSWindow, NSWindowDelegate {
         super.init(contentRect: contentRect, styleMask: style, backing: backingStoreType, defer: flag)
 
         level = NSWindow.Level(rawValue: NSWindow.Level.RawValue(CGShieldingWindowLevel()))
-        styleMask = .init(arrayLiteral: .fullSizeContentView, .borderless)
+        styleMask = .init(arrayLiteral: .fullSizeContentView, .borderless, .nonactivatingPanel)
         isReleasedWhenClosed = false
         backgroundColor = NSColor.clear
+        isOpaque = false
+        hidesOnDeactivate = false
+        worksWhenModal = true
+        // isOpaque = false 使窗口支持透明度，配合 Liquid Glass 毛玻璃效果
         delegate = self
         setSizePolicy()
         bindEvents()
@@ -101,6 +145,7 @@ class CandidatesWindow: NSWindow, NSWindowDelegate {
     private func setSizePolicy() {
         // 窗口大小可根据内容变化
         hostingView.translatesAutoresizingMaskIntoConstraints = false
+        hostingView.wantsLayer = true
         guard self.contentView != nil else {
             return
         }

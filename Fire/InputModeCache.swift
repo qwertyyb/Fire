@@ -41,15 +41,15 @@ class InputModeCache {
         if let index = keys.firstIndex(of: key) {
             keys.remove(at: index)
             keys.append(key)
-            saveToUserDefaults()
+            // 仅调整顺序不改变数据，不触发 saveToUserDefaults（put 已负责保存）
         }
     }
-    
+
     private func saveToUserDefaults() {
         Defaults[.keepAppInputMode_keys] = keys
         Defaults[.keepAppInputMode_cache] = cache
     }
-    
+
     private func loadFromUserDefaults() {
         keys = Defaults[.keepAppInputMode_keys]
         cache = Defaults[.keepAppInputMode_cache]

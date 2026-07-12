@@ -1,4 +1,5 @@
 {
+  "originHash" : "6c85e0a2a8f4227e34dd37b43127d3cccdb6643e8cd5009d99664b85be89996a",
   "pins" : [
     {
       "identity" : "defaults",
@@ -28,15 +29,6 @@
       }
     },
     {
-      "identity" : "settings",
-      "kind" : "remoteSourceControl",
-      "location" : "https://github.com/sindresorhus/Settings",
-      "state" : {
-        "revision" : "b99f45cba818a9d483fb58e9b31de5dee799e315",
-        "version" : "3.0.3"
-      }
-    },
-    {
       "identity" : "sparkle",
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/sparkle-project/Sparkle",
@@ -46,5 +38,5 @@
       }
     }
   ],
-  "version" : 2
+  "version" : 3
 }

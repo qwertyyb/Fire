@@ -12,7 +12,7 @@ import AppKit
 // https://github.com/feedback-assistant/reports/issues/200
 // 也是同样使用了这个issue中 @curthard89 的方法来解决这个问题
 class StatusBarController: NSObject {
-    static var system = StatusBarController()
+    static var shared = StatusBarController()
     
     lazy private(set) var items = Set<NSStatusItem>()
     private let defaults = UserDefaults.standard
@@ -21,10 +21,6 @@ class StatusBarController: NSObject {
         for item in items {
             removeObserver(autosaveName: item.autosaveName)
         }
-    }
-    
-    func removeStatusItem(_ item: NSStatusItem) {
-        items.remove(item)
     }
     
     func statusItem(autosaveName: NSStatusItem.AutosaveName,

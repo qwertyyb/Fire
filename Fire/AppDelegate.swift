@@ -9,7 +9,7 @@
 import AppKit
 import InputMethodKit
 
-@NSApplicationMain
+@main  // Swift 5.3+ 推荐入口标记，替代 @NSApplicationMain
 class AppDelegate: NSObject, NSApplicationDelegate {
 
     var fire: Fire!

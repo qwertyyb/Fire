@@ -7,8 +7,9 @@
 //
 
 import SwiftUI
-import Settings
 import Defaults
+
+// MARK: - 偏好设置面板（迁移自 Settings 库，改用原生 ScrollView + VStack）
 
 struct PunctuationPane: View {
     @Default(.punctuationMode) private var punctuationMode
@@ -16,68 +17,103 @@ struct PunctuationPane: View {
     @Default(.enableDotAfterNumber) private var enableDotAfterNumber
     @Default(.enableColonAfterNumber) private var enableColonAfterNumber
     var body: some View {
-        Settings.Container(contentWidth: 450) {
-            Settings.Section(title: "") {
-                HStack {
-                    Picker("标点符号方案", selection: $punctuationMode) {
+        Form {
+            Section {
+                LabeledContent("标点符号映射") {
+                    Picker("", selection: $punctuationMode) {
                         Text("半角").tag(PunctuationMode.enUs)
                         Text("全角").tag(PunctuationMode.zhhans)
-                        Text("自定义").tag(PunctuationMode.custom)
+                        Text("自定义映射").tag(PunctuationMode.custom)
                     }
-                    Spacer(minLength: 150)
+                    .labelsHidden()
                 }
-                HStack {
-                    Toggle("数字后输入 “。” 自动转为 “.”，适用于 1.5 小数场景", isOn: $enableDotAfterNumber)
+            } header: {
+                Text("标点方案")
+            }
+            Section {
+                Toggle(isOn: $enableDotAfterNumber) {
+                    HStack(spacing: 8) {
+                        Text("数字后输入“。”自动转为“.”")
+                        Spacer()
+                        Text("适用于如 1.5 小数输入场景")
+                            .font(.caption)
+                            .foregroundStyle(.tertiary)
+                            .offset(y: 6)
+                    }
                 }
-                HStack {
-                    Toggle("数字后输入 “：”（全角） 自动转为 “:”（半角），适用于 12:45 时间场景", isOn: $enableColonAfterNumber)
+                Toggle(isOn: $enableColonAfterNumber) {
+                    HStack(spacing: 8) {
+                        Text("数字后输入“：”自动转为“:”")
+                        Spacer()
+                        Text("适用于如 12:45 时间输入场景")
+                            .font(.caption)
+                            .foregroundStyle(.tertiary)
+                            .offset(y: 6)
+                    }
                 }
-                VStack(alignment: .leading) {
-                    Text("自定义符号")
-                    Spacer(minLength: 4)
-                    VStack {
-                        HStack {
-                            Text("按键")
-                                .frame(width: 200, alignment: .center)
-                            Text("输出")
-                                .frame(width: 200, alignment: .center)
-                        }
-                        ScrollView {
-                            ForEach(
-                                customPunctuationSettings.sorted(by: <),
-                                id: \.key) { (key, value) -> AnyView in
-                                AnyView(HStack(spacing: 0) {
-                                    Text(key)
-                                        .frame(width: 200, alignment: .center)
-                                    Picker("", selection: Binding<String>(
-                                        get: { value },
-                                        set: {
-                                            customPunctuationSettings[key] = $0
-                                        }
-                                    )) {
-                                        Text(key)
-                                            .tag(key)
-                                        Text(punctuation[key]!)
-                                            .tag(punctuation[key]!)
-                                    }
-                                    .frame(width: 200, alignment: .center)
-                                })
+            } header: {
+                Text("自动转换")
+            }
+            Section {
+                VStack(spacing: 0) {
+                    // 表头
+                    HStack {
+                        Text("按键")
+                            .font(.body)
+                            .fontWeight(.semibold)
+                            .frame(width: 160, alignment: .center)
+                        Text("→")
+                            .foregroundStyle(.tertiary)
+                            .font(.caption)
+                        Text("输出")
+                            .font(.body)
+                            .fontWeight(.semibold)
+                            .frame(width: 160, alignment: .center)
+                    }
+                    .foregroundStyle(.secondary)
+                    .padding(.vertical, 6)
+                    .frame(maxWidth: .infinity)
+                    .background(Color(.sRGB, red: 0.4, green: 0.4, blue: 0.4, opacity: 0.15))
+
+                    Divider()
+
+                    // 映射行
+                    VStack(spacing: 0) {
+                        ForEach(customPunctuationSettings.sorted(by: <), id: \.key) { key, value in
+                            HStack {
+                                Text(key)
+                                    .font(.body.monospaced())
+                                    .frame(width: 160, alignment: .center)
+                                Text("→")
+                                    .foregroundStyle(.tertiary)
+                                    .font(.caption)
+                                Picker("", selection: Binding<String>(
+                                    get: { value },
+                                    set: { customPunctuationSettings[key] = $0 }
+                                )) {
+                                    Text(key).tag(key)
+                                    Text(punctuation[key] ?? key).tag(punctuation[key] ?? key)
+                                }
+                                .labelsHidden()
+                                .frame(width: 160)
                             }
-                                .padding(EdgeInsets(top: 6, leading: 20, bottom: 10, trailing: 20))
+                            .padding(.vertical, 4)
+                            Divider()
                         }
-                        .frame(maxHeight: 300)
                     }
-                    .padding(.top, 4)
-                    .background(Color(.sRGB, red: 0.4, green: 0.4, blue: 0.4, opacity: 0.2))
                 }
+                .background(Color(.sRGB, red: 0.4, green: 0.4, blue: 0.4, opacity: 0.1))
+                .clipShape(RoundedRectangle(cornerRadius: 6))
                 .disabled(punctuationMode != .custom)
+            } header: {
+                Text("自定义符号映射")
             }
         }
+        .formStyle(.grouped)
     }
 }
 
-struct PunctuationPane_Previews: PreviewProvider {
-    static var previews: some View {
-        PunctuationPane()
-    }
+// 采用 Xcode 15 引入的 #Preview 宏语法，替代旧版 PreviewProvider 协议，使预览代码更简洁直观。
+#Preview {
+    PunctuationPane()
 }

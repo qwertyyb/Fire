@@ -8,7 +8,6 @@
 
 import Foundation
 import Defaults
-import Sparkle
 import SwiftUI
 
 internal let SQLITE_TRANSIENT = unsafeBitCast(-1, to: sqlite3_destructor_type.self)
@@ -22,6 +21,27 @@ enum ExtraCandidateSelectKeys: String, Codable, Defaults.Serializable {
     case disabled
     case semicolonQuote
     case commaPeriod
+}
+
+// 拆字/拼音方案枚举：决定候选中显示哪种方案的拆字字根和拼音
+enum SpellingScheme: String, Codable, Defaults.Serializable {
+    case wubi86  // 五笔86版
+    case wubi98  // 五笔98版
+    case wubi06  // 五笔06版（新世纪）
+}
+
+// 候选词提示模式：控制候选词旁显示什么额外信息
+enum CandidateHintMode: String, Codable, Defaults.Serializable {
+    case none       // 不提示
+    case wubiCode   // 显示五笔编码（如 ~fg）
+    case spelling   // 显示拆字字根（如 〈氵工〉）
+    case pinyin     // 显示拼音
+}
+
+// 中文输出模式：控制候选词以简体还是繁体输出
+enum ChineseOutputMode: String, Codable, Defaults.Serializable {
+    case simplified     // 简体中文
+    case traditional    // 繁体中文
 }
 
 enum InputModeTipWindowType: Int, Decodable, Encodable, Defaults.Serializable {
@@ -47,8 +67,31 @@ enum ModifierKey: String, Codable, Defaults.Serializable {
   case function
 }
 
+/// 热键可用的修饰键（不包含 shift/fn/leftShift/rightShift，因为这些不适合作为主修饰键）
+enum HotkeyModifier: String, Codable, Defaults.Serializable, CaseIterable {
+    case control
+    case option
+    case command
+
+    var nsModifierFlag: NSEvent.ModifierFlags {
+        switch self {
+        case .control: return .control
+        case .option: return .option
+        case .command: return .command
+        }
+    }
+
+    var cgEventFlag: CGEventFlags {
+        switch self {
+        case .control: return .maskControl
+        case .option: return .maskAlternate
+        case .command: return .maskCommand
+        }
+    }
+}
+
 class ApplicationSettingItem: ObservableObject, Codable, Identifiable, Defaults.Serializable {
-//    let identifier: String = ""
+    var id: String { bundleIdentifier }
 
     @Published var bundleIdentifier: String = ""
 
@@ -87,78 +130,8 @@ class ApplicationSettingItem: ObservableObject, Codable, Identifiable, Defaults.
     }
 }
 
-enum PunctuationMode: Codable, Defaults.Serializable {
-    case enUs // 半角
-    case zhhans // 全角
-    case custom // 自定义
-}
+// MARK: - Defaults 键值定义
 
-extension Defaults.Keys {
-    static let zKeyQuery = Key<Bool>("zKeyQuery", default: true)
-    static let candidatesDirection = Key<CandidatesDirection>(
-        "candidatesDirection",
-        default: CandidatesDirection.horizontal
-    )
-    static let showCodeInWindow = Key<Bool>("showCodeInWindow", default: true)
-    static let wubiCodeTip = Key<Bool>("wubiCodeTip", default: true)
-    static let wubiAutoCommit = Key<Bool>("wubiAutoCommit", default: false)
-    static let candidateCount = Key<Int>("candidateCount", default: 5)
-    static let extraCandidateSelectKeys = Key<ExtraCandidateSelectKeys>(
-        "extraCandidateSelectKeys",
-        default: .semicolonQuote
-    )
-    static let codeMode = Key<CodeMode>("codeMode", default: CodeMode.wubiPinyin)
-
-    // 中英文切换配置
-    // 禁止切换英文
-    static let disableEnMode = Key<Bool>("diableEnMode", default: false)
-    // 禁止;键临时英文模式
-    static let disableTempEnMode = Key<Bool>("disableTempEnMode", default: false)
-    // 切换英文模式的按键
-    static let toggleInputModeKey = Key<ModifierKey>("toggleInputModeKey", default: ModifierKey.shift)
-    // 中英文切换提示弹窗位置
-    static let inputModeTipWindowType = Key<InputModeTipWindowType>(
-        "inputModeTipWindowType",
-        default: InputModeTipWindowType.centerScreen
-    )
-    static let showInputModeStatus = Key<Bool>("showInputModeStatus", default: true)
-
-    // 主题
-    static let themeConfig = Key<ThemeConfig>("themeConfig", default: defaultThemeConfig)
-    static let importedThemeConfig = Key<ThemeConfig?>("importedThemeConfig", default: nil)
-
-    // 应用输入配置
-    static let keepAppInputMode = Key<Bool>("keepAppInputMode", default: true)
-    static let keepAppInputMode_keys = Key<[String]>("keepAppInputMode_keys", default: [])
-    static let keepAppInputMode_cache = Key<[String: InputMode]>("keepAppInputMode_cache", default: [:])
-
-    static let appInputModeTipShowTime = Key<AppInputModeTipShowTime>("appInputModeTipShowTime", default: .onlyChanged)
-    static let appSettings = Key<[String: ApplicationSettingItem]>("AppSettings", default: [:])
-    // 标点符号配置
-    static let punctuationMode = Key<PunctuationMode>("punctuationMode", default: PunctuationMode.zhhans)
-    static let customPunctuationSettings = Key<[String: String]>("customPunctuationSettings", default: punctuation)
-    // 数字后输入"。"自动转为"."
-    static let enableDotAfterNumber = Key<Bool>("enableDotAfterNumber", default: true)
-    // 数字后输入"："自动转为":"
-    static let enableColonAfterNumber = Key<Bool>("enableColonAfterNumber", default: true)
-    // 在中文和英文之间插入空格，在中文输入模式下生效，也可在英文模式下输入英文再切到中文输入模式下输入中文时生效
-    // 在从中文模式输入中文后再切到英文输入模式下输入英文时不生效
-    static let enableWhitespaceBetweenZhEn = Key<Bool>("enableWhitespaceBetweenZhEn", default: true)
-
-    static let wbTablePath = Key<String>(
-        "wbTableURL",
-        default: Bundle.main.resourceURL?.appendingPathComponent("wb_table.txt").path
-            ?? "")
-    static let pyTablePath = Key<String>(
-        "pyTableURL",
-        default: Bundle.main.resourceURL?.appendingPathComponent("py_table.txt").path
-            ?? "")
-
-    // 统计配置
-    static let enableStatistics = Key<Bool>("enableStatistics", default: true)
-    //            ^            ^         ^                ^
-    //           Key          Type   UserDefaults name   Default value
-}
 
 enum InputMode: String, Defaults.Serializable {
     case zhhans
@@ -171,11 +144,13 @@ enum InputModeSetting: String, Codable {
     case recentUsed
 }
 
-enum CandidateType: String {
+enum CandidateType: String, CaseIterable {
     case wb // 五笔
     case py // 拼音
     case user // 用户词库
+    case blocked // 删除标记：用户删除词典词时插入此类型的记录，查询时排除
     case placeholder // 运行时类型，无匹配时表示占位
+    case unknown // 未知类型，用于安全解析数据库记录
 }
 
 struct Candidate: Hashable {
@@ -183,12 +158,18 @@ struct Candidate: Hashable {
     let text: String
     let type: CandidateType
     let label: String
+    // 拆字字根（如 〈氵工〉）
+    let spelling: String?
+    // 拼音
+    let pinyin: String?
 
-    init(code: String, text: String, type: CandidateType, label: String? = nil) {
+    init(code: String, text: String, type: CandidateType, label: String? = nil, spelling: String? = nil, pinyin: String? = nil) {
         self.code = code
         self.text = text
         self.type = type
         self.label = label ?? text
+        self.spelling = spelling
+        self.pinyin = pinyin
     }
 }
 
@@ -198,40 +179,6 @@ enum CodeMode: Int, CaseIterable, Decodable, Encodable, Defaults.Serializable {
     case wubiPinyin
 }
 
-let punctuation: [String: String] = [
-    ",": "，",
-    ".": "。",
-    "/": "、",
-    ";": "；",
-    "'": "‘",
-    "[": "【",
-    "]": "】",
-    "`": "·",
-    "!": "！",
-    "@": "@",
-    "#": "#",
-    "$": "￥",
-    "%": "%",
-    "^": "……",
-    "&": "&",
-    "*": "*",
-    "(": "（",
-    ")": "）",
-    "-": "-",
-    "_": "——",
-    "+": "+",
-    "=": "=",
-    "~": "~",
-    "{": "「",
-    "\\": "、",
-    "|": "|",
-    "}": "」",
-    ":": "：",
-    "\"": "“",
-    "<": "《",
-    ">": "》",
-    "?": "？"
-]
 
 protocol ToastWindowProtocol {
     func show(_ text: String, position: NSPoint)

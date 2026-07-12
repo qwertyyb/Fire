@@ -7,7 +7,6 @@
 //
 
 import SwiftUI
-import Settings
 import Defaults
 
 struct ApplicationSettingItemView: View {
@@ -31,49 +30,42 @@ struct ApplicationSettingItemView: View {
     }
 
     var body: some View {
-        return VStack {
-            HStack(alignment: .center, spacing: 12, content: {
-                Image(nsImage: getIcon(settingItem.bundleIdentifier)).resizable().frame(width: 20, height: 20)
-                Text(getDisplayName(settingItem.bundleIdentifier)).frame(width: 200, alignment: .leading)
-                Spacer()
-                Picker("", selection: Binding<InputModeSetting>(get: {
-                    settingItem.inputModeSetting
-                }, set: { inputModeSetting in
-                    settingItem.objectWillChange.send()
-                    settingItem.inputModeSetting = inputModeSetting
-                    onChange()
-                })) {
-                    Text("五笔").tag(InputModeSetting.zhhans)
-                    Text("英文").tag(InputModeSetting.enUS)
-                }
-                .frame(width: 80)
-
-                if #available(macOS 11.0, *) {
-                    Button {
-                        onDelete()
-                    } label: {
-                        Image(
-                            nsImage: NSImage(named: NSImage.stopProgressTemplateName)!)
-                            .frame(width: 20, height: 20)
-                    }
-                    .buttonStyle(BorderlessButtonStyle())
-                    .help("删除")
-                } else {
-                    Button {
-                        onDelete()
-                    } label: {
-                        Image(nsImage: NSImage(named: NSImage.stopProgressTemplateName)!)
-                            .frame(width: 20, height: 20)
-                    }
-                    .buttonStyle(BorderlessButtonStyle())
-                }
-
-            })
-                .padding(6)
-            Spacer().frame(height: 1).background(Color.gray)
+        HStack(alignment: .center, spacing: 12) {
+            Image(nsImage: getIcon(settingItem.bundleIdentifier))
+                .resizable()
+                .frame(width: 20, height: 20)
+            Text(getDisplayName(settingItem.bundleIdentifier))
+                .lineLimit(1)
+                .frame(maxWidth: .infinity, alignment: .leading)
+            Spacer()
+            Picker("", selection: Binding<InputModeSetting>(get: {
+                settingItem.inputModeSetting
+            }, set: { inputModeSetting in
+                settingItem.objectWillChange.send()
+                settingItem.inputModeSetting = inputModeSetting
+                onChange()
+            })) {
+                Text("五笔").tag(InputModeSetting.zhhans)
+                Text("英文").tag(InputModeSetting.enUS)
+            }
+            .labelsHidden()
+            .frame(width: 70)
+            Button {
+                onDelete()
+            } label: {
+                Image(systemName: "trash")
+                    .foregroundStyle(.secondary)
+            }
+            .buttonStyle(.plain)
+            .help("删除")
         }
+        .padding(.vertical, 6)
+        .padding(.horizontal, 8)
+        Divider()
     }
 }
+
+// MARK: - 偏好设置面板（迁移自 Settings 库，改用原生 ScrollView + VStack）
 
 struct ApplicationPane: View {
     @Default(.keepAppInputMode) private var keepAppInputMode
@@ -90,9 +82,9 @@ struct ApplicationPane: View {
         openPanel.canCreateDirectories = false
         openPanel.canChooseFiles = true
         openPanel.allowedContentTypes = [.applicationBundle]
-        let result = openPanel.runModal()
-        if result != NSApplication.ModalResponse.OK { return }
-        let selectedPath = openPanel.url!.path
+        // 使用 guard 语句提前退出并安全解包，消除强制解包风险，减少代码嵌套，使主逻辑路径更清晰。
+        guard openPanel.runModal() == .OK, let url = openPanel.url else { return }
+        let selectedPath = url.path
         guard let bundle = Bundle(path: selectedPath) else { return }
         guard let identifier = bundle.bundleIdentifier else { return }
 
@@ -103,73 +95,65 @@ struct ApplicationPane: View {
     }
 
     var body: some View {
-        Settings.Container(contentWidth: 450) {
-            Settings.Section(title: "") {
-                VStack(alignment: .leading) {
-                    HStack {
-                        Text("自动切换")
-                        Toggle("保持应用最后使用的输入模式", isOn: $keepAppInputMode)
-                            .padding(.leading, 10)
-                    }
-                    HStack {
-                        Text("仅保留最近使用的\(InputModeCache.shared.capacity)个应用的输入模式")
-                            .font(.footnote)
-                            .padding(.leading, 70)
-                    }
-                    HStack {
-                        Text("显示提示")
-                        Picker("", selection: $appInputModeTipShowTime) {
-                            Text("仅在变化时显示").tag(AppInputModeTipShowTime.onlyChanged)
-                            Text("总是显示").tag(AppInputModeTipShowTime.always)
-                            Text("不显示")
-                                .tag(AppInputModeTipShowTime.none)
-                        }
-                        Spacer(minLength: 240)
-                    }
-                    HStack {
-                        Text("应用设置")
-                        Button(action: addApp) {
-                            HStack(spacing: 0) {
-                                Image(nsImage: NSImage(named: NSImage.addTemplateName)!)
-                                    .resizable()
-                                    .frame(width: 16, height: 16, alignment: .bottom)
-                                Text("添加")
-                            }
-                        }
-                        .padding(.leading, 8)
-                    }
-                    ScrollView(.vertical) {
-                        if appSettings.count > 0 {
-                            // 按照添加时间排序
-                            ForEach(appSettings.values.sorted(by: { a, b in
-                                a.createdTimestamp < b.createdTimestamp
-                            })) { (settingItem) -> AnyView in
-                                AnyView(ApplicationSettingItemView(settingItem: settingItem) {
-                                    removeApp(settingItem)
-                                } onChange: {
-                                    appSettings[settingItem.bundleIdentifier] = settingItem
-                                    Defaults[.appSettings] = appSettings
-                                })
-                            }
-                        } else {
-                            VStack {
-                                Text("添加应用可单独设置该应用下默认使用英文或五笔")
-                                    .foregroundColor(Color.gray)
-                            }
-                            .frame(minHeight: 300)
-                        }
-                    }
-                    .frame(minWidth: 450, minHeight: 320)
-                    .background(Color(.sRGB, red: 0.4, green: 0.4, blue: 0.4, opacity: 0.2))
-                }
-                .disabled(disableEnMode)
+        Form {
+            Section {
+                Toggle("保持应用最后使用的输入模式", isOn: $keepAppInputMode)
+                Text("仅保留最近使用的\(InputModeCache.shared.capacity)个应用的输入模式")
+                    .font(.caption)
+                    .foregroundStyle(.secondary)
+            } header: {
+                Text("自动切换")
             }
+            Section {
+                LabeledContent("显示提示") {
+                    Picker("", selection: $appInputModeTipShowTime) {
+                        Text("仅在变化时显示").tag(AppInputModeTipShowTime.onlyChanged)
+                        Text("总是显示").tag(AppInputModeTipShowTime.always)
+                        Text("不显示").tag(AppInputModeTipShowTime.none)
+                    }
+                    .labelsHidden()
+                    .frame(width: 140)
+                }
+                HStack {
+                    Text("应用设置")
+                    Spacer()
+                    Button(action: addApp) {
+                        Image(systemName: "plus")
+                        Text("添加")
+                    }
+                    .controlSize(.small)
+                }
+                if appSettings.count > 0 {
+                    VStack(spacing: 0) {
+                        ForEach(appSettings.values.sorted(by: { a, b in
+                            a.createdTimestamp < b.createdTimestamp
+                        })) { settingItem in
+                            ApplicationSettingItemView(settingItem: settingItem) {
+                                removeApp(settingItem)
+                            } onChange: {
+                                appSettings[settingItem.bundleIdentifier] = settingItem
+                                Defaults[.appSettings] = appSettings
+                            }
+                        }
+                    }
+                    .background(Color(.sRGB, red: 0.4, green: 0.4, blue: 0.4, opacity: 0.1))
+                    .clipShape(RoundedRectangle(cornerRadius: 6))
+                } else {
+                    Text("添加应用可单独设置该应用下默认使用英文或五笔")
+                        .font(.callout)
+                        .foregroundStyle(.secondary)
+                        .frame(maxWidth: .infinity, minHeight: 60)
+                }
+            } header: {
+                Text("应用设置")
+            }
+            .disabled(disableEnMode)
         }
+        .formStyle(.grouped)
     }
 }
 
-struct ApplicationPane_Previews: PreviewProvider {
-    static var previews: some View {
-        ApplicationPane()
-    }
+// 采用 Xcode 15 引入的 #Preview 宏语法，替代旧版 PreviewProvider 协议，使预览代码更简洁直观。
+#Preview {
+    ApplicationPane()
 }

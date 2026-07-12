@@ -14,15 +14,45 @@ class DictManager {
     static let userDictUpdated = Notification.Name("DictManager.userDictUpdated")
 
     let tempEnTriggerPunctuation: Character = ";"
-    let userDictFilePath = NSSearchPathForDirectoriesInDomains(
-        .applicationSupportDirectory,
-        .userDomainMask, true).first! + "/" + Bundle.main.bundleIdentifier! + "/user-dict.txt"
 
-    private var database: OpaquePointer?
+    /// 解析用户词库行，支持双引号包裹含空格的词组
+    /// 例: "abc \"hello world\" test" → ["abc", "hello world", "test"]
+    private func parseQuoteAware(line: Substring) -> [Substring] {
+        var result: [Substring] = []
+        var current = line[...]
+        while !current.isEmpty {
+            current = current.drop(while: { $0.isWhitespace })
+            guard !current.isEmpty else { break }
+            if current.first == "\"" {
+                current = current.dropFirst()
+                let end = current.firstIndex(of: "\"") ?? current.endIndex
+                result.append(current[..<end])
+                current = current[end...]
+                if current.first == "\"" { current = current.dropFirst() }
+            } else {
+                let end = current.firstIndex(where: { $0.isWhitespace }) ?? current.endIndex
+                result.append(current[..<end])
+                current = current[end...]
+            }
+        }
+        return result
+    }
+
+    lazy var userDictFilePath: String = {
+        let dirs = NSSearchPathForDirectoriesInDomains(.applicationSupportDirectory, .userDomainMask, true)
+        guard let dir = dirs.first, let bundleID = Bundle.main.bundleIdentifier else {
+            return NSHomeDirectory() + "/Library/Application Support/Fire/user-dict.txt"
+        }
+        return dir + "/" + bundleID + "/user-dict.txt"
+    }()
+
+    /// 数据库指针（供 build.swift 迁移数据时读取）
+    private(set) var database: OpaquePointer?
     private var queryStatement: OpaquePointer?
 
     private init() {
-        Defaults.observe(keys: .codeMode, .candidateCount) { () in
+        // 监听编码模式、候选词数、生僻字开关等偏好变更，自动更新 SQL 查询语句
+        Defaults.observe(keys: .codeMode, .candidateCount, .enableGBK) { () in
             self.prepareStatement()
         }
         .tieToLifetime(of: self)
@@ -45,15 +75,27 @@ class DictManager {
         let candidateCount = Defaults[.candidateCount]
         let codeMode = Defaults[.codeMode]
         // 比显示的候选词数量多查一个，以此判断有没有下一页
+        // GBK 过滤：关闭生僻字时只查 is_gb2312=1 的常用字
+        let gbkFilter = !Defaults[.enableGBK] ? "and is_gb2312 = 1" : ""
         let sql = """
             select
                 \(codeMode == .wubiPinyin ? "max(wbcode)" : "min(wbcode)"),
                 text,
-                type, min(query) as query
+                type, min(query) as query,
+                max(s86) as s86,   -- 五笔86拆字
+                max(s98) as s98,   -- 五笔98拆字
+                max(s06) as s06,   -- 五笔06拆字
+                max(py86) as py86, -- 86拼音
+                max(py98) as py98, -- 98拼音
+                max(py06) as py06, -- 06拼音
+                max(is_gb2312) as is_gb2312  -- 是否 GB2312 常用字
             from wb_py_dict
             where query glob :queryLike \(
                 codeMode == .wubi ? "and type in ('wb', 'user')"
                                 : codeMode == .pinyin ? "and type in ('py', 'user')" : "")
+                \(gbkFilter)
+                -- 排除用户屏蔽的词
+                and text not in (select text from wb_py_dict where type = 'blocked')
             group by text
             order by query, id
             limit :offset, \(candidateCount + 1)
@@ -63,14 +105,23 @@ class DictManager {
 
     private func prepareStatement() {
         if database == nil {
-            sqlite3_open_v2(getDatabaseURL().path, &database, SQLITE_OPEN_READWRITE, nil)
+            let rc = sqlite3_open_v2(getDatabaseURL().path, &database, SQLITE_OPEN_READWRITE, nil)
+            guard rc == SQLITE_OK else {
+                NSLog("[DictManager] Failed to open database: %s", sqlite3_errmsg(database))
+                return
+            }
             sqlite3_exec(database, "PRAGMA case_sensitive_like=ON;", nil, nil, nil)
+            // 限制 SQLite 页缓存为 2MB，防止候选词查询缓存持续增长占用过多内存
+            sqlite3_exec(database, "PRAGMA cache_size=-2000;", nil, nil, nil)
         }
         if queryStatement != nil {
             sqlite3_finalize(queryStatement)
             queryStatement = nil
         }
-        if sqlite3_prepare_v2(database, getStatementSql(), -1, &queryStatement, nil) == SQLITE_OK {
+        let sql = getStatementSql()
+        // 日志输出实际执行的 SQL，方便调试查询问题
+        NSLog("[DictManager] SQL: \(sql.replacingOccurrences(of: "\n", with: " "))")
+        if sqlite3_prepare_v2(database, sql, -1, &queryStatement, nil) == SQLITE_OK {
             print("prepare ok")
         } else if let err = sqlite3_errmsg(database) {
             print("prepare fail: \(err)")
@@ -79,26 +130,23 @@ class DictManager {
 
     private func getMinIdFromDictTable() -> Int {
         let sql = "select min(id) from wb_py_dict"
-        var queryStmt: OpaquePointer?
-        if sqlite3_prepare_v2(database, sql, -1, &queryStmt, nil) == SQLITE_OK {
-            if sqlite3_step(queryStmt) == SQLITE_ROW {
-                let minId = sqlite3_column_int(queryStmt, 0)
-                sqlite3_finalize(queryStmt)
-                queryStmt = nil
-                return Int(minId)
-            }
+        var minId: Int32 = 0
+        sqliteQuery(database, sql) { stmt in
+            minId = sqlite3_column_int(stmt, 0)
         }
-        NSLog("[Fire.getMinIdFromDictTable] errmsg: \(String(cString: sqlite3_errmsg(queryStmt)))")
-        sqlite3_finalize(queryStmt)
-        queryStmt = nil
-        return 0
+        return Int(minId)
     }
+
+    // replaceTextWithVars 中使用的 DateFormatter 提为 static let，避免重复创建
+    private static let dateFormatter: DateFormatter = {
+        let f = DateFormatter()
+        f.dateFormat = "yyyy MM dd HH mm ss"
+        return f
+    }()
 
     private func replaceTextWithVars(_ text: String) -> String {
         let date = Date()
-        let formatter = DateFormatter()
-        formatter.dateFormat = "yyyy MM dd HH mm ss"
-        let arr = formatter.string(from: date).split(separator: " ")
+        let arr = DictManager.dateFormatter.string(from: date).split(separator: " ")
         let vars: [String: String] = [
             "{yyyy}": String(arr[0]),
             "{MM}": String(arr[1]),
@@ -120,14 +168,18 @@ class DictManager {
             return origin
         }
 
+        // 精确匹配开启时编码精确匹配（不加 *），关闭时逐码模糊匹配（加 *）
+        // 精确匹配适用于用户已输入完整编码的情况，减少无关候选项；模糊匹配适用于边输入边看候选
+        let suffix = Defaults[.enableExactMatch] ? "" : "*"
+
         if !Defaults[.zKeyQuery] {
-            return origin + "*"
+            return origin + suffix
         }
 
         // z键查询，z不能放在首位
-        let first = origin.first!
+        guard let first = origin.first else { return origin }
         return String(first) + (String(origin.suffix(origin.count - 1))
-            .replacingOccurrences(of: "z", with: "?")) + "*"
+            .replacingOccurrences(of: "z", with: "?")) + suffix
     }
 
     func punctuationCandidates(query: String) -> [Candidate] {
@@ -146,6 +198,13 @@ class DictManager {
         if query.first == tempEnTriggerPunctuation {
             return (candidates: punctuationCandidates(query: query), hasNext: false)
         }
+
+        // prepareStatement 失败（如码表数据库列不匹配需要重建）时返回空候选
+        // 防止用户使用时出现无响应或崩溃
+        guard queryStatement != nil else {
+            NSLog("[DictManager] queryStatement is nil, db may need rebuild")
+            return ([], false)
+        }
         NSLog("[DictManager] getCandidates origin: \(query)")
         let startTime = CFAbsoluteTimeGetCurrent()
         let queryLike = getQueryLike(query)
@@ -153,36 +212,49 @@ class DictManager {
         sqlite3_reset(queryStatement)
         sqlite3_clear_bindings(queryStatement)
         sqlite3_bind_text(queryStatement,
-                        sqlite3_bind_parameter_index(queryStatement, ":code"),
-                        query, -1,
-                        SQLITE_TRANSIENT
-        )
-        sqlite3_bind_text(queryStatement,
                           sqlite3_bind_parameter_index(queryStatement, ":queryLike"),
                           queryLike, -1,
                           SQLITE_TRANSIENT
         )
+        // 注：原实现还绑定了 :code 参数，但 SQL 查询中已不再使用该参数，故移除
         sqlite3_bind_int(queryStatement,
                          sqlite3_bind_parameter_index(queryStatement, ":offset"),
                          Int32((page - 1) * Defaults[.candidateCount])
         )
         while sqlite3_step(queryStatement) == SQLITE_ROW {
-            let code = String.init(cString: sqlite3_column_text(queryStatement, 0))
-            var text = String.init(cString: sqlite3_column_text(queryStatement, 1))
-            let type = CandidateType(rawValue: String.init(cString: sqlite3_column_text(queryStatement, 2)))!
+            guard let code = optString(queryStatement, 0),
+                  var text = optString(queryStatement, 1) else { continue }
+            let type = CandidateType(rawValue: optString(queryStatement, 2) ?? "") ?? .unknown
             if type == .user {
                 text = replaceTextWithVars(text)
             }
-            let candidate = Candidate(code: code, text: text, type: type)
+            // 取当前方案的拆字形（s86=列4, s98=列5, s06=列6），用于候选提示模式=拆字时显示
+            let spellingCol: Int32
+            switch Defaults[.spellingScheme] {
+            case .wubi86: spellingCol = 4
+            case .wubi98: spellingCol = 5
+            case .wubi06: spellingCol = 6
+            }
+            var spelling: String?
+            if let cstr = sqlite3_column_text(queryStatement, spellingCol) {
+                let val = String(cString: cstr)
+                if !val.isEmpty { spelling = "〈\(val)〉" }
+            }
+            // 取拼音（py86=列8, py98=列9, py06=列10），用于候选提示模式=拼音时显示
+            let pinyinCol = spellingCol + 4
+            var pinyin: String?
+            if let cstr = sqlite3_column_text(queryStatement, pinyinCol) {
+                let val = String(cString: cstr)
+                if !val.isEmpty { pinyin = val }
+            }
+            let candidate = Candidate(code: code, text: text, type: type, spelling: spelling, pinyin: pinyin)
             candidates.append(candidate)
         }
         let count = Defaults[.candidateCount]
         let allCount = candidates.count
         candidates = Array(candidates.prefix(count))
 
-        if candidates.isEmpty {
-            candidates.append(Candidate(code: query, text: query, type: CandidateType.placeholder))
-        }
+
         let duration = CFAbsoluteTimeGetCurrent() - startTime
         NSLog("[DictManager] getCandidates query: \(query) , duration: \(duration)")
         return (candidates, hasNext: allCount > count)
@@ -195,10 +267,14 @@ class DictManager {
     }
 
     func prependCandidate(candidate: Candidate) -> Bool {
+        // 插入用户词时自动从原始词库复制拆字数据（s86/s98/s06），确保用户词也支持拆字提示
         let sql = """
-            insert into wb_py_dict(id, wbcode, text, type, query)
+            insert into wb_py_dict(id, wbcode, text, type, query, s86, s98, s06)
             values (
-                (select MIN(id) - 1 from wb_py_dict), :code, :text, :type, :code
+                (select MIN(id) - 1 from wb_py_dict), :code, :text, :type, :code,
+                (select s86 from wb_py_dict where text = :text and s86 is not null limit 1),
+                (select s98 from wb_py_dict where text = :text and s98 is not null limit 1),
+                (select s06 from wb_py_dict where text = :text and s06 is not null limit 1)
             );
         """
         var insertStatement: OpaquePointer?
@@ -215,36 +291,107 @@ class DictManager {
             if sqlite3_step(insertStatement) == SQLITE_DONE {
                 sqlite3_finalize(insertStatement)
                 insertStatement = nil
+                // 如果没有从码表复制到拆字数据（码表中无此词），按组词规则生成
+                fillCompoundGlyphs(for: candidate.text)
                 return true
             }
         }
         sqlite3_finalize(insertStatement)
         insertStatement = nil
-        print("errmsg: \(String(cString: sqlite3_errmsg(database)!))")
+        print("errmsg: \(database != nil ? String(cString: sqlite3_errmsg(database)) : "nil")")
         return false
     }
 
     func deleteCandidate(_ candidate: Candidate) {
-        // candidate.code 实际取自 wb_py_dict 的 wbcode 列(见 getCandidates)
-        // 按 text + wbcode 精确删除，可同时清掉同一字/词的 wb 与 py 记录
-        let sql = "delete from wb_py_dict where text = :text and wbcode = :code"
-        var stmt: OpaquePointer?
-        if sqlite3_prepare_v2(database, sql, -1, &stmt, nil) == SQLITE_OK {
-            sqlite3_bind_text(stmt,
-                              sqlite3_bind_parameter_index(stmt, ":text"),
-                              candidate.text, -1, SQLITE_TRANSIENT)
-            sqlite3_bind_text(stmt,
-                              sqlite3_bind_parameter_index(stmt, ":code"),
-                              candidate.code, -1, SQLITE_TRANSIENT)
-            if sqlite3_step(stmt) != SQLITE_DONE {
-                print("[DictManager.deleteCandidate] errmsg: \(String(cString: sqlite3_errmsg(database)!))")
+        NSLog("[DictManager.deleteCandidate] \(candidate.text) code=\(candidate.code) type=\(candidate.type.rawValue)")
+        // 删除策略改为"屏蔽"而非直接删除，防止重建索引后被删除的词典词重新出现
+        // 用户词：删除 type='user' 记录清除排序调整，再插入 blocked 屏蔽原词典词
+        // 词典词：直接插入 blocked 屏蔽
+        if candidate.type == .user {
+            let sql = "delete from wb_py_dict where text = :text and type = :type"
+            var stmt: OpaquePointer?
+            if sqlite3_prepare_v2(database, sql, -1, &stmt, nil) == SQLITE_OK {
+                sqlite3_bind_text(stmt, sqlite3_bind_parameter_index(stmt, ":text"),
+                                  candidate.text, -1, SQLITE_TRANSIENT)
+                sqlite3_bind_text(stmt, sqlite3_bind_parameter_index(stmt, ":type"),
+                                  CandidateType.user.rawValue, -1, SQLITE_TRANSIENT)
+                if sqlite3_step(stmt) != SQLITE_DONE {
+                    NSLog("[DictManager.deleteCandidate] delete user failed: %s", sqlite3_errmsg(database) ?? "unknown")
+                }
             }
-        } else {
-            print("[DictManager.deleteCandidate] prepare errmsg: \(String(cString: sqlite3_errmsg(database)!))")
+            sqlite3_finalize(stmt)
+        }
+        // 插入 blocked 屏蔽原始的词典词（全部使用参数化绑定）
+        let blockSql = "insert into wb_py_dict(wbcode, text, type, query) values (:code, :text, :type, :code)"
+        var blockStmt: OpaquePointer?
+        if sqlite3_prepare_v2(database, blockSql, -1, &blockStmt, nil) == SQLITE_OK {
+            sqlite3_bind_text(blockStmt, sqlite3_bind_parameter_index(blockStmt, ":code"),
+                              candidate.code, -1, SQLITE_TRANSIENT)
+            sqlite3_bind_text(blockStmt, sqlite3_bind_parameter_index(blockStmt, ":text"),
+                              candidate.text, -1, SQLITE_TRANSIENT)
+            sqlite3_bind_text(blockStmt, sqlite3_bind_parameter_index(blockStmt, ":type"),
+                              CandidateType.blocked.rawValue, -1, SQLITE_TRANSIENT)
+            if sqlite3_step(blockStmt) != SQLITE_DONE {
+                NSLog("[DictManager.deleteCandidate] insert blocked failed: %s", sqlite3_errmsg(database) ?? "unknown")
+            }
+        }
+        sqlite3_finalize(blockStmt)
+        NotificationQueue.default.enqueue(Notification(name: DictManager.userDictUpdated), postingStyle: .whenIdle)
+    }
+
+    /// 为多字词生成组合拆字并写入数据库（按五笔词组取码规则：2字各取前2码、3字前二字首码+末字前2码、≥4字前三字首码+末字首码）
+    /// - Parameters:
+    ///   - text: 候选词文本
+    ///   - skipIfExists: 若该列已有拆字数据则跳过（批量导入时使用）
+    private func fillCompoundGlyphs(for text: String, skipIfExists: Bool = false) {
+        guard text.count > 1 else { return }
+        let chars = text.map { String($0) }
+        for col in ["s86", "s98", "s06"] {
+            if skipIfExists {
+                let checkSql = "select count(*) from wb_py_dict where text = ? and type = 'user' and \(col) is not null"
+                var checkStmt: OpaquePointer?
+                var hasData = false
+                if sqlite3_prepare_v2(database, checkSql, -1, &checkStmt, nil) == SQLITE_OK {
+                    sqlite3_bind_text(checkStmt, 1, text, -1, SQLITE_TRANSIENT)
+                    if sqlite3_step(checkStmt) == SQLITE_ROW { hasData = sqlite3_column_int(checkStmt, 0) > 0 }
+                }
+                sqlite3_finalize(checkStmt)
+                if hasData { continue }
+            }
+            let glyphs = chars.compactMap { getCharGlyph($0, column: col) }
+            guard glyphs.count == chars.count else { continue }
+            let result: String
+            switch glyphs.count {
+            case 2: result = String(glyphs[0].prefix(2)) + String(glyphs[1].prefix(2))
+            case 3: result = String(glyphs[0].prefix(1)) + String(glyphs[1].prefix(1)) + String(glyphs[2].prefix(2))
+            default: result = String(glyphs[0].prefix(1)) + String(glyphs[1].prefix(1)) + String(glyphs[2].prefix(1)) + String(glyphs[chars.count - 1].prefix(1))
+            }
+            if !result.isEmpty {
+                let upSql = "update wb_py_dict set \(col) = ?1 where text = ?2 and type = 'user'"
+                var up: OpaquePointer?
+                if sqlite3_prepare_v2(database, upSql, -1, &up, nil) == SQLITE_OK {
+                    sqlite3_bind_text(up, 1, result, -1, SQLITE_TRANSIENT)
+                    sqlite3_bind_text(up, 2, text, -1, SQLITE_TRANSIENT)
+                    sqlite3_step(up)
+                }
+                sqlite3_finalize(up)
+            }
+        }
+    }
+
+    // 查询单个汉字的拆字根（用于为新用户词生成组合拆字数据）
+    private func getCharGlyph(_ char: String, column: String) -> String? {
+        let sql = "select \(column) from wb_py_dict where text = ? and \(column) is not null limit 1"
+        var stmt: OpaquePointer?
+        guard sqlite3_prepare_v2(database, sql, -1, &stmt, nil) == SQLITE_OK else { return nil }
+        sqlite3_bind_text(stmt, 1, char, -1, SQLITE_TRANSIENT)
+        var result: String?
+        if sqlite3_step(stmt) == SQLITE_ROW, let cstr = sqlite3_column_text(stmt, 0) {
+            let val = String(cString: cstr)
+            if !val.isEmpty { result = val }
         }
         sqlite3_finalize(stmt)
-        stmt = nil
-        NotificationQueue.default.enqueue(Notification(name: DictManager.userDictUpdated), postingStyle: .whenIdle)
+        return result
     }
 
     // 查询单个汉字的五笔全码(按长度降序取全码，避免拿到一码简码导致首根不全)
@@ -292,64 +439,132 @@ class DictManager {
         }
     }
 
+    /// 批量插入用户词，使用参数化查询防止 SQL 注入
     func prependCandidates(candidates: [Candidate]) {
         if candidates.count <= 0 {
             return
         }
         // 2.1 先获取最小id
         let minId = getMinIdFromDictTable()
-        // 2.2 添加对应id
-        let values = candidates.enumerated().map { (n, candidate) in
-            "(\(minId - candidates.count + n), '\(candidate.code)', '\(candidate.text)', '\(candidate.type)', '\(candidate.code)')"
-        }.joined(separator: ",")
-        let sql = """
-            insert into wb_py_dict(id, wbcode, text, type, query)
-            values \(values)
-        """
-        sqlite3_exec(database, sql, nil, nil, nil)
+        // 2.2 逐条插入（参数化查询，避免字符串拼接）
+        for (n, candidate) in candidates.enumerated() {
+            let id = minId - candidates.count + n
+            let sql = """
+                insert into wb_py_dict(id, wbcode, text, type, query, s86, s98, s06)
+                values(?, ?, ?, ?, ?,
+                    (select s86 from wb_py_dict where text = ? and s86 is not null limit 1),
+                    (select s98 from wb_py_dict where text = ? and s98 is not null limit 1),
+                    (select s06 from wb_py_dict where text = ? and s06 is not null limit 1))
+            """
+            var stmt: OpaquePointer?
+            guard sqlite3_prepare_v2(database, sql, -1, &stmt, nil) == SQLITE_OK else { continue }
+            sqlite3_bind_int(stmt, 1, Int32(id))
+            sqlite3_bind_text(stmt, 2, candidate.code, -1, SQLITE_TRANSIENT)
+            sqlite3_bind_text(stmt, 3, candidate.text, -1, SQLITE_TRANSIENT)
+            sqlite3_bind_text(stmt, 4, candidate.type.rawValue, -1, SQLITE_TRANSIENT)
+            sqlite3_bind_text(stmt, 5, candidate.code, -1, SQLITE_TRANSIENT)
+            // 子查询参数（取拆字数据）
+            sqlite3_bind_text(stmt, 6, candidate.text, -1, SQLITE_TRANSIENT)
+            sqlite3_bind_text(stmt, 7, candidate.text, -1, SQLITE_TRANSIENT)
+            sqlite3_bind_text(stmt, 8, candidate.text, -1, SQLITE_TRANSIENT)
+            sqlite3_step(stmt)
+            sqlite3_finalize(stmt)
+        }
+        // 为没有拆字数据的多字词生成组合拆字
+        if candidates.count > 1 {
+            for candidate in candidates where candidate.text.count > 1 {
+                fillCompoundGlyphs(for: candidate.text, skipIfExists: true)
+            }
+        }
     }
 
     func updateUserDict(_ dictContent: String) {
-        // 1. 先删除之前的用户词库
+        // 使用事务确保删除+插入原子性，防止数据丢失
+        sqlite3_exec(database, "BEGIN TRANSACTION", nil, nil, nil)
+        // 1. 先删除之前的用户词库（type 为枚举常量，安全）
         sqlite3_exec(database, "delete from wb_py_dict where type = '\(CandidateType.user.rawValue)'", nil, nil, nil)
         // 2. 添加用户词库
         let lines = dictContent.split(whereSeparator: \.isNewline)
         NSLog("[DictManager] updateUserDict: \(lines)");
         let candidates = lines.map { (line) -> [Candidate] in
-            let strs = line.split(whereSeparator: \.isWhitespace)
-            NSLog("[DictManager] line: \(line), strs: \(strs)")
-            if strs.count <= 1 {
-                return []
-            }
-            let code = String(strs.first!)
-            let candidateTexts = strs[1...]
-            return candidateTexts.map { text in
-                Candidate(code: code, text: String(text), type: CandidateType.user)
-            }
+            let parts = parseQuoteAware(line: line)
+            guard parts.count >= 2 else { return [] }
+            let code = String(parts[0])
+            let candidateTexts = parts[1...]
+            return candidateTexts.map { Candidate(code: code, text: String($0), type: CandidateType.user) }
         }.reduce([] as [Candidate]) { partialResult, cur in
             partialResult + cur
         }
         prependCandidates(candidates: candidates)
+        sqlite3_exec(database, "COMMIT", nil, nil, nil)
         NotificationQueue.default.enqueue(Notification(name: DictManager.userDictUpdated), postingStyle: .whenIdle)
     }
 
     func getUserCandidates() -> [Candidate] {
-        var stmt: OpaquePointer?
         let sql = "select query, text from wb_py_dict where type = '\(CandidateType.user.rawValue)'"
-        if sqlite3_prepare_v2(database, sql, -1, &stmt, nil) == SQLITE_OK {
-            var candidates: [Candidate] = []
-            while sqlite3_step(stmt) == SQLITE_ROW {
-                let code = String(cString: sqlite3_column_text(stmt, 0))
-                let text = String(cString: sqlite3_column_text(stmt, 1))
-                candidates.append(Candidate(code: code, text: text, type: .user))
-            }
-            sqlite3_finalize(stmt)
-            stmt = nil
-            return candidates
+        var candidates: [Candidate] = []
+        sqliteQuery(database, sql) { stmt in
+            guard let code = optString(stmt, 0), let text = optString(stmt, 1) else { return }
+            candidates.append(Candidate(code: code, text: text, type: .user))
         }
-        sqlite3_finalize(stmt)
-        stmt = nil
-        return []
+        return candidates
+    }
+
+    /// 查询原始码表条目数（供 UI 验证重建结果）
+    func queryBaseDictCount() -> Int {
+        let sql = "select count(*) from wb_py_dict where type = 'wb' and version is null"
+        var count = 0
+        sqliteQuery(database, sql) { stmt in
+            count = Int(sqlite3_column_int(stmt, 0))
+        }
+        return count
+    }
+
+    /// 导出完整码表（含用户词），编码 词1 词2 ... 格式
+    ///
+    /// 过滤规则：
+    /// - type='wb' 或 type='user': 五笔词 + 用户词
+    /// - version IS NULL: 排除拆字合并插入的汉字
+    /// - text NOT IN blocked: 排除已屏蔽词
+    func exportFullDictContent() -> String {
+        let sql = "select query, group_concat(text, ' ') as texts from wb_py_dict where type in ('wb', 'user') and version is null and text not in (select text from wb_py_dict where type = 'blocked') group by query order by query"
+        var lines: [String] = []
+        sqliteQuery(database, sql) { stmt in
+            guard let code = optString(stmt, 0), let texts = optString(stmt, 1) else { return }
+            lines.append("\(code) \(texts)")
+        }
+        return lines.joined(separator: "\n")
+    }
+
+    // 查询所有被屏蔽的词，用于用户词库面板中展示"已屏蔽词"列表
+    func getBlockedWords() -> [String] {
+        let sql = "select distinct text from wb_py_dict where type = 'blocked' order by text"
+        var words: [String] = []
+        sqliteQuery(database, sql) { stmt in
+            guard let cstr = sqlite3_column_text(stmt, 0) else { return }
+            words.append(String(cString: cstr))
+        }
+        return words
+    }
+
+    // 取消屏蔽：删除 type='blocked' 记录
+    func unblockWord(_ text: String) {
+        let sql = "delete from wb_py_dict where text = ? and type = 'blocked'"
+        sqliteQuery(database, sql, bind: { stmt in
+            sqlite3_bind_text(stmt, 1, text, -1, SQLITE_TRANSIENT)
+        }) { _ in }
+    }
+
+    // 检查某个词是否已被屏蔽（用于组词时判断）
+    func isBlocked(_ text: String) -> Bool {
+        let sql = "select count(*) from wb_py_dict where text = ? and type = 'blocked'"
+        var result = false
+        sqliteQuery(database, sql, bind: { stmt in
+            sqlite3_bind_text(stmt, 1, text, -1, SQLITE_TRANSIENT)
+        }) { stmt in
+            result = sqlite3_column_int(stmt, 0) > 0
+        }
+        return result
     }
 
     func getUserDictContent() -> String {
@@ -372,9 +587,26 @@ class DictManager {
             }
         }
         let content = list.map { dictItem in
-            ([dictItem.code] + dictItem.texts).joined(separator: " ")
+            ([dictItem.code] + dictItem.texts.map { text in
+                text.contains(" ") ? "\"\(text)\"" : text
+            }).joined(separator: " ")
         }
         .joined(separator: "\n")
         return content
+    }
+
+    /// 获取用户词表的结构化行数据（供表格编辑器使用）
+    func getUserDictRows() -> [(code: String, candidates: [String])] {
+        let candidates = getUserCandidates()
+        var dict: [String: [String]] = [:]
+        for candidate in candidates {
+            if dict[candidate.code] == nil {
+                dict[candidate.code] = [candidate.text]
+            } else if !(dict[candidate.code]?.contains(candidate.text) ?? false) {
+                dict[candidate.code]?.append(candidate.text)
+            }
+        }
+        return dict.map { (code: $0.key, candidates: $0.value) }
+            .sorted { $0.code < $1.code }
     }
 }

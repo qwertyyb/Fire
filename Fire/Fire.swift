@@ -22,6 +22,8 @@ class Fire: NSObject {
     var lastCommittedText: String = ""
     // 最近上屏的中文候选词文本，用于"快速加词"组词，仅保留最近若干个
     var recentCommittedTexts: [String] = []
+    // 当前激活的输入控制器，供候选窗鼠标点击等场景使用
+    weak var activeInputController: FireInputController?
 
     override init() {
         super.init()
@@ -78,9 +80,9 @@ class Fire: NSObject {
         Utils.shared.toast?.show(text, position: position)
     }
 
-    var server: IMKServer = IMKServer.init(name: kConnectionName, bundleIdentifier: Bundle.main.bundleIdentifier)
+    let server: IMKServer = IMKServer.init(name: kConnectionName, bundleIdentifier: Bundle.main.bundleIdentifier)
     func getCandidates(origin: String = String(), page: Int = 1) -> (candidates: [Candidate], hasNext: Bool) {
-        if origin.count <= 0 {
+        if origin.isEmpty {
             return ([], false)
         }
         if origin == "z" {
@@ -89,12 +91,30 @@ class Fire: NSObject {
             return ([candidate], false)
         }
         let (candidates, hasNext) = DictManager.shared.getCandidates(query: origin, page: page)
-        let transformed = candidates.map { (candidate) -> Candidate in
-            if candidate.type == .user {
-                return Candidate(code: candidate.code, text: candidate.text, type: .user)
+        // 根据用户设置的输出模式（简体/繁体）对候选词进行实时简繁转换
+        // 使用 CFStringTransform 系统 API 转换，支持 "Hans-Hant"（简→繁）和 "Hant-Hans"（繁→简）
+        let chineseOutputMode = Defaults[.chineseOutputMode]
+        var transformed = candidates.map { (candidate) -> Candidate in
+            let text: String
+            if chineseOutputMode == .traditional {
+                let mutableStr = NSMutableString(string: candidate.text)
+                CFStringTransform(mutableStr, nil, "Hans-Hant" as CFString, false)
+                text = mutableStr as String
+            } else if chineseOutputMode == .simplified {
+                let mutableStr = NSMutableString(string: candidate.text)
+                CFStringTransform(mutableStr, nil, "Hant-Hans" as CFString, false)
+                text = mutableStr as String
+            } else {
+                text = candidate.text
             }
-            return candidate
+            // 同时传递拆字(spelling)和拼音(pinyin)数据，供候选提示模式使用
+            return Candidate(code: candidate.code, text: text, type: candidate.type,
+                              spelling: candidate.spelling, pinyin: candidate.pinyin)
         }
+        // 简繁转换后可能出现"同一个词但不同编码"导致的重复（如简繁同形字），
+        // 用 Set 去重并保留首次出现的候选（即原排序靠前的）
+        var seen = Set<String>()
+        transformed = transformed.filter { seen.insert($0.text).inserted }
         return (transformed, hasNext)
     }
 
