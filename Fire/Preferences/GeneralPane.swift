@@ -58,7 +58,7 @@ struct GeneralPane: View {
                     }
                     .labelsHidden()
                 }
-                LabeledContent("五笔版本") {
+                LabeledContent {
                     Picker("", selection: $spellingScheme) {
                         Text("86").tag(SpellingScheme.wubi86)
                         Text("98").tag(SpellingScheme.wubi98)
@@ -66,6 +66,15 @@ struct GeneralPane: View {
                     }
                     .labelsHidden()
                     .disabled(candidateHintMode != .spelling)
+                } label: {
+                    HStack(spacing: 8) {
+                        Text("拆字版本")
+                        Spacer()
+                        Text("仅五笔拆字提示生效")
+                            .font(.caption)
+                            .foregroundStyle(.tertiary)
+                            .offset(y: 6)
+                    }
                 }
                 Toggle("4码唯一上屏", isOn: $wubiAutoCommit)
                 Toggle(isOn: $wubiFifthCommit) {

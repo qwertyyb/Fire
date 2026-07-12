@@ -116,7 +116,7 @@ struct CandidateView: View {
             if hintMode == .spelling,
                let spelling = candidate.spelling {
                 Text(spelling)
-                    .font(Font.custom("黑体字根", size: 12))
+                    .font(Font.custom(RadicalFontManager.fontName, size: 12))
                     .foregroundStyle(Color(codeColor))
             }
             if hintMode == .wubiCode {

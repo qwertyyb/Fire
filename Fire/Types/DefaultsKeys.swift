@@ -38,7 +38,7 @@ extension Defaults.Keys {
     static let wubiCodeTip = Key<Bool>("wubiCodeTip", default: true)
     static let wubiAutoCommit = Key<Bool>("wubiAutoCommit", default: false)
     static let wubiFifthCommit = Key<Bool>("wubiFifthCommit", default: false)
-    static let candidateHintMode = Key<CandidateHintMode>("candidateHintMode", default: .none)
+    static let candidateHintMode = Key<CandidateHintMode>("candidateHintMode", default: .wubiCode)
     static let candidateCount = Key<Int>("candidateCount", default: 5)
     static let extraCandidateSelectKeys = Key<ExtraCandidateSelectKeys>("extraCandidateSelectKeys", default: .semicolonQuote)
     static let codeMode = Key<CodeMode>("codeMode", default: CodeMode.wubiPinyin)

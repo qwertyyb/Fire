@@ -66,10 +66,14 @@ class FireInputController: IMKInputController {
         }
     }
     func prevPage() {
-        self.curPage = self.curPage > 1 ? self.curPage - 1 : 1
+        guard curPage > 1 else { return }
+        curPage -= 1
+        selectedIndex = 0
     }
     func nextPage() {
-        self.curPage = self._hasNext ? self.curPage + 1 : self.curPage
+        guard _hasNext else { return }
+        curPage += 1
+        selectedIndex = 0
     }
 
     private func markText() {
@@ -378,8 +382,7 @@ class FireInputController: IMKInputController {
                 (keyCode == kVK_DownArrow && Defaults[.candidatesDirection] == .horizontal) ||
                 (keyCode == kVK_RightArrow && Defaults[.candidatesDirection] == .vertical)
             if needNextPage {
-                curPage = _hasNext ? curPage + 1 : curPage
-                selectedIndex = 0
+                nextPage()
                 return true
             }
 
@@ -387,8 +390,7 @@ class FireInputController: IMKInputController {
                 (keyCode == kVK_UpArrow && Defaults[.candidatesDirection] == .horizontal) ||
                 (keyCode == kVK_LeftArrow && Defaults[.candidatesDirection] == .vertical)
             if needPrevPage {
-                curPage = curPage > 1 ? curPage - 1 : 1
-                selectedIndex = 0
+                prevPage()
                 return true
             }
 
@@ -403,19 +405,18 @@ class FireInputController: IMKInputController {
                 if isForward {
                     if selectedIndex < count - 1 {
                         selectedIndex += 1
+                        CandidatesWindow.shared.setSelectedIndex(selectedIndex)
                     } else if _hasNext {
-                        selectedIndex = 0
-                        curPage += 1
+                        nextPage()
                     }
                 } else {
                     if selectedIndex > 0 {
                         selectedIndex -= 1
+                        CandidatesWindow.shared.setSelectedIndex(selectedIndex)
                     } else if curPage > 1 {
-                        curPage -= 1
-                        selectedIndex = _candidates.count - 1
+                        prevPage()
                     }
                 }
-                CandidatesWindow.shared.hostingView.rootView.selectedIndex = selectedIndex
                 return true
             }
         }

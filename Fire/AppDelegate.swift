@@ -75,9 +75,14 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         if !commandHandler() {
             return
         }
-        if !hasDict() {
-            NSLog("[Fire] first run，build dict")
-            buildDict()
+        _ = RadicalFontManager.shared
+        if !hasDict() || !isDictSchemaCurrent() {
+            NSLog("[Fire] dict missing or schema outdated, build dict")
+            if buildDict() {
+                DictManager.shared.reinit()
+            } else {
+                NSLog("[Fire] buildDict failed")
+            }
         }
         NSLog("[Fire] app is running")
         fire = Fire.shared

@@ -41,6 +41,10 @@ class CandidatesWindow: NSPanel, NSWindowDelegate {
         limitFrameInScreen()
     }
 
+    func setSelectedIndex(_ index: Int) {
+        hostingView.rootView.selectedIndex = index
+    }
+
     func setCandidates(
         _ candidatesData: CandidatesData,
         originalString: String,

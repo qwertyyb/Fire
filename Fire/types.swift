@@ -148,7 +148,6 @@ enum CandidateType: String, CaseIterable {
     case wb // 五笔
     case py // 拼音
     case user // 用户词库
-    case blocked // 删除标记：用户删除词典词时插入此类型的记录，查询时排除
     case placeholder // 运行时类型，无匹配时表示占位
     case unknown // 未知类型，用于安全解析数据库记录
 }

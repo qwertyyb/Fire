@@ -38,7 +38,7 @@ extension FireInputController {
 
     /// 打开五笔字根表窗口
     ///
-    /// 根据当前选中的五笔版本（86/98/06）加载对应的字根表图片。
+    /// 根据当前选中的拆字版本（86/98/06）加载对应的字根表图片。
     /// 同一时间只允许打开一个字根表窗口，通过弱引用而非遍历 NSApp.windows 实现：
     ///   - 同版本窗口已存在 → 激活前置
     ///   - 不同版本窗口已存在 → 关闭旧窗口（weak 引用自动失效），加载新版
@@ -114,7 +114,7 @@ extension FireInputController {
         menu.items = [
             NSMenuItem(title: "首选项", action: #selector(showPreferences(_:)), keyEquivalent: ""),
             NSMenuItem(title: "用户词库", action: #selector(showUserDictPrefs(_:)), keyEquivalent: ""),
-            // 查看五笔字根表：根据当前五笔版本加载对应字根图，同一时间仅开一个窗口
+            // 查看五笔字根表：根据当前拆字版本加载对应字根图，同一时间仅开一个窗口
             NSMenuItem(title: "查看五笔字根表", action: #selector(showWubiRootTable(_:)), keyEquivalent: ""),
         ]
         if !Defaults[.disableEnMode],

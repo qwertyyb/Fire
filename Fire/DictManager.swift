@@ -95,7 +95,7 @@ class DictManager {
                                 : codeMode == .pinyin ? "and type in ('py', 'user')" : "")
                 \(gbkFilter)
                 -- 排除用户屏蔽的词
-                and text not in (select text from wb_py_dict where type = 'blocked')
+                and not exists (select 1 from blocked_words b where b.text = wb_py_dict.text)
             group by text
             order by query, id
             limit :offset, \(candidateCount + 1)
@@ -120,7 +120,9 @@ class DictManager {
         }
         let sql = getStatementSql()
         // 日志输出实际执行的 SQL，方便调试查询问题
+#if DEBUG
         NSLog("[DictManager] SQL: \(sql.replacingOccurrences(of: "\n", with: " "))")
+#endif
         if sqlite3_prepare_v2(database, sql, -1, &queryStatement, nil) == SQLITE_OK {
             print("prepare ok")
         } else if let err = sqlite3_errmsg(database) {
@@ -321,18 +323,12 @@ class DictManager {
             }
             sqlite3_finalize(stmt)
         }
-        // 插入 blocked 屏蔽原始的词典词（全部使用参数化绑定）
-        let blockSql = "insert into wb_py_dict(wbcode, text, type, query) values (:code, :text, :type, :code)"
+        let blockSql = "insert or ignore into blocked_words(text) values (?)"
         var blockStmt: OpaquePointer?
         if sqlite3_prepare_v2(database, blockSql, -1, &blockStmt, nil) == SQLITE_OK {
-            sqlite3_bind_text(blockStmt, sqlite3_bind_parameter_index(blockStmt, ":code"),
-                              candidate.code, -1, SQLITE_TRANSIENT)
-            sqlite3_bind_text(blockStmt, sqlite3_bind_parameter_index(blockStmt, ":text"),
-                              candidate.text, -1, SQLITE_TRANSIENT)
-            sqlite3_bind_text(blockStmt, sqlite3_bind_parameter_index(blockStmt, ":type"),
-                              CandidateType.blocked.rawValue, -1, SQLITE_TRANSIENT)
+            sqlite3_bind_text(blockStmt, 1, candidate.text, -1, SQLITE_TRANSIENT)
             if sqlite3_step(blockStmt) != SQLITE_DONE {
-                NSLog("[DictManager.deleteCandidate] insert blocked failed: %s", sqlite3_errmsg(database) ?? "unknown")
+                NSLog("[DictManager.deleteCandidate] insert blocked_words failed: %s", sqlite3_errmsg(database) ?? "unknown")
             }
         }
         sqlite3_finalize(blockStmt)
@@ -344,54 +340,7 @@ class DictManager {
     ///   - text: 候选词文本
     ///   - skipIfExists: 若该列已有拆字数据则跳过（批量导入时使用）
     private func fillCompoundGlyphs(for text: String, skipIfExists: Bool = false) {
-        guard text.count > 1 else { return }
-        let chars = text.map { String($0) }
-        for col in ["s86", "s98", "s06"] {
-            if skipIfExists {
-                let checkSql = "select count(*) from wb_py_dict where text = ? and type = 'user' and \(col) is not null"
-                var checkStmt: OpaquePointer?
-                var hasData = false
-                if sqlite3_prepare_v2(database, checkSql, -1, &checkStmt, nil) == SQLITE_OK {
-                    sqlite3_bind_text(checkStmt, 1, text, -1, SQLITE_TRANSIENT)
-                    if sqlite3_step(checkStmt) == SQLITE_ROW { hasData = sqlite3_column_int(checkStmt, 0) > 0 }
-                }
-                sqlite3_finalize(checkStmt)
-                if hasData { continue }
-            }
-            let glyphs = chars.compactMap { getCharGlyph($0, column: col) }
-            guard glyphs.count == chars.count else { continue }
-            let result: String
-            switch glyphs.count {
-            case 2: result = String(glyphs[0].prefix(2)) + String(glyphs[1].prefix(2))
-            case 3: result = String(glyphs[0].prefix(1)) + String(glyphs[1].prefix(1)) + String(glyphs[2].prefix(2))
-            default: result = String(glyphs[0].prefix(1)) + String(glyphs[1].prefix(1)) + String(glyphs[2].prefix(1)) + String(glyphs[chars.count - 1].prefix(1))
-            }
-            if !result.isEmpty {
-                let upSql = "update wb_py_dict set \(col) = ?1 where text = ?2 and type = 'user'"
-                var up: OpaquePointer?
-                if sqlite3_prepare_v2(database, upSql, -1, &up, nil) == SQLITE_OK {
-                    sqlite3_bind_text(up, 1, result, -1, SQLITE_TRANSIENT)
-                    sqlite3_bind_text(up, 2, text, -1, SQLITE_TRANSIENT)
-                    sqlite3_step(up)
-                }
-                sqlite3_finalize(up)
-            }
-        }
-    }
-
-    // 查询单个汉字的拆字根（用于为新用户词生成组合拆字数据）
-    private func getCharGlyph(_ char: String, column: String) -> String? {
-        let sql = "select \(column) from wb_py_dict where text = ? and \(column) is not null limit 1"
-        var stmt: OpaquePointer?
-        guard sqlite3_prepare_v2(database, sql, -1, &stmt, nil) == SQLITE_OK else { return nil }
-        sqlite3_bind_text(stmt, 1, char, -1, SQLITE_TRANSIENT)
-        var result: String?
-        if sqlite3_step(stmt) == SQLITE_ROW, let cstr = sqlite3_column_text(stmt, 0) {
-            let val = String(cString: cstr)
-            if !val.isEmpty { result = val }
-        }
-        sqlite3_finalize(stmt)
-        return result
+        DictGlyphFill.fillCompoundGlyphs(db: database, text: text, skipIfExists: skipIfExists)
     }
 
     // 查询单个汉字的五笔全码(按长度降序取全码，避免拿到一码简码导致首根不全)
@@ -527,7 +476,12 @@ class DictManager {
     /// - version IS NULL: 排除拆字合并插入的汉字
     /// - text NOT IN blocked: 排除已屏蔽词
     func exportFullDictContent() -> String {
-        let sql = "select query, group_concat(text, ' ') as texts from wb_py_dict where type in ('wb', 'user') and version is null and text not in (select text from wb_py_dict where type = 'blocked') group by query order by query"
+        let sql = """
+            select query, group_concat(text, ' ') as texts from wb_py_dict
+            where type in ('wb', 'user') and version is null
+            and not exists (select 1 from blocked_words b where b.text = wb_py_dict.text)
+            group by query order by query
+        """
         var lines: [String] = []
         sqliteQuery(database, sql) { stmt in
             guard let code = optString(stmt, 0), let texts = optString(stmt, 1) else { return }
@@ -538,7 +492,7 @@ class DictManager {
 
     // 查询所有被屏蔽的词，用于用户词库面板中展示"已屏蔽词"列表
     func getBlockedWords() -> [String] {
-        let sql = "select distinct text from wb_py_dict where type = 'blocked' order by text"
+        let sql = "select text from blocked_words order by text"
         var words: [String] = []
         sqliteQuery(database, sql) { stmt in
             guard let cstr = sqlite3_column_text(stmt, 0) else { return }
@@ -549,7 +503,7 @@ class DictManager {
 
     // 取消屏蔽：删除 type='blocked' 记录
     func unblockWord(_ text: String) {
-        let sql = "delete from wb_py_dict where text = ? and type = 'blocked'"
+        let sql = "delete from blocked_words where text = ?"
         sqliteQuery(database, sql, bind: { stmt in
             sqlite3_bind_text(stmt, 1, text, -1, SQLITE_TRANSIENT)
         }) { _ in }
@@ -557,7 +511,7 @@ class DictManager {
 
     // 检查某个词是否已被屏蔽（用于组词时判断）
     func isBlocked(_ text: String) -> Bool {
-        let sql = "select count(*) from wb_py_dict where text = ? and type = 'blocked'"
+        let sql = "select count(*) from blocked_words where text = ?"
         var result = false
         sqliteQuery(database, sql, bind: { stmt in
             sqlite3_bind_text(stmt, 1, text, -1, SQLITE_TRANSIENT)

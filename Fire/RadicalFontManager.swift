@@ -10,9 +10,10 @@ import CoreText
 
 /// 管理黑体字根字体注册，用于候选词窗中显示五笔拆字字根（如 〈氵工〉）
 /// 字体来源：https://github.com/mrshiqiqi/rime-wubi
-/// 在 init 时自动注册到当前进程，注册后可在 SwiftUI Text 中通过 Font.custom("黑体字根") 使用
+/// 在 init 时自动注册到当前进程，注册后可在 SwiftUI Text 中通过 Font.custom(fontName) 使用
 class RadicalFontManager {
     static let shared = RadicalFontManager()
+    static let fontName = "黑体字根"
 
     private var fontAvailable = false
 
@@ -21,21 +22,28 @@ class RadicalFontManager {
     }
 
     private func registerFont() {
-        guard let fontURL = Bundle.main.url(
-            forResource: "黑体字根",
-            withExtension: "ttf",
-            subdirectory: "font"
-        ) else {
-            NSLog("[RadicalFontManager] Font file not found")
+        // Xcode 将 ttf 复制到 Resources 根目录，而非保留源码中的 font/ 子目录
+        let fontURL = Bundle.main.url(forResource: Self.fontName, withExtension: "ttf")
+            ?? Bundle.main.url(forResource: Self.fontName, withExtension: "ttf", subdirectory: "font")
+        guard let fontURL else {
+            NSLog("[RadicalFontManager] Font file not found in bundle")
             return
         }
-        let status = CTFontManagerRegisterFontsForURL(fontURL as CFURL, .process, nil)
-        if status {
+
+        let registered = CTFontManagerRegisterFontsForURL(fontURL as CFURL, .process, nil)
+        if registered {
             fontAvailable = true
-            NSLog("[RadicalFontManager] Font registered: 黑体字根")
+            NSLog("[RadicalFontManager] Font registered: \(Self.fontName)")
+            return
+        }
+
+        // 进程内重复注册会失败，确认字体是否已可用
+        let font = CTFontCreateWithName(Self.fontName as CFString, 12, nil)
+        fontAvailable = (CTFontCopyFamilyName(font) as String) == Self.fontName
+        if fontAvailable {
+            NSLog("[RadicalFontManager] Font already available: \(Self.fontName)")
         } else {
-            fontAvailable = false
-            NSLog("[RadicalFontManager] Font registration failed, font may already be registered")
+            NSLog("[RadicalFontManager] Font registration failed")
         }
     }
 

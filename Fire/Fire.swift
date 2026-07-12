@@ -91,18 +91,13 @@ class Fire: NSObject {
             return ([candidate], false)
         }
         let (candidates, hasNext) = DictManager.shared.getCandidates(query: origin, page: page)
-        // 根据用户设置的输出模式（简体/繁体）对候选词进行实时简繁转换
-        // 使用 CFStringTransform 系统 API 转换，支持 "Hans-Hant"（简→繁）和 "Hant-Hans"（繁→简）
+        // 简体输出跳过转换；繁体输出使用 CFStringTransform 简→繁
         let chineseOutputMode = Defaults[.chineseOutputMode]
         var transformed = candidates.map { (candidate) -> Candidate in
             let text: String
             if chineseOutputMode == .traditional {
                 let mutableStr = NSMutableString(string: candidate.text)
                 CFStringTransform(mutableStr, nil, "Hans-Hant" as CFString, false)
-                text = mutableStr as String
-            } else if chineseOutputMode == .simplified {
-                let mutableStr = NSMutableString(string: candidate.text)
-                CFStringTransform(mutableStr, nil, "Hant-Hans" as CFString, false)
                 text = mutableStr as String
             } else {
                 text = candidate.text
