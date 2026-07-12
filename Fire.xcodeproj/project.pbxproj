@@ -30,7 +30,6 @@
 		67C9A00E2AB53E83000B5281 /* Fire.swift in Sources */ = {isa = PBXBuildFile; fileRef = 67C9A0062AB53E83000B5281 /* Fire.swift */; };
 		67C9A00F2AB53E83000B5281 /* FireInputController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 67C9A0072AB53E83000B5281 /* FireInputController.swift */; };
 		67C9A0102AB53E83000B5281 /* types.swift in Sources */ = {isa = PBXBuildFile; fileRef = 67C9A0082AB53E83000B5281 /* types.swift */; };
-		A1B2C3D52FF9000100A595A7 /* DictGlyphFill.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1B2C3D42FF9000100A595A7 /* DictGlyphFill.swift */; };
 		67C9A0132AB53EB0000B5281 /* build.swift in Sources */ = {isa = PBXBuildFile; fileRef = 67C9A0122AB53EB0000B5281 /* build.swift */; };
 		67C9A0312AB53ED3000B5281 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 67C9A0152AB53ED2000B5281 /* InfoPlist.strings */; };
 		67C9A0322AB53ED3000B5281 /* CandidatesView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 67C9A0182AB53ED2000B5281 /* CandidatesView.swift */; };
@@ -60,6 +59,7 @@
 		67C9A05D2AB53ED3000B5281 /* NativePreferencesView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 67C9A05C2AB53ED3000B5281 /* NativePreferencesView.swift */; };
 		67F0B0D32AFFC282006F835D /* StatusBarController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 67F0B0D22AFFC282006F835D /* StatusBarController.swift */; };
 		8917BF0031A6446A8B2BAA8A /* DefaultsKeys.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9D66CC3B495E421AA61AC9C7 /* DefaultsKeys.swift */; };
+		A1B2C3D52FF9000100A595A7 /* DictGlyphFill.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1B2C3D42FF9000100A595A7 /* DictGlyphFill.swift */; };
 		B603472A2FF5751B005E7F9B /* wubi86_spelling.txt in Resources */ = {isa = PBXBuildFile; fileRef = B60347292FF5751B005E7F9B /* wubi86_spelling.txt */; };
 		B603472C2FF5781B005E7F9B /* wubi98_spelling.txt in Resources */ = {isa = PBXBuildFile; fileRef = B603472B2FF5781B005E7F9B /* wubi98_spelling.txt */; };
 		B60347302FF5EB6F005E7F9B /* wubi06_spelling.txt in Resources */ = {isa = PBXBuildFile; fileRef = B603472F2FF5EB6F005E7F9B /* wubi06_spelling.txt */; };
@@ -69,6 +69,7 @@
 		B6B720442FF74FD100A3066B /* 86版五笔字型.png in Resources */ = {isa = PBXBuildFile; fileRef = B6B7203F2FF74FD100A3066B /* 86版五笔字型.png */; };
 		B6B720462FF806000A595A7 /* CelebrationEffect.swift in Sources */ = {isa = PBXBuildFile; fileRef = B6B720452FF806000A595A7 /* CelebrationEffect.swift */; };
 		E291A4B12E614A66A584B462 /* KeyCap.swift in Sources */ = {isa = PBXBuildFile; fileRef = CEE3257C88BD4ECD92819A9B /* KeyCap.swift */; };
+		F1A2B3C52FF9000200A595A7 /* PreferencePickerRow.swift in Sources */ = {isa = PBXBuildFile; fileRef = F1A2B3C42FF9000200A595A7 /* PreferencePickerRow.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -110,7 +111,6 @@
 		67C9A0072AB53E83000B5281 /* FireInputController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FireInputController.swift; sourceTree = "<group>"; };
 		67C9A0082AB53E83000B5281 /* types.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = types.swift; sourceTree = "<group>"; };
 		67C9A0122AB53EB0000B5281 /* build.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = build.swift; sourceTree = "<group>"; };
-		A1B2C3D42FF9000100A595A7 /* DictGlyphFill.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DictGlyphFill.swift; sourceTree = "<group>"; };
 		67C9A0162AB53ED2000B5281 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = InfoPlist.strings; sourceTree = "<group>"; };
 		67C9A0172AB53ED2000B5281 /* Bridging-Header.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "Bridging-Header.h"; sourceTree = "<group>"; };
 		67C9A0182AB53ED2000B5281 /* CandidatesView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CandidatesView.swift; sourceTree = "<group>"; };
@@ -139,6 +139,7 @@
 		67C9A05C2AB53ED3000B5281 /* NativePreferencesView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NativePreferencesView.swift; sourceTree = "<group>"; };
 		67F0B0D22AFFC282006F835D /* StatusBarController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StatusBarController.swift; sourceTree = "<group>"; };
 		9D66CC3B495E421AA61AC9C7 /* DefaultsKeys.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DefaultsKeys.swift; sourceTree = "<group>"; };
+		A1B2C3D42FF9000100A595A7 /* DictGlyphFill.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DictGlyphFill.swift; sourceTree = "<group>"; };
 		B60347292FF5751B005E7F9B /* wubi86_spelling.txt */ = {isa = PBXFileReference; lastKnownFileType = text; path = wubi86_spelling.txt; sourceTree = "<group>"; };
 		B603472B2FF5781B005E7F9B /* wubi98_spelling.txt */ = {isa = PBXFileReference; lastKnownFileType = text; path = wubi98_spelling.txt; sourceTree = "<group>"; };
 		B603472F2FF5EB6F005E7F9B /* wubi06_spelling.txt */ = {isa = PBXFileReference; lastKnownFileType = text; path = wubi06_spelling.txt; sourceTree = "<group>"; };
@@ -148,6 +149,7 @@
 		B6B720402FF74FD100A3066B /* 98版五笔字型.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "98版五笔字型.png"; sourceTree = "<group>"; };
 		B6B720452FF806000A595A7 /* CelebrationEffect.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CelebrationEffect.swift; sourceTree = "<group>"; };
 		CEE3257C88BD4ECD92819A9B /* KeyCap.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KeyCap.swift; sourceTree = "<group>"; };
+		F1A2B3C42FF9000200A595A7 /* PreferencePickerRow.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PreferencePickerRow.swift; sourceTree = "<group>"; };
 		FCD8E654442EC085F2FF81D5 /* RadicalFontManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RadicalFontManager.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -333,6 +335,7 @@
 				67C9A02C2AB53ED3000B5281 /* PunctuationPane.swift */,
 				67C9A05C2AB53ED3000B5281 /* NativePreferencesView.swift */,
 				CEE3257C88BD4ECD92819A9B /* KeyCap.swift */,
+				F1A2B3C42FF9000200A595A7 /* PreferencePickerRow.swift */,
 			);
 			path = Preferences;
 			sourceTree = "<group>";
@@ -545,6 +548,7 @@
 				67C99FFF2AB53E62000B5281 /* TipsWindow.swift in Sources */,
 				5DBA9BFFAF8D649A1C60D5FD /* RadicalFontManager.swift in Sources */,
 				E291A4B12E614A66A584B462 /* KeyCap.swift in Sources */,
+				F1A2B3C52FF9000200A595A7 /* PreferencePickerRow.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -750,6 +754,7 @@
 					"$(inherited)",
 					"@executable_path/../Frameworks",
 				);
+				MACOSX_DEPLOYMENT_TARGET = 14.6;
 				MARKETING_VERSION = 1.0;
 				OTHER_CFLAGS = (
 					"-DSQLITE_HAS_CODEC",
@@ -793,6 +798,7 @@
 					"$(inherited)",
 					"@executable_path/../Frameworks",
 				);
+				MACOSX_DEPLOYMENT_TARGET = 14.6;
 				MARKETING_VERSION = 1.0;
 				OTHER_CFLAGS = (
 					"-DSQLITE_HAS_CODEC",

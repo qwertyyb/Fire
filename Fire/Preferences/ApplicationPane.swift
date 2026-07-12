@@ -97,7 +97,7 @@ struct ApplicationPane: View {
     var body: some View {
         Form {
             Section {
-                Toggle("保持应用最后使用的输入模式", isOn: $keepAppInputMode)
+                PreferenceToggleRow(title: "保持应用最后使用的输入模式", isOn: $keepAppInputMode)
                 Text("仅保留最近使用的\(InputModeCache.shared.capacity)个应用的输入模式")
                     .font(.caption)
                     .foregroundStyle(.secondary)
@@ -105,7 +105,7 @@ struct ApplicationPane: View {
                 Text("自动切换")
             }
             Section {
-                LabeledContent("显示提示") {
+                PreferencePickerRow(title: "显示提示") {
                     Picker("", selection: $appInputModeTipShowTime) {
                         Text("仅在变化时显示").tag(AppInputModeTipShowTime.onlyChanged)
                         Text("总是显示").tag(AppInputModeTipShowTime.always)
