@@ -16,11 +16,13 @@ struct PunctuationPane: View {
     @Default(.customPunctuationSettings) private var customPunctuationSettings
     @Default(.enableDotAfterNumber) private var enableDotAfterNumber
     @Default(.enableColonAfterNumber) private var enableColonAfterNumber
+    @Default(.enablePunctuationAutoPair) private var enablePunctuationAutoPair
     var body: some View {
         Form {
             Section {
                 PreferenceToggleRow(title: "数字后输入“。”自动转为“.”", caption: "适用于如 1.5 小数输入场景", isOn: $enableDotAfterNumber)
                 PreferenceToggleRow(title: "数字后输入“：”自动转为“:”", caption: "适用于如 12:45 时间输入场景", isOn: $enableColonAfterNumber)
+                PreferenceToggleRow(title: "成对标点配对输出", isOn: $enablePunctuationAutoPair)
             } header: {
                 Text("自动转换")
             }

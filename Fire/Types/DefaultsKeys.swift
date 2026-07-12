@@ -60,6 +60,7 @@ extension Defaults.Keys {
     static let customPunctuationSettings = Key<[String: String]>("customPunctuationSettings", default: punctuation)
     static let enableDotAfterNumber = Key<Bool>("enableDotAfterNumber", default: true)
     static let enableColonAfterNumber = Key<Bool>("enableColonAfterNumber", default: true)
+    static let enablePunctuationAutoPair = Key<Bool>("enablePunctuationAutoPair", default: true)
     static let enableWhitespaceBetweenZhEn = Key<Bool>("enableWhitespaceBetweenZhEn", default: true)
     static let wbTablePath = Key<String>("wbTableURL", default: Bundle.main.resourceURL?.appendingPathComponent("wb_table.txt").path ?? "")
     static let pyTablePath = Key<String>("pyTableURL", default: Bundle.main.resourceURL?.appendingPathComponent("py_table.txt").path ?? "")

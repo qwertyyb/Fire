@@ -58,6 +58,16 @@ class PunctuationConversion: Conversion {
         "「": 0,
         "」": 0
     ]
+    private let pairs: [String: String] = [
+        "‘": "’", "“": "”",
+        "（": "）", "【": "】",
+        "「": "」", "《": "》",
+        "『": "』", "〔": "〕",
+        
+        "'": "'", "\"": "\"",
+        "(": ")", "[": "]",
+        "{": "}", "<": ">",
+    ]
     
     // 转换单双引号
     // 基本思路: 第一次按引号输入左引号，第二次按输入右引号
@@ -97,8 +107,15 @@ class PunctuationConversion: Conversion {
         return result
     }
     
+    private func transformPair(_ result: String) -> String {
+        if Defaults[.enablePunctuationAutoPair], let closeStr = pairs[result] {
+            return result + closeStr
+        }
+        return result
+    }
+    
     private func transformResult(_ result: String) -> String {
-        return transformQuoteResult(transformSquareBrackets(result))
+        return transformPair(transformQuoteResult(transformSquareBrackets(result)))
     }
     
     func conversion(_ origin: String) -> String? {
@@ -112,6 +129,13 @@ class PunctuationConversion: Conversion {
             guard let mapped = Defaults[.customPunctuationSettings][origin] else { return nil }
             return transformResult(mapped)
         }
+    }
+    
+    func isPair(_ str: String) -> Bool {
+        guard str.count == 2,
+              let open = str.first,
+              let close = str.last else { return false }
+        return pairs[String(open)] == String(close)
     }
     
     /// 重置引号/括号配对状态。应在每次输入会话结束时调用，防止跨会话状态错乱。

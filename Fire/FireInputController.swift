@@ -682,6 +682,7 @@ class FireInputController: IMKInputController {
     }
 
     override func selectionRange() -> NSRange {
+        NSLog("[FireInputController] selectionRange")
         if _combineCount != nil {
             // 组词模式下为 1 长度的占位合成串，与 markCombineText 保持一致
             return NSRange(location: 0, length: 1)
@@ -733,8 +734,33 @@ class FireInputController: IMKInputController {
             let value = NSAttributedString(string: newText)
             client()?.insertText(value, replacementRange: replacementRange())
             _lastInputIsNumber = newText.last?.isWholeNumber ?? false
+            if PunctuationConversion.shared.isPair(newText) {
+                DispatchQueue.main.async {
+                    self.moveCursor(-1)
+                }
+            }
         }
         clean()
+    }
+    
+    func moveCursor(_ offset: Int) {
+        // offset 负值往前移，正值往后移
+        guard let client = client() else { return }
+        NSLog("[FireInputController] moveCursor \(client.attributedSubstring(from: NSMakeRange(0, 10))) \(offset), selectedRange: \(client.selectedRange()), markedRange: \(client.markedRange()), length: \(client.length())")
+        let attrs = mark(forStyle: kTSMHiliteConvertedText, at: NSRange(location: NSNotFound, length: 0))
+        let curPos = client.selectedRange().location
+        let expectPos = curPos + offset
+        // 理论上此处应当判断位置是否超过 client.length()，但是发现在 Chrome、Electron 等应用上，client.length() 返回0，不存在判断过界的条件
+        // 经过实测发现，即使向后超过当前文本框的文本长度，也不会报错，所以此处不再进行过界的判断
+        if expectPos < 0 { return }
+        let range = NSMakeRange(expectPos, 0)
+        if let attributes = attrs as? [NSAttributedString.Key: Any] {
+            let text = NSAttributedString(string: " ", attributes: attributes)
+            client.setMarkedText(text, selectionRange: selectionRange(), replacementRange: range)
+            DispatchQueue.main.async {
+                client.setMarkedText("", selectionRange: self.selectionRange(), replacementRange: range)
+            }
+        }
     }
 
     // 往输入框中插入原始字符
