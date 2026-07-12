@@ -18,7 +18,7 @@ let punctuation: [String: String] = [
     "'": "‘",
     "[": "【",
     "]": "】",
-    "`": "·",
+    "`": "`",
     "!": "！",
     "@": "@",
     "#": "#",
@@ -109,7 +109,8 @@ class PunctuationConversion: Conversion {
         case .zhhans:
             return punctuation[origin].map { transformResult($0) }
         case .custom:
-            return Defaults[.customPunctuationSettings][origin]
+            guard let mapped = Defaults[.customPunctuationSettings][origin] else { return nil }
+            return transformResult(mapped)
         }
     }
     

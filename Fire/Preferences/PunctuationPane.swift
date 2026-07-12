@@ -19,6 +19,12 @@ struct PunctuationPane: View {
     var body: some View {
         Form {
             Section {
+                PreferenceToggleRow(title: "数字后输入“。”自动转为“.”", caption: "适用于如 1.5 小数输入场景", isOn: $enableDotAfterNumber)
+                PreferenceToggleRow(title: "数字后输入“：”自动转为“:”", caption: "适用于如 12:45 时间输入场景", isOn: $enableColonAfterNumber)
+            } header: {
+                Text("自动转换")
+            }
+            Section {
                 PreferencePickerRow(title: "标点符号映射") {
                     Picker("", selection: $punctuationMode) {
                         Text("半角").tag(PunctuationMode.enUs)
@@ -29,12 +35,6 @@ struct PunctuationPane: View {
                 }
             } header: {
                 Text("标点方案")
-            }
-            Section {
-                PreferenceToggleRow(title: "数字后输入“。”自动转为“.”", caption: "适用于如 1.5 小数输入场景", isOn: $enableDotAfterNumber)
-                PreferenceToggleRow(title: "数字后输入“：”自动转为“:”", caption: "适用于如 12:45 时间输入场景", isOn: $enableColonAfterNumber)
-            } header: {
-                Text("自动转换")
             }
             Section {
                 VStack(spacing: 0) {
