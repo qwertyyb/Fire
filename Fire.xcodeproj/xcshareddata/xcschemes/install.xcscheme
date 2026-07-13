@@ -44,7 +44,7 @@
             ActionType = "Xcode.IDEStandardExecutionActionsCore.ExecutionActionType.ShellScriptAction">
             <ActionContent
                title = "Run Script"
-               scriptText = "# Type a script or drag a script file from your workspace to insert its path.&#10;pkill -9 Fire&#10;">
+               scriptText = "# &#x4ec5;&#x7ec8;&#x6b62; Fire &#x8f93;&#x5165;&#x6cd5;&#x8fdb;&#x7a0b;&#x3002;&#10;pkill -9 -f &quot;Fire.app/Contents/MacOS/Fire&quot; 2&gt;/dev/null || true&#10;">
             </ActionContent>
          </ExecutionAction>
       </PreActions>

@@ -213,11 +213,14 @@ struct ThemePane: View {
 
 // MARK: - 主题编辑器
 
+fileprivate let themeSectionPadding: CGFloat = 16
+
 struct ThemeEditorView: View {
     @State private var editingDark = false
     @State private var showVerticalPreview = false
-    @State private var syncSliders = true
+    @State private var darkSameLight = true
     @State private var name = ""
+    @State private var themeSchemaVersion = String(schemaVersion)
     @State private var id = ""
     @State private var author = NSFullUserName()
     @State private var light = defaultThemeConfig.light
@@ -234,6 +237,7 @@ struct ThemeEditorView: View {
             _author = State(initialValue: e.author)
             _light = State(initialValue: e.light)
             _dark = State(initialValue: e.dark ?? e.light)
+            _darkSameLight = State(initialValue: e.dark == nil || e.dark == e.light)
         } else {
             _id = State(
                 initialValue: String(UUID().uuidString.prefix(8).lowercased())
@@ -245,7 +249,7 @@ struct ThemeEditorView: View {
         NSLog("[ThemeEditor] updatePreviewWindow")
         // 关闭旧窗口后重建（避免替换 contentView 导致的 AppKit 状态问题）
         Self.closePreview()
-        let config = editingDark ? dark : light
+        let config = (darkSameLight || !editingDark) ? light : dark
         let demo: [Candidate] = [
             Candidate(code: "a", text: "工", type: CandidateType.wb),
             Candidate(code: "a", text: "戈", type: CandidateType.wb),
@@ -301,214 +305,20 @@ struct ThemeEditorView: View {
         Self.closePreview()
     }
 
+    private var activeTheme: Binding<AppearanceThemeConfig> {
+        if darkSameLight || !editingDark { $light } else { $dark }
+    }
+
     var body: some View {
         VStack(spacing: 0) {
             ScrollView {
-                VStack(alignment: .leading, spacing: 20) {
-                    // MARK: 基本信息 + 模式切换
-                    HStack(alignment: .top, spacing: 16) {
-                        GroupBox {
-                            VStack(spacing: 10) {
-                                HStack {
-                                    Text("名称").frame(width: 40, alignment: .trailing)
-                                    TextField("", text: $name).frame(maxWidth: .infinity)
-                                }
-                                HStack {
-                                    Text("编号").frame(width: 40, alignment: .trailing)
-                                    TextField("", text: $id).disabled(true).frame(maxWidth: .infinity)
-                                }
-                                HStack {
-                                    Text("作者").frame(width: 40, alignment: .trailing)
-                                    TextField("", text: $author).frame(maxWidth: .infinity)
-                                }
-                            }
-                            .padding(.trailing, 10)
-                        } label: {
-                            Label("基本信息", systemImage: "info.circle")
-                        }
-
-                        GroupBox {
-                            VStack(spacing: 10) {
-                                HStack(spacing: 6) {
-                                    VStack(spacing: 2) {
-                                        Image(systemName: "sun.max.fill")
-                                            .font(.system(size: 14))
-                                        Text("浅色").font(.caption2)
-                                    }
-                                    .foregroundStyle(editingDark ? Color.gray.opacity(0.35) : Color.accentColor)
-                                    .frame(width: 60, height: 52)
-                                    .background(!editingDark ? Color.accentColor.opacity(0.12) : Color.gray.opacity(0.08))
-                                    .cornerRadius(8)
-                                    .contentShape(Rectangle())
-                                    .onTapGesture { editingDark = false }
-                                    .onHover { hovering in
-                                        if hovering {
-                                            NSCursor.pointingHand.push()
-                                        } else {
-                                            NSCursor.pop()
-                                        }
-                                    }
-                                    .accessibilityAddTraits(.isButton)
-                                    .accessibilityLabel("浅色")
-
-                                    VStack(spacing: 2) {
-                                        Image(systemName: "moon.fill")
-                                            .font(.system(size: 14))
-                                        Text("深色").font(.caption2)
-                                    }
-                                    .foregroundStyle(editingDark ? Color.accentColor : Color.gray.opacity(0.35))
-                                    .frame(width: 60, height: 52)
-                                    .background(editingDark ? Color.accentColor.opacity(0.12) : Color.gray.opacity(0.08))
-                                    .cornerRadius(8)
-                                    .contentShape(Rectangle())
-                                    .onTapGesture { editingDark = true }
-                                    .onHover { hovering in
-                                        if hovering {
-                                            NSCursor.pointingHand.push()
-                                        } else {
-                                            NSCursor.pop()
-                                        }
-                                    }
-                                    .accessibilityAddTraits(.isButton)
-                                    .accessibilityLabel("深色")
-                                    Divider()
-                                    VStack(spacing: 2) {
-                                        Image(systemName: "text.justify")
-                                            .font(.system(size: 14))
-                                        Text("横向").font(.caption2)
-                                    }
-                                    .foregroundStyle(showVerticalPreview ? Color.gray.opacity(0.35) : Color.accentColor)
-                                    .frame(width: 60, height: 52)
-                                    .background(!showVerticalPreview ? Color.accentColor.opacity(0.12) : Color.gray.opacity(0.08))
-                                    .cornerRadius(8)
-                                    .contentShape(Rectangle())
-                                    .onTapGesture { showVerticalPreview = false }
-                                    .onHover { hovering in
-                                        if hovering {
-                                            NSCursor.pointingHand.push()
-                                        } else {
-                                            NSCursor.pop()
-                                        }
-                                    }
-                                    .accessibilityAddTraits(.isButton)
-                                    .accessibilityLabel("横向")
-
-                                    VStack(spacing: 2) {
-                                        Image(systemName: "text.justify")
-                                            .font(.system(size: 14))
-                                            .rotationEffect(.degrees(90))
-                                        Text("竖向").font(.caption2)
-                                    }
-                                    .foregroundStyle(showVerticalPreview ? Color.accentColor : Color.gray.opacity(0.35))
-                                    .frame(width: 60, height: 52)
-                                    .background(showVerticalPreview ? Color.accentColor.opacity(0.12) : Color.gray.opacity(0.08))
-                                    .cornerRadius(8)
-                                    .contentShape(Rectangle())
-                                    .onTapGesture { showVerticalPreview = true }
-                                    .onHover { hovering in
-                                        if hovering {
-                                            NSCursor.pointingHand.push()
-                                        } else {
-                                            NSCursor.pop()
-                                        }
-                                    }
-                                    .accessibilityAddTraits(.isButton)
-                                    .accessibilityLabel("竖向")
-                                }
-                                Divider()
-                                Toggle("毛玻璃效果", isOn: (editingDark ? $dark : $light).enableLiquidGlass)
-                                    .controlSize(.small)
-                            }
-                        } label: {
-                            Label("预览模式", systemImage: "eye")
-                        }
-                    }
-
-                    // MARK: 颜色
-                    colorSection
-
-                    Divider()
-                        .padding(.vertical, 4)
-
-                    HStack {
-                        Label("滑块区", systemImage: "slider.horizontal.3")
-                            .font(.caption).foregroundStyle(.secondary)
-                        Spacer()
-                        Toggle(isOn: $syncSliders) {
-                            Text("浅色/深色共享")
-                                .font(.caption)
-                        }
-                        .controlSize(.small)
-                        .toggleStyle(.switch)
-                    }
-
-                    // MARK: 字体大小
-                    GroupBox {
-                        VStack(spacing: 10) {
-                            sliderRow(label: "正文", value: synced(\.fontSize), range: 10...28)
-                            sliderRow(label: "序号", value: synced(\.indexFontSize), range: 10...28)
-                            sliderRow(label: "提示码", value: synced(\.codeFontSize), range: 10...28)
-                        }
-                        .padding(.vertical, 4)
-                        .padding(.trailing, 10)
-                    } label: {
-                        Label("字体大小", systemImage: "textformat.size")
-                    }
-
-                    // MARK: 窗口内边距 + 选中高亮内边距
-                    HStack(alignment: .top, spacing: 16) {
-                        GroupBox {
-                            VStack(spacing: 8) {
-                                sliderRow(label: "上", value: synced(\.windowPaddingTop), range: 0...20)
-                                sliderRow(label: "下", value: synced(\.windowPaddingBottom), range: 0...20)
-                                sliderRow(label: "左", value: synced(\.windowPaddingLeft), range: 0...30)
-                                sliderRow(label: "右", value: synced(\.windowPaddingRight), range: 0...30)
-                            }
-                            .padding(.vertical, 2)
-                            .padding(.trailing, 10)
-                        } label: {
-                            Label("窗口内边距", systemImage: "rectangle.inset.filled")
-                        }
-
-                        GroupBox {
-                            VStack(spacing: 8) {
-                                sliderRow(label: "上", value: synced(\.selectedPaddingTop), range: 0...12)
-                                sliderRow(label: "下", value: synced(\.selectedPaddingBottom), range: 0...12)
-                                sliderRow(label: "左", value: synced(\.selectedPaddingLeft), range: 0...12)
-                                sliderRow(label: "右", value: synced(\.selectedPaddingRight), range: 0...12)
-                            }
-                            .padding(.vertical, 2)
-                            .padding(.trailing, 10)
-                        } label: {
-                            Label("选中高亮内边距", systemImage: "rectangle.expand.vertical")
-                        }
-                    }
-
-                    // MARK: 间距 + 圆角
-                    HStack(alignment: .top, spacing: 16) {
-                        GroupBox {
-                            VStack(spacing: 8) {
-                                sliderRow(label: "输入码", value: synced(\.originCandidatesSpace), range: 0...20)
-                                sliderRow(label: "候选项", value: synced(\.candidateSpace), range: 0...20)
-                            }
-                            .padding(.vertical, 2)
-                            .padding(.trailing, 10)
-                        } label: {
-                            Label("间距", systemImage: "space")
-                        }
-
-                        GroupBox {
-                            VStack(spacing: 8) {
-                                sliderRow(label: "候选栏", value: synced(\.windowBorderRadius), range: 0...24)
-                                sliderRow(label: "选中项", value: synced(\.selectedBackgroundRadius), range: 0...12)
-                            }
-                            .padding(.vertical, 2)
-                            .padding(.trailing, 10)
-                        } label: {
-                            Label("圆角", systemImage: "circle.dotted")
-                        }
-                    }
-
+                VStack(alignment: .leading, spacing: 16) {
+                    basicInfoSection
+                    windowSection
+                    originCodeSection
+                    candidateSection
+                    selectedCandidateSection
+                    pageIndicatorSection
                     Spacer(minLength: 12)
                 }
                 .padding(20)
@@ -530,116 +340,290 @@ struct ThemeEditorView: View {
             ThemePane.editorWindow = nil
         }
         .onChange(of: editingDark) { _ in updatePreviewWindow() }
+        .onChange(of: darkSameLight) { same in
+            if same {
+                editingDark = false
+                updatePreviewWindow()
+            }
+        }
         .onChange(of: showVerticalPreview) { _ in updatePreviewWindow() }
         .onChange(of: light) { _ in updatePreviewWindow() }
         .onChange(of: dark) { _ in updatePreviewWindow() }
     }
 
-    // MARK: - 颜色区域（分解为独立属性以加速类型检查）
     @ViewBuilder
-    private var colorSection: some View {
-        let theme = editingDark ? $dark : $light
-        GroupBox {
-            HStack(alignment: .top, spacing: 0) {
-                // 左列
-                VStack(spacing: 20) {
-                    colorGroup(title: "候选项", hint: "未选中状态") {
-                        ColorPickerRow(label: "序号", color: theme.candidateIndexColor)
-                        ColorPickerRow(label: "文字", color: theme.candidateTextColor)
-                        ColorPickerRow(label: "提示码", color: theme.candidateCodeColor)
-                    }
-                    colorGroup(title: "候选栏", hint: "窗口背景与输入码") {
-                        ColorPickerRow(label: "背景", color: theme.windowBackgroundColor)
-                        ColorPickerRow(label: "输入码", color: theme.originCodeColor)
-                    }
-                }
-
-                // 中间分隔线
-                Rectangle()
-                    .fill(.quaternary.opacity(0.5))
-                    .frame(width: 1)
-                    .padding(.horizontal, 30)
-                    .padding(.vertical, 4)
-
-                // 右列
-                VStack(spacing: 20) {
-                    colorGroup(title: "选中项", hint: "当前高亮候选") {
-                        ColorPickerRow(label: "序号", color: theme.selectedIndexColor)
-                        ColorPickerRow(label: "文字", color: theme.selectedTextColor)
-                        ColorPickerRow(label: "提示码", color: theme.selectedCodeColor)
-                        ColorPickerRow(label: "背景", color: theme.selectedBackgroundColor)
-                    }
-                    colorGroup(title: "翻页指示器", hint: "上下翻页箭头") {
-                        ColorPickerRow(label: "可用", color: theme.pageIndicatorColor)
-                        ColorPickerRow(label: "禁用", color: theme.pageIndicatorDisabledColor)
-                    }
-                }
-            }
-            .padding(.vertical, 6)
-            .padding(.horizontal, 16)
-        } label: {
-            Label("颜色", systemImage: "paintpalette")
-        }
+    private func sectionContent<Content: View>(@ViewBuilder content: () -> Content) -> some View {
+        content()
+            .padding(themeSectionPadding)
     }
 
-    private func colorGroup<Content: View>(title: String, hint: String, @ViewBuilder content: () -> Content) -> some View {
-        VStack(alignment: .trailing, spacing: 4) {
-            HStack(spacing: 6) {
-                Capsule()
-                    .fill(.tint)
-                    .frame(width: 3, height: 12)
-                Text(title).font(.caption).fontWeight(.semibold)
-                Text(hint).font(.caption2).foregroundStyle(.tertiary)
-            }
-            .frame(maxWidth: .infinity, alignment: .leading)
-            .padding(.bottom, 2)
-            Rectangle()
-                .fill(.quaternary)
-                .frame(height: 1)
-                .padding(.bottom, 4)
+    private func formRow<Content: View>(
+        label: String,
+        @ViewBuilder content: () -> Content
+    ) -> some View {
+        HStack(alignment: .center, spacing: 8) {
+            Text(label)
+                .font(.body)
+                .foregroundStyle(.secondary)
+                .frame(alignment: .leading)
+                .lineLimit(1)
             content()
         }
+        .frame(maxWidth: .infinity, alignment: .leading)
     }
 
-    // MARK: - 浅色/深色同步绑定（切换配色时滑块值自动对应）
-    private func synced<V>(_ keyPath: WritableKeyPath<AppearanceThemeConfig, V>) -> Binding<V> {
-        Binding(
-            get: { editingDark ? dark[keyPath: keyPath] : light[keyPath: keyPath] },
-            set: { newValue in
-                light[keyPath: keyPath] = newValue
-                if syncSliders { dark[keyPath: keyPath] = newValue }
-            }
-        )
-    }
+    // MARK: - 基础信息
 
-    // MARK: - 滑块行
     @ViewBuilder
-    private func sliderRow(label: String, value: Binding<Float>, range: ClosedRange<Float>) -> some View {
-        HStack(spacing: 8) {
-            Text(label).frame(width: 50, alignment: .trailing)
-                .font(.system(size: 12))
-            HStack(spacing: 0) {
-                Slider(value: value, in: range)
-                    .frame(minWidth: 80)
-                Text("\(Int(value.wrappedValue))")
-                    .font(.system(size: 12, design: .monospaced))
-                    .frame(width: 24, alignment: .trailing)
-                    .foregroundStyle(.secondary)
-                    .padding(.leading, -2)
+    private var basicInfoSection: some View {
+        GroupBox {
+            sectionContent {
+                VStack(alignment: .leading, spacing: 10) {
+                    HStack {
+                        formRow(label: "ID") {
+                            TextField("", text: $id)
+                                .textFieldStyle(.roundedBorder)
+                                .disabled(true)
+                        }
+                        formRow(label: "主题版本") {
+                            TextField("", text: $themeSchemaVersion)
+                                .textFieldStyle(.roundedBorder)
+                                .disabled(true)
+                        }
+                    }
+                    HStack {
+                        formRow(label: "名称") {
+                            TextField("", text: $name)
+                                .textFieldStyle(.roundedBorder)
+                        }
+                        formRow(label: "作者") {
+                            TextField("", text: $author)
+                                .textFieldStyle(.roundedBorder)
+                        }
+                    }
+                    formRow(label: "预览") {
+                        HStack(spacing: 6) {
+                            if !darkSameLight {
+                                previewModeButton(
+                                    icon: "sun.max.fill",
+                                    label: "浅色",
+                                    isActive: !editingDark
+                                ) { editingDark = false }
+                                previewModeButton(
+                                    icon: "moon.fill",
+                                    label: "深色",
+                                    isActive: editingDark
+                                ) { editingDark = true }
+                                Divider().frame(height: 36)
+                            }
+                            previewModeButton(
+                                icon: "text.justify",
+                                label: "横向",
+                                isActive: !showVerticalPreview
+                            ) { showVerticalPreview = false }
+                            previewModeButton(
+                                icon: "text.justify",
+                                label: "竖向",
+                                isActive: showVerticalPreview,
+                                rotation: 90
+                            ) { showVerticalPreview = true }
+                        }
+                    }
+                    formRow(label: "深色配色") {
+                        Toggle("深色模式与浅色模式使用同一套配色", isOn: $darkSameLight)
+                            .controlSize(.small)
+                    }
+                }
             }
+        } label: {
+            Label("基础信息", systemImage: "info.circle")
+        }
+    }
+
+    // MARK: - 窗口
+
+    @ViewBuilder
+    private var windowSection: some View {
+        GroupBox {
+            sectionContent {
+                VStack(alignment: .leading, spacing: 10) {
+                    HStack(spacing: 10) {
+                        ColorPickerRow(label: "背景", color: activeTheme.windowBackgroundColor)
+                            .frame(maxWidth: .infinity, alignment: .leading)
+
+                        formRow(label: "毛玻璃") {
+                            Toggle("", isOn: activeTheme.enableLiquidGlass)
+                                .labelsHidden()
+                                .controlSize(.small)
+                                .toggleStyle(.switch)
+                        }
+                        .frame(maxWidth: .infinity, alignment: .leading)
+                    }
+                    HStack(spacing: 10) {
+                        numberRow(label: "上边距", value: activeTheme.windowPaddingTop, range: 0...20)
+                        numberRow(label: "下边距", value: activeTheme.windowPaddingBottom, range: 0...20)
+                        numberRow(label: "左边距", value: activeTheme.windowPaddingLeft, range: 0...30)
+                        numberRow(label: "右边距", value: activeTheme.windowPaddingRight, range: 0...30)
+                    }
+                    HStack(spacing: 10) {
+                        numberRow(label: "圆角", value: activeTheme.windowBorderRadius, range: 0...24)
+                    }
+                }
+            }
+        } label: {
+            Label("窗口", systemImage: "macwindow")
+        }
+    }
+
+    // MARK: - 原码
+
+    @ViewBuilder
+    private var originCodeSection: some View {
+        GroupBox {
+            sectionContent {
+                HStack(spacing: 10) {
+                    ColorPickerRow(label: "颜色", color: activeTheme.originCodeColor)
+                    Spacer()
+                    numberRow(label: "与候选项间距", value: activeTheme.originCandidatesSpace, range: 0...20)
+                }
+            }
+        } label: {
+            Label("原码", systemImage: "character.cursor.ibeam")
+        }
+    }
+
+    // MARK: - 候选词
+
+    @ViewBuilder
+    private var candidateSection: some View {
+        GroupBox {
+            sectionContent {
+                VStack(alignment: .leading, spacing: 10) {
+                    HStack {
+                        numberRow(label: "候选项间距", value: activeTheme.candidateSpace, range: 0...20)
+                }
+                    HStack(spacing: 10) {
+                        ColorPickerRow(label: "序号", color: activeTheme.candidateIndexColor)
+                        ColorPickerRow(label: "候选词", color: activeTheme.candidateTextColor)
+                        ColorPickerRow(label: "提示码", color: activeTheme.candidateCodeColor)
+                    }
+                    HStack(spacing: 10) {
+                        numberRow(label: "序号字号", value: activeTheme.indexFontSize, range: 10...28)
+                        numberRow(label: "候选词字号", value: activeTheme.fontSize, range: 10...28)
+                        numberRow(label: "提示码字号", value: activeTheme.codeFontSize, range: 10...28)
+                    }
+                }
+            }
+        } label: {
+            Label("候选项", systemImage: "list.bullet")
+        }
+    }
+
+    // MARK: - 候选项选中态
+
+    @ViewBuilder
+    private var selectedCandidateSection: some View {
+        GroupBox {
+            sectionContent {
+                VStack(alignment: .leading, spacing: 10) {
+                    HStack(spacing: 10) {
+                        ColorPickerRow(label: "序号", color: activeTheme.selectedIndexColor)
+                        ColorPickerRow(label: "候选词", color: activeTheme.selectedTextColor)
+                        ColorPickerRow(label: "提示码", color: activeTheme.selectedCodeColor)
+                    }
+                    HStack(spacing: 10) {
+                        ColorPickerRow(label: "背景", color: activeTheme.selectedBackgroundColor)
+                    }
+                    HStack {
+                        numberRow(label: "圆角", value: activeTheme.selectedBackgroundRadius, range: 0...12)
+                    }
+                    HStack(spacing: 10) {
+                        numberRow(label: "上边距", value: activeTheme.selectedPaddingTop, range: 0...12)
+                        numberRow(label: "下边距", value: activeTheme.selectedPaddingBottom, range: 0...12)
+                        numberRow(label: "左边距", value: activeTheme.selectedPaddingLeft, range: 0...12)
+                        numberRow(label: "右边距", value: activeTheme.selectedPaddingRight, range: 0...12)
+                    }
+                }
+            }
+        } label: {
+            Label("候选项选中态", systemImage: "checkmark.circle")
+        }
+    }
+
+    // MARK: - 页面指示器
+
+    @ViewBuilder
+    private var pageIndicatorSection: some View {
+        GroupBox {
+            sectionContent {
+                HStack(spacing: 10) {
+                    ColorPickerRow(label: "可用", color: activeTheme.pageIndicatorColor)
+                    ColorPickerRow(label: "禁用", color: activeTheme.pageIndicatorDisabledColor)
+                }
+            }
+        } label: {
+            Label("页面指示器", systemImage: "arrow.up.arrow.down")
+        }
+    }
+
+    // MARK: - 表单辅助
+    private func previewModeButton(
+        icon: String,
+        label: String,
+        isActive: Bool,
+        rotation: Double = 0,
+        action: @escaping () -> Void
+    ) -> some View {
+        VStack(spacing: 2) {
+            Image(systemName: icon)
+                .font(.system(size: 14))
+                .rotationEffect(.degrees(rotation))
+            Text(label).font(.caption2)
+        }
+        .foregroundStyle(isActive ? Color.accentColor : Color.gray.opacity(0.35))
+        .frame(width: 60, height: 52)
+        .background(isActive ? Color.accentColor.opacity(0.12) : Color.gray.opacity(0.08))
+        .cornerRadius(8)
+        .contentShape(Rectangle())
+        .onTapGesture(perform: action)
+        .onHover { hovering in
+            if hovering {
+                NSCursor.pointingHand.push()
+            } else {
+                NSCursor.pop()
+            }
+        }
+        .accessibilityAddTraits(.isButton)
+        .accessibilityLabel(label)
+    }
+
+    // MARK: - 数字输入行
+    @ViewBuilder
+    private func numberRow(label: String, value: Binding<Float>, range: ClosedRange<Float>) -> some View {
+        let intRange = Int(range.lowerBound)...Int(range.upperBound)
+        formRow(label: label) {
+            TextField("", value: Binding(
+                get: { Int(value.wrappedValue.rounded()) },
+                set: { newValue in
+                    let clamped = min(max(newValue, intRange.lowerBound), intRange.upperBound)
+                    value.wrappedValue = Float(clamped)
+                }
+            ), format: .number)
+            .textFieldStyle(.roundedBorder)
+            .multilineTextAlignment(.trailing)
+            .font(.body)
+            .frame(width: 60)
         }
     }
 
     func saveTheme() {
-        // 无论当前编辑浅色还是深色模式，始终保存两份独立配置（dark: dark）
-        // 避免 editingDark ? dark : nil 导致编辑浅色时丢失深色配置
         let theme = ThemeConfig(
-            schemaVersion: 1,
+            schemaVersion: schemaVersion,
             id: String(id),
             name: name.isEmpty ? "未命名" : name,
             author: author,
             light: light,
-            dark: dark
+            dark: darkSameLight ? light : dark
         )
         applyImportedTheme(theme)
         Self.closePreview()
@@ -655,29 +639,37 @@ struct ColorPickerRow: View {
     @Binding var color: ColorData
 
     var body: some View {
-        HStack(spacing: 6) {
-            Text(label).font(.system(size: 12, weight: .regular))
+        HStack(alignment: .center, spacing: 8) {
+            Text(label)
+                .font(.body)
                 .foregroundStyle(.secondary)
-                .frame(width: 36, alignment: .trailing)
+                .frame(alignment: .trailing)
+                .lineLimit(1)
 
-            ColorPicker("", selection: Binding(
-                get: { Color(color) },
-                set: {
-                    if let c = $0.cgColor?.components, c.count >= 3 {
-                        color = ColorData(red: c[0], green: c[1], blue: c[2], opacity: c.count > 3 ? c[3] : 1)
+            HStack(spacing: 4) {
+                ColorPicker("", selection: Binding(
+                    get: { Color(color) },
+                    set: {
+                        if let c = $0.cgColor?.components, c.count >= 3 {
+                            color = ColorData(red: c[0], green: c[1], blue: c[2], opacity: c.count > 3 ? c[3] : 1)
+                        }
                     }
-                }
-            )).labelsHidden().controlSize(.mini).frame(width: 24)
+                ))
+                .labelsHidden()
+                .controlSize(.mini)
+                .frame(width: 24)
 
-            TextField("Hex", text: Binding(
-                get: { color.hexString },
-                set: { if let d = ColorData(hex: $0) { color = d } }
-            ))
-            .font(.system(size: 10, design: .monospaced))
-            .frame(width: 62)
-            .textFieldStyle(.roundedBorder)
-            .multilineTextAlignment(.center)
+                TextField("Hex", text: Binding(
+                    get: { color.hexString },
+                    set: { if let d = ColorData(hex: $0) { color = d } }
+                ))
+                .frame(width: 100)
+                .font(.system(size: 10, design: .monospaced))
+                .textFieldStyle(.roundedBorder)
+                .multilineTextAlignment(.center)
+            }
         }
+        .frame(maxWidth: .infinity, alignment: .leading)
         .padding(.vertical, 1)
     }
 }
