@@ -66,7 +66,6 @@ extension Defaults.Keys {
     static let pyTablePath = Key<String>("pyTableURL", default: Bundle.main.resourceURL?.appendingPathComponent("py_table.txt").path ?? "")
     static let spellingScheme = Key<SpellingScheme>("spellingScheme", default: .wubi86)
     static let enableGBK = Key<Bool>("enableGBK", default: true)
-    static let chineseOutputMode = Key<ChineseOutputMode>("chineseOutputMode", default: .simplified)
     static let enableExactMatch = Key<Bool>("enableExactMatch", default: false)
     static let enableStatistics = Key<Bool>("enableStatistics", default: true)
     static let celebrationEffect = Key<CelebrationEffectType>("celebrationEffect", default: .none)
