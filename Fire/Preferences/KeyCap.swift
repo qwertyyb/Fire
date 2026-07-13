@@ -43,7 +43,7 @@ struct KeyCap: View {
 
 #Preview {
     HStack(spacing: 6) {
-        KeyCap("control", icon: "chevron.up")
+        KeyCap("control", icon: "control")
         Text("+").font(.caption2).foregroundStyle(.tertiary)
         KeyCap("=")
         Text("说明文字").font(.caption2).foregroundStyle(.tertiary)

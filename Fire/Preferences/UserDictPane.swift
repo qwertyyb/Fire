@@ -275,7 +275,7 @@ struct UserDictPane: View {
 
     private var hotkeyIcon: String {
         switch hotkeyModifier {
-        case .control: return "chevron.up"
+        case .control: return "control"
         case .option: return "option"
         case .command: return "command"
         }

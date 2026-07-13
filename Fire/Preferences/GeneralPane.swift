@@ -129,10 +129,7 @@ struct GeneralPane: View {
                     .disabled(disableEnMode)
                 PreferencePickerRow(title: "中英文切换快捷键") {
                     Picker("", selection: $toggleInputModeKey) {
-                        HStack {
-                            Image(systemName: "chevron.up")
-                            Text("control")
-                        }.tag(ModifierKey.control)
+                        Label("control", systemImage: "control").tag(ModifierKey.control)
                         Label("shift", systemImage: "shift").tag(ModifierKey.shift)
                         Label("左shift", systemImage: "shift").tag(ModifierKey.leftShift)
                         Label("右shift", systemImage: "shift").tag(ModifierKey.rightShift)
@@ -160,9 +157,10 @@ struct GeneralPane: View {
             Section {
                 PreferencePickerRow(title: "热键修饰键") {
                     Picker("", selection: $hotkeyModifier) {
-                        Text("Control").tag(HotkeyModifier.control)
-                        Text("Option").tag(HotkeyModifier.option)
-                        Text("Command").tag(HotkeyModifier.command)
+                        // 热键修饰键选项补充 sf symbol 图标
+                        Label("control", systemImage: "control").tag(HotkeyModifier.control)
+                        Label("option", systemImage: "option").tag(HotkeyModifier.option)
+                        Label("command", systemImage: "command").tag(HotkeyModifier.command)
                     }
                     .labelsHidden()
                 }
@@ -203,7 +201,7 @@ struct GeneralPane: View {
     }
     private var hotkeyIcon: String {
         switch hotkeyModifier {
-        case .control: return "chevron.up"
+        case .control: return "control"
         case .option: return "option"
         case .command: return "command"
         }
