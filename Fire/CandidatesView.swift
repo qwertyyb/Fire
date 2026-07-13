@@ -90,7 +90,7 @@ struct CandidateView: View {
     @Environment(\.colorScheme) var colorScheme
 
     private var effectiveConfig: AppearanceThemeConfig {
-        config ?? themeConfig[colorScheme]
+        config ?? (themeConfig.schemaVersion == schemaVersion ? themeConfig[colorScheme] : defaultThemeConfig[colorScheme])
     }
 
     var body: some View {
@@ -131,10 +131,7 @@ struct CandidateView: View {
                     .foregroundStyle(Color(codeColor))
             }
         }
-        .contentShape(Rectangle())
-        .anchorPreference(key: SelectedItemFrameKey.self, value: .bounds) {
-            selected ? $0 : nil
-        }
+        .padding(.horizontal, 2)
         .onHover { hovering in
             // 鼠标悬停时高亮跟随
             if hovering { onHover?(index) }
@@ -149,7 +146,6 @@ struct CandidateView: View {
                 ]
             )
         }
-        .padding(.horizontal, 2)
     }
 }
 
@@ -183,7 +179,7 @@ struct CandidatesView: View {
     }
 
     private var effectiveConfig: AppearanceThemeConfig {
-        previewConfig ?? themeConfig[colorScheme]
+        previewConfig ?? (themeConfig.schemaVersion == schemaVersion ? themeConfig[colorScheme] : defaultThemeConfig[colorScheme])
     }
 
     private var effectiveDirection: CandidatesDirection {
@@ -205,6 +201,11 @@ struct CandidatesView: View {
             )
             .frame(maxWidth: effectiveDirection == .vertical ? .infinity : nil,
                    alignment: .leading)
+            
+            .contentShape(Rectangle())
+            .anchorPreference(key: SelectedItemFrameKey.self, value: .bounds) {
+                index == selectedIndex ? $0 : nil
+            }
         }
         .onHover { hovering in
             // 鼠标离开候选列表时延迟复位，避免划过间隙时闪烁
@@ -275,18 +276,18 @@ struct CandidatesView: View {
                 let h = max(yBottom - yTop, 0)
                 RoundedRectangle(cornerRadius: CGFloat(effectiveConfig.selectedBackgroundRadius))
                     .fill(Color(effectiveConfig.selectedBackgroundColor))
-                    .frame(width: geo.size.width - leftPad - rightPad,
-                           height: h)
-                    .offset(x: leftPad, y: yTop)
+                    .frame(width: rect.width + leftPad + rightPad,
+                           height: rect.height + topPad + botPad)
+                    .offset(x: rect.origin.x - leftPad, y: rect.origin.y - topPad)
             } else {
                 let xOffset: CGFloat = isFirstItem ? leftPad : (rect.origin.x - CGFloat(effectiveConfig.candidateSpace))
                 let rightBoundary: CGFloat = (isLastItem && !hasDivider) ? (geo.size.width - rightPad) : (rect.maxX + CGFloat(effectiveConfig.candidateSpace))
                 let w = rightBoundary - xOffset
                 RoundedRectangle(cornerRadius: CGFloat(effectiveConfig.selectedBackgroundRadius))
                     .fill(Color(effectiveConfig.selectedBackgroundColor))
-                    .frame(width: max(w, 0),
-                           height: geo.size.height - topPad - botPad)
-                    .offset(x: xOffset, y: topPad)
+                    .frame(width: rect.width + leftPad + rightPad,
+                           height: rect.size.height + topPad + botPad)
+                    .offset(x: rect.origin.x - leftPad, y: rect.origin.y - topPad)
             }
         }
     }

@@ -321,8 +321,10 @@ struct ThemeConfig: Codable, Defaults.Serializable {
     }
 }
 
+let schemaVersion = 2
+
 let defaultThemeConfig = ThemeConfig(
-    schemaVersion: 1,
+    schemaVersion: schemaVersion,
     id: "default",
     name: "默认",
     author: "业火输入法",
@@ -344,10 +346,10 @@ let defaultThemeConfig = ThemeConfig(
         selectedCodeColor: ColorData(red: 0.863, green: 0.078, blue: 0.235, opacity: 0.8),
         selectedBackgroundColor: ColorData(red: 0, green: 0, blue: 0, opacity: 0.06),
         selectedBackgroundRadius: 4,
-        selectedPaddingTop: 2,
-        selectedPaddingLeft: 2,
-        selectedPaddingRight: 2,
-        selectedPaddingBottom: 2,
+        selectedPaddingTop: 4,
+        selectedPaddingLeft: 8,
+        selectedPaddingRight: 8,
+        selectedPaddingBottom: 4,
         pageIndicatorColor: ColorData(red: 0.863, green: 0.078, blue: 0.235, opacity: 1),
         pageIndicatorDisabledColor: ColorData(red: 0.863, green: 0.078, blue: 0.235, opacity: 0.4),
         fontName: "system",
@@ -373,10 +375,10 @@ let defaultThemeConfig = ThemeConfig(
         selectedCodeColor: ColorData(red: 0.863, green: 0.078, blue: 0.235, opacity: 0.8),
         selectedBackgroundColor: ColorData(red: 1, green: 1, blue: 1, opacity: 0.08),
         selectedBackgroundRadius: 4,
-        selectedPaddingTop: 2,
-        selectedPaddingLeft: 2,
-        selectedPaddingRight: 2,
-        selectedPaddingBottom: 2,
+        selectedPaddingTop: 4,
+        selectedPaddingLeft: 4,
+        selectedPaddingRight: 4,
+        selectedPaddingBottom: 4,
         pageIndicatorColor: ColorData(red: 0.863, green: 0.078, blue: 0.235, opacity: 1),
         pageIndicatorDisabledColor: ColorData(red: 0.863, green: 0.078, blue: 0.235, opacity: 0.4),
         fontName: "system",
