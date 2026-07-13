@@ -7,7 +7,6 @@
 //
 
 import AppKit
-import Defaults
 import InputMethodKit
 import Sparkle
 
@@ -90,27 +89,7 @@ class Fire: NSObject {
             let candidate = Candidate(code: "z", text: text, type: .user)
             return ([candidate], false)
         }
-        let (candidates, hasNext) = DictManager.shared.getCandidates(query: origin, page: page)
-        // 简体输出跳过转换；繁体输出使用 CFStringTransform 简→繁
-        let chineseOutputMode = Defaults[.chineseOutputMode]
-        var transformed = candidates.map { (candidate) -> Candidate in
-            let text: String
-            if chineseOutputMode == .traditional {
-                let mutableStr = NSMutableString(string: candidate.text)
-                CFStringTransform(mutableStr, nil, "Hans-Hant" as CFString, false)
-                text = mutableStr as String
-            } else {
-                text = candidate.text
-            }
-            // 同时传递拆字(spelling)和拼音(pinyin)数据，供候选提示模式使用
-            return Candidate(code: candidate.code, text: text, type: candidate.type,
-                              spelling: candidate.spelling, pinyin: candidate.pinyin)
-        }
-        // 简繁转换后可能出现"同一个词但不同编码"导致的重复（如简繁同形字），
-        // 用 Set 去重并保留首次出现的候选（即原排序靠前的）
-        var seen = Set<String>()
-        transformed = transformed.filter { seen.insert($0.text).inserted }
-        return (transformed, hasNext)
+        return DictManager.shared.getCandidates(query: origin, page: page)
     }
 
     static let shared = Fire()

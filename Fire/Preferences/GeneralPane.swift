@@ -33,7 +33,6 @@ struct GeneralPane: View {
     @Default(.showInputModeStatus) private var showInputModeStatus
     @Default(.enableWhitespaceBetweenZhEn) private var enableWhitespaceBetweenZhEn
     @Default(.spellingScheme) private var spellingScheme
-    @Default(.chineseOutputMode) private var chineseOutputMode
     @Default(.enableExactMatch) private var enableExactMatch
     @Default(.celebrationEffect) private var celebrationEffect
     @Default(.hotkeyModifier) private var hotkeyModifier
@@ -97,10 +96,6 @@ struct GeneralPane: View {
                 }
                 PreferenceToggleRow(title: "显示输入码", caption: "不内嵌文本框", isOn: $showCodeInWindow)
                 PreferenceToggleRow(title: "显示生僻字", isOn: $enableGBK)
-                PreferenceToggleRow(title: "输出繁体", isOn: Binding(
-                    get: { chineseOutputMode == .traditional },
-                    set: { chineseOutputMode = $0 ? .traditional : .simplified }
-                ))
                 PreferencePickerRow(title: "二三候选词额外选择键") {
                     Picker("", selection: $extraCandidateSelectKeys) {
                         Text("禁用").tag(ExtraCandidateSelectKeys.disabled)
