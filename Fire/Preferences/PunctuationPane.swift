@@ -11,6 +11,15 @@ import Defaults
 
 // MARK: - 偏好设置面板（迁移自 Settings 库，改用原生 ScrollView + VStack）
 
+fileprivate let extraParisOptions: [String: [String]] = [
+    "[": ["「", "『", "〔"],
+    "{": ["【", "「", "『", "〔"],
+    "]": ["」", "』", "〕"],
+    "}": ["】", "」", "』", "〕"],
+    "<": ["「", "『", "【", "〔"],
+    ">": ["」", "』", "】", "〕"],
+]
+
 struct PunctuationPane: View {
     @Default(.punctuationMode) private var punctuationMode
     @Default(.customPunctuationSettings) private var customPunctuationSettings
@@ -76,7 +85,12 @@ struct PunctuationPane: View {
                                     set: { customPunctuationSettings[key] = $0 }
                                 )) {
                                     Text(key).tag(key)
-                                    Text(punctuation[key] ?? key).tag(punctuation[key] ?? key)
+                                    if key != punctuation[key] {
+                                        Text(punctuation[key] ?? key).tag(punctuation[key] ?? key)
+                                    }
+                                    ForEach(extraParisOptions[key] ?? [], id: \.self) { option in
+                                        Text(option).tag(option)
+                                    }
                                 }
                                 .labelsHidden()
                                 .frame(width: 160)
