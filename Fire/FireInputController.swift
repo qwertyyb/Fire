@@ -67,13 +67,13 @@ class FireInputController: IMKInputController {
     }
     func prevPage() {
         guard curPage > 1 else { return }
-        curPage -= 1
         selectedIndex = 0
+        curPage -= 1
     }
     func nextPage() {
         guard _hasNext else { return }
-        curPage += 1
         selectedIndex = 0
+        curPage += 1
     }
 
     private func markText() {
