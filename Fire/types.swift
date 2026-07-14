@@ -61,28 +61,6 @@ enum ModifierKey: String, Codable, Defaults.Serializable {
   case function
 }
 
-/// 热键可用的修饰键（不包含 shift/fn/leftShift/rightShift，因为这些不适合作为主修饰键）
-enum HotkeyModifier: String, Codable, Defaults.Serializable, CaseIterable {
-    case control
-    case option
-    case command
-
-    var nsModifierFlag: NSEvent.ModifierFlags {
-        switch self {
-        case .control: return .control
-        case .option: return .option
-        case .command: return .command
-        }
-    }
-
-    var cgEventFlag: CGEventFlags {
-        switch self {
-        case .control: return .maskControl
-        case .option: return .maskAlternate
-        case .command: return .maskCommand
-        }
-    }
-}
 
 class ApplicationSettingItem: ObservableObject, Codable, Identifiable, Defaults.Serializable {
     var id: String { bundleIdentifier }

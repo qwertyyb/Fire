@@ -24,7 +24,6 @@ struct UserDictRow: Identifiable, Equatable {
 // MARK: - 偏好设置面板
 
 struct UserDictPane: View {
-    @Default(.hotkeyModifier) private var hotkeyModifier
     @State private var rows: [UserDictRow] = []
     @State private var savedSnapshot: [UserDictRow] = []
     @State private var showAlert = false
@@ -39,7 +38,7 @@ struct UserDictPane: View {
                 // 快捷键说明
                 VStack(alignment: .leading, spacing: 6) {
                     HStack(spacing: 6) {
-                        KeyCap(hotkeyModifier.rawValue, icon: hotkeyIcon)
+                        KeyCap("control", icon: "control")
                         Text("+")
                             .font(.caption2)
                             .foregroundStyle(.tertiary)
@@ -49,7 +48,11 @@ struct UserDictPane: View {
                             .foregroundStyle(.tertiary)
                     }
                     HStack(spacing: 6) {
-                        KeyCap(hotkeyModifier.rawValue, icon: hotkeyIcon)
+                        KeyCap("control", icon: "control")
+                        Text("+")
+                            .font(.caption2)
+                            .foregroundStyle(.tertiary)
+                        KeyCap("option", icon: "option")
                         Text("+")
                             .font(.caption2)
                             .foregroundStyle(.tertiary)
@@ -206,7 +209,7 @@ struct UserDictPane: View {
                 HStack {
                     VStack(alignment: .leading, spacing: 6) {
                         HStack(spacing: 6) {
-                            KeyCap(hotkeyModifier.rawValue, icon: hotkeyIcon)
+                            KeyCap("control", icon: "control")
                             Text("+")
                                 .font(.caption2)
                                 .foregroundStyle(.tertiary)
@@ -270,14 +273,6 @@ struct UserDictPane: View {
         }
         .onChange(of: rows) { _ in
             isModified = (rows != savedSnapshot)
-        }
-    }
-
-    private var hotkeyIcon: String {
-        switch hotkeyModifier {
-        case .control: return "chevron.up"
-        case .option: return "option"
-        case .command: return "command"
         }
     }
 
