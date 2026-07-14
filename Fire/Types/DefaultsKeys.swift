@@ -45,7 +45,6 @@ extension Defaults.Keys {
     static let disableEnMode = Key<Bool>("diableEnMode", default: false)
     static let disableTempEnMode = Key<Bool>("disableTempEnMode", default: false)
     static let toggleInputModeKey = Key<ModifierKey>("toggleInputModeKey", default: .shift)
-    static let hotkeyModifier = Key<HotkeyModifier>("hotkeyModifier", default: .control)
     static let inputModeTipWindowType = Key<InputModeTipWindowType>("inputModeTipWindowType", default: .centerScreen)
     static let showInputModeStatus = Key<Bool>("showInputModeStatus", default: true)
     static let themeConfig = Key<ThemeConfig>("themeConfig", default: defaultThemeConfig)
