@@ -207,25 +207,38 @@ class Statistics {
         )
 
         NSLog("[Statistics] init DB, database path in \(dirPath)")
-        var key = keychain.get("dbkey")
-        if key == nil {
-            key = ID(alphabet: .urlSafe, size: 16).generate()
-            if !keychain.set(key!, forKey: "dbkey") {
-                NSLog("[Statistics] write dbkey failed: \(keychain.lastResultCode)")
-                return
-            }
-        }
+        guard let key = resolveDbKey() else { return }
         if sqlite3_open_v2(
             dirPath + "/statistics.db",
             &database,
             SQLITE_OPEN_READWRITE | SQLITE_OPEN_CREATE,
             nil
         ) == SQLITE_OK {
-            sqlite3_key(database, key!, Int32(key!.count))
+            sqlite3_key(database, key, Int32(key.count))
             _ = migrate()
         } else {
             let errMsg = database != nil ? String(cString: sqlite3_errmsg(database)) : "nil"
             NSLog("[Statistics] init DB, open error: \(errMsg)")
         }
+    }
+
+    /// 读取或创建统计库加密密钥。
+    /// `KeychainSwift.get` 在「不存在」和「读取失败」时都返回 nil，
+    /// 只有确认是 `errSecItemNotFound` 时才生成新钥匙，避免覆盖已有密钥。
+    private func resolveDbKey() -> String? {
+        if let key = keychain.get("dbkey") {
+            return key
+        }
+        if keychain.lastResultCode != errSecItemNotFound {
+            NSLog("[Statistics] read dbkey failed: \(keychain.lastResultCode)")
+            return nil
+        }
+        let key = ID(alphabet: .urlSafe, size: 16).generate()
+        // 首次解锁后即可读，避免登录窗口阶段读失败后误写新钥匙
+        if !keychain.set(key, forKey: "dbkey", withAccess: .accessibleAfterFirstUnlock) {
+            NSLog("[Statistics] write dbkey failed: \(keychain.lastResultCode)")
+            return nil
+        }
+        return key
     }
 }
