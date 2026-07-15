@@ -412,7 +412,10 @@ class FireInputController: IMKInputController {
                         selectedIndex -= 1
                         CandidatesWindow.shared.setSelectedIndex(selectedIndex)
                     } else if curPage > 1 {
-                        prevPage()
+                        curPage -= 1
+                        // 方向键到头回绕：高亮定位到上一页的最后一个候选词
+                        selectedIndex = _candidates.count - 1
+                        CandidatesWindow.shared.setSelectedIndex(selectedIndex)
                     }
                 }
                 return true
