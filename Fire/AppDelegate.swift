@@ -76,20 +76,27 @@ class AppDelegate: NSObject, NSApplicationDelegate {
             return
         }
         _ = RadicalFontManager.shared
-        if !hasDict() || !isDictSchemaCurrent() {
-            NSLog("[Fire] dict missing or schema outdated, build dict")
-            if buildDict() {
-                DictManager.shared.reinit()
-            } else {
-                NSLog("[Fire] buildDict failed")
-            }
-        }
         NSLog("[Fire] app is running")
         fire = Fire.shared
         statistics = Statistics.shared
         statusBar = StatusBar.shared
         cliServer = FireCLIServer()
         registerURLHandler()
+
+        if !hasDict() || !isDictSchemaCurrent() {
+            NSLog("[Fire] dict missing or schema outdated, build dict")
+            DictManager.shared.close()
+            DispatchQueue.global(qos: .userInitiated).async {
+                let success = buildDict()
+                DispatchQueue.main.async {
+                    if success {
+                        DictManager.shared.reinit()
+                    } else {
+                        NSLog("[Fire] buildDict failed")
+                    }
+                }
+            }
+        }
     }
 
     func applicationWillTerminate(_ aNotification: Notification) {
