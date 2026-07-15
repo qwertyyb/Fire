@@ -164,6 +164,17 @@ class FireInputController: IMKInputController {
             }
             return true
         }
+        // 在有原码的情况下，Ctrl+H: 同退格，删末位原码; Ctrl+U: 清空全部原码
+        if !_originalString.isEmpty, modifiers == .control {
+            if event.keyCode == kVK_ANSI_H {
+                _originalString = String(_originalString.dropLast())
+                return true
+            }
+            if event.keyCode == kVK_ANSI_U {
+                _originalString = ""
+            }
+        }
+        
         guard let chars = event.charactersIgnoringModifiers, let num = Int(chars) else {
             return nil
         }
