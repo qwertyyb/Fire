@@ -21,6 +21,9 @@ class Statistics {
 
     static let updated = Notification.Name("Statistics.updated")
 
+    /// 串行队列：保护单一 SQLite 连接，允许后台查询而不阻塞主线程
+    private let dbQueue = DispatchQueue(label: "com.qwertyyb.inputmethod.Fire.statistics.db")
+
     init() {
         NSLog("[Statistics] init")
         NotificationCenter.default
@@ -50,6 +53,16 @@ class Statistics {
         }
         if candidate.type == CandidateType.placeholder { return }
 
+        let confirmed = notification.userInfo?["confirmed"] as? Bool ?? false
+        dbQueue.async { [weak self] in
+            self?.insertCandidate(candidate, confirmed: confirmed)
+            DispatchQueue.main.async {
+                NotificationCenter.default.post(name: Statistics.updated, object: nil)
+            }
+        }
+    }
+
+    private func insertCandidate(_ candidate: Candidate, confirmed: Bool) {
         // 复用 prepared statement：首次调用时 prepare，后续只 reset + rebind，
         // 避免每次触发（候选上屏）都执行 prepare/finalize 的开销
         if insertStatement == nil {
@@ -64,16 +77,20 @@ class Statistics {
         sqlite3_bind_text(stmt, 2, candidate.type.rawValue, -1, SQLITE_TRANSIENT)
         sqlite3_bind_text(stmt, 3, candidate.code, -1, SQLITE_TRANSIENT)
         sqlite3_bind_text(stmt, 4, Statistics.dateFormatter.string(from: Date()), -1, SQLITE_TRANSIENT)
-        let confirmed = notification.userInfo?["confirmed"] as? Bool ?? false
         sqlite3_bind_int(stmt, 5, confirmed ? 1 : 0)
 
         if sqlite3_step(stmt) != SQLITE_DONE {
             print("errmsg: \(dbErrMsg(database))")
         }
-        NotificationCenter.default.post(name: Statistics.updated, object: nil)
     }
 
     func queryCountByDate(startDate: Date, endDate: Date) -> [DateCount] {
+        dbQueue.sync {
+            queryCountByDateUnlocked(startDate: startDate, endDate: endDate)
+        }
+    }
+
+    private func queryCountByDateUnlocked(startDate: Date, endDate: Date) -> [DateCount] {
         let start = Statistics.dateOnlyFormatter.string(from: startDate)
         let end = Statistics.dateOnlyFormatter.string(from: endDate)
         // 使用参数化查询避免 SQL 注入风险，同时保证 date 字符串格式正确
@@ -100,6 +117,12 @@ class Statistics {
     }
 
     func queryTotalCount() -> Int64 {
+        dbQueue.sync {
+            queryTotalCountUnlocked()
+        }
+    }
+
+    private func queryTotalCountUnlocked() -> Int64 {
         let sql = "select sum(length(text)) as total from data"
         var total: Int64 = 0
         sqliteQuery(database, sql) { stmt in
@@ -110,6 +133,12 @@ class Statistics {
 
     /// 平均码长 = (编码总按键数 + 确认键次数) / 上屏总字数
     func queryAvgCodeLen() -> Double {
+        dbQueue.sync {
+            queryAvgCodeLenUnlocked()
+        }
+    }
+
+    private func queryAvgCodeLenUnlocked() -> Double {
         let sql = """
             select
                 cast((sum(length(code)) + sum(confirmed)) as real) / sum(length(text)) as avgCodeLen
@@ -122,12 +151,28 @@ class Statistics {
         return avgCodeLen
     }
 
+    /// 一次查出面板刷新所需全部数据（内部仍为原有三条查询，避免重复进出队列）
+    func queryPaneSnapshot(startDate: Date, endDate: Date) -> (total: Int64, avgCodeLen: Double, data: [DateCount]) {
+        dbQueue.sync {
+            (
+                queryTotalCountUnlocked(),
+                queryAvgCodeLenUnlocked(),
+                queryCountByDateUnlocked(startDate: startDate, endDate: endDate)
+            )
+        }
+    }
+
     /// 清除所有统计数据
     func clear() {
-        // 注意：SQLite 使用 DELETE FROM，不是 DELETE * FROM
-        let sql = "delete from data"
-        sqlite3_exec(database, sql, nil, nil, nil)
-        NotificationCenter.default.post(name: Statistics.updated, object: nil)
+        dbQueue.async { [weak self] in
+            guard let self else { return }
+            // 注意：SQLite 使用 DELETE FROM，不是 DELETE * FROM
+            let sql = "delete from data"
+            sqlite3_exec(self.database, sql, nil, nil, nil)
+            DispatchQueue.main.async {
+                NotificationCenter.default.post(name: Statistics.updated, object: nil)
+            }
+        }
     }
 
     private var database: OpaquePointer?
@@ -137,8 +182,10 @@ class Statistics {
 
     deinit {
         // 释放 SQLite 资源，防止进程退出时泄漏
-        sqlite3_finalize(insertStatement)
-        sqlite3_close_v2(database)
+        dbQueue.sync {
+            sqlite3_finalize(insertStatement)
+            sqlite3_close_v2(database)
+        }
     }
     private let upgrade = [
         """
@@ -208,17 +255,19 @@ class Statistics {
 
         NSLog("[Statistics] init DB, database path in \(dirPath)")
         guard let key = resolveDbKey() else { return }
-        if sqlite3_open_v2(
-            dirPath + "/statistics.db",
-            &database,
-            SQLITE_OPEN_READWRITE | SQLITE_OPEN_CREATE,
-            nil
-        ) == SQLITE_OK {
-            sqlite3_key(database, key, Int32(key.count))
-            _ = migrate()
-        } else {
-            let errMsg = database != nil ? String(cString: sqlite3_errmsg(database)) : "nil"
-            NSLog("[Statistics] init DB, open error: \(errMsg)")
+        dbQueue.sync {
+            if sqlite3_open_v2(
+                dirPath + "/statistics.db",
+                &database,
+                SQLITE_OPEN_READWRITE | SQLITE_OPEN_CREATE,
+                nil
+            ) == SQLITE_OK {
+                sqlite3_key(database, key, Int32(key.count))
+                _ = migrate()
+            } else {
+                let errMsg = database != nil ? String(cString: sqlite3_errmsg(database)) : "nil"
+                NSLog("[Statistics] init DB, open error: \(errMsg)")
+            }
         }
     }
 

@@ -21,24 +21,33 @@ class DateCountData: ObservableObject {
     @Published var data: [DateCount] = []
     @Published var total: Int64 = 0
     @Published var avgCodeLen: Double = 0
+    @Published var isLoading = false
 
     var cancellables = Set<AnyCancellable>()
+    /// 避免快速切换日期 / 连续 notification 时旧查询结果覆盖新结果
+    private var refreshGeneration = 0
 
     init() {
         refresh()
         NotificationCenter.default
             .publisher(for: Statistics.updated)
-            .sink { _ in
-                self.refresh()
+            .receive(on: DispatchQueue.main)
+            .sink { [weak self] _ in
+                self?.refresh()
             }
             .store(in: &cancellables)
-        $startDate.sink { date in
-            self.refreshData(startDate: date, endDate: nil)
-        }
+        // dropFirst：跳过订阅时的立即发射，避免 init 内重复查图
+        $startDate
+            .dropFirst()
+            .sink { [weak self] date in
+                self?.refreshData(startDate: date, endDate: nil)
+            }
             .store(in: &cancellables)
-        $endDate.sink { date in
-            self.refreshData(startDate: nil, endDate: date)
-        }
+        $endDate
+            .dropFirst()
+            .sink { [weak self] date in
+                self?.refreshData(startDate: nil, endDate: date)
+            }
             .store(in: &cancellables)
     }
 
@@ -55,17 +64,38 @@ class DateCountData: ObservableObject {
             NSLog("[DateCountData] refresh cancel: not visible")
             return
         }
-        total = Statistics.shared.queryTotalCount()
-        avgCodeLen = Statistics.shared.queryAvgCodeLen()
-        self.refreshData(startDate: nil, endDate: nil)
+        let start = startDate
+        let end = endDate
+        refreshGeneration += 1
+        let generation = refreshGeneration
+        isLoading = true
+        DispatchQueue.global(qos: .userInitiated).async { [weak self] in
+            let snapshot = Statistics.shared.queryPaneSnapshot(startDate: start, endDate: end)
+            DispatchQueue.main.async {
+                guard let self, generation == self.refreshGeneration else { return }
+                self.total = snapshot.total
+                self.avgCodeLen = snapshot.avgCodeLen
+                self.data = snapshot.data
+                self.isLoading = false
+            }
+        }
     }
 
     func refreshData(startDate: Date?, endDate: Date?) {
-        data = Statistics.shared
-            .queryCountByDate(
-                startDate: startDate ?? self.startDate,
-                endDate: endDate ?? self.endDate
-            )
+        if !FirePreferencesController.shared.isVisible { return }
+        let start = startDate ?? self.startDate
+        let end = endDate ?? self.endDate
+        refreshGeneration += 1
+        let generation = refreshGeneration
+        isLoading = true
+        DispatchQueue.global(qos: .userInitiated).async { [weak self] in
+            let data = Statistics.shared.queryCountByDate(startDate: start, endDate: end)
+            DispatchQueue.main.async {
+                guard let self, generation == self.refreshGeneration else { return }
+                self.data = data
+                self.isLoading = false
+            }
+        }
     }
 
     func clear() {
@@ -141,59 +171,70 @@ struct StatisticsPane: View {
                 Text("统计设置")
             }
             Section {
-                HStack(spacing: 18) {
-                    Text("\(formatCount(dateCountData.total)) 字")
-                        .font(.title)
-                        .fontWeight(.bold)
+                if dateCountData.isLoading && dateCountData.total == 0 {
+                    HStack {
+                        ProgressView()
+                            .controlSize(.small)
+                        Text("正在加载统计…")
+                            .foregroundStyle(.secondary)
+                    }
+                } else {
+                    HStack(spacing: 18) {
+                        Text("\(formatCount(dateCountData.total)) 字")
+                            .font(.title)
+                            .fontWeight(.bold)
+                        if dateCountData.total > 0 {
+                            VStack(spacing: 4) {
+                                Text("平均码长")
+                                    .font(.caption)
+                                    .foregroundStyle(.secondary)
+                                Text(String(format: "%.2f", dateCountData.avgCodeLen))
+                                    .font(.title3)
+                                    .fontWeight(.medium)
+                            }
+                        }
+                        if dateCountData.isLoading {
+                            ProgressView()
+                                .controlSize(.small)
+                        }
+                    }
                     if dateCountData.total > 0 {
-//                        Spacer()
-                        VStack(spacing: 4) {
-                            Text("平均码长")
-                                .font(.caption)
-                                .foregroundStyle(.secondary)
-                            Text(String(format: "%.2f", dateCountData.avgCodeLen))
-                                .font(.title3)
-                                .fontWeight(.medium)
-                        }
-                    }
-                }
-                if dateCountData.total > 0 {
-                    VStack(alignment: .leading, spacing: 2) {
-                        Text("计算公式：平均码长 = (总编码按键数 + 确认键次数) / 上屏总字数")
-                            .font(.caption2)
-                            .foregroundStyle(.tertiary)
-                        HStack {
-                            Text("确认键：手动选择上屏操作，如空格、数字、")
+                        VStack(alignment: .leading, spacing: 2) {
+                            Text("计算公式：平均码长 = (总编码按键数 + 确认键次数) / 上屏总字数")
                                 .font(.caption2)
                                 .foregroundStyle(.tertiary)
-                            Text(";'")
-                                .font(.caption2)
-                                .fontWeight(.medium)
-                                .padding(.horizontal, 4)
-                                .padding(.vertical, 2)
-                                .background(Color(.sRGB, red: 0.5, green: 0.5, blue: 0.5, opacity: 0.2))
-                                .cornerRadius(3)
-                            Text("或")
-                                .font(.caption2)
-                                .foregroundStyle(.tertiary)
-                            Text(",.")
-                                .font(.caption2)
-                                .fontWeight(.medium)
-                                .padding(.horizontal, 4)
-                                .padding(.vertical, 2)
-                                .background(Color(.sRGB, red: 0.5, green: 0.5, blue: 0.5, opacity: 0.2))
-                                .cornerRadius(3)
-                            Text("二三候选词上屏符")
+                            HStack {
+                                Text("确认键：手动选择上屏操作，如空格、数字、")
+                                    .font(.caption2)
+                                    .foregroundStyle(.tertiary)
+                                Text(";'")
+                                    .font(.caption2)
+                                    .fontWeight(.medium)
+                                    .padding(.horizontal, 4)
+                                    .padding(.vertical, 2)
+                                    .background(Color(.sRGB, red: 0.5, green: 0.5, blue: 0.5, opacity: 0.2))
+                                    .cornerRadius(3)
+                                Text("或")
+                                    .font(.caption2)
+                                    .foregroundStyle(.tertiary)
+                                Text(",.")
+                                    .font(.caption2)
+                                    .fontWeight(.medium)
+                                    .padding(.horizontal, 4)
+                                    .padding(.vertical, 2)
+                                    .background(Color(.sRGB, red: 0.5, green: 0.5, blue: 0.5, opacity: 0.2))
+                                    .cornerRadius(3)
+                                Text("二三候选词上屏符")
+                                    .font(.caption2)
+                                    .foregroundStyle(.tertiary)
+                            }
+                            Text("满 4 码自动上屏，不算确认键")
                                 .font(.caption2)
                                 .foregroundStyle(.tertiary)
                         }
-                        Text("满 4 码自动上屏，不算确认键")
-                            .font(.caption2)
-                            .foregroundStyle(.tertiary)
+                        .font(.caption2)
+                        .padding(.top, 2)
                     }
-                    .font(.caption2)
-//                    .foregroundStyle(.tertiary)
-                    .padding(.top, 2)
                 }
             } header: {
                 Text("累计输入")
@@ -203,7 +244,14 @@ struct StatisticsPane: View {
                     DatePicker("开始日期", selection: $dateCountData.startDate, displayedComponents: [.date])
                     DatePicker("结束日期", selection: $dateCountData.endDate, displayedComponents: [.date])
                 }
-                if dateCountData.data.count <= 0 {
+                if dateCountData.isLoading && dateCountData.data.isEmpty {
+                    HStack {
+                        Spacer()
+                        ProgressView("正在加载…")
+                        Spacer()
+                    }
+                    .frame(minHeight: 200)
+                } else if dateCountData.data.isEmpty {
                     HStack {
                         Spacer()
                         Text("暂无数据")
@@ -213,6 +261,12 @@ struct StatisticsPane: View {
                     .frame(minHeight: 200)
                 } else {
                     chartView
+                        .opacity(dateCountData.isLoading ? 0.45 : 1)
+                        .overlay {
+                            if dateCountData.isLoading {
+                                ProgressView()
+                            }
+                        }
                 }
             } header: {
                 Text("输入统计")
