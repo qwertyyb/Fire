@@ -11,7 +11,9 @@ MINUTES=${1:-1}
 START=${2:-0}
 TIMEOUT=$(( MINUTES * 60 ))
 
-DICT="/Users/wei/Library/Rime/wubi.dict.txt"
+PROJECT_ROOT="$(cd "$(dirname "$BASH_SOURCE")/.."; pwd)"
+
+DICT="$PROJECT_ROOT/Fire/Resources/wb_table.txt"
 
 CODES=($(grep -v "^#" "$DICT" 2>/dev/null | awk '{print $1}' | grep -E "^[a-z]+$" | sort -u))
 COUNT=${#CODES[@]}
