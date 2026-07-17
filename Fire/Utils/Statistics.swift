@@ -25,7 +25,7 @@ class Statistics {
     private let dbQueue = DispatchQueue(label: "com.qwertyyb.inputmethod.Fire.statistics.db")
 
     init() {
-        NSLog("[Statistics] init")
+        FireLog.statistics.info("init")
         NotificationCenter.default
             .addObserver(self, selector: #selector(listener), name: Fire.candidateInserted, object: nil)
         initDB()
@@ -44,7 +44,7 @@ class Statistics {
     }()
 
     @objc func listener(notification: Notification) {
-        NSLog("[Statistics] listener: \(notification)")
+        FireLog.statistics.debug("listener: \(String(describing: notification.name), privacy: .public)")
         guard let candidate = notification.userInfo?["candidate"] as? Candidate else {
             return
         }
@@ -80,7 +80,7 @@ class Statistics {
         sqlite3_bind_int(stmt, 5, confirmed ? 1 : 0)
 
         if sqlite3_step(stmt) != SQLITE_DONE {
-            print("errmsg: \(dbErrMsg(database))")
+            FireLog.statistics.error("errmsg: \(dbErrMsg(self.database), privacy: .public)")
         }
     }
 
@@ -225,14 +225,14 @@ class Statistics {
 
     private func migrate() -> Bool {
         let curVersion = getVersion()
-        NSLog("[Statistics] migrate curVersion: \(curVersion)")
+        FireLog.statistics.info("migrate curVersion: \(curVersion, privacy: .public)")
         if curVersion >= upgrade.count {
             return true
         }
         upgrade.forEach { sql in
             sqlite3_exec(database, sql, nil, nil, nil)
         }
-        NSLog("[Statistics] migrate setVersion: \(upgrade.count)")
+        FireLog.statistics.info("migrate setVersion: \(self.upgrade.count, privacy: .public)")
         return setVersion(Int32(upgrade.count))
     }
 
@@ -253,7 +253,7 @@ class Statistics {
             attributes: nil
         )
 
-        NSLog("[Statistics] init DB, database path in \(dirPath)")
+        FireLog.statistics.info("init DB, database path in \(dirPath, privacy: .public)")
         guard let key = resolveDbKey() else { return }
         dbQueue.sync {
             if sqlite3_open_v2(
@@ -266,7 +266,7 @@ class Statistics {
                 _ = migrate()
             } else {
                 let errMsg = database != nil ? String(cString: sqlite3_errmsg(database)) : "nil"
-                NSLog("[Statistics] init DB, open error: \(errMsg)")
+                FireLog.statistics.error("init DB, open error: \(errMsg, privacy: .public)")
             }
         }
     }
@@ -279,13 +279,13 @@ class Statistics {
             return key
         }
         if keychain.lastResultCode != errSecItemNotFound {
-            NSLog("[Statistics] read dbkey failed: \(keychain.lastResultCode)")
+            FireLog.statistics.error("read dbkey failed: \(self.keychain.lastResultCode, privacy: .public)")
             return nil
         }
         let key = ID(alphabet: .urlSafe, size: 16).generate()
         // 首次解锁后即可读，避免登录窗口阶段读失败后误写新钥匙
         if !keychain.set(key, forKey: "dbkey", withAccess: .accessibleAfterFirstUnlock) {
-            NSLog("[Statistics] write dbkey failed: \(keychain.lastResultCode)")
+            FireLog.statistics.error("write dbkey failed: \(self.keychain.lastResultCode, privacy: .public)")
             return nil
         }
         return key

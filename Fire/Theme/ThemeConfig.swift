@@ -437,7 +437,7 @@ func loadThemeConfig(jsonData: String) -> ThemeConfig? {
         guard let jsonData = jsonData.data(using: .utf8) else { return nil }
         return try decoder.decode(ThemeConfig.self, from: jsonData)
     } catch {
-        print(error)
+        FireLog.theme.error("\(String(describing: error), privacy: .public)")
         return nil
     }
 }

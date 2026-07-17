@@ -63,11 +63,11 @@ extension FireInputController {
             existing.close()
         }
         guard let url = Bundle.main.url(forResource: fileName, withExtension: "png") else {
-            NSLog("[FireInputController] wmwb image not found: \(fileName)")
+            FireLog.input.error("wmwb image not found: \(fileName, privacy: .public)")
             return
         }
         guard let image = NSImage(contentsOf: url) else {
-            NSLog("[FireInputController] wmwb image load failed: \(url)")
+            FireLog.input.error("wmwb image load failed: \(url.absoluteString, privacy: .public)")
             return
         }
 
@@ -102,7 +102,7 @@ extension FireInputController {
            let dict = menuItem.representedObject as? [String: Any],
            let bundleID = dict["bundleID"] as? String,
            let mode = dict["mode"] as? InputMode {
-            NSLog("[FireInputController] setApplicationMode, \(bundleID), \(mode)")
+            FireLog.input.info("setApplicationMode, \(bundleID, privacy: .public), \(String(describing: mode), privacy: .public)")
             var appSettings = Defaults[.appSettings]
             appSettings[bundleID] = ApplicationSettingItem(bundleId: bundleID, inputMs: mode == .zhhans ? .zhhans : .enUS)
             Defaults[.appSettings] = appSettings
@@ -122,7 +122,7 @@ extension FireInputController {
     }
 
     override func menu() -> NSMenu! {
-        NSLog("[FireInputController] menu")
+        FireLog.input.debug("menu")
         let menu = NSMenu()
         menu.items = [
             NSMenuItem(title: "首选项", action: #selector(showPreferences(_:)), keyEquivalent: ""),
