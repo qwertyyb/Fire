@@ -70,6 +70,7 @@
 		B6B720462FF806000A595A7 /* CelebrationEffect.swift in Sources */ = {isa = PBXBuildFile; fileRef = B6B720452FF806000A595A7 /* CelebrationEffect.swift */; };
 		E291A4B12E614A66A584B462 /* KeyCap.swift in Sources */ = {isa = PBXBuildFile; fileRef = CEE3257C88BD4ECD92819A9B /* KeyCap.swift */; };
 		F1A2B3C52FF9000200A595A7 /* PreferencePickerRow.swift in Sources */ = {isa = PBXBuildFile; fileRef = F1A2B3C42FF9000200A595A7 /* PreferencePickerRow.swift */; };
+		C0FFEE012FF9000300A595A7 /* IMKAppBypass.m in Sources */ = {isa = PBXBuildFile; fileRef = C0FFEE002FF9000300A595A7 /* IMKAppBypass.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -150,6 +151,8 @@
 		B6B720452FF806000A595A7 /* CelebrationEffect.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CelebrationEffect.swift; sourceTree = "<group>"; };
 		CEE3257C88BD4ECD92819A9B /* KeyCap.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KeyCap.swift; sourceTree = "<group>"; };
 		F1A2B3C42FF9000200A595A7 /* PreferencePickerRow.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PreferencePickerRow.swift; sourceTree = "<group>"; };
+		C0FFEE002FF9000300A595A7 /* IMKAppBypass.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = IMKAppBypass.m; sourceTree = "<group>"; };
+		C0FFEE022FF9000300A595A7 /* IMKAppBypass.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = IMKAppBypass.h; sourceTree = "<group>"; };
 		FCD8E654442EC085F2FF81D5 /* RadicalFontManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RadicalFontManager.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -237,6 +240,8 @@
 				67C9A0552AB5429B000B5281 /* SQLCipher */,
 				67C9A0232AB53ED3000B5281 /* Assets.xcassets */,
 				67C9A0172AB53ED2000B5281 /* Bridging-Header.h */,
+				C0FFEE022FF9000300A595A7 /* IMKAppBypass.h */,
+				C0FFEE002FF9000300A595A7 /* IMKAppBypass.m */,
 				67C9A0182AB53ED2000B5281 /* CandidatesView.swift */,
 				67C9A02D2AB53ED3000B5281 /* CandidatesWindow.swift */,
 				B6B720452FF806000A595A7 /* CelebrationEffect.swift */,
@@ -512,6 +517,7 @@
 			files = (
 				67C9A03A2AB53ED3000B5281 /* FireInputServer.swift in Sources */,
 				67C9A00F2AB53E83000B5281 /* FireInputController.swift in Sources */,
+				C0FFEE012FF9000300A595A7 /* IMKAppBypass.m in Sources */,
 				67C99FEC2AB53DB2000B5281 /* AppDelegate.swift in Sources */,
 				67C9A00A2AB53E83000B5281 /* InputSource.swift in Sources */,
 				67C9A0352AB53ED3000B5281 /* ThemeConfig.swift in Sources */,
