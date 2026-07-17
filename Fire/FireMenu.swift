@@ -108,6 +108,19 @@ extension FireInputController {
             Defaults[.appSettings] = appSettings
         }
     }
+    @objc func setCodeMode(_ sender: Any) {
+        // IMK 菜单回调的 sender 可能是包装字典，需取出真正的 NSMenuItem
+        let item: NSMenuItem? = {
+            if let menuItem = sender as? NSMenuItem { return menuItem }
+            if let wrapper = sender as? [String: Any] {
+                return wrapper["IMKCommandMenuItem"] as? NSMenuItem
+            }
+            return nil
+        }()
+        guard let mode = item?.representedObject as? CodeMode else { return }
+        Defaults[.codeMode] = mode
+    }
+
     override func menu() -> NSMenu! {
         NSLog("[FireInputController] menu")
         let menu = NSMenu()
@@ -116,7 +129,21 @@ extension FireInputController {
             NSMenuItem(title: "用户词库", action: #selector(showUserDictPrefs(_:)), keyEquivalent: ""),
             // 查看五笔字根表：根据当前拆字版本加载对应字根图，同一时间仅开一个窗口
             NSMenuItem(title: "查看五笔字根表", action: #selector(showWubiRootTable(_:)), keyEquivalent: ""),
+            NSMenuItem.separator()
         ]
+        let current = Defaults[.codeMode]
+        let modeItems: [(String, CodeMode)] = [
+            ("拼音", .pinyin),
+            ("五笔", .wubi),
+            ("五笔拼音混合", .wubiPinyin),
+        ]
+        menu.items.append(contentsOf: modeItems.map { title, mode in
+            let item = NSMenuItem(title: title, action: #selector(setCodeMode(_:)), keyEquivalent: "")
+            item.representedObject = mode
+            item.state = mode == current ? .on : .off
+            return item
+        })
+        
         if !Defaults[.disableEnMode],
             let controller = CandidatesWindow.shared.inputController,
             let bundleID = controller.client()?.bundleIdentifier() {
