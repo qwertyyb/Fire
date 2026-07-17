@@ -55,14 +55,6 @@ extension View {
     }
 }
 
-// MARK: - 选中项位置偏好（用于容器级高亮绘制）
-struct SelectedItemFrameKey: PreferenceKey {
-    static let defaultValue: Anchor<CGRect>? = nil
-    static func reduce(value: inout Anchor<CGRect>?, nextValue: () -> Anchor<CGRect>?) {
-        value = value ?? nextValue()
-    }
-}
-
 // MARK: - Liquid Glass Background
 func getShownCode(candidate: Candidate, origin: String) -> String {
     if candidate.type == CandidateType.py || !candidate.code.hasPrefix(origin) {
@@ -79,6 +71,8 @@ struct CandidateView: View {
     var origin: String
     var selected: Bool = false
     var indexVisible = true
+    /// 竖向排列时占满可用宽度，使选中高亮铺满整行
+    var fillWidth: Bool = false
     var onHover: ((Int) -> Void)?
     /// 预览模式时传入，替代 @Default(.themeConfig) + @Environment
     var config: AppearanceThemeConfig?
@@ -90,7 +84,7 @@ struct CandidateView: View {
     @Environment(\.colorScheme) var colorScheme
 
     private var effectiveConfig: AppearanceThemeConfig {
-        config ?? (themeConfig.schemaVersion == schemaVersion ? themeConfig[colorScheme] : defaultThemeConfig[colorScheme])
+        config ?? (themeConfig.schemaVersion == themeSchemaVersion ? themeConfig[colorScheme] : defaultThemeConfig[colorScheme])
     }
 
     var body: some View {
@@ -131,7 +125,20 @@ struct CandidateView: View {
                     .foregroundStyle(Color(codeColor))
             }
         }
-        .padding(.horizontal, 2)
+        .padding(.top, CGFloat(effectiveConfig.candidatePaddingTop))
+        .padding(.bottom, CGFloat(effectiveConfig.candidatePaddingBottom))
+        .padding(.leading, CGFloat(effectiveConfig.candidatePaddingLeft))
+        .padding(.trailing, CGFloat(effectiveConfig.candidatePaddingRight))
+        .frame(maxWidth: fillWidth ? .infinity : nil, alignment: .leading)
+        .background(
+            Group {
+                if selected {
+                    RoundedRectangle(cornerRadius: CGFloat(effectiveConfig.candidateRadius))
+                        .fill(Color(effectiveConfig.selectedBackgroundColor))
+                }
+            }
+        )
+        .contentShape(Rectangle())
         .onHover { hovering in
             // 鼠标悬停时高亮跟随
             if hovering { onHover?(index) }
@@ -172,14 +179,8 @@ struct CandidatesView: View {
     @State private var hoverOutTask: DispatchWorkItem?
     @Environment(\.colorScheme) var colorScheme
 
-    private var originCodeHeight: CGFloat {
-        guard showCodeInWindow else { return 0 }
-        let font = NSFont.systemFont(ofSize: CGFloat(effectiveConfig.fontSize))
-        return font.boundingRectForFont.height.rounded(.up)
-    }
-
     private var effectiveConfig: AppearanceThemeConfig {
-        previewConfig ?? (themeConfig.schemaVersion == schemaVersion ? themeConfig[colorScheme] : defaultThemeConfig[colorScheme])
+        previewConfig ?? (themeConfig.schemaVersion == themeSchemaVersion ? themeConfig[colorScheme] : defaultThemeConfig[colorScheme])
     }
 
     private var effectiveDirection: CandidatesDirection {
@@ -196,16 +197,10 @@ struct CandidatesView: View {
                 origin: origin,
                 selected: index == selectedIndex,
                 indexVisible: candidates.count > 1,
+                fillWidth: effectiveDirection == .vertical,
                 onHover: onCandidateHover,
                 config: effectiveConfig
             )
-            .frame(maxWidth: effectiveDirection == .vertical ? .infinity : nil,
-                   alignment: .leading)
-            
-            .contentShape(Rectangle())
-            .anchorPreference(key: SelectedItemFrameKey.self, value: .bounds) {
-                index == selectedIndex ? $0 : nil
-            }
         }
         .onHover { hovering in
             // 鼠标离开候选列表时延迟复位，避免划过间隙时闪烁
@@ -262,77 +257,42 @@ struct CandidatesView: View {
         }
     }
 
-    @ViewBuilder
-    private func selectedHighlight(for anchor: Anchor<CGRect>?, in geo: GeometryProxy, isVertical: Bool, isFirstItem: Bool, isLastItem: Bool, hasDivider: Bool, originCodeBottom: CGFloat) -> some View {
-        if let anchor = anchor {
-            let rect = geo[anchor]
-            let topPad = CGFloat(effectiveConfig.selectedPaddingTop)
-            let botPad = CGFloat(effectiveConfig.selectedPaddingBottom)
-            let leftPad = CGFloat(effectiveConfig.selectedPaddingLeft)
-            let rightPad = CGFloat(effectiveConfig.selectedPaddingRight)
-            if isVertical {
-                let yTop: CGFloat = isFirstItem ? topPad : (rect.origin.y - CGFloat(effectiveConfig.candidateSpace))
-                let yBottom: CGFloat = (isLastItem && !hasDivider) ? (geo.size.height - botPad) : (rect.maxY + CGFloat(effectiveConfig.candidateSpace))
-                let h = max(yBottom - yTop, 0)
-                RoundedRectangle(cornerRadius: CGFloat(effectiveConfig.selectedBackgroundRadius))
-                    .fill(Color(effectiveConfig.selectedBackgroundColor))
-                    .frame(width: rect.width + leftPad + rightPad,
-                           height: rect.height + topPad + botPad)
-                    .offset(x: rect.origin.x - leftPad, y: rect.origin.y - topPad)
-            } else {
-                let xOffset: CGFloat = isFirstItem ? leftPad : (rect.origin.x - CGFloat(effectiveConfig.candidateSpace))
-                let rightBoundary: CGFloat = (isLastItem && !hasDivider) ? (geo.size.width - rightPad) : (rect.maxX + CGFloat(effectiveConfig.candidateSpace))
-                let w = rightBoundary - xOffset
-                RoundedRectangle(cornerRadius: CGFloat(effectiveConfig.selectedBackgroundRadius))
-                    .fill(Color(effectiveConfig.selectedBackgroundColor))
-                    .frame(width: rect.width + leftPad + rightPad,
-                           height: rect.size.height + topPad + botPad)
-                    .offset(x: rect.origin.x - leftPad, y: rect.origin.y - topPad)
-            }
-        }
-    }
-
     var body: some View {
         VStack(alignment: .leading, spacing: CGFloat(effectiveConfig.originCandidatesSpace), content: {
             if showCodeInWindow {
                 Text(origin)
                     .foregroundStyle(Color(effectiveConfig.originCodeColor))
+                    .padding(.top, CGFloat(effectiveConfig.originPaddingTop))
+                    .padding(.bottom, CGFloat(effectiveConfig.originPaddingBottom))
+                    .padding(.leading, CGFloat(effectiveConfig.originPaddingLeft))
+                    .padding(.trailing, CGFloat(effectiveConfig.originPaddingRight))
                     .fixedSize()
             }
             Group {
                 if effectiveDirection == CandidatesDirection.horizontal {
                     HStack(alignment: .center, spacing: CGFloat(effectiveConfig.candidateSpace)) {
                         _candidatesView
-                        if hasPrev || hasNext || candidates.count > 1 {
-                            Divider()
-                        }
                         _indicator
+                            .padding(.leading, CGFloat(effectiveConfig.candidatePaddingLeft))
+                            .padding(.trailing, CGFloat(effectiveConfig.candidatePaddingRight))
                     }
                     .fixedSize()
                 } else {
                     VStack(alignment: .leading, spacing: CGFloat(effectiveConfig.candidateSpace)) {
                         _candidatesView
-                        if hasPrev || hasNext || candidates.count > 1 {
-                            Divider()
-                        }
                         _indicator
+                            .padding(.top, CGFloat(effectiveConfig.candidatePaddingTop))
+                            .padding(.bottom, CGFloat(effectiveConfig.candidatePaddingBottom))
+                            .padding(.leading, CGFloat(effectiveConfig.candidatePaddingLeft))
                     }
                 }
             }
+            .id(effectiveDirection)
         })
             .padding(.top, CGFloat(effectiveConfig.windowPaddingTop))
             .padding(.bottom, CGFloat(effectiveConfig.windowPaddingBottom))
             .padding(.leading, CGFloat(effectiveConfig.windowPaddingLeft))
             .padding(.trailing, CGFloat(effectiveConfig.windowPaddingRight))
-//            .frame(minWidth: 80, alignment: .leading)
-            .backgroundPreferenceValue(SelectedItemFrameKey.self) { anchor in
-                GeometryReader { geo in
-                    let isFirst = selectedIndex <= 0
-                    let isLast = selectedIndex + 1 >= candidates.count
-                    let hasDiv = hasPrev || hasNext || candidates.count > 1
-                    selectedHighlight(for: anchor, in: geo, isVertical: effectiveDirection == .vertical, isFirstItem: isFirst, isLastItem: isLast, hasDivider: hasDiv, originCodeBottom: originCodeHeight)
-                }
-            }
             .fixedSize()
             .font(.system(size: CGFloat(effectiveConfig.fontSize)))
             .glassBackground(config: effectiveConfig)

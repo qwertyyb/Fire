@@ -142,15 +142,6 @@ struct AppearanceThemeConfig: Codable, Equatable {
     var selectedIndexColor: ColorData
     var selectedTextColor: ColorData
     var selectedCodeColor: ColorData
-    // 选中候选词的背景高亮色（透明 = 不高亮）
-    var selectedBackgroundColor: ColorData
-    // 选中候选词背景高亮圆角
-    var selectedBackgroundRadius: Float
-    // 选中高亮背景上下左右内边距（0 = 紧贴内容）
-    var selectedPaddingTop: Float
-    var selectedPaddingLeft: Float
-    var selectedPaddingRight: Float
-    var selectedPaddingBottom: Float
 
     // 页面指示器颜色
     var pageIndicatorColor: ColorData
@@ -159,6 +150,22 @@ struct AppearanceThemeConfig: Codable, Equatable {
 
     var fontName: String
     var fontSize: Float
+
+    /** V2版本新增字段 **/
+    // 原码上下左右内边距（0 = 紧贴内容）
+    var originPaddingTop: Float
+    var originPaddingLeft: Float
+    var originPaddingRight: Float
+    var originPaddingBottom: Float
+    // 选中候选词的背景高亮色（透明 = 不高亮）
+    var selectedBackgroundColor: ColorData
+    // 候选项圆角
+    var candidateRadius: Float
+    // 候选项上下左右内边距（0 = 紧贴内容）
+    var candidatePaddingTop: Float
+    var candidatePaddingLeft: Float
+    var candidatePaddingRight: Float
+    var candidatePaddingBottom: Float
     // 候选序号独立字号（与正文 fontSize 解耦，可分别调节）
     var indexFontSize: Float
     // 编码提示独立字号
@@ -171,10 +178,15 @@ struct AppearanceThemeConfig: Codable, Equatable {
         case windowBorderRadius
         case originCodeColor, originCandidatesSpace, candidateSpace
         case candidateIndexColor, candidateTextColor, candidateCodeColor
-        case selectedIndexColor, selectedTextColor, selectedCodeColor, selectedBackgroundColor, selectedBackgroundRadius
-        case selectedPaddingTop, selectedPaddingLeft, selectedPaddingRight, selectedPaddingBottom
+        case selectedIndexColor, selectedTextColor, selectedCodeColor
         case pageIndicatorColor, pageIndicatorDisabledColor
-        case fontName, fontSize, indexFontSize, codeFontSize
+        case fontName, fontSize
+        case originPaddingTop, originPaddingLeft, originPaddingRight, originPaddingBottom
+        case selectedBackgroundColor
+        case candidateRadius, candidatePaddingTop, candidatePaddingLeft, candidatePaddingRight, candidatePaddingBottom
+        // 旧 key，仅用于 decode 兼容
+        case selectedBackgroundRadius, selectedPaddingTop, selectedPaddingLeft, selectedPaddingRight, selectedPaddingBottom
+        case indexFontSize, codeFontSize
         case enableLiquidGlass
     }
 
@@ -194,19 +206,23 @@ struct AppearanceThemeConfig: Codable, Equatable {
         selectedIndexColor: ColorData,
         selectedTextColor: ColorData,
         selectedCodeColor: ColorData,
-        selectedBackgroundColor: ColorData = ColorData(red: 0, green: 0, blue: 0, opacity: 0),
-        selectedBackgroundRadius: Float = 4,
-        selectedPaddingTop: Float = 2,
-        selectedPaddingLeft: Float = 2,
-        selectedPaddingRight: Float = 2,
-        selectedPaddingBottom: Float = 2,
         pageIndicatorColor: ColorData,
         pageIndicatorDisabledColor: ColorData,
         fontName: String,
         fontSize: Float,
         indexFontSize: Float,
         codeFontSize: Float,
-        enableLiquidGlass: Bool
+        enableLiquidGlass: Bool,
+        originPaddingTop: Float = 0,
+        originPaddingLeft: Float = 0,
+        originPaddingRight: Float = 0,
+        originPaddingBottom: Float = 0,
+        selectedBackgroundColor: ColorData = ColorData(red: 0, green: 0, blue: 0, opacity: 0),
+        candidateRadius: Float = 4,
+        candidatePaddingTop: Float = 2,
+        candidatePaddingLeft: Float = 2,
+        candidatePaddingRight: Float = 2,
+        candidatePaddingBottom: Float = 2
     ) {
         self.windowBackgroundColor = windowBackgroundColor
         self.windowPaddingTop = windowPaddingTop
@@ -223,16 +239,20 @@ struct AppearanceThemeConfig: Codable, Equatable {
         self.selectedIndexColor = selectedIndexColor
         self.selectedTextColor = selectedTextColor
         self.selectedCodeColor = selectedCodeColor
-        self.selectedBackgroundColor = selectedBackgroundColor
-        self.selectedBackgroundRadius = selectedBackgroundRadius
-        self.selectedPaddingTop = selectedPaddingTop
-        self.selectedPaddingLeft = selectedPaddingLeft
-        self.selectedPaddingRight = selectedPaddingRight
-        self.selectedPaddingBottom = selectedPaddingBottom
         self.pageIndicatorColor = pageIndicatorColor
         self.pageIndicatorDisabledColor = pageIndicatorDisabledColor
         self.fontName = fontName
         self.fontSize = fontSize
+        self.originPaddingTop = originPaddingTop
+        self.originPaddingLeft = originPaddingLeft
+        self.originPaddingRight = originPaddingRight
+        self.originPaddingBottom = originPaddingBottom
+        self.selectedBackgroundColor = selectedBackgroundColor
+        self.candidateRadius = candidateRadius
+        self.candidatePaddingTop = candidatePaddingTop
+        self.candidatePaddingLeft = candidatePaddingLeft
+        self.candidatePaddingRight = candidatePaddingRight
+        self.candidatePaddingBottom = candidatePaddingBottom
         self.indexFontSize = indexFontSize
         self.codeFontSize = codeFontSize
         self.enableLiquidGlass = enableLiquidGlass
@@ -255,17 +275,26 @@ struct AppearanceThemeConfig: Codable, Equatable {
         selectedIndexColor = try container.decode(ColorData.self, forKey: .selectedIndexColor)
         selectedTextColor = try container.decode(ColorData.self, forKey: .selectedTextColor)
         selectedCodeColor = try container.decode(ColorData.self, forKey: .selectedCodeColor)
-        selectedBackgroundColor = try container.decodeIfPresent(ColorData.self, forKey: .selectedBackgroundColor)
-            ?? ColorData(red: 0, green: 0, blue: 0, opacity: 0)
-        selectedBackgroundRadius = try container.decodeIfPresent(Float.self, forKey: .selectedBackgroundRadius) ?? 4
-        selectedPaddingTop = try container.decodeIfPresent(Float.self, forKey: .selectedPaddingTop) ?? 2
-        selectedPaddingLeft = try container.decodeIfPresent(Float.self, forKey: .selectedPaddingLeft) ?? 2
-        selectedPaddingRight = try container.decodeIfPresent(Float.self, forKey: .selectedPaddingRight) ?? 2
-        selectedPaddingBottom = try container.decodeIfPresent(Float.self, forKey: .selectedPaddingBottom) ?? 2
         pageIndicatorColor = try container.decode(ColorData.self, forKey: .pageIndicatorColor)
         pageIndicatorDisabledColor = try container.decode(ColorData.self, forKey: .pageIndicatorDisabledColor)
         fontName = try container.decode(String.self, forKey: .fontName)
         fontSize = try container.decode(Float.self, forKey: .fontSize)
+        originPaddingTop = try container.decodeIfPresent(Float.self, forKey: .originPaddingTop) ?? 0
+        originPaddingLeft = try container.decodeIfPresent(Float.self, forKey: .originPaddingLeft) ?? 0
+        originPaddingRight = try container.decodeIfPresent(Float.self, forKey: .originPaddingRight) ?? 0
+        originPaddingBottom = try container.decodeIfPresent(Float.self, forKey: .originPaddingBottom) ?? 0
+        selectedBackgroundColor = try container.decodeIfPresent(ColorData.self, forKey: .selectedBackgroundColor)
+            ?? ColorData(red: 0, green: 0, blue: 0, opacity: 0)
+        candidateRadius = try container.decodeIfPresent(Float.self, forKey: .candidateRadius)
+            ?? (try container.decodeIfPresent(Float.self, forKey: .selectedBackgroundRadius)) ?? 4
+        candidatePaddingTop = try container.decodeIfPresent(Float.self, forKey: .candidatePaddingTop)
+            ?? (try container.decodeIfPresent(Float.self, forKey: .selectedPaddingTop)) ?? 2
+        candidatePaddingLeft = try container.decodeIfPresent(Float.self, forKey: .candidatePaddingLeft)
+            ?? (try container.decodeIfPresent(Float.self, forKey: .selectedPaddingLeft)) ?? 2
+        candidatePaddingRight = try container.decodeIfPresent(Float.self, forKey: .candidatePaddingRight)
+            ?? (try container.decodeIfPresent(Float.self, forKey: .selectedPaddingRight)) ?? 2
+        candidatePaddingBottom = try container.decodeIfPresent(Float.self, forKey: .candidatePaddingBottom)
+            ?? (try container.decodeIfPresent(Float.self, forKey: .selectedPaddingBottom)) ?? 2
         indexFontSize = try container.decode(Float.self, forKey: .indexFontSize)
         codeFontSize = try container.decode(Float.self, forKey: .codeFontSize)
         enableLiquidGlass = try container.decode(Bool.self, forKey: .enableLiquidGlass)
@@ -288,16 +317,20 @@ struct AppearanceThemeConfig: Codable, Equatable {
         try container.encode(selectedIndexColor, forKey: .selectedIndexColor)
         try container.encode(selectedTextColor, forKey: .selectedTextColor)
         try container.encode(selectedCodeColor, forKey: .selectedCodeColor)
-        try container.encode(selectedBackgroundColor, forKey: .selectedBackgroundColor)
-        try container.encode(selectedBackgroundRadius, forKey: .selectedBackgroundRadius)
-        try container.encode(selectedPaddingTop, forKey: .selectedPaddingTop)
-        try container.encode(selectedPaddingLeft, forKey: .selectedPaddingLeft)
-        try container.encode(selectedPaddingRight, forKey: .selectedPaddingRight)
-        try container.encode(selectedPaddingBottom, forKey: .selectedPaddingBottom)
         try container.encode(pageIndicatorColor, forKey: .pageIndicatorColor)
         try container.encode(pageIndicatorDisabledColor, forKey: .pageIndicatorDisabledColor)
         try container.encode(fontName, forKey: .fontName)
         try container.encode(fontSize, forKey: .fontSize)
+        try container.encode(originPaddingTop, forKey: .originPaddingTop)
+        try container.encode(originPaddingLeft, forKey: .originPaddingLeft)
+        try container.encode(originPaddingRight, forKey: .originPaddingRight)
+        try container.encode(originPaddingBottom, forKey: .originPaddingBottom)
+        try container.encode(selectedBackgroundColor, forKey: .selectedBackgroundColor)
+        try container.encode(candidateRadius, forKey: .candidateRadius)
+        try container.encode(candidatePaddingTop, forKey: .candidatePaddingTop)
+        try container.encode(candidatePaddingLeft, forKey: .candidatePaddingLeft)
+        try container.encode(candidatePaddingRight, forKey: .candidatePaddingRight)
+        try container.encode(candidatePaddingBottom, forKey: .candidatePaddingBottom)
         try container.encode(indexFontSize, forKey: .indexFontSize)
         try container.encode(codeFontSize, forKey: .codeFontSize)
         try container.encode(enableLiquidGlass, forKey: .enableLiquidGlass)
@@ -305,6 +338,7 @@ struct AppearanceThemeConfig: Codable, Equatable {
 }
 
 struct ThemeConfig: Codable, Defaults.Serializable {
+    /** V2版本新增字段 **/
     let schemaVersion: Int?
     let id: String
     let name: String
@@ -321,71 +355,79 @@ struct ThemeConfig: Codable, Defaults.Serializable {
     }
 }
 
-let schemaVersion = 2
+let themeSchemaVersion = 2
 
 let defaultThemeConfig = ThemeConfig(
-    schemaVersion: schemaVersion,
+    schemaVersion: themeSchemaVersion,
     id: "default",
     name: "默认",
     author: "业火输入法",
     light: AppearanceThemeConfig(
         windowBackgroundColor: ColorData(red: 1, green: 1, blue: 1, opacity: 1),
-        windowPaddingTop: 6,
-        windowPaddingLeft: 10,
-        windowPaddingRight: 10,
-        windowPaddingBottom: 6,
+        windowPaddingTop: 0,
+        windowPaddingLeft: 0,
+        windowPaddingRight: 0,
+        windowPaddingBottom: 0,
         windowBorderRadius: 6,
         originCodeColor: ColorData(red: 0.3, green: 0.3, blue: 0.3, opacity: 1),
-        originCandidatesSpace: 6,
-        candidateSpace: 8,
+        originCandidatesSpace: 0,
+        candidateSpace: 0,
         candidateIndexColor: ColorData(red: 0.1, green: 0.1, blue: 0.1, opacity: 1),
         candidateTextColor: ColorData(red: 0.1, green: 0.1, blue: 0.1, opacity: 1),
         candidateCodeColor: ColorData(red: 0.3, green: 0.3, blue: 0.3, opacity: 0.8),
         selectedIndexColor: ColorData(red: 0.863, green: 0.078, blue: 0.235, opacity: 1),
         selectedTextColor: ColorData(red: 0.863, green: 0.078, blue: 0.235, opacity: 1),
         selectedCodeColor: ColorData(red: 0.863, green: 0.078, blue: 0.235, opacity: 0.8),
-        selectedBackgroundColor: ColorData(red: 0, green: 0, blue: 0, opacity: 0.06),
-        selectedBackgroundRadius: 4,
-        selectedPaddingTop: 4,
-        selectedPaddingLeft: 8,
-        selectedPaddingRight: 8,
-        selectedPaddingBottom: 4,
         pageIndicatorColor: ColorData(red: 0.863, green: 0.078, blue: 0.235, opacity: 1),
         pageIndicatorDisabledColor: ColorData(red: 0.863, green: 0.078, blue: 0.235, opacity: 0.4),
         fontName: "system",
         fontSize: 20,
         indexFontSize: 20,
         codeFontSize: 20,
-        enableLiquidGlass: true),
+        enableLiquidGlass: true,
+        originPaddingTop: 6,
+        originPaddingLeft: 8,
+        originPaddingRight: 8,
+        originPaddingBottom: 6,
+        selectedBackgroundColor: ColorData(red: 0, green: 0, blue: 0, opacity: 0.06),
+        candidateRadius: 0,
+        candidatePaddingTop: 6,
+        candidatePaddingLeft: 8,
+        candidatePaddingRight: 8,
+        candidatePaddingBottom: 6),
     dark: AppearanceThemeConfig(
         windowBackgroundColor: ColorData(red: 0, green: 0, blue: 0, opacity: 1),
-        windowPaddingTop: 6,
-        windowPaddingLeft: 10,
-        windowPaddingRight: 10,
-        windowPaddingBottom: 6,
+        windowPaddingTop: 0,
+        windowPaddingLeft: 0,
+        windowPaddingRight: 0,
+        windowPaddingBottom: 0,
         windowBorderRadius: 6,
         originCodeColor: ColorData(red: 1, green: 1, blue: 1, opacity: 1),
-        originCandidatesSpace: 6,
-        candidateSpace: 8,
+        originCandidatesSpace: 0,
+        candidateSpace: 0,
         candidateIndexColor: ColorData(red: 0.9, green: 0.9, blue: 0.9, opacity: 1),
         candidateTextColor: ColorData(red: 0.9, green: 0.9, blue: 0.9, opacity: 1),
         candidateCodeColor: ColorData(red: 0.7, green: 0.7, blue: 0.7, opacity: 0.8),
         selectedIndexColor: ColorData(red: 0.863, green: 0.078, blue: 0.235, opacity: 1),
         selectedTextColor: ColorData(red: 0.863, green: 0.078, blue: 0.235, opacity: 1),
         selectedCodeColor: ColorData(red: 0.863, green: 0.078, blue: 0.235, opacity: 0.8),
-        selectedBackgroundColor: ColorData(red: 1, green: 1, blue: 1, opacity: 0.08),
-        selectedBackgroundRadius: 4,
-        selectedPaddingTop: 4,
-        selectedPaddingLeft: 8,
-        selectedPaddingRight: 8,
-        selectedPaddingBottom: 4,
         pageIndicatorColor: ColorData(red: 0.863, green: 0.078, blue: 0.235, opacity: 1),
         pageIndicatorDisabledColor: ColorData(red: 0.863, green: 0.078, blue: 0.235, opacity: 0.4),
         fontName: "system",
         fontSize: 20,
         indexFontSize: 20,
         codeFontSize: 20,
-        enableLiquidGlass: true
+        enableLiquidGlass: true,
+        originPaddingTop: 6,
+        originPaddingLeft: 8,
+        originPaddingRight: 8,
+        originPaddingBottom: 6,
+        selectedBackgroundColor: ColorData(red: 1, green: 1, blue: 1, opacity: 0.08),
+        candidateRadius: 0,
+        candidatePaddingTop: 6,
+        candidatePaddingLeft: 8,
+        candidatePaddingRight: 8,
+        candidatePaddingBottom: 6
     )
 )
 

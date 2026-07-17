@@ -220,7 +220,7 @@ struct ThemeEditorView: View {
     @State private var showVerticalPreview = false
     @State private var darkSameLight = true
     @State private var name = ""
-    @State private var themeSchemaVersion = String(schemaVersion)
+    @State private var schemaVersionDisplay = String(themeSchemaVersion)
     @State private var id = ""
     @State private var author = NSFullUserName()
     @State private var light = defaultThemeConfig.light
@@ -386,7 +386,7 @@ struct ThemeEditorView: View {
                                 .disabled(true)
                         }
                         formRow(label: "主题版本") {
-                            TextField("", text: $themeSchemaVersion)
+                            TextField("", text: $schemaVersionDisplay)
                                 .textFieldStyle(.roundedBorder)
                                 .disabled(true)
                         }
@@ -481,10 +481,18 @@ struct ThemeEditorView: View {
     private var originCodeSection: some View {
         GroupBox {
             sectionContent {
-                HStack(spacing: 10) {
-                    ColorPickerRow(label: "颜色", color: activeTheme.originCodeColor)
-                    Spacer()
-                    numberRow(label: "与候选项间距", value: activeTheme.originCandidatesSpace, range: 0...20)
+                VStack(alignment: .leading, spacing: 10) {
+                    HStack(spacing: 10) {
+                        ColorPickerRow(label: "颜色", color: activeTheme.originCodeColor)
+                        Spacer()
+                        numberRow(label: "与候选项间距", value: activeTheme.originCandidatesSpace, range: 0...20)
+                    }
+                    HStack(spacing: 10) {
+                        numberRow(label: "上边距", value: activeTheme.originPaddingTop, range: 0...12)
+                        numberRow(label: "下边距", value: activeTheme.originPaddingBottom, range: 0...12)
+                        numberRow(label: "左边距", value: activeTheme.originPaddingLeft, range: 0...12)
+                        numberRow(label: "右边距", value: activeTheme.originPaddingRight, range: 0...12)
+                    }
                 }
             }
         } label: {
@@ -501,7 +509,7 @@ struct ThemeEditorView: View {
                 VStack(alignment: .leading, spacing: 10) {
                     HStack {
                         numberRow(label: "候选项间距", value: activeTheme.candidateSpace, range: 0...20)
-                }
+                    }
                     HStack(spacing: 10) {
                         ColorPickerRow(label: "序号", color: activeTheme.candidateIndexColor)
                         ColorPickerRow(label: "候选词", color: activeTheme.candidateTextColor)
@@ -511,6 +519,15 @@ struct ThemeEditorView: View {
                         numberRow(label: "序号字号", value: activeTheme.indexFontSize, range: 10...28)
                         numberRow(label: "候选词字号", value: activeTheme.fontSize, range: 10...28)
                         numberRow(label: "提示码字号", value: activeTheme.codeFontSize, range: 10...28)
+                    }
+                    HStack {
+                        numberRow(label: "圆角", value: activeTheme.candidateRadius, range: 0...12)
+                    }
+                    HStack(spacing: 10) {
+                        numberRow(label: "上边距", value: activeTheme.candidatePaddingTop, range: 0...12)
+                        numberRow(label: "下边距", value: activeTheme.candidatePaddingBottom, range: 0...12)
+                        numberRow(label: "左边距", value: activeTheme.candidatePaddingLeft, range: 0...12)
+                        numberRow(label: "右边距", value: activeTheme.candidatePaddingRight, range: 0...12)
                     }
                 }
             }
@@ -533,15 +550,6 @@ struct ThemeEditorView: View {
                     }
                     HStack(spacing: 10) {
                         ColorPickerRow(label: "背景", color: activeTheme.selectedBackgroundColor)
-                    }
-                    HStack {
-                        numberRow(label: "圆角", value: activeTheme.selectedBackgroundRadius, range: 0...12)
-                    }
-                    HStack(spacing: 10) {
-                        numberRow(label: "上边距", value: activeTheme.selectedPaddingTop, range: 0...12)
-                        numberRow(label: "下边距", value: activeTheme.selectedPaddingBottom, range: 0...12)
-                        numberRow(label: "左边距", value: activeTheme.selectedPaddingLeft, range: 0...12)
-                        numberRow(label: "右边距", value: activeTheme.selectedPaddingRight, range: 0...12)
                     }
                 }
             }
@@ -618,7 +626,7 @@ struct ThemeEditorView: View {
 
     func saveTheme() {
         let theme = ThemeConfig(
-            schemaVersion: schemaVersion,
+            schemaVersion: themeSchemaVersion,
             id: String(id),
             name: name.isEmpty ? "未命名" : name,
             author: author,
