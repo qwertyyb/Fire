@@ -19,13 +19,13 @@ extension FireInputController {
         guard let identifier = client()?.bundleIdentifier() else { return false }
         if let appSetting = Defaults[.appSettings][identifier],
          let mode = InputMode(rawValue: appSetting.inputModeSetting.rawValue) {
-            NSLog("[FireInputController] restoreClientInputMode from setting : \(identifier), \(mode)")
+            FireLog.input.info("restoreClientInputMode from setting: \(identifier, privacy: .public), \(String(describing: mode), privacy: .public)")
             Fire.shared.toggleInputMode(mode, showTip: false)
             return currentMode != Fire.shared.inputMode
         }
         // 启用APP缓存设置
         if Defaults[.keepAppInputMode], let mode = InputModeCache.shared.get(identifier) {
-            NSLog("[FireInputController] restoreClientInputMode from cache: \(identifier), \(mode)")
+            FireLog.input.info("restoreClientInputMode from cache: \(identifier, privacy: .public), \(String(describing: mode), privacy: .public)")
             Fire.shared.toggleInputMode(mode, showTip: false)
             return currentMode != Fire.shared.inputMode
         }
@@ -37,14 +37,14 @@ extension FireInputController {
            let controller = CandidatesWindow.shared.inputController,
            let identifier = controller.client()?.bundleIdentifier(),
            Defaults[.appSettings][identifier] == nil {
-            NSLog("[Fire] saveClientInputMode \(identifier), \(inputMode)")
+            FireLog.input.debug("saveClientInputMode \(identifier, privacy: .public), \(String(describing: self.inputMode), privacy: .public)")
             // 缓存当前输入模式
             InputModeCache.shared.put(identifier, inputMode)
         }
     }
 
     override func activateServer(_ sender: Any!) {
-        NSLog("[FireInputController] activate server: \(client()?.bundleIdentifier() ?? sender.debugDescription)")
+        FireLog.input.info("activate server: \(self.client()?.bundleIdentifier() ?? sender.debugDescription, privacy: .public)")
         
         // 这个保存动作之所以不在 deactivateServer 中做，主要是因为 activateServer 和 deactivateServer 的调用顺序不固定
         // 而 inputMode 是全局的，如果是 activateServer 先调用，则会写入 inputMode
@@ -86,6 +86,6 @@ extension FireInputController {
         // 避免切换 App 后延续上一次会话的配对状态，导致开闭颠倒
         PunctuationConversion.shared.reset()
 //        saveClientInputMode()
-        NSLog("[FireInputController] deactivate server: \(client()?.bundleIdentifier() ?? "no client deactivate")")
+        FireLog.input.info("deactivate server: \(self.client()?.bundleIdentifier() ?? "no client deactivate", privacy: .public)")
     }
 }

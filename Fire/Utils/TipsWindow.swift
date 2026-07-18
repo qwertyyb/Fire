@@ -56,7 +56,7 @@ class TipsWindow: ToastWindowProtocol {
     }
 
     func show(_ text: String, position: NSPoint) {
-        NSLog("[utils] showTips: \(position)")
+        FireLog.utils.debug("showTips: \(String(describing: position), privacy: .public)")
         self.clearTimer()
         self.createTipsWindow()
         self.updateText(text: text)

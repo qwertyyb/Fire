@@ -26,14 +26,14 @@ class RadicalFontManager {
         let fontURL = Bundle.main.url(forResource: Self.fontName, withExtension: "ttf")
             ?? Bundle.main.url(forResource: Self.fontName, withExtension: "ttf", subdirectory: "font")
         guard let fontURL else {
-            NSLog("[RadicalFontManager] Font file not found in bundle")
+            FireLog.app.error("Font file not found in bundle")
             return
         }
 
         let registered = CTFontManagerRegisterFontsForURL(fontURL as CFURL, .process, nil)
         if registered {
             fontAvailable = true
-            NSLog("[RadicalFontManager] Font registered: \(Self.fontName)")
+            FireLog.app.info("Font registered: \(Self.fontName, privacy: .public)")
             return
         }
 
@@ -41,9 +41,9 @@ class RadicalFontManager {
         let font = CTFontCreateWithName(Self.fontName as CFString, 12, nil)
         fontAvailable = (CTFontCopyFamilyName(font) as String) == Self.fontName
         if fontAvailable {
-            NSLog("[RadicalFontManager] Font already available: \(Self.fontName)")
+            FireLog.app.info("Font already available: \(Self.fontName, privacy: .public)")
         } else {
-            NSLog("[RadicalFontManager] Font registration failed")
+            FireLog.app.error("Font registration failed")
         }
     }
 

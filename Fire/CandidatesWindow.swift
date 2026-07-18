@@ -69,8 +69,8 @@ class CandidatesWindow: NSPanel, NSWindowDelegate {
         if inputController == nil {
             inputController = Fire.shared.activeInputController
         }
-        NSLog("origin top left: \(topLeft)")
-        NSLog("candidates: \(candidatesData)")
+        FireLog.input.debug("origin top left: \(String(describing: topLeft), privacy: .public)")
+        FireLog.input.debug("candidates: \(String(describing: candidatesData))")
         self.setFrameTopLeftPoint(topLeft)
         self.orderFrontRegardless()
 //        NSApp.setActivationPolicy(.prohibited)
@@ -102,7 +102,7 @@ class CandidatesWindow: NSPanel, NSWindowDelegate {
         // 保存 globalMonitor 引用，用于 deinit 时移除
         // 全局 flagsChanged 监视器在后台线程回调，需派发到主线程再操作 UI
         globalMonitor = NSEvent.addGlobalMonitorForEvents(matching: .flagsChanged) { [weak self] (event) in
-            NSLog("[CandidatesWindow] globalMonitorForEvents flagsChanged: \(event)")
+            FireLog.input.debug("globalMonitorForEvents flagsChanged: \(String(describing: event), privacy: .public)")
             if !InputSource.shared.isSelected() {
                 return
             }
@@ -161,7 +161,7 @@ class CandidatesWindow: NSPanel, NSWindowDelegate {
     }
 
     private func transformTopLeft(originalTopLeft: NSPoint) -> NSPoint {
-        NSLog("[FireCandidatesWindow] transformTopLeft: \(frame)")
+        FireLog.input.debug("transformTopLeft: \(String(describing: self.frame), privacy: .public)")
 
         let screenPadding: CGFloat = 6
 
