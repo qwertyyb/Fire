@@ -246,7 +246,7 @@ struct ThemeEditorView: View {
     }
 
     private func updatePreviewWindow() {
-        NSLog("[ThemeEditor] updatePreviewWindow")
+        FireLog.theme.debug("updatePreviewWindow")
         // 关闭旧窗口后重建（避免替换 contentView 导致的 AppKit 状态问题）
         Self.closePreview()
         let config = (darkSameLight || !editingDark) ? light : dark
@@ -292,7 +292,7 @@ struct ThemeEditorView: View {
         }
         win.makeKeyAndOrderFront(nil)
         Self.previewWindow = win
-        NSLog("[ThemeEditor] preview window opened at \(win.frame)")
+        FireLog.theme.debug("preview window opened at \(String(describing: win.frame), privacy: .public)")
     }
 
     /// 隐藏预览浮窗（不释放窗口，仅移出屏幕并释放内部视图）

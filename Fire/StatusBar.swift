@@ -45,7 +45,7 @@ class StatusBar {
     }
 
     private func refreshVisibleStatus() {
-        NSLog("[StatusBar] refreshVisibleStatus: \(InputSource.shared.isSelected())")
+        FireLog.app.debug("refreshVisibleStatus: \(InputSource.shared.isSelected(), privacy: .public)")
         statusItem.isVisible = Defaults[.showInputModeStatus] && InputSource.shared.isSelected()
     }
 

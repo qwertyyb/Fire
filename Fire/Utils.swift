@@ -53,7 +53,7 @@ class Utils {
         }.tieToLifetime(of: self)
         Defaults.observe(.toggleInputModeKey) { (val) in
             let modifier = val.newValue
-            print("modifier: ", modifier)
+            FireLog.utils.debug("modifier: \(String(describing: modifier), privacy: .public)")
             self.toggleInputModeKeyUpChecker = ModifierKeyUpChecker(modifier)
         }.tieToLifetime(of: self)
     }
@@ -83,7 +83,7 @@ class Utils {
     
     // 根据上次输入的字符，判断插入的新字符是否要前加空格
     func shouldConcatWithWhitespace(_ lastText: String, _ nextText: String) -> Bool {
-        NSLog("[Utils] shouldConcatWithWhitespace, lastText: \(lastText), nextText: \(nextText)")
+        FireLog.utils.debug("shouldConcatWithWhitespace, lastText: \(lastText), nextText: \(nextText)")
         if lastText.isEmpty || nextText.isEmpty {
             return false
         }
@@ -132,7 +132,7 @@ func sqliteQuery(_ db: OpaquePointer?, _ sql: String,
                  bind: ((OpaquePointer) -> Void)? = nil,
                  row: (OpaquePointer) -> Void) {
     guard let stmt = sqlitePrepare(db, sql) else {
-        NSLog("[SQLite] prepare failed: \(sql) — \(dbErrMsg(db))")
+        FireLog.utils.error("SQLite prepare failed: \(sql) — \(dbErrMsg(db), privacy: .public)")
         return
     }
     defer { sqlite3_finalize(stmt) }

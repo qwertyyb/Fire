@@ -39,7 +39,7 @@ struct GeneralPane: View {
     var body: some View {
         Form {
             Section {
-                PreferencePickerRow(title: "输入法方案") {
+                PreferencePickerRow(title: "编码方案") {
                     Picker("", selection: $code) {
                         Text("五笔").tag(CodeMode.wubi)
                         Text("拼音").tag(CodeMode.pinyin)
@@ -66,10 +66,11 @@ struct GeneralPane: View {
                     .disabled(candidateHintMode != .spelling)
                 }
                 PreferenceToggleRow(title: "4码唯一上屏", isOn: $wubiAutoCommit)
-                PreferenceToggleRow(title: "第五码顶字上屏", caption: "仅五笔方案生效", isOn: $wubiFifthCommit)
+                PreferenceToggleRow(title: "第5码顶字上屏", caption: "仅五笔方案生效", isOn: $wubiFifthCommit)
                     .disabled(code != .wubi)
                 PreferenceToggleRow(title: "精确匹配候选词", caption: "禁用逐码匹配", isOn: $enableExactMatch)
                 PreferenceToggleRow(title: "Z键匹配查询", caption: "万能键", isOn: $zKeyQuery)
+                PreferenceToggleRow(title: "显示生僻字", isOn: $enableGBK)
             } header: {
                 Text("编码")
             }
@@ -81,6 +82,7 @@ struct GeneralPane: View {
                     }
                     .labelsHidden()
                 }
+                PreferenceToggleRow(title: "显示输入码", caption: "不内嵌文本框", isOn: $showCodeInWindow)
                 PreferencePickerRow(title: "候选词数量") {
                     Picker("", selection: $candidateCount) {
                         Text("3").tag(3)
@@ -93,8 +95,6 @@ struct GeneralPane: View {
                     }
                     .labelsHidden()
                 }
-                PreferenceToggleRow(title: "显示输入码", caption: "不内嵌文本框", isOn: $showCodeInWindow)
-                PreferenceToggleRow(title: "显示生僻字", isOn: $enableGBK)
                 PreferencePickerRow(title: "二三候选词额外选择键") {
                     Picker("", selection: $extraCandidateSelectKeys) {
                         Text("禁用").tag(ExtraCandidateSelectKeys.disabled)
@@ -120,7 +120,7 @@ struct GeneralPane: View {
                     .labelsHidden()
                 }
             } header: {
-                Text("候选词")
+                Text("候选窗")
             }
             Section {
                 PreferenceToggleRow(title: "禁止切换英文", isOn: $disableEnMode)
@@ -151,7 +151,7 @@ struct GeneralPane: View {
                 PreferenceToggleRow(title: "中文与英文或数字之间插入空格", isOn: $enableWhitespaceBetweenZhEn)
                 PreferenceToggleRow(title: "禁用;键临时英文模式", isOn: $disableTempEnMode)
             } header: {
-                Text("中英文切换")
+                Text("状态切换")
             }
         }
         .formStyle(.grouped)

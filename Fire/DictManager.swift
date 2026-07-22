@@ -102,14 +102,37 @@ class DictManager {
         """
         return sql
     }
+    
+    private func enableSQLiteProfile(_ db: OpaquePointer?) {
+        guard let db = db else { return }
+        
+        // 注册 profile 回调
+        sqlite3_profile(db, { _, sql, nanoseconds in
+            /*
+             * SQLite 内部计时精度 = 微秒级 / 毫秒级，不是纳秒级！
+             * 虽然 sqlite3_profile 给你的单位是 纳秒（UInt64），
+             * 但 SQLite 内部真正计时精度并没有那么高。
+             * 它的时间来源是：
+             * Windows：GetTickCount 精度 1ms ~ 16ms
+             * macOS / iOS：mach_absolute_time 转成后对齐到毫秒级别
+             */
+            let ms = Double(nanoseconds) / 1_000_000
+            let sqlStr = String(cString: sql!)
+            
+            FireLog.dict.debug("SQL duration: \(ms, privacy: .public)ms, sql: \(sqlStr)")
+        }, nil)
+    }
 
     private func prepareStatement() {
         if database == nil {
             let rc = sqlite3_open_v2(getDatabaseURL().path, &database, SQLITE_OPEN_READWRITE, nil)
             guard rc == SQLITE_OK else {
-                NSLog("[DictManager] Failed to open database: %s", sqlite3_errmsg(database))
+                FireLog.dict.error("Failed to open database: \(String(cString: sqlite3_errmsg(self.database)), privacy: .public)")
                 return
             }
+#if DEBUG
+            enableSQLiteProfile(database)
+#endif
             sqlite3_exec(database, "PRAGMA case_sensitive_like=ON;", nil, nil, nil)
             // 限制 SQLite 页缓存为 2MB，防止候选词查询缓存持续增长占用过多内存
             sqlite3_exec(database, "PRAGMA cache_size=-2000;", nil, nil, nil)
@@ -121,12 +144,12 @@ class DictManager {
         let sql = getStatementSql()
         // 日志输出实际执行的 SQL，方便调试查询问题
 #if DEBUG
-        NSLog("[DictManager] SQL: \(sql.replacingOccurrences(of: "\n", with: " "))")
+        FireLog.dict.debug("SQL: \(sql.replacingOccurrences(of: "\n", with: " "))")
 #endif
         if sqlite3_prepare_v2(database, sql, -1, &queryStatement, nil) == SQLITE_OK {
-            print("prepare ok")
+            FireLog.dict.debug("prepare ok")
         } else if let err = sqlite3_errmsg(database) {
-            print("prepare fail: \(err)")
+            FireLog.dict.error("prepare fail: \(String(cString: err), privacy: .public)")
         }
     }
 
@@ -161,7 +184,7 @@ class DictManager {
         vars.forEach { (key, val) in
             newText = newText.replacingOccurrences(of: key, with: val)
         }
-        print("[replaceTextWithVars] \(text), \(newText)")
+        FireLog.dict.debug("replaceTextWithVars: \(text), \(newText)")
         return newText
     }
 
@@ -204,10 +227,10 @@ class DictManager {
         // prepareStatement 失败（如码表数据库列不匹配需要重建）时返回空候选
         // 防止用户使用时出现无响应或崩溃
         guard queryStatement != nil else {
-            NSLog("[DictManager] queryStatement is nil, db may need rebuild")
+            FireLog.dict.error("queryStatement is nil, db may need rebuild")
             return ([], false)
         }
-        NSLog("[DictManager] getCandidates origin: \(query)")
+        FireLog.dict.debug("getCandidates origin: \(query)")
         let startTime = CFAbsoluteTimeGetCurrent()
         let queryLike = getQueryLike(query)
         var candidates: [Candidate] = []
@@ -223,6 +246,9 @@ class DictManager {
                          sqlite3_bind_parameter_index(queryStatement, ":offset"),
                          Int32((page - 1) * Defaults[.candidateCount])
         )
+        #if DEBUG
+        FireLog.dict.debug("query sql: \(String(cString: sqlite3_expanded_sql(self.queryStatement)))")
+        #endif
         while sqlite3_step(queryStatement) == SQLITE_ROW {
             guard let code = optString(queryStatement, 0),
                   var text = optString(queryStatement, 1) else { continue }
@@ -258,7 +284,7 @@ class DictManager {
 
 
         let duration = CFAbsoluteTimeGetCurrent() - startTime
-        NSLog("[DictManager] getCandidates query: \(query) , duration: \(duration)")
+        FireLog.dict.debug("getCandidates query: \(query), duration: \(duration * 1000, privacy: .public)ms")
         return (candidates, hasNext: allCount > count)
     }
 
@@ -300,12 +326,13 @@ class DictManager {
         }
         sqlite3_finalize(insertStatement)
         insertStatement = nil
-        print("errmsg: \(database != nil ? String(cString: sqlite3_errmsg(database)) : "nil")")
+        let errMsg = database != nil ? String(cString: sqlite3_errmsg(database)) : "nil"
+        FireLog.dict.error("prependCandidate errmsg: \(errMsg, privacy: .public)")
         return false
     }
 
     func deleteCandidate(_ candidate: Candidate) {
-        NSLog("[DictManager.deleteCandidate] \(candidate.text) code=\(candidate.code) type=\(candidate.type.rawValue)")
+        FireLog.dict.debug("deleteCandidate \(candidate.text) code=\(candidate.code) type=\(candidate.type.rawValue, privacy: .public)")
         // 删除策略改为"屏蔽"而非直接删除，防止重建索引后被删除的词典词重新出现
         // 用户词：删除 type='user' 记录清除排序调整，再插入 blocked 屏蔽原词典词
         // 词典词：直接插入 blocked 屏蔽
@@ -318,7 +345,7 @@ class DictManager {
                 sqlite3_bind_text(stmt, sqlite3_bind_parameter_index(stmt, ":type"),
                                   CandidateType.user.rawValue, -1, SQLITE_TRANSIENT)
                 if sqlite3_step(stmt) != SQLITE_DONE {
-                    NSLog("[DictManager.deleteCandidate] delete user failed: %s", sqlite3_errmsg(database) ?? "unknown")
+                    FireLog.dict.error("delete user failed: \(String(cString: sqlite3_errmsg(self.database)), privacy: .public)")
                 }
             }
             sqlite3_finalize(stmt)
@@ -328,7 +355,7 @@ class DictManager {
         if sqlite3_prepare_v2(database, blockSql, -1, &blockStmt, nil) == SQLITE_OK {
             sqlite3_bind_text(blockStmt, 1, candidate.text, -1, SQLITE_TRANSIENT)
             if sqlite3_step(blockStmt) != SQLITE_DONE {
-                NSLog("[DictManager.deleteCandidate] insert blocked_words failed: %s", sqlite3_errmsg(database) ?? "unknown")
+                FireLog.dict.error("insert blocked_words failed: \(String(cString: sqlite3_errmsg(self.database)), privacy: .public)")
             }
         }
         sqlite3_finalize(blockStmt)
@@ -434,7 +461,7 @@ class DictManager {
         sqlite3_exec(database, "delete from wb_py_dict where type = '\(CandidateType.user.rawValue)'", nil, nil, nil)
         // 2. 添加用户词库
         let lines = dictContent.split(whereSeparator: \.isNewline)
-        NSLog("[DictManager] updateUserDict: \(lines)");
+        FireLog.dict.debug("updateUserDict: \(lines.count, privacy: .public) lines")
         let candidates = lines.map { (line) -> [Candidate] in
             let parts = parseQuoteAware(line: line)
             guard parts.count >= 2 else { return [] }
@@ -528,7 +555,7 @@ class DictManager {
             var texts: [String]
         }
         let candidates = getUserCandidates()
-        NSLog("[DictManager.exportUserDictToFile] candidates: \(candidates)")
+        FireLog.dict.debug("exportUserDictToFile candidates: \(candidates.count, privacy: .public)")
         var list: [UserDictLine] = []
         candidates.forEach { candidate in
             let index = list.firstIndex { dictItem in

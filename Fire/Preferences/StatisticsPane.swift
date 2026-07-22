@@ -59,9 +59,9 @@ class DateCountData: ObservableObject {
     }
 
     @objc func refresh() {
-        NSLog("[DateCountData] refresh start: \(startDate)")
+        FireLog.statistics.debug("DateCountData refresh start: \(String(describing: self.startDate), privacy: .public)")
         if !FirePreferencesController.shared.isVisible {
-            NSLog("[DateCountData] refresh cancel: not visible")
+            FireLog.statistics.debug("DateCountData refresh cancel: not visible")
             return
         }
         let start = startDate
