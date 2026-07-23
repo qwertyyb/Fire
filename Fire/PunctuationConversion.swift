@@ -71,8 +71,12 @@ class PunctuationConversion: Conversion {
     
     // 转换单双引号
     // 基本思路: 第一次按引号输入左引号，第二次按输入右引号
+    // 成对输出启用时跳过轮换：同一键会先出「左+右」，再轮换会变成只出右引号
     private func transformQuoteResult(_ result: String) -> String {
         guard quoteCount[result] != nil else { return result }
+        if Defaults[.enablePunctuationAutoPair] {
+            return result
+        }
         let resultMap = [
             "‘": "’",
             "“": "”"
