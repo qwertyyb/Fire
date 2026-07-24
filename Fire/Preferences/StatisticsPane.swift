@@ -7,7 +7,7 @@
 //
 
 import SwiftUI
-import Settings
+import Charts
 import Defaults
 import Combine
 
@@ -15,63 +15,39 @@ func formatCount(_ count: Int64) -> String {
     return NumberFormatter.localizedString(from: NSNumber(value: count), number: .decimal)
 }
 
-struct CountCircle: View {
-    let data: DateCount
-
-    @State private var hovered = false
-
-    var body: some View {
-        ZStack(alignment: .topLeading) {
-            Circle()
-                .stroke(
-                    style: StrokeStyle(
-                        lineWidth: 4,
-                        lineCap: .round,
-                        lineJoin: .round,
-                        miterLimit: 80,
-                        dash: [],
-                        dashPhase: 0
-                    )
-                )
-                .frame(width: 10, height: 10, alignment: .center)
-                .foregroundColor(Color(red: 251/255, green: 82/255, blue: 0))
-                .background(Color.white)
-                .cornerRadius(5)
-                .scaleEffect(hovered ? 1.3 : 1)
-                .onHover { state in
-                    hovered = state
-                }
-                .popover(isPresented: $hovered) {
-                    Text("\(data.date)输入: \(formatCount(data.count))字")
-                        .padding(6)
-                }
-        }
-    }
-}
-
 class DateCountData: ObservableObject {
     @Published var startDate = Date().addingTimeInterval(-5 * 24 * 60 * 60)
     @Published var endDate = Date()
     @Published var data: [DateCount] = []
     @Published var total: Int64 = 0
+    @Published var avgCodeLen: Double = 0
+    @Published var isLoading = false
 
     var cancellables = Set<AnyCancellable>()
+    /// 避免快速切换日期 / 连续 notification 时旧查询结果覆盖新结果
+    private var refreshGeneration = 0
 
     init() {
         refresh()
         NotificationCenter.default
             .publisher(for: Statistics.updated)
-            .sink { _ in
-                self.refresh()
+            .receive(on: DispatchQueue.main)
+            .sink { [weak self] _ in
+                self?.refresh()
             }
             .store(in: &cancellables)
-        $startDate.sink { date in
-            self.refreshData(startDate: date, endDate: nil)
-        }
+        // dropFirst：跳过订阅时的立即发射，避免 init 内重复查图
+        $startDate
+            .dropFirst()
+            .sink { [weak self] date in
+                self?.refreshData(startDate: date, endDate: nil)
+            }
             .store(in: &cancellables)
-        $endDate.sink { date in
-            self.refreshData(startDate: nil, endDate: date)
-        }
+        $endDate
+            .dropFirst()
+            .sink { [weak self] date in
+                self?.refreshData(startDate: nil, endDate: date)
+            }
             .store(in: &cancellables)
     }
 
@@ -83,21 +59,43 @@ class DateCountData: ObservableObject {
     }
 
     @objc func refresh() {
-        NSLog("[DateCountData] refresh start: \(startDate)")
+        FireLog.statistics.debug("DateCountData refresh start: \(String(describing: self.startDate), privacy: .public)")
         if !FirePreferencesController.shared.isVisible {
-            NSLog("[DateCountData] refresh cancel: not visible")
+            FireLog.statistics.debug("DateCountData refresh cancel: not visible")
             return
         }
-        total = Statistics.shared.queryTotalCount()
-        self.refreshData(startDate: nil, endDate: nil)
+        let start = startDate
+        let end = endDate
+        refreshGeneration += 1
+        let generation = refreshGeneration
+        isLoading = true
+        DispatchQueue.global(qos: .userInitiated).async { [weak self] in
+            let snapshot = Statistics.shared.queryPaneSnapshot(startDate: start, endDate: end)
+            DispatchQueue.main.async {
+                guard let self, generation == self.refreshGeneration else { return }
+                self.total = snapshot.total
+                self.avgCodeLen = snapshot.avgCodeLen
+                self.data = snapshot.data
+                self.isLoading = false
+            }
+        }
     }
 
     func refreshData(startDate: Date?, endDate: Date?) {
-        data = Statistics.shared
-            .queryCountByDate(
-                startDate: startDate ?? self.startDate,
-                endDate: endDate ?? self.endDate
-            )
+        if !FirePreferencesController.shared.isVisible { return }
+        let start = startDate ?? self.startDate
+        let end = endDate ?? self.endDate
+        refreshGeneration += 1
+        let generation = refreshGeneration
+        isLoading = true
+        DispatchQueue.global(qos: .userInitiated).async { [weak self] in
+            let data = Statistics.shared.queryCountByDate(startDate: start, endDate: end)
+            DispatchQueue.main.async {
+                guard let self, generation == self.refreshGeneration else { return }
+                self.data = data
+                self.isLoading = false
+            }
+        }
     }
 
     func clear() {
@@ -105,182 +103,180 @@ class DateCountData: ObservableObject {
     }
 }
 
+// MARK: - 偏好设置面板（迁移自 Settings 库，改用原生 ScrollView + VStack）
+
 struct StatisticsPane: View {
     @StateObject var dateCountData = DateCountData()
     @Default(.enableStatistics) private var enableStatistics
     @State private var showAlert = false
 
-    func getPath(geo: GeometryProxy) -> Path {
-        return Path { path in
-            let data = dateCountData.data
-            let maxVal = data.reduce(0) { (res, dateCount) -> Int64 in
-                return max(res, dateCount.count)
-            }
-            let scale = geo.size.height / CGFloat(maxVal)
-            let gap = data.count > 1
-                ? (geo.size.width - 16) / CGFloat(data.count - 1)
-                : 0
-
-            path.move(to: CGPoint(x: 8, y: geo.size.height - CGFloat((data[0].count)) * scale))
-
-            data.enumerated().forEach { element in
-                path.addLine(
-                    to: CGPoint(
-                        x: 8 + CGFloat(element.offset) * gap,
-                        y: geo.size.height - CGFloat(element.element.count) * scale
-                    )
-                )
-            }
-
-            path.addLine(to: CGPoint(x: 8 + CGFloat(data.count - 1) * gap, y: geo.size.height))
-            path.addLine(to: CGPoint(x: 8, y: geo.size.height))
-            path.closeSubpath()
-        }
-    }
-
-    func drawLogPoints(data: [DateCount]) -> some View {
-        return GeometryReader { geo in
-            let maxNum = data.reduce(0) { (res, item) -> Int64 in
-                return max(res, item.count)
-            }
-
-            let scale = geo.size.height / CGFloat(maxNum)
-            let gap = data.count > 1
-                ? (geo.size.width - 16) / CGFloat(data.count - 1)
-                : 0
-
-            ForEach(Array(data.enumerated()), id: \.element) { (offset, element) in
-                CountCircle(data: element)
-                    .offset(
-                        x: 8 + gap * CGFloat(offset) - 5,
-                        y: (geo.size.height - (CGFloat(element.count) * scale)) - 5
-                    )
-            }
-        }
-    }
-
-    func drawBackground(data: [DateCount]) -> some View {
-        return GeometryReader { geo in
-            Path { path in
-                let data = dateCountData.data
-                let gap = data.count > 1
-                    ? (geo.size.width - 16) / CGFloat(data.count - 1)
-                    : 0
-
-                (0..<data.count).forEach { element in
-                    path.move(to: CGPoint(x: 8 + CGFloat(element) * gap, y: geo.size.height))
-                    path.addLine(to: CGPoint(x: 8 + CGFloat(element) * gap, y: 0))
-                }
-            }
-            .stroke(
-                style: StrokeStyle(
-                    lineWidth: 1,
-                    lineCap: .round,
-                    lineJoin: .round,
-                    miterLimit: 80,
-                    dash: [],
-                    dashPhase: 0
-                )
+    /// 使用 Swift Charts 框架绘制的折线统计图
+    /// 替换原先 80 行自定义 Path+GeometryReader 手工绘图方案
+    @ViewBuilder
+    private var chartView: some View {
+        let data = dateCountData.data
+        Chart(data, id: \.date) { item in
+            AreaMark(
+                x: .value("日期", item.date),
+                y: .value("字数", item.count)
             )
-            .foregroundColor(Color.black.opacity(0.5))
-        }
-    }
+            .foregroundStyle(
+                LinearGradient(colors: [Color.orange.opacity(0.15), Color.orange.opacity(0.02)],
+                               startPoint: .top, endPoint: .bottom)
+            )
+            .interpolationMethod(.catmullRom)
 
-    func drawData(data: [DateCount]) -> some View {
-        return VStack {
-            GeometryReader { geo in
-                getPath(geo: geo)
-                    .fill(Color.red.opacity(0.2))
-            }
-            .frame(height: 320)
-            .overlay(drawBackground(data: data))
-            .overlay(GeometryReader(content: { geo in
-                getPath(geo: geo)
-                    .stroke(
-                        style: StrokeStyle(
-                            lineWidth: 2,
-                            lineCap: .round,
-                            lineJoin: .round,
-                            miterLimit: 80,
-                            dash: [],
-                            dashPhase: 0
-                        )
-                    )
-                    .foregroundColor(Color(red: 251/255, green: 82/255, blue: 0).opacity(0.6))
-            }))
-            .overlay(drawLogPoints(data: data))
-            .background(Color.yellow.opacity(0.1))
-            HStack {
-                ForEach(Array(data.enumerated()), id: \.element) { (offset, element) in
-                    Text(element.date)
-                    if offset < data.count - 1 {
-                        Spacer()
-                    }
+            LineMark(
+                x: .value("日期", item.date),
+                y: .value("字数", item.count)
+            )
+            .foregroundStyle(Color(red: 251/255, green: 82/255, blue: 0))
+            .lineStyle(StrokeStyle(lineWidth: 2))
+            .interpolationMethod(.catmullRom)
+
+            PointMark(
+                x: .value("日期", item.date),
+                y: .value("字数", item.count)
+            )
+            .foregroundStyle(Color(red: 251/255, green: 82/255, blue: 0))
+            .symbolSize(40)
+        }
+        .chartYAxis { AxisMarks(position: .leading) }
+        .chartXAxis {
+            AxisMarks(values: .automatic) { value in
+                if let dateStr = value.as(String.self) {
+                    AxisValueLabel(dateStr.dropFirst(5))
                 }
             }
-            Spacer(minLength: 20)
         }
+        .chartPlotStyle { $0.background(Color.yellow.opacity(0.06)) }
+        .frame(height: 250)
     }
 
     var body: some View {
-        Settings.Container(contentWidth: 450) {
-            Settings.Section(title: "") {
-                VStack(alignment: .leading) {
-                    HStack(alignment: .center) {
-                        Toggle("启用统计", isOn: $enableStatistics)
-                        Spacer()
-                        if #available(macOS 12.0, *) {
-                            Button {
-                                dateCountData.clear()
-                                showAlert = true
-                            } label: {
-                                Text("清除数据")
-                            }
-                            .alert("清除成功", isPresented: $showAlert, actions: {})
-                        } else {
-                            Button {
-                                dateCountData.clear()
-                            } label: {
-                                Text("清除数据")
-                            }
-                        }
-
+        Form {
+            Section {
+                Toggle("启用统计", isOn: $enableStatistics)
+                HStack {
+                    Spacer()
+                    Button("清除数据", role: .destructive) {
+                        dateCountData.clear()
+                        showAlert = true
                     }
-                    GroupBox(label: Text("累计输入")) {
-                        HStack {
-                            Text("\(formatCount(dateCountData.total))字")
-                            Spacer()
-                        }
-                        .frame(width: 420)
+                    .disabled(!enableStatistics)
+                    .controlSize(.small)
+                    .alert("清除成功", isPresented: $showAlert, actions: {})
+                }
+            } header: {
+                Text("统计设置")
+            }
+            Section {
+                if dateCountData.isLoading && dateCountData.total == 0 {
+                    HStack {
+                        ProgressView()
+                            .controlSize(.small)
+                        Text("正在加载统计…")
+                            .foregroundStyle(.secondary)
                     }
-
-                    GroupBox(label: Text("输入统计")) {
-                        HStack {
-                            DatePicker("开始日期", selection: $dateCountData.startDate, displayedComponents: [.date])
-                                .datePickerStyle(.field)
-                            DatePicker("结束日期", selection: $dateCountData.endDate, displayedComponents: [.date])
-                                .datePickerStyle(.field)
+                } else {
+                    HStack(spacing: 18) {
+                        Text("\(formatCount(dateCountData.total)) 字")
+                            .font(.title)
+                            .fontWeight(.bold)
+                        if dateCountData.total > 0 {
+                            VStack(spacing: 4) {
+                                Text("平均码长")
+                                    .font(.caption)
+                                    .foregroundStyle(.secondary)
+                                Text(String(format: "%.2f", dateCountData.avgCodeLen))
+                                    .font(.title3)
+                                    .fontWeight(.medium)
+                            }
                         }
-                        Spacer(minLength: 20)
-                        if dateCountData.data.count <= 0 {
+                        if dateCountData.isLoading {
+                            ProgressView()
+                                .controlSize(.small)
+                        }
+                    }
+                    if dateCountData.total > 0 {
+                        VStack(alignment: .leading, spacing: 2) {
+                            Text("计算公式：平均码长 = (总编码按键数 + 确认键次数) / 上屏总字数")
+                                .font(.caption2)
+                                .foregroundStyle(.tertiary)
                             HStack {
-                                Spacer()
-                                Text("暂无数据")
-                                Spacer()
+                                Text("确认键：手动选择上屏操作，如空格、数字、")
+                                    .font(.caption2)
+                                    .foregroundStyle(.tertiary)
+                                Text(";'")
+                                    .font(.caption2)
+                                    .fontWeight(.medium)
+                                    .padding(.horizontal, 4)
+                                    .padding(.vertical, 2)
+                                    .background(Color(.sRGB, red: 0.5, green: 0.5, blue: 0.5, opacity: 0.2))
+                                    .cornerRadius(3)
+                                Text("或")
+                                    .font(.caption2)
+                                    .foregroundStyle(.tertiary)
+                                Text(",.")
+                                    .font(.caption2)
+                                    .fontWeight(.medium)
+                                    .padding(.horizontal, 4)
+                                    .padding(.vertical, 2)
+                                    .background(Color(.sRGB, red: 0.5, green: 0.5, blue: 0.5, opacity: 0.2))
+                                    .cornerRadius(3)
+                                Text("二三候选词上屏符")
+                                    .font(.caption2)
+                                    .foregroundStyle(.tertiary)
                             }
-                            .frame(width: 420, height: 320)
-                        } else {
-                            drawData(data: dateCountData.data)
+                            Text("满 4 码自动上屏，不算确认键")
+                                .font(.caption2)
+                                .foregroundStyle(.tertiary)
                         }
+                        .font(.caption2)
+                        .padding(.top, 2)
                     }
                 }
+            } header: {
+                Text("累计输入")
+            }
+            Section {
+                HStack {
+                    DatePicker("开始日期", selection: $dateCountData.startDate, displayedComponents: [.date])
+                    DatePicker("结束日期", selection: $dateCountData.endDate, displayedComponents: [.date])
+                }
+                if dateCountData.isLoading && dateCountData.data.isEmpty {
+                    HStack {
+                        Spacer()
+                        ProgressView("正在加载…")
+                        Spacer()
+                    }
+                    .frame(minHeight: 200)
+                } else if dateCountData.data.isEmpty {
+                    HStack {
+                        Spacer()
+                        Text("暂无数据")
+                            .foregroundStyle(.secondary)
+                        Spacer()
+                    }
+                    .frame(minHeight: 200)
+                } else {
+                    chartView
+                        .opacity(dateCountData.isLoading ? 0.45 : 1)
+                        .overlay {
+                            if dateCountData.isLoading {
+                                ProgressView()
+                            }
+                        }
+                }
+            } header: {
+                Text("输入统计")
             }
         }
+        .formStyle(.grouped)
     }
 }
 
-struct StatisticsPane_Previews: PreviewProvider {
-    static var previews: some View {
-        StatisticsPane()
-    }
+// 采用 Xcode 15 引入的 #Preview 宏语法，替代旧版 PreviewProvider 协议，使预览代码更简洁直观。
+#Preview {
+    StatisticsPane()
 }

@@ -37,12 +37,14 @@ jobs:
     - name: import application certificate
       id: keychain
       uses: apple-actions/import-codesign-certs@v2
+      if: ${{ env.USE_CODE_SIGN == 'enable' }}
       with: 
         p12-file-base64: ${{ secrets.CERTIFICATES_P12 }}
         p12-password: ${{ secrets.CERTIFICATES_P12_PASSWORD }}
 
     - name: import installer certificate
       uses: apple-actions/import-codesign-certs@v2
+      if: ${{ env.USE_CODE_SIGN == 'enable' }}
       with:
         create-keychain: false
         keychain-password: ${{ steps.keychain.outputs.keychain-password }}
@@ -59,6 +61,7 @@ jobs:
       run: ./scripts/b_build_installer.sh
 
     - name: generate appcast.xml
+      if: ${{ env.USE_CODE_SIGN == 'enable' }}
       env:
         sparkle_key: ${{ secrets.sparkle_key }}
       run: ./scripts/d_build_appcast.sh

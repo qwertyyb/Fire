@@ -9,7 +9,7 @@
 import AppKit
 import InputMethodKit
 
-@NSApplicationMain
+@main  // Swift 5.3+ 推荐入口标记，替代 @NSApplicationMain
 class AppDelegate: NSObject, NSApplicationDelegate {
 
     var fire: Fire!
@@ -18,7 +18,7 @@ class AppDelegate: NSObject, NSApplicationDelegate {
     var cliServer: FireCLIServer!
 
     func installInputSource() {
-        print("install input source")
+        FireLog.app.info("install input source")
         InputSource.shared.registerInputSource()
         InputSource.shared.activateInputSource()
         InputSource.shared.selectInputSource { _ in
@@ -35,20 +35,20 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         if CommandLine.arguments.count > 1 {
             let command = CommandLine.arguments[1]
             if command == "--install" {
-                print("[Fire] launch argument: \(command)")
+                FireLog.app.info("launch argument: \(command, privacy: .public)")
                 installInputSource()
                 return false
             }
             if command == "--build-dict" {
-                print("[Fire] launch argument: \(command)")
-                print("[Fire] build dict")
+                FireLog.app.info("launch argument: \(command, privacy: .public)")
+                FireLog.app.info("build dict")
                 buildDict()
                 NSApp.terminate(nil)
                 return false
             }
             if command == "--stop" {
-                print("[Fire] launch argument: \(command)")
-                print("[Fire] stop")
+                FireLog.app.info("launch argument: \(command, privacy: .public)")
+                FireLog.app.info("stop")
                 stop()
                 return false
             }
@@ -59,7 +59,7 @@ class AppDelegate: NSObject, NSApplicationDelegate {
             }
             if command == "--set-mode" {
                 if CommandLine.arguments.count < 2 {
-                    print("[Fire] commandHandler: no mode specifiy (enUs/zhhans)")
+                    FireLog.app.error("commandHandler: no mode specifiy (enUs/zhhans)")
                 }
                 let mode = CommandLine.arguments[2]
                 let showTip = CommandLine.arguments.count > 3 ? CommandLine.arguments[3] != "false" : true
@@ -75,16 +75,28 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         if !commandHandler() {
             return
         }
-        if !hasDict() {
-            NSLog("[Fire] first run，build dict")
-            buildDict()
-        }
-        NSLog("[Fire] app is running")
+        _ = RadicalFontManager.shared
+        FireLog.app.info("app is running")
         fire = Fire.shared
         statistics = Statistics.shared
         statusBar = StatusBar.shared
         cliServer = FireCLIServer()
         registerURLHandler()
+
+        if !hasDict() || !isDictSchemaCurrent() {
+            FireLog.app.info("dict missing or schema outdated, build dict")
+            DictManager.shared.close()
+            DispatchQueue.global(qos: .userInitiated).async {
+                let success = buildDict()
+                DispatchQueue.main.async {
+                    if success {
+                        DictManager.shared.reinit()
+                    } else {
+                        FireLog.app.error("buildDict failed")
+                    }
+                }
+            }
+        }
     }
 
     func applicationWillTerminate(_ aNotification: Notification) {

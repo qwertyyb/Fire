@@ -19,7 +19,7 @@ class StatusBar {
     private var showInputModeStatusSubscript: AnyCancellable?
     private init() {
         // 输入法变化时，根据当前选中状态切换显示
-        statusItem = StatusBarController.system.statusItem(autosaveName: "status-indicator", width: NSStatusItem.variableLength)
+        statusItem = StatusBarController.shared.statusItem(autosaveName: "status-indicator", width: NSStatusItem.variableLength)
         statusItem.button?.title = "中"
         statusItem.button?.action = #selector(changeInputMode)
         statusItem.button?.target = self
@@ -45,7 +45,7 @@ class StatusBar {
     }
 
     private func refreshVisibleStatus() {
-        NSLog("[StatusBar] refreshVisibleStatus: \(InputSource.shared.isSelected())")
+        FireLog.app.debug("refreshVisibleStatus: \(InputSource.shared.isSelected(), privacy: .public)")
         statusItem.isVisible = Defaults[.showInputModeStatus] && InputSource.shared.isSelected()
     }
 

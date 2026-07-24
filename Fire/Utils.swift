@@ -11,12 +11,17 @@ import Defaults
 import InputMethodKit
 import SwiftUI
 
-enum HandlerStatus {
-    case next
-    case stop
-}
-
 class Utils {
+    // 以下四个正则提为 static let，避免 shouldConcatWithWhitespace 在每次按键时重复编译正则表达式
+    // enDigitSuffix: 判断上次输入以英文或数字结尾
+    private static let enDigitSuffix = try! NSRegularExpression(pattern: "[a-zA-Z0-9]$")
+    // cnPrefix: 判断本次输入以中文开头
+    private static let cnPrefix = try! NSRegularExpression(pattern: "^[\\u4e00-\\u9fa5]")
+    // cnSuffix: 判断上次输入以中文结尾
+    private static let cnSuffix = try! NSRegularExpression(pattern: "[\\u4e00-\\u9fa5]$")
+    // enDigitPrefix: 判断本次输入以英文或数字开头
+    private static let enDigitPrefix = try! NSRegularExpression(pattern: "^[a-zA-Z0-9]")
+
     var toggleInputModeKeyUpChecker = ModifierKeyUpChecker(Defaults[.toggleInputModeKey])
 
     var toast: ToastWindowProtocol?
@@ -30,7 +35,7 @@ class Utils {
         if messageToast == nil {
             messageToast = ToastWindow()
         }
-        messageToast?.showToast(text) { [weak self] in
+        messageToast?.showToast(text, duration: 3.0) { [weak self] in
             self?.messageToast = nil
         }
     }
@@ -48,7 +53,7 @@ class Utils {
         }.tieToLifetime(of: self)
         Defaults.observe(.toggleInputModeKey) { (val) in
             let modifier = val.newValue
-            print("modifier: ", modifier)
+            FireLog.utils.debug("modifier: \(String(describing: modifier), privacy: .public)")
             self.toggleInputModeKeyUpChecker = ModifierKeyUpChecker(modifier)
         }.tieToLifetime(of: self)
     }
@@ -78,25 +83,74 @@ class Utils {
     
     // 根据上次输入的字符，判断插入的新字符是否要前加空格
     func shouldConcatWithWhitespace(_ lastText: String, _ nextText: String) -> Bool {
-        NSLog("[Utils] shouldConcatWithWhitespace, lastText: \(lastText), nextText: \(nextText)")
-        if lastText.count <= 0 || nextText.count <= 0 {
+        FireLog.utils.debug("shouldConcatWithWhitespace, lastText: \(lastText), nextText: \(nextText)")
+        if lastText.isEmpty || nextText.isEmpty {
             return false
         }
-        guard let firstEnReg = try? NSRegularExpression(pattern: "[a-zA-Z0-9]$"),
-              let nextCnReg = try? NSRegularExpression(pattern: "^[\\u4e00-\\u9fa5]") else {
-            return false
-        }
-        if firstEnReg.numberOfMatches(in: lastText, range: NSMakeRange(0, lastText.count)) > 0
-            && nextCnReg.numberOfMatches(in: nextText, range: NSMakeRange(0, nextText.count)) > 0 {
+        let firstEnReg = Utils.enDigitSuffix
+        let nextCnReg = Utils.cnPrefix
+        if firstEnReg.numberOfMatches(in: lastText, range: NSRange(location: 0, length: lastText.utf16.count)) > 0
+            && nextCnReg.numberOfMatches(in: nextText, range: NSRange(location: 0, length: nextText.utf16.count)) > 0 {
             return true
         }
-        guard let firstCnReg = try? NSRegularExpression(pattern: "[\\u4e00-\\u9fa5]$"),
-              let nextEnReg = try? NSRegularExpression(pattern: "^[a-zA-Z0-9]") else {
-            return false
-        }
-        return firstCnReg.numberOfMatches(in: lastText, range: NSMakeRange(0, lastText.count)) > 0
-            && nextEnReg.numberOfMatches(in: nextText, range: NSMakeRange(0, nextText.count)) > 0
+        let firstCnReg = Utils.cnSuffix
+        let nextEnReg = Utils.enDigitPrefix
+        return firstCnReg.numberOfMatches(in: lastText, range: NSRange(location: 0, length: lastText.utf16.count)) > 0
+            && nextEnReg.numberOfMatches(in: nextText, range: NSRange(location: 0, length: nextText.utf16.count)) > 0
     }
 
     static let shared = Utils()
+}
+
+// MARK: - SQLite 公共辅助函数
+
+/// 安全读取可为 NULL 的 SQLite 文本列
+/// 当列值为 NULL 时返回 nil，避免 String(cString:) 传入 NULL 指针崩溃
+func optString(_ stmt: OpaquePointer?, _ index: Int32) -> String? {
+    guard let cStr = sqlite3_column_text(stmt, index) else { return nil }
+    return String(cString: cStr)
+}
+
+/// 安全获取 SQLite 错误信息，database 为 nil 时返回 "nil"
+func dbErrMsg(_ db: OpaquePointer?) -> String {
+    guard let db = db, let cStr = sqlite3_errmsg(db) else { return "nil" }
+    return String(cString: cStr)
+}
+
+/// 准备 SQL 语句，失败时返回 nil
+func sqlitePrepare(_ db: OpaquePointer?, _ sql: String) -> OpaquePointer? {
+    var stmt: OpaquePointer?
+    guard sqlite3_prepare_v2(db, sql, -1, &stmt, nil) == SQLITE_OK else { return nil }
+    return stmt
+}
+
+/// 执行 SQL 查询，每行回调，自动 finalize
+/// - Parameters:
+///   - bind: 可选参数绑定闭包，在 prepare 后调用
+///   - row: 每行回调，step 返回 SQLITE_ROW 时调用
+func sqliteQuery(_ db: OpaquePointer?, _ sql: String,
+                 bind: ((OpaquePointer) -> Void)? = nil,
+                 row: (OpaquePointer) -> Void) {
+    guard let stmt = sqlitePrepare(db, sql) else {
+        FireLog.utils.error("SQLite prepare failed: \(sql) — \(dbErrMsg(db), privacy: .public)")
+        return
+    }
+    defer { sqlite3_finalize(stmt) }
+    bind?(stmt)
+    while sqlite3_step(stmt) == SQLITE_ROW {
+        row(stmt)
+    }
+}
+
+// MARK: - NSApplication 扩展
+
+extension NSApplication {
+    /// 激活为 accessory 模式并置前，用于菜单栏触发的模态窗口（关于、更新、字根表）
+    /// 若偏好设置窗口正在显示则跳过切换，保持 Dock 图标可见
+    func activateAsAccessory() {
+        if !FirePreferencesController.shared.isVisible {
+            setActivationPolicy(.accessory)
+        }
+        activate(ignoringOtherApps: true)
+    }
 }

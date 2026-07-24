@@ -12,6 +12,8 @@
 		4569ED0D2C92CE090075CF8F /* CLIServer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4569ED0C2C92CE090075CF8F /* CLIServer.swift */; };
 		4572854E2BD0EAF90048D67E /* Credits.html in Resources */ = {isa = PBXBuildFile; fileRef = 4572854D2BD0EAF90048D67E /* Credits.html */; };
 		45B76CA92AEA6042009AFABD /* PunctuationConversion.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45B76CA82AEA6042009AFABD /* PunctuationConversion.swift */; };
+		5DBA9BFFAF8D649A1C60D5FD /* RadicalFontManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = FCD8E654442EC085F2FF81D5 /* RadicalFontManager.swift */; };
+		A1B2C3D42FF9000200A595B1 /* FireLog.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1B2C3D42FF9000200A595B2 /* FireLog.swift */; };
 		6753419E2AB54A3A00757F76 /* main.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 6753419D2AB54A3A00757F76 /* main.cpp */; };
 		675341A72AB54AEA00757F76 /* sqlite3.c in Sources */ = {isa = PBXBuildFile; fileRef = 675341A52AB54AEA00757F76 /* sqlite3.c */; settings = {COMPILER_FLAGS = "-w"; }; };
 		67AA47FF2AB733860073AC86 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 67C9A0232AB53ED3000B5281 /* Assets.xcassets */; };
@@ -49,14 +51,26 @@
 		67C9A0432AB53ED3000B5281 /* PunctuationPane.swift in Sources */ = {isa = PBXBuildFile; fileRef = 67C9A02C2AB53ED3000B5281 /* PunctuationPane.swift */; };
 		67C9A0442AB53ED3000B5281 /* CandidatesWindow.swift in Sources */ = {isa = PBXBuildFile; fileRef = 67C9A02D2AB53ED3000B5281 /* CandidatesWindow.swift */; };
 		67C9A0452AB53ED3000B5281 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 67C9A02F2AB53ED3000B5281 /* InfoPlist.strings */; };
-		67C9A0482AB53EF5000B5281 /* Settings in Frameworks */ = {isa = PBXBuildFile; productRef = 67C9A0472AB53EF5000B5281 /* Settings */; };
 		67C9A04B2AB53F20000B5281 /* Defaults in Frameworks */ = {isa = PBXBuildFile; productRef = 67C9A04A2AB53F20000B5281 /* Defaults */; };
 		67C9A04E2AB53F37000B5281 /* KeychainSwift in Frameworks */ = {isa = PBXBuildFile; productRef = 67C9A04D2AB53F37000B5281 /* KeychainSwift */; };
 		67C9A0512AB53F51000B5281 /* NanoID in Frameworks */ = {isa = PBXBuildFile; productRef = 67C9A0502AB53F51000B5281 /* NanoID */; };
 		67C9A0542AB53F79000B5281 /* Sparkle in Frameworks */ = {isa = PBXBuildFile; productRef = 67C9A0532AB53F79000B5281 /* Sparkle */; };
 		67C9A0582AB5429B000B5281 /* sqlite3.c in Sources */ = {isa = PBXBuildFile; fileRef = 67C9A0562AB5429B000B5281 /* sqlite3.c */; settings = {COMPILER_FLAGS = "-w"; }; };
 		67C9A05B2AB5445E000B5281 /* Security.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 67C9A05A2AB5445E000B5281 /* Security.framework */; };
+		67C9A05D2AB53ED3000B5281 /* NativePreferencesView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 67C9A05C2AB53ED3000B5281 /* NativePreferencesView.swift */; };
 		67F0B0D32AFFC282006F835D /* StatusBarController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 67F0B0D22AFFC282006F835D /* StatusBarController.swift */; };
+		8917BF0031A6446A8B2BAA8A /* DefaultsKeys.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9D66CC3B495E421AA61AC9C7 /* DefaultsKeys.swift */; };
+		A1B2C3D52FF9000100A595A7 /* DictGlyphFill.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1B2C3D42FF9000100A595A7 /* DictGlyphFill.swift */; };
+		B603472A2FF5751B005E7F9B /* wubi86_spelling.txt in Resources */ = {isa = PBXBuildFile; fileRef = B60347292FF5751B005E7F9B /* wubi86_spelling.txt */; };
+		B603472C2FF5781B005E7F9B /* wubi98_spelling.txt in Resources */ = {isa = PBXBuildFile; fileRef = B603472B2FF5781B005E7F9B /* wubi98_spelling.txt */; };
+		B60347302FF5EB6F005E7F9B /* wubi06_spelling.txt in Resources */ = {isa = PBXBuildFile; fileRef = B603472F2FF5EB6F005E7F9B /* wubi06_spelling.txt */; };
+		B676B05E2FF56FA800A595A7 /* 黑体字根.ttf in Resources */ = {isa = PBXBuildFile; fileRef = B676B05C2FF56FA800A595A7 /* 黑体字根.ttf */; };
+		B6B720422FF74FD100A3066B /* 06（新世纪）版五笔字型.png in Resources */ = {isa = PBXBuildFile; fileRef = B6B7203E2FF74FD100A3066B /* 06（新世纪）版五笔字型.png */; };
+		B6B720432FF74FD100A3066B /* 98版五笔字型.png in Resources */ = {isa = PBXBuildFile; fileRef = B6B720402FF74FD100A3066B /* 98版五笔字型.png */; };
+		B6B720442FF74FD100A3066B /* 86版五笔字型.png in Resources */ = {isa = PBXBuildFile; fileRef = B6B7203F2FF74FD100A3066B /* 86版五笔字型.png */; };
+		B6B720462FF806000A595A7 /* CelebrationEffect.swift in Sources */ = {isa = PBXBuildFile; fileRef = B6B720452FF806000A595A7 /* CelebrationEffect.swift */; };
+		E291A4B12E614A66A584B462 /* KeyCap.swift in Sources */ = {isa = PBXBuildFile; fileRef = CEE3257C88BD4ECD92819A9B /* KeyCap.swift */; };
+		F1A2B3C52FF9000200A595A7 /* PreferencePickerRow.swift in Sources */ = {isa = PBXBuildFile; fileRef = F1A2B3C42FF9000200A595A7 /* PreferencePickerRow.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -88,6 +102,7 @@
 		67C99FF92AB53E62000B5281 /* ToastWindow.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ToastWindow.swift; sourceTree = "<group>"; };
 		67C99FFA2AB53E62000B5281 /* Statistics.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Statistics.swift; sourceTree = "<group>"; };
 		67C99FFB2AB53E62000B5281 /* TipsWindow.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TipsWindow.swift; sourceTree = "<group>"; };
+		A1B2C3D42FF9000200A595B2 /* FireLog.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FireLog.swift; sourceTree = "<group>"; };
 		67C99FFC2AB53E62000B5281 /* ModifierKeyUpChecker.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ModifierKeyUpChecker.swift; sourceTree = "<group>"; };
 		67C9A0012AB53E83000B5281 /* MainMenu.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = MainMenu.xib; sourceTree = "<group>"; };
 		67C9A0022AB53E83000B5281 /* InputSource.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = InputSource.swift; sourceTree = "<group>"; };
@@ -123,7 +138,21 @@
 		67C9A0562AB5429B000B5281 /* sqlite3.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = sqlite3.c; sourceTree = "<group>"; };
 		67C9A0572AB5429B000B5281 /* sqlite3.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = sqlite3.h; sourceTree = "<group>"; };
 		67C9A05A2AB5445E000B5281 /* Security.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Security.framework; path = System/Library/Frameworks/Security.framework; sourceTree = SDKROOT; };
+		67C9A05C2AB53ED3000B5281 /* NativePreferencesView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NativePreferencesView.swift; sourceTree = "<group>"; };
 		67F0B0D22AFFC282006F835D /* StatusBarController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StatusBarController.swift; sourceTree = "<group>"; };
+		9D66CC3B495E421AA61AC9C7 /* DefaultsKeys.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DefaultsKeys.swift; sourceTree = "<group>"; };
+		A1B2C3D42FF9000100A595A7 /* DictGlyphFill.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DictGlyphFill.swift; sourceTree = "<group>"; };
+		B60347292FF5751B005E7F9B /* wubi86_spelling.txt */ = {isa = PBXFileReference; lastKnownFileType = text; path = wubi86_spelling.txt; sourceTree = "<group>"; };
+		B603472B2FF5781B005E7F9B /* wubi98_spelling.txt */ = {isa = PBXFileReference; lastKnownFileType = text; path = wubi98_spelling.txt; sourceTree = "<group>"; };
+		B603472F2FF5EB6F005E7F9B /* wubi06_spelling.txt */ = {isa = PBXFileReference; lastKnownFileType = text; path = wubi06_spelling.txt; sourceTree = "<group>"; };
+		B676B05C2FF56FA800A595A7 /* 黑体字根.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "黑体字根.ttf"; sourceTree = "<group>"; };
+		B6B7203E2FF74FD100A3066B /* 06（新世纪）版五笔字型.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "06（新世纪）版五笔字型.png"; sourceTree = "<group>"; };
+		B6B7203F2FF74FD100A3066B /* 86版五笔字型.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "86版五笔字型.png"; sourceTree = "<group>"; };
+		B6B720402FF74FD100A3066B /* 98版五笔字型.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "98版五笔字型.png"; sourceTree = "<group>"; };
+		B6B720452FF806000A595A7 /* CelebrationEffect.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CelebrationEffect.swift; sourceTree = "<group>"; };
+		CEE3257C88BD4ECD92819A9B /* KeyCap.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KeyCap.swift; sourceTree = "<group>"; };
+		F1A2B3C42FF9000200A595A7 /* PreferencePickerRow.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PreferencePickerRow.swift; sourceTree = "<group>"; };
+		FCD8E654442EC085F2FF81D5 /* RadicalFontManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RadicalFontManager.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -142,7 +171,6 @@
 				67C9A0542AB53F79000B5281 /* Sparkle in Frameworks */,
 				67C9A04E2AB53F37000B5281 /* KeychainSwift in Frameworks */,
 				67C9A04B2AB53F20000B5281 /* Defaults in Frameworks */,
-				67C9A0482AB53EF5000B5281 /* Settings in Frameworks */,
 				67C9A0512AB53F51000B5281 /* NanoID in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -150,6 +178,14 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		412AD176212042E29BEDA32D /* Types */ = {
+			isa = PBXGroup;
+			children = (
+				9D66CC3B495E421AA61AC9C7 /* DefaultsKeys.swift */,
+			);
+			path = Types;
+			sourceTree = "<group>";
+		};
 		4569ED092C92C4180075CF8F /* cli */ = {
 			isa = PBXGroup;
 			children = (
@@ -205,6 +241,7 @@
 				67C9A0172AB53ED2000B5281 /* Bridging-Header.h */,
 				67C9A0182AB53ED2000B5281 /* CandidatesView.swift */,
 				67C9A02D2AB53ED3000B5281 /* CandidatesWindow.swift */,
+				B6B720452FF806000A595A7 /* CelebrationEffect.swift */,
 				67C9A01D2AB53ED2000B5281 /* DictManager.swift */,
 				67C9A0142AB53ED2000B5281 /* en.lproj */,
 				67C9A0192AB53ED2000B5281 /* Info.plist */,
@@ -222,10 +259,12 @@
 				67C9A0022AB53E83000B5281 /* InputSource.swift */,
 				67C9A0012AB53E83000B5281 /* MainMenu.xib */,
 				67F0B0D22AFFC282006F835D /* StatusBarController.swift */,
+				FCD8E654442EC085F2FF81D5 /* RadicalFontManager.swift */,
 				67C9A0042AB53E83000B5281 /* StatusBar.swift */,
 				67C9A0082AB53E83000B5281 /* types.swift */,
 				67C9A0032AB53E83000B5281 /* Utils.swift */,
 				67C99FF82AB53E62000B5281 /* Utils */,
+				412AD176212042E29BEDA32D /* Types */,
 				67C99FEB2AB53DB2000B5281 /* AppDelegate.swift */,
 				67C99FF22AB53DB4000B5281 /* Fire.entitlements */,
 				451A55692AF9F92D00AF57C1 /* InputModeCache.swift */,
@@ -237,6 +276,7 @@
 		67C99FF82AB53E62000B5281 /* Utils */ = {
 			isa = PBXGroup;
 			children = (
+				A1B2C3D42FF9000200A595B2 /* FireLog.swift */,
 				67C99FF92AB53E62000B5281 /* ToastWindow.swift */,
 				67C99FFA2AB53E62000B5281 /* Statistics.swift */,
 				67C99FFB2AB53E62000B5281 /* TipsWindow.swift */,
@@ -249,6 +289,7 @@
 			isa = PBXGroup;
 			children = (
 				67C9A0122AB53EB0000B5281 /* build.swift */,
+				A1B2C3D42FF9000100A595A7 /* DictGlyphFill.swift */,
 			);
 			path = Table;
 			sourceTree = "<group>";
@@ -272,6 +313,11 @@
 		67C9A01E2AB53ED3000B5281 /* Resources */ = {
 			isa = PBXGroup;
 			children = (
+				B6B720412FF74FD100A3066B /* wmwb */,
+				B603472F2FF5EB6F005E7F9B /* wubi06_spelling.txt */,
+				B603472B2FF5781B005E7F9B /* wubi98_spelling.txt */,
+				B60347292FF5751B005E7F9B /* wubi86_spelling.txt */,
+				B676B05D2FF56FA800A595A7 /* font */,
 				67C9A01F2AB53ED3000B5281 /* wb_table.txt */,
 				67C9A0202AB53ED3000B5281 /* py_table.txt */,
 				67C9A0212AB53ED3000B5281 /* wb_98_table.txt */,
@@ -290,6 +336,9 @@
 				67C9A02A2AB53ED3000B5281 /* ThemePane.swift */,
 				67C9A02B2AB53ED3000B5281 /* ThesaurusPane.swift */,
 				67C9A02C2AB53ED3000B5281 /* PunctuationPane.swift */,
+				67C9A05C2AB53ED3000B5281 /* NativePreferencesView.swift */,
+				CEE3257C88BD4ECD92819A9B /* KeyCap.swift */,
+				F1A2B3C42FF9000200A595A7 /* PreferencePickerRow.swift */,
 			);
 			path = Preferences;
 			sourceTree = "<group>";
@@ -317,6 +366,24 @@
 				67C9A05A2AB5445E000B5281 /* Security.framework */,
 			);
 			name = Frameworks;
+			sourceTree = "<group>";
+		};
+		B676B05D2FF56FA800A595A7 /* font */ = {
+			isa = PBXGroup;
+			children = (
+				B676B05C2FF56FA800A595A7 /* 黑体字根.ttf */,
+			);
+			path = font;
+			sourceTree = "<group>";
+		};
+		B6B720412FF74FD100A3066B /* wmwb */ = {
+			isa = PBXGroup;
+			children = (
+				B6B7203E2FF74FD100A3066B /* 06（新世纪）版五笔字型.png */,
+				B6B7203F2FF74FD100A3066B /* 86版五笔字型.png */,
+				B6B720402FF74FD100A3066B /* 98版五笔字型.png */,
+			);
+			path = wmwb;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -353,7 +420,6 @@
 			);
 			name = Fire;
 			packageProductDependencies = (
-				67C9A0472AB53EF5000B5281 /* Settings */,
 				67C9A04A2AB53F20000B5281 /* Defaults */,
 				67C9A04D2AB53F37000B5281 /* KeychainSwift */,
 				67C9A0502AB53F51000B5281 /* NanoID */,
@@ -371,7 +437,7 @@
 			attributes = {
 				BuildIndependentTargetsInParallel = 1;
 				LastSwiftUpdateCheck = 1430;
-				LastUpgradeCheck = 1430;
+				LastUpgradeCheck = 2660;
 				TargetAttributes = {
 					6753419A2AB54A3A00757F76 = {
 						CreatedOnToolsVersion = 14.3.1;
@@ -392,7 +458,6 @@
 			);
 			mainGroup = 67C99FDF2AB53DB2000B5281;
 			packageReferences = (
-				67C9A0462AB53EF5000B5281 /* XCRemoteSwiftPackageReference "Settings" */,
 				67C9A0492AB53F20000B5281 /* XCRemoteSwiftPackageReference "Defaults" */,
 				67C9A04C2AB53F37000B5281 /* XCRemoteSwiftPackageReference "keychain-swift" */,
 				67C9A04F2AB53F51000B5281 /* XCRemoteSwiftPackageReference "NanoID" */,
@@ -414,13 +479,20 @@
 			buildActionMask = 2147483647;
 			files = (
 				67AA47FF2AB733860073AC86 /* Assets.xcassets in Resources */,
+				B60347302FF5EB6F005E7F9B /* wubi06_spelling.txt in Resources */,
 				67C9A0312AB53ED3000B5281 /* InfoPlist.strings in Resources */,
+				B676B05E2FF56FA800A595A7 /* 黑体字根.ttf in Resources */,
 				67C9A0382AB53ED3000B5281 /* py_table.txt in Resources */,
 				67C9A0372AB53ED3000B5281 /* wb_table.txt in Resources */,
+				B603472C2FF5781B005E7F9B /* wubi98_spelling.txt in Resources */,
+				B6B720422FF74FD100A3066B /* 06（新世纪）版五笔字型.png in Resources */,
+				B6B720432FF74FD100A3066B /* 98版五笔字型.png in Resources */,
+				B6B720442FF74FD100A3066B /* 86版五笔字型.png in Resources */,
 				4572854E2BD0EAF90048D67E /* Credits.html in Resources */,
 				67C9A00D2AB53E83000B5281 /* fire.pdf in Resources */,
 				67C9A0392AB53ED3000B5281 /* wb_98_table.txt in Resources */,
 				67C9A0092AB53E83000B5281 /* MainMenu.xib in Resources */,
+				B603472A2FF5751B005E7F9B /* wubi86_spelling.txt in Resources */,
 				67C9A0452AB53ED3000B5281 /* InfoPlist.strings in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -446,6 +518,7 @@
 				67C99FEC2AB53DB2000B5281 /* AppDelegate.swift in Sources */,
 				67C9A00A2AB53E83000B5281 /* InputSource.swift in Sources */,
 				67C9A0352AB53ED3000B5281 /* ThemeConfig.swift in Sources */,
+				A1B2C3D42FF9000200A595B1 /* FireLog.swift in Sources */,
 				67C99FFE2AB53E62000B5281 /* Statistics.swift in Sources */,
 				67C9A0432AB53ED3000B5281 /* PunctuationPane.swift in Sources */,
 				67C9A0342AB53ED3000B5281 /* FireMenu.swift in Sources */,
@@ -455,12 +528,15 @@
 				67C9A0322AB53ED3000B5281 /* CandidatesView.swift in Sources */,
 				4569ED0B2C92C4360075CF8F /* CLI.swift in Sources */,
 				67C9A00B2AB53E83000B5281 /* Utils.swift in Sources */,
+				8917BF0031A6446A8B2BAA8A /* DefaultsKeys.swift in Sources */,
 				67F0B0D32AFFC282006F835D /* StatusBarController.swift in Sources */,
 				67C9A0402AB53ED3000B5281 /* ApplicationPane.swift in Sources */,
 				67C9A0132AB53EB0000B5281 /* build.swift in Sources */,
+				A1B2C3D52FF9000100A595A7 /* DictGlyphFill.swift in Sources */,
 				67C9A0422AB53ED3000B5281 /* ThesaurusPane.swift in Sources */,
 				67C9A0002AB53E62000B5281 /* ModifierKeyUpChecker.swift in Sources */,
 				67C9A0442AB53ED3000B5281 /* CandidatesWindow.swift in Sources */,
+				B6B720462FF806000A595A7 /* CelebrationEffect.swift in Sources */,
 				45B76CA92AEA6042009AFABD /* PunctuationConversion.swift in Sources */,
 				67C9A0362AB53ED3000B5281 /* DictManager.swift in Sources */,
 				67C9A0582AB5429B000B5281 /* sqlite3.c in Sources */,
@@ -469,10 +545,14 @@
 				4569ED0D2C92CE090075CF8F /* CLIServer.swift in Sources */,
 				67C9A03E2AB53ED3000B5281 /* UserDictPane.swift in Sources */,
 				67C9A03F2AB53ED3000B5281 /* GeneralPane.swift in Sources */,
+				67C9A05D2AB53ED3000B5281 /* NativePreferencesView.swift in Sources */,
 				451A556A2AF9F92D00AF57C1 /* InputModeCache.swift in Sources */,
 				67C9A00E2AB53E83000B5281 /* Fire.swift in Sources */,
 				67C9A0102AB53E83000B5281 /* types.swift in Sources */,
 				67C99FFF2AB53E62000B5281 /* TipsWindow.swift in Sources */,
+				5DBA9BFFAF8D649A1C60D5FD /* RadicalFontManager.swift in Sources */,
+				E291A4B12E614A66A584B462 /* KeyCap.swift in Sources */,
+				F1A2B3C52FF9000200A595A7 /* PreferencePickerRow.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -501,10 +581,9 @@
 		675341A02AB54A3A00757F76 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				"CODE_SIGN_IDENTITY[sdk=macosx*]" = "Mac Developer";
-				CODE_SIGN_STYLE = Manual;
-				DEVELOPMENT_TEAM = "";
-				"DEVELOPMENT_TEAM[sdk=macosx*]" = T68XK6867P;
+				CODE_SIGN_IDENTITY = "Apple Development";
+				CODE_SIGN_STYLE = Automatic;
+				DEVELOPMENT_TEAM = T68XK6867P;
 				ENABLE_HARDENED_RUNTIME = YES;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
@@ -515,10 +594,10 @@
 		675341A12AB54A3A00757F76 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				"CODE_SIGN_IDENTITY[sdk=macosx*]" = "Developer ID Application";
-				CODE_SIGN_STYLE = Manual;
-				DEVELOPMENT_TEAM = "";
-				"DEVELOPMENT_TEAM[sdk=macosx*]" = T68XK6867P;
+				CODE_SIGN_IDENTITY = "Apple Development";
+				CODE_SIGN_STYLE = Automatic;
+				DEAD_CODE_STRIPPING = YES;
+				DEVELOPMENT_TEAM = T68XK6867P;
 				ENABLE_HARDENED_RUNTIME = YES;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
@@ -530,6 +609,8 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
+				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
+				CLANG_ANALYZER_LOCALIZABILITY_NONLOCALIZED = YES;
 				CLANG_ANALYZER_NONNULL = YES;
 				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
@@ -559,9 +640,11 @@
 				CLANG_WARN_UNREACHABLE_CODE = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
 				COPY_PHASE_STRIP = NO;
+				DEAD_CODE_STRIPPING = YES;
 				DEBUG_INFORMATION_FORMAT = dwarf;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
 				ENABLE_TESTABILITY = YES;
+				ENABLE_USER_SCRIPT_SANDBOXING = YES;
 				GCC_C_LANGUAGE_STANDARD = gnu11;
 				GCC_DYNAMIC_NO_PIC = NO;
 				GCC_NO_COMMON_BLOCKS = YES;
@@ -576,11 +659,12 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				MACOSX_DEPLOYMENT_TARGET = 11.0;
+				MACOSX_DEPLOYMENT_TARGET = 13.0;
 				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
 				MTL_FAST_MATH = YES;
 				ONLY_ACTIVE_ARCH = YES;
 				SDKROOT = macosx;
+				STRING_CATALOG_GENERATE_SYMBOLS = YES;
 				SWIFT_ACTIVE_COMPILATION_CONDITIONS = DEBUG;
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 			};
@@ -590,6 +674,8 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
+				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
+				CLANG_ANALYZER_LOCALIZABILITY_NONLOCALIZED = YES;
 				CLANG_ANALYZER_NONNULL = YES;
 				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
@@ -619,9 +705,11 @@
 				CLANG_WARN_UNREACHABLE_CODE = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
 				COPY_PHASE_STRIP = NO;
+				DEAD_CODE_STRIPPING = YES;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				ENABLE_NS_ASSERTIONS = NO;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_USER_SCRIPT_SANDBOXING = YES;
 				GCC_C_LANGUAGE_STANDARD = gnu11;
 				GCC_NO_COMMON_BLOCKS = YES;
 				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
@@ -630,10 +718,11 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				MACOSX_DEPLOYMENT_TARGET = 11.0;
+				MACOSX_DEPLOYMENT_TARGET = 13.0;
 				MTL_ENABLE_DEBUG_INFO = NO;
 				MTL_FAST_MATH = YES;
 				SDKROOT = macosx;
+				STRING_CATALOG_GENERATE_SYMBOLS = YES;
 				SWIFT_COMPILATION_MODE = wholemodule;
 				SWIFT_OPTIMIZATION_LEVEL = "-O";
 			};
@@ -645,13 +734,13 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_ENTITLEMENTS = Fire/Fire.entitlements;
-				"CODE_SIGN_IDENTITY[sdk=macosx*]" = "Mac Developer";
-				CODE_SIGN_STYLE = Manual;
+				CODE_SIGN_IDENTITY = "Apple Development";
+				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
 				CURRENT_PROJECT_VERSION = 1;
+				DEAD_CODE_STRIPPING = YES;
 				DEPLOYMENT_LOCATION = YES;
-				DEVELOPMENT_TEAM = "";
-				"DEVELOPMENT_TEAM[sdk=macosx*]" = T68XK6867P;
+				DEVELOPMENT_TEAM = T68XK6867P;
 				DSTROOT = "$HOME/Library/Input Methods";
 				ENABLE_HARDENED_RUNTIME = YES;
 				GCC_PREPROCESSOR_DEFINITIONS = (
@@ -669,6 +758,7 @@
 					"$(inherited)",
 					"@executable_path/../Frameworks",
 				);
+				MACOSX_DEPLOYMENT_TARGET = 13.0;
 				MARKETING_VERSION = 1.0;
 				OTHER_CFLAGS = (
 					"-DSQLITE_HAS_CODEC",
@@ -692,13 +782,13 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_ENTITLEMENTS = Fire/Fire.entitlements;
-				"CODE_SIGN_IDENTITY[sdk=macosx*]" = "Developer ID Application";
-				CODE_SIGN_STYLE = Manual;
+				CODE_SIGN_IDENTITY = "Apple Development";
+				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
 				CURRENT_PROJECT_VERSION = 1;
+				DEAD_CODE_STRIPPING = YES;
 				DEPLOYMENT_LOCATION = NO;
-				DEVELOPMENT_TEAM = "";
-				"DEVELOPMENT_TEAM[sdk=macosx*]" = T68XK6867P;
+				DEVELOPMENT_TEAM = T68XK6867P;
 				DSTROOT = "/tmp/$(PROJECT_NAME).dst";
 				ENABLE_HARDENED_RUNTIME = YES;
 				GCC_PREPROCESSOR_DEFINITIONS = "SQLITE_HAS_CODEC=1";
@@ -712,6 +802,7 @@
 					"$(inherited)",
 					"@executable_path/../Frameworks",
 				);
+				MACOSX_DEPLOYMENT_TARGET = 13.0;
 				MARKETING_VERSION = 1.0;
 				OTHER_CFLAGS = (
 					"-DSQLITE_HAS_CODEC",
@@ -762,14 +853,6 @@
 /* End XCConfigurationList section */
 
 /* Begin XCRemoteSwiftPackageReference section */
-		67C9A0462AB53EF5000B5281 /* XCRemoteSwiftPackageReference "Settings" */ = {
-			isa = XCRemoteSwiftPackageReference;
-			repositoryURL = "https://github.com/sindresorhus/Settings";
-			requirement = {
-				kind = upToNextMajorVersion;
-				minimumVersion = 3.0.0;
-			};
-		};
 		67C9A0492AB53F20000B5281 /* XCRemoteSwiftPackageReference "Defaults" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/sindresorhus/Defaults";
@@ -805,11 +888,6 @@
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
-		67C9A0472AB53EF5000B5281 /* Settings */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = 67C9A0462AB53EF5000B5281 /* XCRemoteSwiftPackageReference "Settings" */;
-			productName = Settings;
-		};
 		67C9A04A2AB53F20000B5281 /* Defaults */ = {
 			isa = XCSwiftPackageProductDependency;
 			package = 67C9A0492AB53F20000B5281 /* XCRemoteSwiftPackageReference "Defaults" */;

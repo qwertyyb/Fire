@@ -16,15 +16,22 @@ enum InputSourceUsage {
 
 class InputSource {
     let installLocation = "/Library/Input Methods/Fire.app"
-    let kSourceID = Bundle.main.bundleIdentifier!
+    let kSourceID = Bundle.main.bundleIdentifier ?? "com.qwertyyb.inputmethod.Fire"
     var selected: Bool? = nil
+
+    /// 从 TISInputSource 属性中读取 CFBoolean 值
+    /// 将重复的 Unmanaged<CFBoolean>.fromOpaque / takeUnretainedValue / CFBooleanGetValue 模式集中处理
+    private func getBoolProperty(_ source: TISInputSource, _ key: CFString) -> Bool {
+        guard let raw = TISGetInputSourceProperty(source, key) else { return false }
+        return CFBooleanGetValue(Unmanaged<CFBoolean>.fromOpaque(raw).takeUnretainedValue())
+    }
 
     func registerInputSource() {
         if !isEnabled() {
             // 全新安装或未启用过，需要Register, 已启用的，不需要再次启用
             let installedLocationURL = NSURL(fileURLWithPath: installLocation)
             let err = TISRegisterInputSource(installedLocationURL as CFURL)
-            NSLog("register input source: \(err)")
+            FireLog.app.error("register input source: \(err, privacy: .public)")
         }
     }
 
@@ -38,12 +45,8 @@ class InputSource {
 
         for index in 0..<sourceList.count {
             let inputSource = sourceList[index]
-            let selectable = CFBooleanGetValue(Unmanaged<CFBoolean>.fromOpaque(
-                TISGetInputSourceProperty(inputSource, kTISPropertyInputSourceIsSelectCapable)
-            ).takeUnretainedValue())
-            let enableable = CFBooleanGetValue(Unmanaged<CFBoolean>.fromOpaque(
-                TISGetInputSourceProperty(inputSource, kTISPropertyInputSourceIsEnableCapable)
-            ).takeUnretainedValue())
+            let selectable = getBoolProperty(inputSource, kTISPropertyInputSourceIsSelectCapable)
+            let enableable = getBoolProperty(inputSource, kTISPropertyInputSourceIsEnableCapable)
             if forUsage == .enable && enableable {
                 return inputSource
             }
@@ -71,10 +74,8 @@ class InputSource {
                 return
             }
             let err = TISSelectInputSource(result)
-            NSLog("select input source: \(err)")
-            let isSelected = CFBooleanGetValue(Unmanaged<CFBoolean>.fromOpaque(
-                TISGetInputSourceProperty(result, kTISPropertyInputSourceIsSelected)
-            ).takeUnretainedValue())
+            FireLog.app.error("select input source: \(err, privacy: .public)")
+            let isSelected = self.getBoolProperty(result, kTISPropertyInputSourceIsSelected)
             if isSelected {
                 timer.invalidate()
                 callback(true)
@@ -86,12 +87,10 @@ class InputSource {
         guard let result = findInputSource() else {
             return
         }
-        let enabled = CFBooleanGetValue(Unmanaged<CFBoolean>.fromOpaque(
-            TISGetInputSourceProperty(result, kTISPropertyInputSourceIsEnabled)
-        ).takeUnretainedValue())
+        let enabled = getBoolProperty(result, kTISPropertyInputSourceIsEnabled)
         if !enabled {
             let err = TISEnableInputSource(result)
-            NSLog("Enabled input source: \(err)")
+            FireLog.app.error("Enabled input source: \(err, privacy: .public)")
         }
     }
 
@@ -101,11 +100,11 @@ class InputSource {
         }
         TISDeselectInputSource(source)
         TISDisableInputSource(source)
-        NSLog("Disable input source")
+        FireLog.app.info("Disable input source")
     }
 
     func onSelectChanged(callback: @escaping (Bool) -> Void) -> NSObjectProtocol {
-        NSLog("[InputSource] onSelectChanged")
+        FireLog.app.debug("onSelectChanged")
         let observer = DistributedNotificationCenter.default()
             .addObserver(
                 forName: .init(String(kTISNotifySelectedKeyboardInputSourceChanged)),
@@ -118,7 +117,7 @@ class InputSource {
                      // 3. 此事件有可能会被重复调用，比如切换到搜狗输入法时，所以事件需要过滤一下
                      DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
                          let selected = self.isSelected()
-                         NSLog("[InputSource] onSelectChanged callback: \(String(describing: self.selected)), \(selected)")
+                         FireLog.app.debug("onSelectChanged callback: \(String(describing: self.selected), privacy: .public), \(selected, privacy: .public)")
                          // 此事件会重复触发，此处判断需要过滤一下
                          if (selected != self.selected) {
                              self.selected = selected
