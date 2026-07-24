@@ -65,6 +65,7 @@
 		B603472A2FF5751B005E7F9B /* wubi86_spelling.txt in Resources */ = {isa = PBXBuildFile; fileRef = B60347292FF5751B005E7F9B /* wubi86_spelling.txt */; };
 		B603472C2FF5781B005E7F9B /* wubi98_spelling.txt in Resources */ = {isa = PBXBuildFile; fileRef = B603472B2FF5781B005E7F9B /* wubi98_spelling.txt */; };
 		B60347302FF5EB6F005E7F9B /* wubi06_spelling.txt in Resources */ = {isa = PBXBuildFile; fileRef = B603472F2FF5EB6F005E7F9B /* wubi06_spelling.txt */; };
+		B60347322FF9000500A595A7 /* pinyin_spell.txt in Resources */ = {isa = PBXBuildFile; fileRef = B60347312FF9000500A595A7 /* pinyin_spell.txt */; };
 		B676B05E2FF56FA800A595A7 /* 黑体字根.ttf in Resources */ = {isa = PBXBuildFile; fileRef = B676B05C2FF56FA800A595A7 /* 黑体字根.ttf */; };
 		B6B720422FF74FD100A3066B /* 06（新世纪）版五笔字型.png in Resources */ = {isa = PBXBuildFile; fileRef = B6B7203E2FF74FD100A3066B /* 06（新世纪）版五笔字型.png */; };
 		B6B720432FF74FD100A3066B /* 98版五笔字型.png in Resources */ = {isa = PBXBuildFile; fileRef = B6B720402FF74FD100A3066B /* 98版五笔字型.png */; };
@@ -133,6 +134,7 @@
 		B60347292FF5751B005E7F9B /* wubi86_spelling.txt */ = {isa = PBXFileReference; lastKnownFileType = text; path = wubi86_spelling.txt; sourceTree = "<group>"; };
 		B603472B2FF5781B005E7F9B /* wubi98_spelling.txt */ = {isa = PBXFileReference; lastKnownFileType = text; path = wubi98_spelling.txt; sourceTree = "<group>"; };
 		B603472F2FF5EB6F005E7F9B /* wubi06_spelling.txt */ = {isa = PBXFileReference; lastKnownFileType = text; path = wubi06_spelling.txt; sourceTree = "<group>"; };
+		B60347312FF9000500A595A7 /* pinyin_spell.txt */ = {isa = PBXFileReference; lastKnownFileType = text; path = pinyin_spell.txt; sourceTree = "<group>"; };
 		B676B05C2FF56FA800A595A7 /* 黑体字根.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "黑体字根.ttf"; sourceTree = "<group>"; };
 		B6B7203E2FF74FD100A3066B /* 06（新世纪）版五笔字型.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "06（新世纪）版五笔字型.png"; sourceTree = "<group>"; };
 		B6B7203F2FF74FD100A3066B /* 86版五笔字型.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "86版五笔字型.png"; sourceTree = "<group>"; };
@@ -282,6 +284,7 @@
 				B603472F2FF5EB6F005E7F9B /* wubi06_spelling.txt */,
 				B603472B2FF5781B005E7F9B /* wubi98_spelling.txt */,
 				B60347292FF5751B005E7F9B /* wubi86_spelling.txt */,
+				B60347312FF9000500A595A7 /* pinyin_spell.txt */,
 				B676B05D2FF56FA800A595A7 /* font */,
 				67C9A01F2AB53ED3000B5281 /* wb_table.txt */,
 				67C9A0202AB53ED3000B5281 /* py_table.txt */,
@@ -437,6 +440,7 @@
 				67C9A0392AB53ED3000B5281 /* wb_98_table.txt in Resources */,
 				67C9A0092AB53E83000B5281 /* MainMenu.xib in Resources */,
 				B603472A2FF5751B005E7F9B /* wubi86_spelling.txt in Resources */,
+				B60347322FF9000500A595A7 /* pinyin_spell.txt in Resources */,
 				67C9A0452AB53ED3000B5281 /* InfoPlist.strings in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

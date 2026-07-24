@@ -63,7 +63,7 @@ extension Defaults.Keys {
     static let enableWhitespaceBetweenZhEn = Key<Bool>("enableWhitespaceBetweenZhEn", default: true)
     static let wbTablePath = Key<String>("wbTableURL", default: Bundle.main.resourceURL?.appendingPathComponent("wb_table.txt").path ?? "")
     static let pyTablePath = Key<String>("pyTableURL", default: Bundle.main.resourceURL?.appendingPathComponent("py_table.txt").path ?? "")
-    static let spellingScheme = Key<SpellingScheme>("spellingScheme", default: .wubi86)
+    static let wbSpellPath = Key<String>("wbSpellPath", default: Bundle.main.resourceURL?.appendingPathComponent("wubi86_spelling.txt").path ?? "")
     static let enableGBK = Key<Bool>("enableGBK", default: true)
     static let enableExactMatch = Key<Bool>("enableExactMatch", default: false)
     static let enableStatistics = Key<Bool>("enableStatistics", default: true)

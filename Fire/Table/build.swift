@@ -9,7 +9,7 @@
 import AppKit
 import Defaults
 
-private let dictSchemaVersion: Int32 = 1
+private let dictSchemaVersion: Int32 = 2
 
 /// 安全读取可为 NULL 的 SQLite 文本列
 private func columnText(_ stmt: OpaquePointer?, _ index: Int32) -> String? {
@@ -93,7 +93,7 @@ func isDictSchemaCurrent() -> Bool {
     var db: OpaquePointer?
     guard sqlite3_open_v2(path, &db, SQLITE_OPEN_READONLY, nil) == SQLITE_OK else { return false }
     defer { sqlite3_close(db) }
-    guard dbHasColumn(db, table: "wb_py_dict", column: "s86"),
+    guard dbHasColumn(db, table: "wb_py_dict", column: "spell"),
           dbHasTable(db, table: "blocked_words") else {
         return false
     }
@@ -244,11 +244,10 @@ private func migrateUserDict(oldPath: String, newPath: String) -> Bool {
     sqlite3_finalize(minStmt)
 
     let insertSql = """
-        insert into wb_py_dict(id, wbcode, text, type, query, s86, s98, s06, is_gb2312)
+        insert into wb_py_dict(id, wbcode, text, type, query, spell, pinyin, is_gb2312)
         values(?1, ?2, ?3, 'user', ?4,
-            (select s86 from wb_py_dict where text = ?5 and s86 is not null limit 1),
-            (select s98 from wb_py_dict where text = ?5 and s98 is not null limit 1),
-            (select s06 from wb_py_dict where text = ?5 and s06 is not null limit 1),
+            (select spell from wb_py_dict where text = ?5 and spell is not null limit 1),
+            (select pinyin from wb_py_dict where text = ?5 and pinyin is not null limit 1),
             1)
     """
 
@@ -298,17 +297,15 @@ func buildDict() -> Bool {
     let oldPath = getDatabaseURL().path
 
     let resourceURL = Bundle.main.resourceURL
-    let s86 = resourceURL?.appendingPathComponent("wubi86_spelling.txt").path
-    let s98 = resourceURL?.appendingPathComponent("wubi98_spelling.txt").path
-    let s06 = resourceURL?.appendingPathComponent("wubi06_spelling.txt").path
+    let wbSpellPath = Defaults[.wbSpellPath]
+    let pinyinSpellPath = resourceURL?.appendingPathComponent("pinyin_spell.txt").path
 
     let built = DictBuilder.build(
         wbPath: wbPath,
         pyPath: pyPath,
         dbPath: newPath,
-        s86Path: s86,
-        s98Path: s98,
-        s06Path: s06
+        wbSpellPath: wbSpellPath,
+        pinyinSpellPath: pinyinSpellPath
     )
     guard built else {
         print("build failed")

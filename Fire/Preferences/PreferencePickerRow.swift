@@ -57,9 +57,9 @@ struct PreferenceToggleRow: View {
             }
             .labelsHidden()
         }
-        PreferencePickerRow(title: "拆字版本", caption: "仅五笔拆字提示生效") {
-            Picker("", selection: .constant(SpellingScheme.wubi86)) {
-                Text("86").tag(SpellingScheme.wubi86)
+        PreferencePickerRow(title: "反查提示") {
+            Picker("", selection: .constant(CandidateHintMode.spelling)) {
+                Text("五笔拆字").tag(CandidateHintMode.spelling)
             }
             .labelsHidden()
         }

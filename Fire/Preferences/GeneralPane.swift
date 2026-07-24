@@ -32,7 +32,6 @@ struct GeneralPane: View {
     @Default(.disableTempEnMode) private var disableTempEnMode
     @Default(.showInputModeStatus) private var showInputModeStatus
     @Default(.enableWhitespaceBetweenZhEn) private var enableWhitespaceBetweenZhEn
-    @Default(.spellingScheme) private var spellingScheme
     @Default(.enableExactMatch) private var enableExactMatch
     @Default(.celebrationEffect) private var celebrationEffect
 
@@ -55,15 +54,6 @@ struct GeneralPane: View {
                         Text("五笔拆字").tag(CandidateHintMode.spelling)
                     }
                     .labelsHidden()
-                }
-                PreferencePickerRow(title: "拆字版本", caption: "仅五笔拆字提示生效") {
-                    Picker("", selection: $spellingScheme) {
-                        Text("86").tag(SpellingScheme.wubi86)
-                        Text("98").tag(SpellingScheme.wubi98)
-                        Text("06").tag(SpellingScheme.wubi06)
-                    }
-                    .labelsHidden()
-                    .disabled(candidateHintMode != .spelling)
                 }
                 PreferenceToggleRow(title: "4码唯一上屏", isOn: $wubiAutoCommit)
                 PreferenceToggleRow(title: "第5码顶字上屏", caption: "仅五笔方案生效", isOn: $wubiFifthCommit)

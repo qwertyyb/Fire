@@ -19,29 +19,25 @@ enum DictGlyphFill {
         return String(string.unicodeScalars.prefix(count))
     }
 
-    /// 从码表单字行取三版拆字（优先五笔全码行）
-    static func getCharGlyphs(db: OpaquePointer?, char: String) -> (s86: String?, s98: String?, s06: String?) {
+    /// 从码表单字行取拆字（优先五笔全码行）
+    static func getCharGlyph(db: OpaquePointer?, char: String) -> String? {
         let sql = """
-            select s86, s98, s06 from wb_py_dict
+            select spell from wb_py_dict
             where text = ? and type = 'wb'
-            and (s86 is not null or s98 is not null or s06 is not null)
+            and spell is not null
             order by length(wbcode) desc, id asc limit 1
         """
         var stmt: OpaquePointer?
         guard sqlite3_prepare_v2(db, sql, -1, &stmt, nil) == SQLITE_OK else {
-            return (nil, nil, nil)
+            return nil
         }
         sqlite3_bind_text(stmt, 1, char, -1, SQLITE_TRANSIENT)
-        var s86: String?
-        var s98: String?
-        var s06: String?
+        var spell: String?
         if sqlite3_step(stmt) == SQLITE_ROW {
-            s86 = columnText(stmt, 0)
-            s98 = columnText(stmt, 1)
-            s06 = columnText(stmt, 2)
+            spell = columnText(stmt, 0)
         }
         sqlite3_finalize(stmt)
-        return (s86, s98, s06)
+        return spell
     }
 
     private static func columnText(_ stmt: OpaquePointer?, _ index: Int32) -> String? {
@@ -63,69 +59,43 @@ enum DictGlyphFill {
         }
     }
 
-    /// 为多字词生成组合拆字（2字各取前2码点、3字前二字首码点+末字前2码点、≥4字前三字首码点+末字首码点）
+    /// 为多字词生成组合拆字并写入用户词
     static func fillCompoundGlyphs(db: OpaquePointer?, text: String, skipIfExists: Bool = false) {
         let chars = codePoints(text)
         guard chars.count > 1 else { return }
 
-        var needFill = [true, true, true]
         if skipIfExists {
-            let checkSql = "select s86, s98, s06 from wb_py_dict where text = ? and type = 'user' limit 1"
+            let checkSql = "select spell from wb_py_dict where text = ? and type = 'user' limit 1"
             var checkStmt: OpaquePointer?
             if sqlite3_prepare_v2(db, checkSql, -1, &checkStmt, nil) == SQLITE_OK {
                 sqlite3_bind_text(checkStmt, 1, text, -1, SQLITE_TRANSIENT)
-                if sqlite3_step(checkStmt) == SQLITE_ROW {
-                    for i in 0..<3 where sqlite3_column_type(checkStmt, Int32(i)) != SQLITE_NULL {
-                        needFill[i] = false
-                    }
+                if sqlite3_step(checkStmt) == SQLITE_ROW,
+                   sqlite3_column_type(checkStmt, 0) != SQLITE_NULL {
+                    sqlite3_finalize(checkStmt)
+                    return
                 }
             }
             sqlite3_finalize(checkStmt)
-            if !needFill.contains(true) { return }
         }
 
-        var perCharGlyphs: [[String]] = Array(repeating: [], count: 3)
+        var perCharGlyphs: [String] = []
         for char in chars {
-            let (g86, g98, g06) = getCharGlyphs(db: db, char: char)
-            if needFill[0] {
-                guard let g = g86 else { return }
-                perCharGlyphs[0].append(g)
-            }
-            if needFill[1] {
-                guard let g = g98 else { return }
-                perCharGlyphs[1].append(g)
-            }
-            if needFill[2] {
-                guard let g = g06 else { return }
-                perCharGlyphs[2].append(g)
-            }
+            guard let g = getCharGlyph(db: db, char: char) else { return }
+            perCharGlyphs.append(g)
         }
+        guard perCharGlyphs.count == chars.count else { return }
 
-        let results: [String?] = zip(needFill, perCharGlyphs).map { need, glyphs in
-            guard need, glyphs.count == chars.count else { return nil }
-            let combined = combineCompoundGlyph(glyphs)
-            return combined.isEmpty ? nil : combined
-        }
-        guard results.contains(where: { $0 != nil }) else { return }
+        let combined = combineCompoundGlyph(perCharGlyphs)
+        guard !combined.isEmpty else { return }
 
         let upSql = """
-            update wb_py_dict set
-                s86 = coalesce(?1, s86),
-                s98 = coalesce(?2, s98),
-                s06 = coalesce(?3, s06)
-            where text = ?4 and type = 'user'
+            update wb_py_dict set spell = coalesce(?1, spell)
+            where text = ?2 and type = 'user'
         """
         var up: OpaquePointer?
         guard sqlite3_prepare_v2(db, upSql, -1, &up, nil) == SQLITE_OK else { return }
-        for (i, value) in results.enumerated() {
-            let idx = Int32(i + 1)
-            if let value = value {
-                sqlite3_bind_text(up, idx, value, -1, SQLITE_TRANSIENT)
-            } else {
-                sqlite3_bind_null(up, idx)
-            }
-        }
-        sqlite3_bind_text(up, 4, text, -1, SQLITE_TRANSIENT)
+        sqlite3_bind_text(up, 1, combined, -1, SQLITE_TRANSIENT)
+        sqlite3_bind_text(up, 2, text, -1, SQLITE_TRANSIENT)
         sqlite3_step(up)
         sqlite3_finalize(up)
     }

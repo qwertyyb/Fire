@@ -27,7 +27,7 @@ private enum BuiltInWbTable: String, CaseIterable, Identifiable {
     }
 
     /// Bundle 内置码表路径；custom 无对应路径
-    var resourcePath: String? {
+    var tableResourcePath: String? {
         let name: String?
         switch self {
         case .wubi86: name = "wb_table.txt"
@@ -38,18 +38,22 @@ private enum BuiltInWbTable: String, CaseIterable, Identifiable {
         return Bundle.main.resourceURL?.appendingPathComponent(name).path
     }
 
-    var spellingScheme: SpellingScheme? {
+    /// Bundle 内置拆字路径；custom 无对应路径
+    var spellResourcePath: String? {
+        let name: String?
         switch self {
-        case .wubi86: return .wubi86
-        case .wubi98: return .wubi98
-        case .custom: return nil
+        case .wubi86: name = "wubi86_spelling.txt"
+        case .wubi98: name = "wubi98_spelling.txt"
+        case .custom: name = nil
         }
+        guard let name else { return nil }
+        return Bundle.main.resourceURL?.appendingPathComponent(name).path
     }
 
-    static func matching(path: String) -> BuiltInWbTable {
-        let standardized = URL(fileURLWithPath: path).standardizedFileURL
+    static func matching(tablePath: String) -> BuiltInWbTable {
+        let standardized = URL(fileURLWithPath: tablePath).standardizedFileURL
         for preset in [BuiltInWbTable.wubi86, .wubi98] {
-            if let resourcePath = preset.resourcePath,
+            if let resourcePath = preset.tableResourcePath,
                URL(fileURLWithPath: resourcePath).standardizedFileURL == standardized {
                 return preset
             }
@@ -63,7 +67,7 @@ private enum BuiltInWbTable: String, CaseIterable, Identifiable {
 struct ThesaurusPane: View {
     @Default(.wbTablePath) private var wbTablePath
     @Default(.pyTablePath) private var pyTablePath
-    @Default(.spellingScheme) private var spellingScheme
+    @Default(.wbSpellPath) private var wbSpellPath
     @State private var selectedWbPreset: BuiltInWbTable = .wubi86
     @State private var pendingWbPreset: BuiltInWbTable?
     @State private var showRebuildConfirm = false
@@ -72,9 +76,10 @@ struct ThesaurusPane: View {
     @State private var building = false
     @State private var builtWbPath = ""
     @State private var builtPyPath = ""
+    @State private var builtSpellPath = ""
 
     private var isPathModified: Bool {
-        wbTablePath != builtWbPath || pyTablePath != builtPyPath
+        wbTablePath != builtWbPath || pyTablePath != builtPyPath || wbSpellPath != builtSpellPath
     }
 
     /// 使用内置 86/98 时路径固定，禁止手选词库与手动重建（切换时已确认重建）
@@ -106,7 +111,7 @@ struct ThesaurusPane: View {
     }
 
     private func syncSelectedPresetFromPath() {
-        selectedWbPreset = BuiltInWbTable.matching(path: wbTablePath)
+        selectedWbPreset = BuiltInWbTable.matching(tablePath: wbTablePath)
     }
 
     private func applyWbTablePreset(_ preset: BuiltInWbTable) {
@@ -124,14 +129,13 @@ struct ThesaurusPane: View {
 
     private func confirmSwitchAndRebuild() {
         guard let preset = pendingWbPreset,
-              let path = preset.resourcePath else {
+              let tablePath = preset.tableResourcePath,
+              let spellPath = preset.spellResourcePath else {
             pendingWbPreset = nil
             return
         }
-        wbTablePath = path
-        if let scheme = preset.spellingScheme {
-            spellingScheme = scheme
-        }
+        wbTablePath = tablePath
+        wbSpellPath = spellPath
         selectedWbPreset = preset
         pendingWbPreset = nil
         startRebuild()
@@ -153,10 +157,11 @@ struct ThesaurusPane: View {
                 if success {
                     builtWbPath = wbTablePath
                     builtPyPath = pyTablePath
+                    builtSpellPath = wbSpellPath
                     let wbCount = DictManager.shared.queryBaseDictCount()
                     alertMessage = "索引建立完成（码表词: \(wbCount) 条）"
                 } else {
-                    alertMessage = "重建失败，请检查五笔词库和拼音词库文件路径是否正确"
+                    alertMessage = "重建失败，请检查五笔词库、拼音词库和拆字文件路径是否正确"
                 }
                 showAlert = true
             }
@@ -180,7 +185,7 @@ struct ThesaurusPane: View {
             } header: {
                 Text("码表版本")
             } footer: {
-                Text("切换 86/98 需确认后重建索引，并同步「拆字版本」。")
+                Text("切换 86/98 将同步对应拆字表并重建索引。")
                     .font(.caption)
                     .foregroundStyle(.secondary)
             }
@@ -223,6 +228,25 @@ struct ThesaurusPane: View {
                         .controlSize(.small)
                         .disabled(building || isBuiltInWbPreset)
                     }
+                    Divider()
+                    HStack {
+                        Text("五笔拆字")
+                            .frame(width: 80, alignment: .leading)
+                        Text(wbSpellPath)
+                            .lineLimit(1)
+                            .truncationMode(.middle)
+                            .font(.caption)
+                            .foregroundStyle(.secondary)
+                            .frame(maxWidth: .infinity, alignment: .leading)
+                        Button("选择…") {
+                            if let path = selectFile() {
+                                wbSpellPath = path
+                                syncSelectedPresetFromPath()
+                            }
+                        }
+                        .controlSize(.small)
+                        .disabled(building || isBuiltInWbPreset)
+                    }
                 }
 
                 HStack {
@@ -245,7 +269,7 @@ struct ThesaurusPane: View {
             } footer: {
                 Text(isBuiltInWbPreset
                      ? "当前使用内置码表，自定义词库与手动重建不可用。"
-                     : "选择自定义词库文件后需重建索引才能生效。")
+                     : "自定义模式下可选择五笔词库、拼音词库与五笔拆字文件；拼音反查固定使用内置拼音表。选择后需重建索引才能生效。")
                     .font(.caption)
                     .foregroundStyle(.secondary)
             }
@@ -253,8 +277,12 @@ struct ThesaurusPane: View {
         .formStyle(.grouped)
         .onAppear {
             syncSelectedPresetFromPath()
+            if let spell = selectedWbPreset.spellResourcePath {
+                wbSpellPath = spell
+            }
             builtWbPath = wbTablePath
             builtPyPath = pyTablePath
+            builtSpellPath = wbSpellPath
         }
         .confirmationDialog(
             "切换到 \(pendingWbPreset?.label ?? "") 版五笔码表？",
@@ -268,7 +296,7 @@ struct ThesaurusPane: View {
                 cancelSwitchPreset()
             }
         } message: {
-            Text("将切换码表并重建索引，期间可能短暂无法打字。取消则保持当前选中。")
+            Text("将切换码表与拆字表并重建索引，期间可能短暂无法打字。取消则保持当前选中。")
         }
         .alert(alertMessage, isPresented: $showAlert) {
             Button("好") {}

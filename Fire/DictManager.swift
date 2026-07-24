@@ -82,13 +82,9 @@ class DictManager {
                 \(codeMode == .wubiPinyin ? "max(wbcode)" : "min(wbcode)"),
                 text,
                 type, min(query) as query,
-                max(s86) as s86,   -- 五笔86拆字
-                max(s98) as s98,   -- 五笔98拆字
-                max(s06) as s06,   -- 五笔06拆字
-                max(py86) as py86, -- 86拼音
-                max(py98) as py98, -- 98拼音
-                max(py06) as py06, -- 06拼音
-                max(is_gb2312) as is_gb2312  -- 是否 GB2312 常用字
+                max(spell) as spell,
+                max(pinyin) as pinyin,
+                max(is_gb2312) as is_gb2312
             from wb_py_dict
             where query glob :queryLike \(
                 codeMode == .wubi ? "and type in ('wb', 'user')"
@@ -256,22 +252,14 @@ class DictManager {
             if type == .user {
                 text = replaceTextWithVars(text)
             }
-            // 取当前方案的拆字形（s86=列4, s98=列5, s06=列6），用于候选提示模式=拆字时显示
-            let spellingCol: Int32
-            switch Defaults[.spellingScheme] {
-            case .wubi86: spellingCol = 4
-            case .wubi98: spellingCol = 5
-            case .wubi06: spellingCol = 6
-            }
+            // 拆字（列4）、拼音（列5），用于候选反查提示
             var spelling: String?
-            if let cstr = sqlite3_column_text(queryStatement, spellingCol) {
+            if let cstr = sqlite3_column_text(queryStatement, 4) {
                 let val = String(cString: cstr)
                 if !val.isEmpty { spelling = "〈\(val)〉" }
             }
-            // 取拼音（py86=列8, py98=列9, py06=列10），用于候选提示模式=拼音时显示
-            let pinyinCol = spellingCol + 4
             var pinyin: String?
-            if let cstr = sqlite3_column_text(queryStatement, pinyinCol) {
+            if let cstr = sqlite3_column_text(queryStatement, 5) {
                 let val = String(cString: cstr)
                 if !val.isEmpty { pinyin = val }
             }
@@ -295,14 +283,13 @@ class DictManager {
     }
 
     func prependCandidate(candidate: Candidate) -> Bool {
-        // 插入用户词时自动从原始词库复制拆字数据（s86/s98/s06），确保用户词也支持拆字提示
+        // 插入用户词时自动从原始词库复制拆字/拼音，确保用户词也支持反查提示
         let sql = """
-            insert into wb_py_dict(id, wbcode, text, type, query, s86, s98, s06)
+            insert into wb_py_dict(id, wbcode, text, type, query, spell, pinyin)
             values (
                 (select MIN(id) - 1 from wb_py_dict), :code, :text, :type, :code,
-                (select s86 from wb_py_dict where text = :text and s86 is not null limit 1),
-                (select s98 from wb_py_dict where text = :text and s98 is not null limit 1),
-                (select s06 from wb_py_dict where text = :text and s06 is not null limit 1)
+                (select spell from wb_py_dict where text = :text and spell is not null limit 1),
+                (select pinyin from wb_py_dict where text = :text and pinyin is not null limit 1)
             );
         """
         var insertStatement: OpaquePointer?
@@ -426,11 +413,10 @@ class DictManager {
         for (n, candidate) in candidates.enumerated() {
             let id = minId - candidates.count + n
             let sql = """
-                insert into wb_py_dict(id, wbcode, text, type, query, s86, s98, s06)
+                insert into wb_py_dict(id, wbcode, text, type, query, spell, pinyin)
                 values(?, ?, ?, ?, ?,
-                    (select s86 from wb_py_dict where text = ? and s86 is not null limit 1),
-                    (select s98 from wb_py_dict where text = ? and s98 is not null limit 1),
-                    (select s06 from wb_py_dict where text = ? and s06 is not null limit 1))
+                    (select spell from wb_py_dict where text = ? and spell is not null limit 1),
+                    (select pinyin from wb_py_dict where text = ? and pinyin is not null limit 1))
             """
             var stmt: OpaquePointer?
             guard sqlite3_prepare_v2(database, sql, -1, &stmt, nil) == SQLITE_OK else { continue }
@@ -439,10 +425,8 @@ class DictManager {
             sqlite3_bind_text(stmt, 3, candidate.text, -1, SQLITE_TRANSIENT)
             sqlite3_bind_text(stmt, 4, candidate.type.rawValue, -1, SQLITE_TRANSIENT)
             sqlite3_bind_text(stmt, 5, candidate.code, -1, SQLITE_TRANSIENT)
-            // 子查询参数（取拆字数据）
             sqlite3_bind_text(stmt, 6, candidate.text, -1, SQLITE_TRANSIENT)
             sqlite3_bind_text(stmt, 7, candidate.text, -1, SQLITE_TRANSIENT)
-            sqlite3_bind_text(stmt, 8, candidate.text, -1, SQLITE_TRANSIENT)
             sqlite3_step(stmt)
             sqlite3_finalize(stmt)
         }

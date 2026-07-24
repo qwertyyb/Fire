@@ -23,13 +23,6 @@ enum ExtraCandidateSelectKeys: String, Codable, Defaults.Serializable {
     case commaPeriod
 }
 
-// 拆字/拼音方案枚举：决定候选中显示哪种方案的拆字字根和拼音
-enum SpellingScheme: String, Codable, Defaults.Serializable {
-    case wubi86  // 五笔86版
-    case wubi98  // 五笔98版
-    case wubi06  // 五笔06版（新世纪）
-}
-
 // 候选词提示模式：控制候选词旁显示什么额外信息
 enum CandidateHintMode: String, Codable, Defaults.Serializable {
     case none       // 不提示

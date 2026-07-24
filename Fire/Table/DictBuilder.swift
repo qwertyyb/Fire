@@ -12,9 +12,8 @@ enum DictBuilder {
         wbPath: String,
         pyPath: String,
         dbPath: String,
-        s86Path: String?,
-        s98Path: String?,
-        s06Path: String?
+        wbSpellPath: String?,
+        pinyinSpellPath: String?
     ) -> Bool {
         guard FileManager.default.fileExists(atPath: wbPath) else {
             print("[DictBuilder] wb table not found: \(wbPath)")
@@ -44,11 +43,10 @@ enum DictBuilder {
         }
         guard combineWbPy(db: db) else { return false }
 
-        if let s86Path, let s98Path, let s06Path,
-           FileManager.default.fileExists(atPath: s86Path),
-           FileManager.default.fileExists(atPath: s98Path),
-           FileManager.default.fileExists(atPath: s06Path) {
-            guard DictSpellingMerge.merge(db: db, s86Path: s86Path, s98Path: s98Path, s06Path: s06Path) else {
+        if let wbSpellPath, let pinyinSpellPath,
+           FileManager.default.fileExists(atPath: wbSpellPath),
+           FileManager.default.fileExists(atPath: pinyinSpellPath) {
+            guard DictSpellingMerge.merge(db: db, wbSpellPath: wbSpellPath, pinyinSpellPath: pinyinSpellPath) else {
                 return false
             }
         } else {
@@ -74,12 +72,8 @@ enum DictBuilder {
               type text not null,
               query text not null,
               version text default null,
-              s86 text default null,
-              s98 text default null,
-              s06 text default null,
-              py86 text default null,
-              py98 text default null,
-              py06 text default null,
+              spell text default null,
+              pinyin text default null,
               is_gb2312 integer default 1
             );
             insert into sqlite_sequence(name, seq) values('wb_py_dict', 100000);
