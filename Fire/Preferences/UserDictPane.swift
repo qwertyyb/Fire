@@ -202,6 +202,27 @@ struct UserDictPane: View {
                         showAlert = true
                     }
                 }
+                VStack(alignment: .leading, spacing: 6) {
+                    HStack(spacing: 6) {
+                        Text("可使用日期和时间占位符作为候选词：")
+                            .font(.caption2)
+                            .foregroundStyle(.tertiary)
+                    }
+                    HStack(spacing: 6) {
+                        Text("示例：")
+                            .font(.caption2)
+                            .foregroundStyle(.tertiary)
+                        Text("{yyyy}-{MM}-{dd} {HH}:{mm}:{ss}")
+                            .font(.caption)
+                            .padding(.horizontal, 5)
+                            .padding(.vertical, 2)
+                            .background(Color(.sRGB, red: 0.5, green: 0.5, blue: 0.5, opacity: 0.2))
+                            .cornerRadius(3)
+                        Text(" →  2026-02-20 23:45:30")
+                            .font(.caption2)
+                            .foregroundStyle(.tertiary)
+                    }
+                }
             } header: {
                 Text("用户词")
             }
