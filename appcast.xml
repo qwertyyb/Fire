@@ -3,21 +3,20 @@
     <channel>
         <title>业火输入法</title>
         <item>
-            <title>v0.27.0</title>
-            <pubDate>Fri, 05 Jun 2026 12:46:24 +0000</pubDate>
+            <title>0.28.0</title>
+            <pubDate>Fri, 24 Jul 2026 06:00:06 +0000</pubDate>
             <sparkle:minimumSystemVersion>11.0</sparkle:minimumSystemVersion>
             <description><![CDATA[
-                <h3 id=features>Features</h3> <ul> <li>增加密码自动切换至英文模式功能 (<a href=https://github.com/qwertyyb/Fire/commit/e8f73558ea612903b3d80ded88820b236e5b6623>e8f7355</a>)</li> <li>支持数字后输入全角冒号时自动转为半角 (<a href=https://github.com/qwertyyb/Fire/commit/7e79416023bc3402ba285538305e922f361a0f40>7e79416</a>)</li> </ul>
                 <h3 id="">💰 打赏支持</h3>
-  <p>如果本项目对你有帮助，欢迎<a href="https://github.com/qwertyyb/Fire#-打赏支持">请作者喝杯咖啡</a>，你的支持是持续更新的动力~</p>
-  <p><img alt="微信赞赏码" src="https://cdn.qwertyyb.cn/static/wx.jpg" width="200"></p>
+<p>如果本项目对你有帮助，欢迎<a href="https://github.com/qwertyyb/Fire#-打赏支持">请作者喝杯咖啡</a>，你的支持是持续更新的动力~</p>
+<p><img alt="微信赞赏码" src="https://cdn.qwertyyb.cn/static/wx.jpg" width="200"></p>
             ]]>
             </description>
             <enclosure url="https://github.com/qwertyyb/Fire/releases/latest/download/FireInstaller.zip"
-              sparkle:version="20260605124434"
-              sparkle:shortVersionString="v0.27.0"
-              length="5821440"
-              sparkle:edSignature="OxohD4XOS0Ag1V0sgHrF/XQS3phchQkwXjAjWnZ5QmTrBb2KalM63ZxWh36SmgEPqhNaDsoHW06DSFleGzrYCQ=="
+              sparkle:version="20260724055725"
+              sparkle:shortVersionString="0.28.0"
+              length="16067349"
+              sparkle:edSignature="UeZ5LFkOttf8uq/32w6152iNp6gsN5XGgnBZ6pdUl9iIRzaDXxFjHHS0zCF36lO458WkTwl1VNjEzdPIDo2zBg=="
               type="application/octet-stream"/>
         </item>
     </channel>
