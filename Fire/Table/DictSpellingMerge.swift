@@ -13,7 +13,6 @@ enum DictSpellingMerge {
         var glyphs: String = ""
         var wbcode: String = ""
         var pinyin: String = ""
-        var isGB2312: Bool = false
     }
 
     private struct MergedRow {
@@ -50,9 +49,6 @@ enum DictSpellingMerge {
         }
         if fields.count >= 3 {
             entry.pinyin = fields[2].replacingOccurrences(of: "※", with: "")
-        }
-        if fields.count >= 4 {
-            entry.isGB2312 = fields[3].contains("GB2312")
         }
         return entry
     }
@@ -101,7 +97,7 @@ enum DictSpellingMerge {
             let wb98 = e98?.wbcode ?? ""
             let wb06 = e06?.wbcode ?? ""
 
-            let gb = (e86?.isGB2312 == true || e98?.isGB2312 == true || e06?.isGB2312 == true) ? 1 : 0
+            let gb = CharsetGB2312.contains(ch) ? 1 : 0
             let wb: String
             let ver: String
             if !wb86.isEmpty {

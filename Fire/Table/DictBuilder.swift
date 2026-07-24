@@ -55,6 +55,12 @@ enum DictBuilder {
             print("[DictBuilder] spelling files missing, skip merge")
         }
 
+        // 用系统编码对所有单字统一标定 is_gb2312（覆盖码表默认值）
+        guard CharsetGB2312.updateDatabaseFlags(db: db) else {
+            print("[DictBuilder] update GB2312 flags failed")
+            return false
+        }
+
         print("[DictBuilder] build complete: \(dbPath)")
         return true
     }
