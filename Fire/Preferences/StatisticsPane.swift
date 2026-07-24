@@ -28,12 +28,12 @@ class DateCountData: ObservableObject {
     private var refreshGeneration = 0
 
     init() {
-        refresh()
         NotificationCenter.default
             .publisher(for: Statistics.updated)
             .receive(on: DispatchQueue.main)
             .sink { [weak self] _ in
-                self?.refresh()
+                // 仅窗口可见时响应后台更新，避免关闭首选项后仍查库
+                self?.refreshIfVisible()
             }
             .store(in: &cancellables)
         // dropFirst：跳过订阅时的立即发射，避免 init 内重复查图
@@ -58,12 +58,21 @@ class DateCountData: ObservableObject {
         cancellables = []
     }
 
-    @objc func refresh() {
-        FireLog.statistics.debug("DateCountData refresh start: \(String(describing: self.startDate), privacy: .public)")
+    /// 面板出现时加载（不依赖 isVisible：窗口创建瞬间可能尚未 orderFront）
+    func refreshOnAppear() {
+        refresh()
+    }
+
+    private func refreshIfVisible() {
         if !FirePreferencesController.shared.isVisible {
             FireLog.statistics.debug("DateCountData refresh cancel: not visible")
             return
         }
+        refresh()
+    }
+
+    private func refresh() {
+        FireLog.statistics.debug("DateCountData refresh start: \(String(describing: self.startDate), privacy: .public)")
         let start = startDate
         let end = endDate
         refreshGeneration += 1
@@ -273,6 +282,9 @@ struct StatisticsPane: View {
             }
         }
         .formStyle(.grouped)
+        .onAppear {
+            dateCountData.refreshOnAppear()
+        }
     }
 }
 

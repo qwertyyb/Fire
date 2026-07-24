@@ -34,10 +34,10 @@ struct NativePreferencesView: View {
         PaneItem(id: "基本", icon: "gearshape", title: "基本", tint: .gray),
         PaneItem(id: "标点符号", icon: "text.quote", title: "标点符号", tint: .teal),
         PaneItem(id: "用户词库", icon: "book", title: "用户词库", tint: .blue),
+        PaneItem(id: "系统词库", icon: "books.vertical", title: "系统词库", tint: .brown),
         PaneItem(id: "应用", icon: "app.badge", title: "应用", tint: .indigo),
         PaneItem(id: "主题", icon: "paintpalette", title: "主题", tint: .purple),
         PaneItem(id: "统计", icon: "chart.bar", title: "统计", tint: .orange),
-        PaneItem(id: "高级", icon: "gearshape.2", title: "高级", tint: .brown),
     ]
 
     var body: some View {
@@ -49,13 +49,13 @@ struct NativePreferencesView: View {
                 Section("符号与词库") {
                     row(for: panes[1])
                     row(for: panes[2])
+                    row(for: panes[3])
                 }
                 Section("应用与外观") {
-                    row(for: panes[3])
                     row(for: panes[4])
+                    row(for: panes[5])
                 }
                 Section("数据与系统") {
-                    row(for: panes[5])
                     row(for: panes[6])
                 }
             }
@@ -118,7 +118,7 @@ struct NativePreferencesView: View {
         case "应用": ApplicationPane()
         case "主题": ThemePane()
         case "统计": StatisticsPane()
-        case "高级": ThesaurusPane()
+        case "系统词库": ThesaurusPane()
         default: GeneralPane()
         }
     }
