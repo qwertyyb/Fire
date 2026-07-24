@@ -41,18 +41,21 @@ extension FireInputController {
         let path = Defaults[.wbTablePath]
         let standardized = URL(fileURLWithPath: path).standardizedFileURL
         let resourceURL = Bundle.main.resourceURL
-        if let p86 = resourceURL?.appendingPathComponent("wb_table.txt").path,
-           URL(fileURLWithPath: p86).standardizedFileURL == standardized {
-            return "86版五笔字型"
-        }
-        if let p98 = resourceURL?.appendingPathComponent("wb_98_table.txt").path,
-           URL(fileURLWithPath: p98).standardizedFileURL == standardized {
-            return "98版五笔字型"
+        let mapping: [(String, String)] = [
+            ("wb_table.txt", "86版五笔字型"),
+            ("wb_98_table.txt", "98版五笔字型"),
+            ("wb_06_table.txt", "06（新世纪）版五笔字型"),
+        ]
+        for (file, title) in mapping {
+            if let p = resourceURL?.appendingPathComponent(file).path,
+               URL(fileURLWithPath: p).standardizedFileURL == standardized {
+                return title
+            }
         }
         return nil
     }
 
-    /// 打开五笔字根表窗口（仅内置 86/98 码表可用）
+    /// 打开五笔字根表窗口（仅内置 86/98/06 码表可用）
     ///
     /// 同一时间只允许打开一个字根表窗口，通过弱引用而非遍历 NSApp.windows 实现：
     ///   - 同版本窗口已存在 → 激活前置
@@ -141,7 +144,7 @@ extension FireInputController {
             NSMenuItem(title: "首选项", action: #selector(showPreferences(_:)), keyEquivalent: ""),
             NSMenuItem(title: "用户词库", action: #selector(showUserDictPrefs(_:)), keyEquivalent: ""),
         ]
-        // 查看五笔字根表：仅内置 86/98 码表提供
+        // 查看五笔字根表：仅内置 86/98/06 码表提供
         if Self.builtInWubiRootTableName() != nil {
             menu.items.append(
                 NSMenuItem(title: "查看五笔字根表", action: #selector(showWubiRootTable(_:)), keyEquivalent: "")

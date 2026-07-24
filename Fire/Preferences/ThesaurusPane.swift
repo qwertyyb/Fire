@@ -14,17 +14,21 @@ import Defaults
 private enum BuiltInWbTable: String, CaseIterable, Identifiable {
     case wubi86
     case wubi98
+    case wubi06
     case custom
 
     var id: String { rawValue }
 
     var label: String {
         switch self {
-        case .wubi86: return "86"
-        case .wubi98: return "98"
+        case .wubi86: return "86版"
+        case .wubi98: return "98版"
+        case .wubi06: return "新世纪版"
         case .custom: return "自定义"
         }
     }
+
+    var isBuiltIn: Bool { self != .custom }
 
     /// Bundle 内置码表路径；custom 无对应路径
     var tableResourcePath: String? {
@@ -32,6 +36,7 @@ private enum BuiltInWbTable: String, CaseIterable, Identifiable {
         switch self {
         case .wubi86: name = "wb_table.txt"
         case .wubi98: name = "wb_98_table.txt"
+        case .wubi06: name = "wb_06_table.txt"
         case .custom: name = nil
         }
         guard let name else { return nil }
@@ -44,6 +49,7 @@ private enum BuiltInWbTable: String, CaseIterable, Identifiable {
         switch self {
         case .wubi86: name = "wubi86_spelling.txt"
         case .wubi98: name = "wubi98_spelling.txt"
+        case .wubi06: name = "wubi06_spelling.txt"
         case .custom: name = nil
         }
         guard let name else { return nil }
@@ -52,7 +58,7 @@ private enum BuiltInWbTable: String, CaseIterable, Identifiable {
 
     static func matching(tablePath: String) -> BuiltInWbTable {
         let standardized = URL(fileURLWithPath: tablePath).standardizedFileURL
-        for preset in [BuiltInWbTable.wubi86, .wubi98] {
+        for preset in BuiltInWbTable.allCases where preset.isBuiltIn {
             if let resourcePath = preset.tableResourcePath,
                URL(fileURLWithPath: resourcePath).standardizedFileURL == standardized {
                 return preset
@@ -82,9 +88,9 @@ struct ThesaurusPane: View {
         wbTablePath != builtWbPath || pyTablePath != builtPyPath || wbSpellPath != builtSpellPath
     }
 
-    /// 使用内置 86/98 时路径固定，禁止手选词库与手动重建（切换时已确认重建）
+    /// 使用内置码表时路径固定，禁止手选词库（仍可手动重建索引）
     private var isBuiltInWbPreset: Bool {
-        selectedWbPreset == .wubi86 || selectedWbPreset == .wubi98
+        selectedWbPreset.isBuiltIn
     }
 
     private var wbTablePresetBinding: Binding<BuiltInWbTable> {
@@ -116,12 +122,11 @@ struct ThesaurusPane: View {
 
     private func applyWbTablePreset(_ preset: BuiltInWbTable) {
         guard preset != selectedWbPreset else { return }
-        switch preset {
-        case .wubi86, .wubi98:
+        if preset.isBuiltIn {
             // 先不改路径；确认重建后再应用，取消则分段控件保持原选中
             pendingWbPreset = preset
             showRebuildConfirm = true
-        case .custom:
+        } else {
             // 仅切换到自定义模式，由下方词库选择与重建按钮操作
             selectedWbPreset = .custom
         }
@@ -179,15 +184,11 @@ struct ThesaurusPane: View {
                     }
                     .labelsHidden()
                     .pickerStyle(.segmented)
-                    .frame(maxWidth: 220)
+                    .frame(maxWidth: 280)
                     .disabled(building)
                 }
             } header: {
                 Text("码表版本")
-            } footer: {
-                Text("切换 86/98 将同步对应拆字表并重建索引。")
-                    .font(.caption)
-                    .foregroundStyle(.secondary)
             }
 
             Section {
@@ -260,15 +261,15 @@ struct ThesaurusPane: View {
                             Text(building ? "正在建立索引…" : "建立索引")
                         }
                     }
-                    .disabled(building || isBuiltInWbPreset)
+                    .disabled(building)
                     .tint(isPathModified && !isBuiltInWbPreset ? .red : nil)
                     Spacer()
                 }
             } header: {
-                Text("自定义词库")
+                Text(isBuiltInWbPreset ? "词库索引" : "自定义词库")
             } footer: {
                 Text(isBuiltInWbPreset
-                     ? "当前使用内置码表，自定义词库与手动重建不可用。"
+                     ? "当前使用内置码表，词库路径不可更改；若索引异常可手动重建。"
                      : "自定义模式下可选择五笔词库、拼音词库与五笔拆字文件；拼音反查固定使用内置拼音表。选择后需重建索引才能生效。")
                     .font(.caption)
                     .foregroundStyle(.secondary)

@@ -36,6 +36,7 @@
 		67C9A0372AB53ED3000B5281 /* wb_table.txt in Resources */ = {isa = PBXBuildFile; fileRef = 67C9A01F2AB53ED3000B5281 /* wb_table.txt */; };
 		67C9A0382AB53ED3000B5281 /* py_table.txt in Resources */ = {isa = PBXBuildFile; fileRef = 67C9A0202AB53ED3000B5281 /* py_table.txt */; };
 		67C9A0392AB53ED3000B5281 /* wb_98_table.txt in Resources */ = {isa = PBXBuildFile; fileRef = 67C9A0212AB53ED3000B5281 /* wb_98_table.txt */; };
+		67C9A03B2FF9000600A595A7 /* wb_06_table.txt in Resources */ = {isa = PBXBuildFile; fileRef = 67C9A03A2FF9000600A595A7 /* wb_06_table.txt */; };
 		67C9A03A2AB53ED3000B5281 /* FireInputServer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 67C9A0222AB53ED3000B5281 /* FireInputServer.swift */; };
 		67C9A03C2AB53ED3000B5281 /* StatisticsPane.swift in Sources */ = {isa = PBXBuildFile; fileRef = 67C9A0252AB53ED3000B5281 /* StatisticsPane.swift */; };
 		67C9A03D2AB53ED3000B5281 /* FirePreferencesController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 67C9A0262AB53ED3000B5281 /* FirePreferencesController.swift */; };
@@ -107,6 +108,7 @@
 		67C9A01F2AB53ED3000B5281 /* wb_table.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = wb_table.txt; sourceTree = "<group>"; };
 		67C9A0202AB53ED3000B5281 /* py_table.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = py_table.txt; sourceTree = "<group>"; };
 		67C9A0212AB53ED3000B5281 /* wb_98_table.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = wb_98_table.txt; sourceTree = "<group>"; };
+		67C9A03A2FF9000600A595A7 /* wb_06_table.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = wb_06_table.txt; sourceTree = "<group>"; };
 		67C9A0222AB53ED3000B5281 /* FireInputServer.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FireInputServer.swift; sourceTree = "<group>"; };
 		67C9A0232AB53ED3000B5281 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		67C9A0252AB53ED3000B5281 /* StatisticsPane.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = StatisticsPane.swift; sourceTree = "<group>"; };
@@ -289,6 +291,7 @@
 				67C9A01F2AB53ED3000B5281 /* wb_table.txt */,
 				67C9A0202AB53ED3000B5281 /* py_table.txt */,
 				67C9A0212AB53ED3000B5281 /* wb_98_table.txt */,
+				67C9A03A2FF9000600A595A7 /* wb_06_table.txt */,
 			);
 			path = Resources;
 			sourceTree = "<group>";
@@ -438,6 +441,7 @@
 				4572854E2BD0EAF90048D67E /* Credits.html in Resources */,
 				67C9A00D2AB53E83000B5281 /* fire.pdf in Resources */,
 				67C9A0392AB53ED3000B5281 /* wb_98_table.txt in Resources */,
+				67C9A03B2FF9000600A595A7 /* wb_06_table.txt in Resources */,
 				67C9A0092AB53E83000B5281 /* MainMenu.xib in Resources */,
 				B603472A2FF5751B005E7F9B /* wubi86_spelling.txt in Resources */,
 				B60347322FF9000500A595A7 /* pinyin_spell.txt in Resources */,
