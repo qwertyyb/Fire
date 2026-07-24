@@ -14,10 +14,7 @@
 		45B76CA92AEA6042009AFABD /* PunctuationConversion.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45B76CA82AEA6042009AFABD /* PunctuationConversion.swift */; };
 		5DBA9BFFAF8D649A1C60D5FD /* RadicalFontManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = FCD8E654442EC085F2FF81D5 /* RadicalFontManager.swift */; };
 		A1B2C3D42FF9000200A595B1 /* FireLog.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1B2C3D42FF9000200A595B2 /* FireLog.swift */; };
-		6753419E2AB54A3A00757F76 /* main.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 6753419D2AB54A3A00757F76 /* main.cpp */; };
-		675341A72AB54AEA00757F76 /* sqlite3.c in Sources */ = {isa = PBXBuildFile; fileRef = 675341A52AB54AEA00757F76 /* sqlite3.c */; settings = {COMPILER_FLAGS = "-w"; }; };
 		67AA47FF2AB733860073AC86 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 67C9A0232AB53ED3000B5281 /* Assets.xcassets */; };
-		67B514142AB590710084C42B /* TableBuilder in CopyFiles */ = {isa = PBXBuildFile; fileRef = 6753419B2AB54A3A00757F76 /* TableBuilder */; settings = {ATTRIBUTES = (CodeSignOnCopy, ); }; };
 		67C99FEC2AB53DB2000B5281 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 67C99FEB2AB53DB2000B5281 /* AppDelegate.swift */; };
 		67C99FFD2AB53E62000B5281 /* ToastWindow.swift in Sources */ = {isa = PBXBuildFile; fileRef = 67C99FF92AB53E62000B5281 /* ToastWindow.swift */; };
 		67C99FFE2AB53E62000B5281 /* Statistics.swift in Sources */ = {isa = PBXBuildFile; fileRef = 67C99FFA2AB53E62000B5281 /* Statistics.swift */; };
@@ -60,6 +57,9 @@
 		67C9A05D2AB53ED3000B5281 /* NativePreferencesView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 67C9A05C2AB53ED3000B5281 /* NativePreferencesView.swift */; };
 		67F0B0D32AFFC282006F835D /* StatusBarController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 67F0B0D22AFFC282006F835D /* StatusBarController.swift */; };
 		8917BF0031A6446A8B2BAA8A /* DefaultsKeys.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9D66CC3B495E421AA61AC9C7 /* DefaultsKeys.swift */; };
+		A1B2C3DB2FF9000300A595A7 /* DictBuilder.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1B2C3DA2FF9000300A595A7 /* DictBuilder.swift */; };
+		A1B2C3D72FF9000300A595A7 /* DictTableImporter.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1B2C3D62FF9000300A595A7 /* DictTableImporter.swift */; };
+		A1B2C3D92FF9000300A595A7 /* DictSpellingMerge.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1B2C3D82FF9000300A595A7 /* DictSpellingMerge.swift */; };
 		A1B2C3D52FF9000100A595A7 /* DictGlyphFill.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1B2C3D42FF9000100A595A7 /* DictGlyphFill.swift */; };
 		B603472A2FF5751B005E7F9B /* wubi86_spelling.txt in Resources */ = {isa = PBXBuildFile; fileRef = B60347292FF5751B005E7F9B /* wubi86_spelling.txt */; };
 		B603472C2FF5781B005E7F9B /* wubi98_spelling.txt in Resources */ = {isa = PBXBuildFile; fileRef = B603472B2FF5781B005E7F9B /* wubi98_spelling.txt */; };
@@ -73,18 +73,6 @@
 		F1A2B3C52FF9000200A595A7 /* PreferencePickerRow.swift in Sources */ = {isa = PBXBuildFile; fileRef = F1A2B3C42FF9000200A595A7 /* PreferencePickerRow.swift */; };
 /* End PBXBuildFile section */
 
-/* Begin PBXCopyFilesBuildPhase section */
-		67B514132AB5866E0084C42B /* CopyFiles */ = {
-			isa = PBXCopyFilesBuildPhase;
-			buildActionMask = 2147483647;
-			dstPath = "";
-			dstSubfolderSpec = 6;
-			files = (
-				67B514142AB590710084C42B /* TableBuilder in CopyFiles */,
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-/* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
 		451A55692AF9F92D00AF57C1 /* InputModeCache.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InputModeCache.swift; sourceTree = "<group>"; };
@@ -92,10 +80,6 @@
 		4569ED0C2C92CE090075CF8F /* CLIServer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CLIServer.swift; sourceTree = "<group>"; };
 		4572854D2BD0EAF90048D67E /* Credits.html */ = {isa = PBXFileReference; lastKnownFileType = text.html; path = Credits.html; sourceTree = "<group>"; };
 		45B76CA82AEA6042009AFABD /* PunctuationConversion.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PunctuationConversion.swift; sourceTree = "<group>"; };
-		6753419B2AB54A3A00757F76 /* TableBuilder */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = TableBuilder; sourceTree = BUILT_PRODUCTS_DIR; };
-		6753419D2AB54A3A00757F76 /* main.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = main.cpp; sourceTree = "<group>"; };
-		675341A52AB54AEA00757F76 /* sqlite3.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = sqlite3.c; sourceTree = "<group>"; };
-		675341A62AB54AEA00757F76 /* sqlite3.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = sqlite3.h; sourceTree = "<group>"; };
 		67C99FE82AB53DB2000B5281 /* Fire.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Fire.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		67C99FEB2AB53DB2000B5281 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		67C99FF22AB53DB4000B5281 /* Fire.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = Fire.entitlements; sourceTree = "<group>"; };
@@ -141,6 +125,9 @@
 		67C9A05C2AB53ED3000B5281 /* NativePreferencesView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NativePreferencesView.swift; sourceTree = "<group>"; };
 		67F0B0D22AFFC282006F835D /* StatusBarController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StatusBarController.swift; sourceTree = "<group>"; };
 		9D66CC3B495E421AA61AC9C7 /* DefaultsKeys.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DefaultsKeys.swift; sourceTree = "<group>"; };
+		A1B2C3DA2FF9000300A595A7 /* DictBuilder.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DictBuilder.swift; sourceTree = "<group>"; };
+		A1B2C3D62FF9000300A595A7 /* DictTableImporter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DictTableImporter.swift; sourceTree = "<group>"; };
+		A1B2C3D82FF9000300A595A7 /* DictSpellingMerge.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DictSpellingMerge.swift; sourceTree = "<group>"; };
 		A1B2C3D42FF9000100A595A7 /* DictGlyphFill.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DictGlyphFill.swift; sourceTree = "<group>"; };
 		B60347292FF5751B005E7F9B /* wubi86_spelling.txt */ = {isa = PBXFileReference; lastKnownFileType = text; path = wubi86_spelling.txt; sourceTree = "<group>"; };
 		B603472B2FF5781B005E7F9B /* wubi98_spelling.txt */ = {isa = PBXFileReference; lastKnownFileType = text; path = wubi98_spelling.txt; sourceTree = "<group>"; };
@@ -156,13 +143,6 @@
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
-		675341982AB54A3A00757F76 /* Frameworks */ = {
-			isa = PBXFrameworksBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
 		67C99FE52AB53DB2000B5281 /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
@@ -195,29 +175,10 @@
 			path = cli;
 			sourceTree = "<group>";
 		};
-		6753419C2AB54A3A00757F76 /* TableBuilder */ = {
-			isa = PBXGroup;
-			children = (
-				675341A42AB54AEA00757F76 /* SQLCipher */,
-				6753419D2AB54A3A00757F76 /* main.cpp */,
-			);
-			path = TableBuilder;
-			sourceTree = "<group>";
-		};
-		675341A42AB54AEA00757F76 /* SQLCipher */ = {
-			isa = PBXGroup;
-			children = (
-				675341A52AB54AEA00757F76 /* sqlite3.c */,
-				675341A62AB54AEA00757F76 /* sqlite3.h */,
-			);
-			path = SQLCipher;
-			sourceTree = "<group>";
-		};
 		67C99FDF2AB53DB2000B5281 = {
 			isa = PBXGroup;
 			children = (
 				67C99FEA2AB53DB2000B5281 /* Fire */,
-				6753419C2AB54A3A00757F76 /* TableBuilder */,
 				67C99FE92AB53DB2000B5281 /* Products */,
 				67C9A0592AB5445E000B5281 /* Frameworks */,
 			);
@@ -227,7 +188,6 @@
 			isa = PBXGroup;
 			children = (
 				67C99FE82AB53DB2000B5281 /* Fire.app */,
-				6753419B2AB54A3A00757F76 /* TableBuilder */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -289,6 +249,9 @@
 			isa = PBXGroup;
 			children = (
 				67C9A0122AB53EB0000B5281 /* build.swift */,
+				A1B2C3DA2FF9000300A595A7 /* DictBuilder.swift */,
+				A1B2C3D62FF9000300A595A7 /* DictTableImporter.swift */,
+				A1B2C3D82FF9000300A595A7 /* DictSpellingMerge.swift */,
 				A1B2C3D42FF9000100A595A7 /* DictGlyphFill.swift */,
 			);
 			path = Table;
@@ -389,22 +352,6 @@
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
-		6753419A2AB54A3A00757F76 /* TableBuilder */ = {
-			isa = PBXNativeTarget;
-			buildConfigurationList = 6753419F2AB54A3A00757F76 /* Build configuration list for PBXNativeTarget "TableBuilder" */;
-			buildPhases = (
-				675341972AB54A3A00757F76 /* Sources */,
-				675341982AB54A3A00757F76 /* Frameworks */,
-			);
-			buildRules = (
-			);
-			dependencies = (
-			);
-			name = TableBuilder;
-			productName = TableBuilder;
-			productReference = 6753419B2AB54A3A00757F76 /* TableBuilder */;
-			productType = "com.apple.product-type.tool";
-		};
 		67C99FE72AB53DB2000B5281 /* Fire */ = {
 			isa = PBXNativeTarget;
 			buildConfigurationList = 67C99FF52AB53DB4000B5281 /* Build configuration list for PBXNativeTarget "Fire" */;
@@ -412,7 +359,6 @@
 				67C99FE42AB53DB2000B5281 /* Sources */,
 				67C99FE52AB53DB2000B5281 /* Frameworks */,
 				67C99FE62AB53DB2000B5281 /* Resources */,
-				67B514132AB5866E0084C42B /* CopyFiles */,
 			);
 			buildRules = (
 			);
@@ -439,9 +385,6 @@
 				LastSwiftUpdateCheck = 1430;
 				LastUpgradeCheck = 2660;
 				TargetAttributes = {
-					6753419A2AB54A3A00757F76 = {
-						CreatedOnToolsVersion = 14.3.1;
-					};
 					67C99FE72AB53DB2000B5281 = {
 						CreatedOnToolsVersion = 14.3.1;
 					};
@@ -468,7 +411,6 @@
 			projectRoot = "";
 			targets = (
 				67C99FE72AB53DB2000B5281 /* Fire */,
-				6753419A2AB54A3A00757F76 /* TableBuilder */,
 			);
 		};
 /* End PBXProject section */
@@ -500,15 +442,6 @@
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
-		675341972AB54A3A00757F76 /* Sources */ = {
-			isa = PBXSourcesBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-				6753419E2AB54A3A00757F76 /* main.cpp in Sources */,
-				675341A72AB54AEA00757F76 /* sqlite3.c in Sources */,
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
 		67C99FE42AB53DB2000B5281 /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -533,6 +466,9 @@
 				67C9A0402AB53ED3000B5281 /* ApplicationPane.swift in Sources */,
 				67C9A0132AB53EB0000B5281 /* build.swift in Sources */,
 				A1B2C3D52FF9000100A595A7 /* DictGlyphFill.swift in Sources */,
+				A1B2C3DB2FF9000300A595A7 /* DictBuilder.swift in Sources */,
+				A1B2C3D72FF9000300A595A7 /* DictTableImporter.swift in Sources */,
+				A1B2C3D92FF9000300A595A7 /* DictSpellingMerge.swift in Sources */,
 				67C9A0422AB53ED3000B5281 /* ThesaurusPane.swift in Sources */,
 				67C9A0002AB53E62000B5281 /* ModifierKeyUpChecker.swift in Sources */,
 				67C9A0442AB53ED3000B5281 /* CandidatesWindow.swift in Sources */,
@@ -578,33 +514,6 @@
 /* End PBXVariantGroup section */
 
 /* Begin XCBuildConfiguration section */
-		675341A02AB54A3A00757F76 /* Debug */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				CODE_SIGN_IDENTITY = "Apple Development";
-				CODE_SIGN_STYLE = Automatic;
-				DEVELOPMENT_TEAM = T68XK6867P;
-				ENABLE_HARDENED_RUNTIME = YES;
-				PRODUCT_NAME = "$(TARGET_NAME)";
-				PROVISIONING_PROFILE_SPECIFIER = "";
-				SKIP_INSTALL = YES;
-			};
-			name = Debug;
-		};
-		675341A12AB54A3A00757F76 /* Release */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				CODE_SIGN_IDENTITY = "Apple Development";
-				CODE_SIGN_STYLE = Automatic;
-				DEAD_CODE_STRIPPING = YES;
-				DEVELOPMENT_TEAM = T68XK6867P;
-				ENABLE_HARDENED_RUNTIME = YES;
-				PRODUCT_NAME = "$(TARGET_NAME)";
-				PROVISIONING_PROFILE_SPECIFIER = "";
-				SKIP_INSTALL = YES;
-			};
-			name = Release;
-		};
 		67C99FF32AB53DB4000B5281 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
@@ -823,15 +732,6 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
-		6753419F2AB54A3A00757F76 /* Build configuration list for PBXNativeTarget "TableBuilder" */ = {
-			isa = XCConfigurationList;
-			buildConfigurations = (
-				675341A02AB54A3A00757F76 /* Debug */,
-				675341A12AB54A3A00757F76 /* Release */,
-			);
-			defaultConfigurationIsVisible = 0;
-			defaultConfigurationName = Release;
-		};
 		67C99FE32AB53DB2000B5281 /* Build configuration list for PBXProject "Fire" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (

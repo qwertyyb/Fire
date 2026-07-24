@@ -35,84 +35,6 @@ func getDatabaseURL () -> URL {
     return dbURL
 }
 
-func execTableBuilder(arguments: [String]) -> Bool {
-    guard var url = Bundle.main.executableURL else {
-        return false
-    }
-    url.deleteLastPathComponent()
-    url = url.appendingPathComponent("TableBuilder")
-    let task = Process()
-    task.launchPath = url.path
-    task.arguments = arguments
-    print("execTableBuilder: \(arguments.joined(separator: " "))")
-
-    let pipe = Pipe()
-    task.standardError = pipe
-
-    task.launch()
-
-    let timeout = DispatchTime.now() + .seconds(60)
-    DispatchQueue.global().asyncAfter(deadline: timeout) {
-        if task.isRunning {
-            print("execTableBuilder timeout, terminating")
-            task.terminate()
-        }
-    }
-
-    task.waitUntilExit()
-
-    let errData = pipe.fileHandleForReading.readDataToEndOfFile()
-    if let errStr = String(data: errData, encoding: .utf8), !errStr.isEmpty {
-        print("TableBuilder stderr: \(errStr)")
-    }
-
-    if task.terminationStatus == .zero {
-        print("exec successfully")
-        return true
-    } else {
-        print("exec fail, status: \(task.terminationStatus)")
-        return false
-    }
-}
-
-func buildTable(txtPath: String, tableName: String = "wb_dict") -> Bool {
-    guard FileManager.default.fileExists(atPath: txtPath) else {
-        print("buildTable: file not found: \(txtPath)")
-        return false
-    }
-    var dbTempURL = getDatabaseURL()
-    dbTempURL.appendPathExtension("ing")
-    return execTableBuilder(arguments: [
-        "--create-dict",
-        txtPath,
-        tableName,
-        dbTempURL.path
-    ])
-}
-
-func buildCombined(wbTable: String = "wb_dict", pyTable: String = "py_dict") -> Bool {
-    var dbTempURL = getDatabaseURL()
-    dbTempURL.appendPathExtension("ing")
-
-    guard let resourceURL = Bundle.main.resourceURL else { return false }
-    let s86 = resourceURL.appendingPathComponent("wubi86_spelling.txt").path
-    let s98 = resourceURL.appendingPathComponent("wubi98_spelling.txt").path
-    let s06 = resourceURL.appendingPathComponent("wubi06_spelling.txt").path
-
-    guard FileManager.default.fileExists(atPath: s86),
-          FileManager.default.fileExists(atPath: s98),
-          FileManager.default.fileExists(atPath: s06) else {
-        print("spelling files not found, use separate combine")
-        return execTableBuilder(arguments: [
-            "--combine-dict", dbTempURL.path, wbTable, pyTable
-        ])
-    }
-
-    return execTableBuilder(arguments: [
-        "--build-all", dbTempURL.path, wbTable, pyTable, s86, s98, s06
-    ])
-}
-
 func beforeBuildDict() {
     var dbTempURL = getDatabaseURL()
     dbTempURL.appendPathExtension("ing")
@@ -372,21 +294,30 @@ func buildDict() -> Bool {
 
     let wbPath = Defaults[.wbTablePath]
     let pyPath = Defaults[.pyTablePath]
-
-    let wb = buildTable(txtPath: wbPath, tableName: "wb_dict")
-    let py = buildTable(txtPath: pyPath, tableName: "py_dict")
-    let cb = buildCombined(wbTable: "wb_dict", pyTable: "py_dict")
-
-    print(wb, py, cb)
-    guard wb && py && cb else {
-        print("build failed")
-        print("[buildDict] wb=\(wb) py=\(py) cb=\(cb)")
-        if !py { print("[buildDict] 拼音词库文件不存在或路径错误: \(Defaults[.pyTablePath])") }
-        return false
-    }
-
     let newPath = getDatabaseURL().appendingPathExtension("ing").path
     let oldPath = getDatabaseURL().path
+
+    let resourceURL = Bundle.main.resourceURL
+    let s86 = resourceURL?.appendingPathComponent("wubi86_spelling.txt").path
+    let s98 = resourceURL?.appendingPathComponent("wubi98_spelling.txt").path
+    let s06 = resourceURL?.appendingPathComponent("wubi06_spelling.txt").path
+
+    let built = DictBuilder.build(
+        wbPath: wbPath,
+        pyPath: pyPath,
+        dbPath: newPath,
+        s86Path: s86,
+        s98Path: s98,
+        s06Path: s06
+    )
+    guard built else {
+        print("build failed")
+        print("[buildDict] wbPath=\(wbPath) pyPath=\(pyPath)")
+        if !FileManager.default.fileExists(atPath: pyPath) {
+            print("[buildDict] 拼音词库文件不存在或路径错误: \(pyPath)")
+        }
+        return false
+    }
 
     guard ensureBlockedWordsTable(at: newPath) else {
         print("[buildDict] ensureBlockedWordsTable failed")

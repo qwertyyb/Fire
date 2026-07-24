@@ -50,7 +50,8 @@ enum DictGlyphFill {
         return val.isEmpty ? nil : val
     }
 
-    private static func combineCompoundGlyph(_ glyphs: [String]) -> String {
+    /// 多字词拆字组合：2字各取前2码点、3字前二字首码点+末字前2码点、≥4字前三字首码点+末字首码点
+    static func combineCompoundGlyph(_ glyphs: [String]) -> String {
         switch glyphs.count {
         case 2:
             return prefixCodePoints(glyphs[0], 2) + prefixCodePoints(glyphs[1], 2)
