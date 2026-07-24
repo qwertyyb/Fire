@@ -81,7 +81,7 @@ jobs:
     needs: changelog
 
     env:
-      USE_CODE_SIGN: ${{ inputs.code_sign == 'enable' && github.actor_id == github.repository_owner_id && 'enable' || 'disable' }}
+      USE_CODE_SIGN: ${{ (github.event_name == 'workflow_dispatch' && inputs.code_sign == 'enable' || github.event_name == 'pull_request' && github.event.pull_request.merged) && github.actor_id == github.repository_owner_id && 'enable' || 'disable' }}
       NEXT_VERSION: ${{ needs.changelog.outputs.next_version }}
 
     if: needs.changelog.outputs.skipped == 'false'
