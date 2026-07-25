@@ -22,6 +22,7 @@ struct GeneralPane: View {
     @Default(.wubiFifthCommit) private var wubiFifthCommit
     @Default(.candidateHintMode) private var candidateHintMode
     @Default(.enableGBK) private var enableGBK
+    @Default(.enableEmoji) private var enableEmoji
     @Default(.showCodeInWindow) private var showCodeInWindow
     @Default(.candidatesDirection) private var candidatesDirection
     @Default(.extraCandidateSelectKeys) private var extraCandidateSelectKeys
@@ -61,6 +62,7 @@ struct GeneralPane: View {
                 PreferenceToggleRow(title: "精确匹配候选词", caption: "禁用逐码匹配", isOn: $enableExactMatch)
                 PreferenceToggleRow(title: "Z键匹配查询", caption: "万能键", isOn: $zKeyQuery)
                 PreferenceToggleRow(title: "显示生僻字", isOn: $enableGBK)
+                PreferenceToggleRow(title: "显示 Emoji", isOn: $enableEmoji)
             } header: {
                 Text("编码")
             }

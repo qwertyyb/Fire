@@ -29,7 +29,7 @@ enum CharsetGB2312 {
         var selectStmt: OpaquePointer?
         guard sqlite3_prepare_v2(
             db,
-            "select distinct text from wb_py_dict where length(text) = 1",
+            "select distinct text from wb_py_dict where length(text) = 1 and type != 'emoji'",
             -1,
             &selectStmt,
             nil

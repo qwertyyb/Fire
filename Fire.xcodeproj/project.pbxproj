@@ -34,6 +34,7 @@
 		67C9A0352AB53ED3000B5281 /* ThemeConfig.swift in Sources */ = {isa = PBXBuildFile; fileRef = 67C9A01C2AB53ED2000B5281 /* ThemeConfig.swift */; };
 		67C9A0362AB53ED3000B5281 /* DictManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 67C9A01D2AB53ED2000B5281 /* DictManager.swift */; };
 		67C9A0372AB53ED3000B5281 /* wb_table.txt in Resources */ = {isa = PBXBuildFile; fileRef = 67C9A01F2AB53ED3000B5281 /* wb_table.txt */; };
+		A1B2C3E12FF9000700A595A7 /* emoji_table.txt in Resources */ = {isa = PBXBuildFile; fileRef = A1B2C3E02FF9000700A595A7 /* emoji_table.txt */; };
 		67C9A0382AB53ED3000B5281 /* py_table.txt in Resources */ = {isa = PBXBuildFile; fileRef = 67C9A0202AB53ED3000B5281 /* py_table.txt */; };
 		67C9A0392AB53ED3000B5281 /* wb_98_table.txt in Resources */ = {isa = PBXBuildFile; fileRef = 67C9A0212AB53ED3000B5281 /* wb_98_table.txt */; };
 		67C9A03B2FF9000600A595A7 /* wb_06_table.txt in Resources */ = {isa = PBXBuildFile; fileRef = 67C9A03A2FF9000600A595A7 /* wb_06_table.txt */; };
@@ -106,6 +107,7 @@
 		67C9A01C2AB53ED2000B5281 /* ThemeConfig.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ThemeConfig.swift; sourceTree = "<group>"; };
 		67C9A01D2AB53ED2000B5281 /* DictManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DictManager.swift; sourceTree = "<group>"; };
 		67C9A01F2AB53ED3000B5281 /* wb_table.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = wb_table.txt; sourceTree = "<group>"; };
+		A1B2C3E02FF9000700A595A7 /* emoji_table.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = emoji_table.txt; sourceTree = "<group>"; };
 		67C9A0202AB53ED3000B5281 /* py_table.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = py_table.txt; sourceTree = "<group>"; };
 		67C9A0212AB53ED3000B5281 /* wb_98_table.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = wb_98_table.txt; sourceTree = "<group>"; };
 		67C9A03A2FF9000600A595A7 /* wb_06_table.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = wb_06_table.txt; sourceTree = "<group>"; };
@@ -289,6 +291,7 @@
 				B60347312FF9000500A595A7 /* pinyin_spell.txt */,
 				B676B05D2FF56FA800A595A7 /* font */,
 				67C9A01F2AB53ED3000B5281 /* wb_table.txt */,
+				A1B2C3E02FF9000700A595A7 /* emoji_table.txt */,
 				67C9A0202AB53ED3000B5281 /* py_table.txt */,
 				67C9A0212AB53ED3000B5281 /* wb_98_table.txt */,
 				67C9A03A2FF9000600A595A7 /* wb_06_table.txt */,
@@ -434,6 +437,7 @@
 				B676B05E2FF56FA800A595A7 /* 黑体字根.ttf in Resources */,
 				67C9A0382AB53ED3000B5281 /* py_table.txt in Resources */,
 				67C9A0372AB53ED3000B5281 /* wb_table.txt in Resources */,
+				A1B2C3E12FF9000700A595A7 /* emoji_table.txt in Resources */,
 				B603472C2FF5781B005E7F9B /* wubi98_spelling.txt in Resources */,
 				B6B720422FF74FD100A3066B /* 06（新世纪）版五笔字型.png in Resources */,
 				B6B720432FF74FD100A3066B /* 98版五笔字型.png in Resources */,

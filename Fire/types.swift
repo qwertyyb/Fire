@@ -113,6 +113,7 @@ enum CandidateType: String, CaseIterable {
     case wb // 五笔
     case py // 拼音
     case user // 用户词库
+    case emoji // 内置 emoji（关键词联想）
     case placeholder // 运行时类型，无匹配时表示占位
     case unknown // 未知类型，用于安全解析数据库记录
 }

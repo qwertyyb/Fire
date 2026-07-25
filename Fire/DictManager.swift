@@ -52,7 +52,7 @@ class DictManager {
 
     private init() {
         // 监听编码模式、候选词数、生僻字开关等偏好变更，自动更新 SQL 查询语句
-        Defaults.observe(keys: .codeMode, .candidateCount, .enableGBK) { () in
+        Defaults.observe(keys: .codeMode, .candidateCount, .enableGBK, .enableEmoji) { () in
             self.prepareStatement()
         }
         .tieToLifetime(of: self)
@@ -77,6 +77,22 @@ class DictManager {
         // 比显示的候选词数量多查一个，以此判断有没有下一页
         // GBK 过滤：关闭生僻字时只查 is_gb2312=1 的常用字
         let gbkFilter = !Defaults[.enableGBK] ? "and is_gb2312 = 1" : ""
+        let typeFilter: String = {
+            var types: [String]
+            switch codeMode {
+            case .wubi:
+                types = ["wb", "user"]
+            case .pinyin:
+                types = ["py", "user"]
+            case .wubiPinyin:
+                types = ["wb", "py", "user"]
+            }
+            if Defaults[.enableEmoji] {
+                types.append("emoji")
+            }
+            let quoted = types.map { "'\($0)'" }.joined(separator: ", ")
+            return "and type in (\(quoted))"
+        }()
         let sql = """
             select
                 \(codeMode == .wubiPinyin ? "max(wbcode)" : "min(wbcode)"),
@@ -86,14 +102,12 @@ class DictManager {
                 max(pinyin) as pinyin,
                 max(is_gb2312) as is_gb2312
             from wb_py_dict
-            where query glob :queryLike \(
-                codeMode == .wubi ? "and type in ('wb', 'user')"
-                                : codeMode == .pinyin ? "and type in ('py', 'user')" : "")
+            where query glob :queryLike \(typeFilter)
                 \(gbkFilter)
                 -- 排除用户屏蔽的词
                 and not exists (select 1 from blocked_words b where b.text = wb_py_dict.text)
             group by text
-            order by query, id
+            order by query, min(id)
             limit :offset, \(candidateCount + 1)
         """
         return sql

@@ -9,7 +9,7 @@
 import AppKit
 import Defaults
 
-private let dictSchemaVersion: Int32 = 2
+private let dictSchemaVersion: Int32 = 3
 
 /// 安全读取可为 NULL 的 SQLite 文本列
 private func columnText(_ stmt: OpaquePointer?, _ index: Int32) -> String? {
@@ -299,13 +299,15 @@ func buildDict() -> Bool {
     let resourceURL = Bundle.main.resourceURL
     let wbSpellPath = Defaults[.wbSpellPath]
     let pinyinSpellPath = resourceURL?.appendingPathComponent("pinyin_spell.txt").path
+    let emojiPath = resourceURL?.appendingPathComponent("emoji_table.txt").path
 
     let built = DictBuilder.build(
         wbPath: wbPath,
         pyPath: pyPath,
         dbPath: newPath,
         wbSpellPath: wbSpellPath,
-        pinyinSpellPath: pinyinSpellPath
+        pinyinSpellPath: pinyinSpellPath,
+        emojiPath: emojiPath
     )
     guard built else {
         print("build failed")
