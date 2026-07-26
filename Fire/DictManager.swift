@@ -94,21 +94,31 @@ class DictManager {
             return "and type in (\(quoted))"
         }()
         let sql = """
-            select
-                \(codeMode == .wubiPinyin ? "max(wbcode)" : "min(wbcode)"),
-                text,
-                type, min(query) as query,
-                max(spell) as spell,
-                max(pinyin) as pinyin,
-                max(is_gb2312) as is_gb2312
-            from wb_py_dict
-            where query glob :queryLike \(typeFilter)
-                \(gbkFilter)
-                -- 排除用户屏蔽的词
-                and not exists (select 1 from blocked_words b where b.text = wb_py_dict.text)
-            group by text
-            order by query, min(id)
-            limit :offset, \(candidateCount + 1)
+            WITH top_texts AS (
+                SELECT 
+                    text,
+                    MIN(query) AS query,
+                    MIN(id) AS min_id,
+                    MAX(wbcode) as wbcode
+                FROM wb_py_dict
+                WHERE query glob :queryLike \(typeFilter) \(gbkFilter)
+                  AND text NOT IN (SELECT text FROM blocked_words)  -- 排除屏蔽词
+                GROUP BY text
+                ORDER BY query, min_id                    -- 与原始排序一致
+                LIMIT :offset, \(candidateCount + 1)                                   -- 提前截断，只取前5个 text
+            )
+            SELECT 
+                MAX(t.wbcode) AS wbcode,
+                d.text,
+                MAX(d.type)     AS type,                  -- 假设 type 在组内相同，否则需明确逻辑
+                t.query,
+                MAX(d.spell)    AS spell,
+                MAX(d.pinyin)   AS pinyin,
+                MAX(d.is_gb2312)AS is_gb2312
+            FROM wb_py_dict d
+            JOIN top_texts t ON d.id = t.min_id
+            GROUP BY d.text
+            ORDER BY t.query, t.min_id;                   -- 保持原始排序
         """
         return sql
     }
