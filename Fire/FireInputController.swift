@@ -40,27 +40,34 @@ class FireInputController: IMKInputController {
     private var _originalString = "" {
         didSet {
             selectedIndex = 0
-            if self.curPage != 1 {
-                // code被重新设置时，还原页码为1
-                self.curPage = 1
-                self.markText()
-                return
-            }
-            FireLog.input.debug("original changed: \(self._originalString), refresh window")
-
             // 建议mark originalString, 否则在某些APP中会有问题
             self.markText()
 
-            if self._originalString.count > 0 {
-                self.refreshCandidatesWindow()
-            } else {
+            // 输入码已清空：先复位页码再关窗。
+            // 必须先处理空串，否则翻页后删除末字符时会走 curPage.didSet 刷新出空候选窗，
+            // 且旧逻辑在 curPage != 1 时 early return，跳过了 close()。
+            if self._originalString.isEmpty {
+                if self.curPage != 1 {
+                    self.curPage = 1
+                }
                 CandidatesWindow.shared.close()
+                return
             }
+
+            if self.curPage != 1 {
+                // code 被重新设置时还原页码为 1，由 curPage.didSet 负责刷新
+                self.curPage = 1
+                return
+            }
+            FireLog.input.debug("original changed: \(self._originalString), refresh window")
+            self.refreshCandidatesWindow()
         }
     }
     private var curPage: Int = 1 {
         didSet(old) {
             guard old != self.curPage else { return }
+            // 输入码为空时不要刷新：避免删光编码瞬间画出空候选窗
+            guard !self._originalString.isEmpty else { return }
             FireLog.input.debug("page changed")
             self.refreshCandidatesWindow()
         }
