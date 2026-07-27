@@ -222,6 +222,7 @@ enum DictBuilder {
         let indexSQL = """
             create index if not exists query_index on wb_py_dict(query);
             create index if not exists text_index on wb_py_dict(text);
+            create index if not exists query_text_wbcode_index on wb_py_dict(query, text, wbcode);
             """
         guard sqlite3_exec(db, indexSQL, nil, nil, nil) == SQLITE_OK else {
             print("[DictBuilder] create index failed: \(errmsg(db))")
