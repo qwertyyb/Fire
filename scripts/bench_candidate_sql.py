@@ -41,26 +41,25 @@ WITH top_texts AS (
         text,
         MIN(query) AS query,
         MIN(id) AS min_id,
-        MAX(wbcode) as wbcode
+        MIN(CASE WHEN query = :queryRaw THEN 0 ELSE 1 END) AS zrank
     FROM wb_py_dict
     WHERE query glob :queryLike                     -- 改用 LIKE，更易利用索引
       AND text NOT IN (SELECT text FROM blocked_words)  -- 排除屏蔽词
     GROUP BY text
-    ORDER BY query, min_id                    -- 与原始排序一致
+    ORDER BY zrank, query, min_id                    -- 与原始排序一致
     LIMIT :offset, 5                                   -- 提前截断，只取前5个 text
 )
 SELECT 
-    t.wbcode,
+    (select max(wbcode) from wb_py_dict where text = t.text and query glob :queryLike group by text),
     d.text,
-    MAX(d.type)     AS type,                  -- 假设 type 在组内相同，否则需明确逻辑
+    d.type      AS type,                  -- 假设 type 在组内相同，否则需明确逻辑
     t.query,
-    MAX(d.spell)    AS spell,
-    MAX(d.pinyin)   AS pinyin,
-    MAX(d.is_gb2312)AS is_gb2312
+    d.spell     AS spell,
+    d.pinyin    AS pinyin,
+    d.is_gb2312 AS is_gb2312
 FROM wb_py_dict d
 JOIN top_texts t ON d.id = t.min_id
-GROUP BY d.text
-ORDER BY t.query, t.min_id;                   -- 保持原始排序
+ORDER BY t.zrank, t.query, t.min_id;                   -- 保持原始排序
 """
 
 COLUMNS = ("wbcode", "text", "type", "query", "spell", "pinyin", "is_gb2312")
@@ -87,8 +86,8 @@ def percentile(sorted_vals: list[float], p: float) -> float:
     return sorted_vals[f] + (sorted_vals[c] - sorted_vals[f]) * (k - f)
 
 
-def fetch_all(conn: sqlite3.Connection, sql: str, query_like: str, offset: int) -> list[tuple]:
-    cur = conn.execute(sql, {"queryLike": query_like, "offset": offset})
+def fetch_all(conn: sqlite3.Connection, sql: str, query_like: str, query_raw: str, offset: int) -> list[tuple]:
+    cur = conn.execute(sql, {"queryLike": query_like, "queryRaw": query_raw, "offset": offset})
     return cur.fetchall()
 
 
@@ -96,18 +95,19 @@ def time_query(
     conn: sqlite3.Connection,
     sql: str,
     query_like: str,
+    query_raw: str,
     offset: int,
     runs: int,
     warmup: int,
 ) -> list[float]:
     for _ in range(warmup):
-        fetch_all(conn, sql, query_like, offset)
+        fetch_all(conn, sql, query_like, query_raw, offset)
     samples: list[float] = []
     for _ in range(runs):
         # Drop page cache effects within SQLite by clearing statement cache is hard;
         # still useful to compare relative cost under same connection settings.
         t0 = time.perf_counter()
-        fetch_all(conn, sql, query_like, offset)
+        fetch_all(conn, sql, query_like, query_raw, offset)
         samples.append((time.perf_counter() - t0) * 1000.0)
     return samples
 
@@ -155,7 +155,7 @@ def main() -> int:
     )
     parser.add_argument(
         "--patterns",
-        default=",".join(f"{c}*" for c in string.ascii_lowercase),
+        default=",".join(f"{c}" for c in string.ascii_lowercase),
         help="comma-separated GLOB patterns (default: a*,b*,...,z*)",
     )
     parser.add_argument("--offset", default="0", help="comma-separated offsets (default: 0)")
@@ -217,15 +217,15 @@ def main() -> int:
 
     for pattern in patterns:
         for offset in offsets:
-            rows1 = fetch_all(conn, SQL_V1, pattern, offset)
-            rows2 = fetch_all(conn, SQL_V2, pattern, offset)
+            rows1 = fetch_all(conn, SQL_V1, pattern + "*", pattern, offset)
+            rows2 = fetch_all(conn, SQL_V2, pattern + "*", pattern, offset)
             diffs = rows_equal(rows1, rows2, key_set)
             matched = not diffs
             if not matched:
                 mismatch_cases += 1
 
-            s1 = time_query(conn, SQL_V1, pattern, offset, args.runs, args.warmup)
-            s2 = time_query(conn, SQL_V2, pattern, offset, args.runs, args.warmup)
+            s1 = time_query(conn, SQL_V1, pattern + "*", pattern, offset, args.runs, args.warmup)
+            s2 = time_query(conn, SQL_V2, pattern + "*", pattern, offset, args.runs, args.warmup)
             v1_min, v1_med, v1_p95 = summarize(s1)
             v2_min, v2_med, v2_p95 = summarize(s2)
             v1_all.extend(s1)

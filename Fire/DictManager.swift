@@ -93,32 +93,33 @@ class DictManager {
             let quoted = types.map { "'\($0)'" }.joined(separator: ", ")
             return "and type in (\(quoted))"
         }()
+        // zrank：字面量匹配（:queryRaw，含真实 z）优先于 z 万能键通配命中，
+        // 避免用户词编码含 z 时被 ORDER BY query 排到 LIMIT 之外
         let sql = """
             WITH top_texts AS (
                 SELECT 
                     text,
                     MIN(query) AS query,
                     MIN(id) AS min_id,
-                    MAX(wbcode) as wbcode
+                    MIN(CASE WHEN query = :queryRaw THEN 0 ELSE 1 END) AS zrank
                 FROM wb_py_dict
                 WHERE query glob :queryLike \(typeFilter) \(gbkFilter)
                   AND text NOT IN (SELECT text FROM blocked_words)  -- 排除屏蔽词
                 GROUP BY text
-                ORDER BY query, min_id                    -- 与原始排序一致
-                LIMIT :offset, \(candidateCount + 1)                                   -- 提前截断，只取前5个 text
+                ORDER BY zrank, query, min_id
+                LIMIT :offset, \(candidateCount + 1)
             )
             SELECT 
-                MAX(t.wbcode) AS wbcode,
+                (select max(wbcode) from wb_py_dict where text = t.text and query glob :queryLike group by text) as wbcode,
                 d.text,
-                MAX(d.type)     AS type,                  -- 假设 type 在组内相同，否则需明确逻辑
+                d.type     AS type,                  -- 假设 type 在组内相同，否则需明确逻辑
                 t.query,
-                MAX(d.spell)    AS spell,
-                MAX(d.pinyin)   AS pinyin,
-                MAX(d.is_gb2312)AS is_gb2312
+                d.spell     AS spell,
+                d.pinyin    AS pinyin,
+                d.is_gb2312 AS is_gb2312
             FROM wb_py_dict d
             JOIN top_texts t ON d.id = t.min_id
-            GROUP BY d.text
-            ORDER BY t.query, t.min_id;                   -- 保持原始排序
+            ORDER BY t.zrank, t.query, t.min_id;
         """
         return sql
     }
@@ -227,6 +228,15 @@ class DictManager {
             .replacingOccurrences(of: "z", with: "?")) + suffix
     }
 
+    /// 字面量匹配 pattern（不把 z 换成 ?），供 SQL zrank 优先用户词等真实含 z 的编码
+    private func getQueryRaw(_ origin: String) -> String {
+        if origin.isEmpty {
+            return origin
+        }
+        let suffix = Defaults[.enableExactMatch] ? "" : "*"
+        return origin + suffix
+    }
+
     func punctuationCandidates(query: String) -> [Candidate] {
         let text = query.count == 1 ? query : String(query.suffix(query.count - 1))
         return [Candidate(
@@ -253,6 +263,7 @@ class DictManager {
         FireLog.dict.debug("getCandidates origin: \(query)")
         let startTime = CFAbsoluteTimeGetCurrent()
         let queryLike = getQueryLike(query)
+        let queryRaw = getQueryRaw(query)
         var candidates: [Candidate] = []
         sqlite3_reset(queryStatement)
         sqlite3_clear_bindings(queryStatement)
@@ -261,7 +272,11 @@ class DictManager {
                           queryLike, -1,
                           SQLITE_TRANSIENT
         )
-        // 注：原实现还绑定了 :code 参数，但 SQL 查询中已不再使用该参数，故移除
+        sqlite3_bind_text(queryStatement,
+                          sqlite3_bind_parameter_index(queryStatement, ":queryRaw"),
+                          queryRaw, -1,
+                          SQLITE_TRANSIENT
+        )
         sqlite3_bind_int(queryStatement,
                          sqlite3_bind_parameter_index(queryStatement, ":offset"),
                          Int32((page - 1) * Defaults[.candidateCount])
