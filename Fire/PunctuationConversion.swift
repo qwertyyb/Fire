@@ -8,9 +8,9 @@
 import Foundation
 import Defaults
 
-/// 全角标点映射表：ASCII 字符 → 中文标点
-/// 定义在标点转换模块中而非 types.swift，与使用方放在一起
-let punctuation: [String: String] = [
+/// 全角标点映射表：ASCII 字符 → 中文标点（全角方案 / 自定义默认值）
+/// 设置面板下拉候选见 PunctuationPane.punctuationPickerOptions，两者独立维护
+let fullwidthPunctuation: [String: String] = [
     ",": "，",
     ".": "。",
     "/": "、",
@@ -123,12 +123,12 @@ class PunctuationConversion: Conversion {
     }
     
     func conversion(_ origin: String) -> String? {
-        guard punctuation[origin] != nil else { return nil }
+        guard fullwidthPunctuation[origin] != nil else { return nil }
         switch Defaults[.punctuationMode] {
         case .enUs:
             return origin
         case .zhhans:
-            return punctuation[origin].map { transformResult($0) }
+            return fullwidthPunctuation[origin].map { transformResult($0) }
         case .custom:
             guard let mapped = Defaults[.customPunctuationSettings][origin] else { return nil }
             return transformResult(mapped)

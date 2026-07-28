@@ -11,13 +11,40 @@ import Defaults
 
 // MARK: - 偏好设置面板（迁移自 Settings 库，改用原生 ScrollView + VStack）
 
-fileprivate let extraParisOptions: [String: [String]] = [
-    "[": ["「", "『", "〔"],
-    "{": ["【", "「", "『", "〔"],
-    "]": ["」", "』", "〕"],
-    "}": ["】", "」", "』", "〕"],
-    "<": ["「", "『", "【", "〔"],
-    ">": ["」", "』", "】", "〕"],
+/// 自定义映射面板下拉候选（与 fullwidthPunctuation 独立维护）
+fileprivate let punctuationPickerOptions: [String: [String]] = [
+    ",": [",", "，"],
+    ".": [".", "。"],
+    "/": ["/", "、"],
+    ";": [";", "；"],
+    "'": ["'", "‘"],
+    "[": ["[", "【", "「", "『", "〔"],
+    "]": ["]", "】", "」", "』", "〕"],
+    "`": ["`"],
+    "!": ["!", "！"],
+    "@": ["@"],
+    "#": ["#"],
+    "$": ["$", "￥"],
+    "%": ["%", "％"],
+    "^": ["^", "……"],
+    "&": ["&"],
+    "*": ["*", "＊"],
+    "(": ["(", "（"],
+    ")": [")", "）"],
+    "-": ["-"],
+    "_": ["_", "——"],
+    "+": ["+"],
+    "=": ["="],
+    "~": ["~", "～"],
+    "{": ["{", "「", "【", "『", "〔"],
+    "\\": ["\\", "、"],
+    "|": ["|", "｜"],
+    "}": ["}", "」", "】", "』", "〕"],
+    ":": [":", "："],
+    "\"": ["\"", "“"],
+    "<": ["<", "《", "「", "『", "【", "〔"],
+    ">": [">", "》", "」", "』", "】", "〕"],
+    "?": ["?", "？"],
 ]
 
 struct PunctuationPane: View {
@@ -84,11 +111,7 @@ struct PunctuationPane: View {
                                     get: { value },
                                     set: { customPunctuationSettings[key] = $0 }
                                 )) {
-                                    Text(key).tag(key)
-                                    if key != punctuation[key] {
-                                        Text(punctuation[key] ?? key).tag(punctuation[key] ?? key)
-                                    }
-                                    ForEach(extraParisOptions[key] ?? [], id: \.self) { option in
+                                    ForEach(punctuationPickerOptions[key] ?? [key], id: \.self) { option in
                                         Text(option).tag(option)
                                     }
                                 }
