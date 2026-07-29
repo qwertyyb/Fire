@@ -33,6 +33,8 @@
 		67C9A0342AB53ED3000B5281 /* FireMenu.swift in Sources */ = {isa = PBXBuildFile; fileRef = 67C9A01A2AB53ED2000B5281 /* FireMenu.swift */; };
 		67C9A0352AB53ED3000B5281 /* ThemeConfig.swift in Sources */ = {isa = PBXBuildFile; fileRef = 67C9A01C2AB53ED2000B5281 /* ThemeConfig.swift */; };
 		67C9A0362AB53ED3000B5281 /* DictManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 67C9A01D2AB53ED2000B5281 /* DictManager.swift */; };
+		A2D1C7022FFA000100DICT03 /* DictReader.swift in Sources */ = {isa = PBXBuildFile; fileRef = A2D1C7012FFA000100DICT02 /* DictReader.swift */; };
+		A2D1C7052FFA000100DICT05 /* DictWriter.swift in Sources */ = {isa = PBXBuildFile; fileRef = A2D1C7042FFA000100DICT04 /* DictWriter.swift */; };
 		67C9A0372AB53ED3000B5281 /* wb_table.txt in Resources */ = {isa = PBXBuildFile; fileRef = 67C9A01F2AB53ED3000B5281 /* wb_table.txt */; };
 		A1B2C3E12FF9000700A595A7 /* emoji_table.txt in Resources */ = {isa = PBXBuildFile; fileRef = A1B2C3E02FF9000700A595A7 /* emoji_table.txt */; };
 		67C9A0382AB53ED3000B5281 /* py_table.txt in Resources */ = {isa = PBXBuildFile; fileRef = 67C9A0202AB53ED3000B5281 /* py_table.txt */; };
@@ -106,6 +108,8 @@
 		67C9A01A2AB53ED2000B5281 /* FireMenu.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FireMenu.swift; sourceTree = "<group>"; };
 		67C9A01C2AB53ED2000B5281 /* ThemeConfig.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ThemeConfig.swift; sourceTree = "<group>"; };
 		67C9A01D2AB53ED2000B5281 /* DictManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DictManager.swift; sourceTree = "<group>"; };
+		A2D1C7012FFA000100DICT02 /* DictReader.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DictReader.swift; sourceTree = "<group>"; };
+		A2D1C7042FFA000100DICT04 /* DictWriter.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DictWriter.swift; sourceTree = "<group>"; };
 		67C9A01F2AB53ED3000B5281 /* wb_table.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = wb_table.txt; sourceTree = "<group>"; };
 		A1B2C3E02FF9000700A595A7 /* emoji_table.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = emoji_table.txt; sourceTree = "<group>"; };
 		67C9A0202AB53ED3000B5281 /* py_table.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = py_table.txt; sourceTree = "<group>"; };
@@ -209,7 +213,7 @@
 				67C9A0182AB53ED2000B5281 /* CandidatesView.swift */,
 				67C9A02D2AB53ED3000B5281 /* CandidatesWindow.swift */,
 				B6B720452FF806000A595A7 /* CelebrationEffect.swift */,
-				67C9A01D2AB53ED2000B5281 /* DictManager.swift */,
+				A2D1C7002FFA000100DICT01 /* Dict */,
 				67C9A0142AB53ED2000B5281 /* en.lproj */,
 				67C9A0192AB53ED2000B5281 /* Info.plist */,
 				67C9A0242AB53ED3000B5281 /* Preferences */,
@@ -250,6 +254,16 @@
 				67C99FFC2AB53E62000B5281 /* ModifierKeyUpChecker.swift */,
 			);
 			path = Utils;
+			sourceTree = "<group>";
+		};
+		A2D1C7002FFA000100DICT01 /* Dict */ = {
+			isa = PBXGroup;
+			children = (
+				67C9A01D2AB53ED2000B5281 /* DictManager.swift */,
+				A2D1C7012FFA000100DICT02 /* DictReader.swift */,
+				A2D1C7042FFA000100DICT04 /* DictWriter.swift */,
+			);
+			path = Dict;
 			sourceTree = "<group>";
 		};
 		67C9A0112AB53EB0000B5281 /* Table */ = {
@@ -490,6 +504,8 @@
 				B6B720462FF806000A595A7 /* CelebrationEffect.swift in Sources */,
 				45B76CA92AEA6042009AFABD /* PunctuationConversion.swift in Sources */,
 				67C9A0362AB53ED3000B5281 /* DictManager.swift in Sources */,
+				A2D1C7022FFA000100DICT03 /* DictReader.swift in Sources */,
+				A2D1C7052FFA000100DICT05 /* DictWriter.swift in Sources */,
 				67C9A0582AB5429B000B5281 /* sqlite3.c in Sources */,
 				67C99FFD2AB53E62000B5281 /* ToastWindow.swift in Sources */,
 				67C9A0412AB53ED3000B5281 /* ThemePane.swift in Sources */,
