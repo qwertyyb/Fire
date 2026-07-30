@@ -13,8 +13,6 @@ class DictManager {
     static let shared = DictManager()
     static let userDictUpdated = Notification.Name("DictManager.userDictUpdated")
 
-    let tempEnTriggerPunctuation: Character = ";"
-
     lazy var userDictFilePath: String = {
         let dirs = NSSearchPathForDirectoriesInDomains(.applicationSupportDirectory, .userDomainMask, true)
         guard let dir = dirs.first, let bundleID = Bundle.main.bundleIdentifier else {
@@ -90,12 +88,8 @@ class DictManager {
         sqlite3_exec(database, "PRAGMA cache_size=-2000;", nil, nil, nil)
     }
 
-    func punctuationCandidates(query: String) -> [Candidate] {
-        reader.punctuationCandidates(query: query)
-    }
-
     func getCandidates(query: String = String(), page: Int = 1) -> (candidates: [Candidate], hasNext: Bool) {
-        reader.getCandidates(query: query, page: page, tempEnTrigger: tempEnTriggerPunctuation)
+        reader.getCandidates(query: query, page: page)
     }
 
     func setCandidateToFirst(query: String, candidate: Candidate) {

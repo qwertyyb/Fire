@@ -147,25 +147,12 @@ extension DictReader {
         return origin + suffix
     }
 
-    func punctuationCandidates(query: String) -> [Candidate] {
-        let text = query.count == 1 ? query : String(query.suffix(query.count - 1))
-        return [Candidate(
-            code: query,
-            text: text,
-            type: .placeholder,
-            label: "临时英文(空格输出半角符号,连敲;键两下输出全角符号)")]
-    }
-
     func getCandidates(
         query: String,
-        page: Int,
-        tempEnTrigger: Character
+        page: Int
     ) -> (candidates: [Candidate], hasNext: Bool) {
         if query.count <= 0 {
             return ([], false)
-        }
-        if query.first == tempEnTrigger {
-            return (candidates: punctuationCandidates(query: query), hasNext: false)
         }
 
         // prepareStatement 失败（如码表数据库列不匹配需要重建）时返回空候选

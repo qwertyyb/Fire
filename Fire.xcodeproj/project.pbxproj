@@ -12,6 +12,7 @@
 		4569ED0D2C92CE090075CF8F /* CLIServer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4569ED0C2C92CE090075CF8F /* CLIServer.swift */; };
 		4572854E2BD0EAF90048D67E /* Credits.html in Resources */ = {isa = PBXBuildFile; fileRef = 4572854D2BD0EAF90048D67E /* Credits.html */; };
 		45B76CA92AEA6042009AFABD /* PunctuationConversion.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45B76CA82AEA6042009AFABD /* PunctuationConversion.swift */; };
+		A2D1C7112FFA000100TEMP02 /* TempEnMode.swift in Sources */ = {isa = PBXBuildFile; fileRef = A2D1C7102FFA000100TEMP01 /* TempEnMode.swift */; };
 		5DBA9BFFAF8D649A1C60D5FD /* RadicalFontManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = FCD8E654442EC085F2FF81D5 /* RadicalFontManager.swift */; };
 		67AA47FF2AB733860073AC86 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 67C9A0232AB53ED3000B5281 /* Assets.xcassets */; };
 		67C99FEC2AB53DB2000B5281 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 67C99FEB2AB53DB2000B5281 /* AppDelegate.swift */; };
@@ -85,6 +86,7 @@
 		4569ED0C2C92CE090075CF8F /* CLIServer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CLIServer.swift; sourceTree = "<group>"; };
 		4572854D2BD0EAF90048D67E /* Credits.html */ = {isa = PBXFileReference; lastKnownFileType = text.html; path = Credits.html; sourceTree = "<group>"; };
 		45B76CA82AEA6042009AFABD /* PunctuationConversion.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PunctuationConversion.swift; sourceTree = "<group>"; };
+		A2D1C7102FFA000100TEMP01 /* TempEnMode.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TempEnMode.swift; sourceTree = "<group>"; };
 		67C99FE82AB53DB2000B5281 /* Fire.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Fire.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		67C99FEB2AB53DB2000B5281 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		67C99FF22AB53DB4000B5281 /* Fire.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = Fire.entitlements; sourceTree = "<group>"; };
@@ -214,6 +216,7 @@
 				67C9A02D2AB53ED3000B5281 /* CandidatesWindow.swift */,
 				B6B720452FF806000A595A7 /* CelebrationEffect.swift */,
 				A2D1C7002FFA000100DICT01 /* Dict */,
+				A2D1C7202FFA000100ENG001 /* Engine */,
 				67C9A0142AB53ED2000B5281 /* en.lproj */,
 				67C9A0192AB53ED2000B5281 /* Info.plist */,
 				67C9A0242AB53ED3000B5281 /* Preferences */,
@@ -264,6 +267,14 @@
 				A2D1C7042FFA000100DICT04 /* DictWriter.swift */,
 			);
 			path = Dict;
+			sourceTree = "<group>";
+		};
+		A2D1C7202FFA000100ENG001 /* Engine */ = {
+			isa = PBXGroup;
+			children = (
+				A2D1C7102FFA000100TEMP01 /* TempEnMode.swift */,
+			);
+			path = Engine;
 			sourceTree = "<group>";
 		};
 		67C9A0112AB53EB0000B5281 /* Table */ = {
@@ -503,6 +514,7 @@
 				67C9A0442AB53ED3000B5281 /* CandidatesWindow.swift in Sources */,
 				B6B720462FF806000A595A7 /* CelebrationEffect.swift in Sources */,
 				45B76CA92AEA6042009AFABD /* PunctuationConversion.swift in Sources */,
+				A2D1C7112FFA000100TEMP02 /* TempEnMode.swift in Sources */,
 				67C9A0362AB53ED3000B5281 /* DictManager.swift in Sources */,
 				A2D1C7022FFA000100DICT03 /* DictReader.swift in Sources */,
 				A2D1C7052FFA000100DICT05 /* DictWriter.swift in Sources */,

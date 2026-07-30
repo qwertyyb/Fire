@@ -525,9 +525,7 @@ class FireInputController: IMKInputController {
     }
 
     private func isTempEnModeActive() -> Bool {
-        !Defaults[.disableTempEnMode]
-            && !_originalString.isEmpty
-            && _originalString.first == DictManager.shared.tempEnTriggerPunctuation
+        TempEnMode.isActive(original: _originalString)
     }
 
     private func enterKeyHandler(event: NSEvent) -> Bool? {
@@ -596,14 +594,8 @@ class FireInputController: IMKInputController {
         guard let string = event.characters else { return nil }
         guard inputMode == .zhhans else { return nil }
 
-        // 判断是否进入或继续临时英文模式
-        if shouldStartOrContinueTempEnMode(string: string) {
-            _originalString += string
-            return true
-        }
-
         // 如果输入的字符是标点符号，转换标点符号为中文符号
-        if inputMode == .zhhans, let result = PunctuationConversion.shared.conversion(string) {
+        if let result = PunctuationConversion.shared.conversion(string) {
             if _originalString.count > 0,
                !isTempEnModeActive(),
                let first = _candidates.first,
@@ -616,6 +608,16 @@ class FireInputController: IMKInputController {
             return true
         }
         return nil
+    }
+
+    /// 临时英文模式：放在 punctuationKeyHandler 之前，字母/数字仍走原有 handler
+    private func tempEnModeHandler(event: NSEvent) -> Bool? {
+        guard event.type == .keyDown else { return nil }
+        guard inputMode == .zhhans else { return nil }
+        guard let string = event.characters, !string.isEmpty else { return nil }
+        guard TempEnMode.shouldConsume(original: _originalString, input: string) else { return nil }
+        _originalString += string
+        return true
     }
 
     // ---- handlers end -------
@@ -661,6 +663,7 @@ class FireInputController: IMKInputController {
             enterKeyHandler,
             spaceKeyHandler,
             extraCandidateKeyHandler,
+            tempEnModeHandler,
             punctuationKeyHandler
         ])
         // autoreleasepool 包裹整个事件处理，确保临时对象（NSString、NSAttributedString 等）
@@ -671,6 +674,11 @@ class FireInputController: IMKInputController {
     }
 
     func updateCandidates(_ sender: Any!) {
+        if isTempEnModeActive() {
+            _candidates = TempEnMode.candidates(query: _originalString)
+            _hasNext = false
+            return
+        }
         let (candidates, hasNext) = Fire.shared.getCandidates(origin: self._originalString, page: curPage)
         _candidates = candidates
         _hasNext = hasNext
@@ -796,18 +804,6 @@ class FireInputController: IMKInputController {
         var rect = NSRect()
         client()?.attributes(forCharacterIndex: 0, lineHeightRectangle: &rect)
         return NSPoint(x: rect.minX + xd, y: rect.minY - yd)
-    }
-
-    /// 判断是否进入或继续临时英文（temp en）模式
-    /// 触发条件：空输入时按 ; 键进入，已在 temp en 时后续字符继续
-    private func shouldStartOrContinueTempEnMode(string: String) -> Bool {
-        let isTriggerKey = string == String(DictManager.shared.tempEnTriggerPunctuation)
-        // 已在临时英文模式：继续追加字符
-        if _originalString.first == DictManager.shared.tempEnTriggerPunctuation, !isTriggerKey {
-            return true
-        }
-        // 空输入时按触发键：进入临时英文模式
-        return !Defaults[.disableTempEnMode] && _originalString.isEmpty && isTriggerKey
     }
 
     func clean() {
