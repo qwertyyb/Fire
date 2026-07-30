@@ -112,16 +112,9 @@ class DictManager {
         NotificationQueue.default.enqueue(Notification(name: DictManager.userDictUpdated), postingStyle: .whenIdle)
     }
 
-    // 查询单个汉字的五笔全码(按长度降序取全码，避免拿到一码简码导致首根不全)
-    func getCharFullWubiCode(_ char: String) -> String? {
-        reader.getCharFullWubiCode(char)
-    }
-
-    // 按五笔词组取码规则为多字词生成编码：
-    // 2 字: 字1前2 + 字2前2; 3 字: 字1首 + 字2首 + 字3前2; >=4 字: 字1首 + 字2首 + 字3首 + 末字首
-    // 任一字查不到五笔码则返回 nil
-    func makeWubiWordCode(for text: String) -> String? {
-        reader.makeWubiWordCode(for: text)
+    /// 查询文本的五笔编码：单字返回全码，多字按词组规则合成
+    func queryWubiCode(_ text: String) -> String? {
+        reader.queryWubiCode(text)
     }
 
     /// 批量插入用户词，使用参数化查询防止 SQL 注入
@@ -132,10 +125,6 @@ class DictManager {
     func updateUserDict(_ dictContent: String) {
         writer.updateUserDict(dictContent)
         NotificationQueue.default.enqueue(Notification(name: DictManager.userDictUpdated), postingStyle: .whenIdle)
-    }
-
-    func getUserCandidates() -> [Candidate] {
-        reader.getUserCandidates()
     }
 
     /// 查询原始码表条目数（供 UI 验证重建结果）
@@ -168,8 +157,8 @@ class DictManager {
         reader.isBlocked(text)
     }
 
-    func getUserDictContent() -> String {
-        reader.getUserDictContent()
+    func exportUserDictContent() -> String {
+        reader.exportUserDictContent()
     }
 
     /// 获取用户词表的结构化行数据（供表格编辑器使用）

@@ -258,7 +258,7 @@ class FireInputController: IMKInputController {
         guard let count = _combineCount else { return }
         let text = combineText(count)
         // 五笔码显示在候选窗原码区；code 与 origin 保持一致以避免出现多余的"()"
-        let codeStr = DictManager.shared.makeWubiWordCode(for: text) ?? "无法取码"
+        let codeStr = DictManager.shared.queryWubiCode(text) ?? "无法取码"
         let tip = Candidate(
             code: codeStr,
             text: "",
@@ -276,7 +276,7 @@ class FireInputController: IMKInputController {
     private func confirmCombine() {
         guard let count = _combineCount else { return }
         let text = combineText(count)
-        if let code = DictManager.shared.makeWubiWordCode(for: text) {
+        if let code = DictManager.shared.queryWubiCode(text) {
             // 如果该词已被屏蔽，取消屏蔽后继续添加为用户词
             if DictManager.shared.isBlocked(text) {
                 DictManager.shared.unblockWord(text)

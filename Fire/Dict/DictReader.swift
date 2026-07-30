@@ -23,6 +23,20 @@ final class DictReader {
         }
     }
 
+    func prepare() {
+        teardown()
+        guard database != nil else { return }
+        let sql = getStatementSql()
+#if DEBUG
+        FireLog.dict.debug("SQL: \(sql.replacingOccurrences(of: "\n", with: " "))")
+#endif
+        if sqlite3_prepare_v2(database, sql, -1, &queryStatement, nil) == SQLITE_OK {
+            FireLog.dict.debug("prepare ok")
+        } else if let err = sqlite3_errmsg(database) {
+            FireLog.dict.error("prepare fail: \(String(cString: err), privacy: .public)")
+        }
+    }
+
     private func getStatementSql() -> String {
         let candidateCount = Defaults[.candidateCount]
         let codeMode = Defaults[.codeMode]
@@ -75,23 +89,11 @@ final class DictReader {
         """
         return sql
     }
+}
 
-    func prepare() {
-        teardown()
-        guard database != nil else { return }
-        let sql = getStatementSql()
-        // 日志输出实际执行的 SQL，方便调试查询问题
-#if DEBUG
-        FireLog.dict.debug("SQL: \(sql.replacingOccurrences(of: "\n", with: " "))")
-#endif
-        if sqlite3_prepare_v2(database, sql, -1, &queryStatement, nil) == SQLITE_OK {
-            FireLog.dict.debug("prepare ok")
-        } else if let err = sqlite3_errmsg(database) {
-            FireLog.dict.error("prepare fail: \(String(cString: err), privacy: .public)")
-        }
-    }
+// MARK: - Candidates
 
-    // replaceTextWithVars 中使用的 DateFormatter 提为 static let，避免重复创建
+extension DictReader {
     private static let dateFormatter: DateFormatter = {
         let f = DateFormatter()
         f.dateFormat = "yyyy MM dd HH mm ss"
@@ -221,58 +223,93 @@ final class DictReader {
         let allCount = candidates.count
         candidates = Array(candidates.prefix(count))
 
-
         let duration = CFAbsoluteTimeGetCurrent() - startTime
         FireLog.dict.debug("getCandidates query: \(query), duration: \(duration * 1000, privacy: .public)ms")
         return (candidates, hasNext: allCount > count)
     }
+}
 
-    // 查询单个汉字的五笔全码(按长度降序取全码，避免拿到一码简码导致首根不全)
-    func getCharFullWubiCode(_ char: String) -> String? {
+// MARK: - Wubi Code
+
+extension DictReader {
+    /// 查询文本的五笔编码：单字返回全码，多字按词组规则合成。
+    /// 任一字找不到全码时返回 nil。
+    func queryWubiCode(_ text: String) -> String? {
+        let chars = text.map { String($0) }
+        guard !chars.isEmpty else { return nil }
+
+        // ≥4 字规则只用第 1、2、3、末字；其余字数查全部
+        let needed: [String]
+        switch chars.count {
+        case 1, 2, 3:
+            needed = chars
+        default:
+            needed = [chars[0], chars[1], chars[2], chars[chars.count - 1]]
+        }
+
+        let unique = Array(Set(needed))
+        let map = fetchFullWubiCodes(for: unique)
+        func code(at index: Int) -> String? { map[needed[index]] }
+
+        switch chars.count {
+        case 1:
+            return code(at: 0)
+        case 2:
+            guard let a = code(at: 0), let b = code(at: 1) else { return nil }
+            return String(a.prefix(2)) + String(b.prefix(2))
+        case 3:
+            guard let a = code(at: 0), let b = code(at: 1), let c = code(at: 2) else { return nil }
+            return String(a.prefix(1)) + String(b.prefix(1)) + String(c.prefix(2))
+        default:
+            guard let a = code(at: 0), let b = code(at: 1),
+                  let c = code(at: 2), let d = code(at: 3) else { return nil }
+            return String(a.prefix(1)) + String(b.prefix(1))
+                + String(c.prefix(1)) + String(d.prefix(1))
+        }
+    }
+
+    /// 一次查出各字的五笔全码（同字多行时取 length 最长、id 最小）
+    private func fetchFullWubiCodes(for chars: [String]) -> [String: String] {
+        guard !chars.isEmpty, database != nil else { return [:] }
+        let placeholders = Array(repeating: "?", count: chars.count).joined(separator: ", ")
         let sql = """
-            select wbcode from wb_py_dict
-            where text = :text and type = 'wb'
-            order by length(wbcode) desc, id asc limit 1
+            select text, wbcode, id from wb_py_dict
+            where type = 'wb' and text in (\(placeholders))
         """
         var stmt: OpaquePointer?
-        var result: String?
-        if sqlite3_prepare_v2(database, sql, -1, &stmt, nil) == SQLITE_OK {
-            sqlite3_bind_text(stmt,
-                              sqlite3_bind_parameter_index(stmt, ":text"),
-                              char, -1, SQLITE_TRANSIENT)
-            if sqlite3_step(stmt) == SQLITE_ROW {
-                result = String(cString: sqlite3_column_text(stmt, 0))
+        guard sqlite3_prepare_v2(database, sql, -1, &stmt, nil) == SQLITE_OK else {
+            let errMsg = database != nil ? String(cString: sqlite3_errmsg(database)) : "nil"
+            FireLog.dict.error("fetchFullWubiCodes prepare fail: \(errMsg, privacy: .public)")
+            return [:]
+        }
+        for (i, char) in chars.enumerated() {
+            sqlite3_bind_text(stmt, Int32(i + 1), char, -1, SQLITE_TRANSIENT)
+        }
+
+        // text -> (wbcode, length, id)；保留更优的全码
+        var best: [String: (code: String, len: Int, id: Int32)] = [:]
+        while sqlite3_step(stmt) == SQLITE_ROW {
+            guard let text = optString(stmt, 0),
+                  let wbcode = optString(stmt, 1) else { continue }
+            let id = sqlite3_column_int(stmt, 2)
+            let len = wbcode.count
+            if let cur = best[text] {
+                if len > cur.len || (len == cur.len && id < cur.id) {
+                    best[text] = (wbcode, len, id)
+                }
+            } else {
+                best[text] = (wbcode, len, id)
             }
         }
         sqlite3_finalize(stmt)
-        stmt = nil
-        return result
+        return best.mapValues { $0.code }
     }
+}
 
-    // 按五笔词组取码规则为多字词生成编码：
-    // 2 字: 字1前2 + 字2前2; 3 字: 字1首 + 字2首 + 字3前2; >=4 字: 字1首 + 字2首 + 字3首 + 末字首
-    // 任一字查不到五笔码则返回 nil
-    func makeWubiWordCode(for text: String) -> String? {
-        let chars = text.map { String($0) }
-        guard chars.count >= 2 else { return nil }
-        let codes = chars.map { getCharFullWubiCode($0) }
-        guard codes.allSatisfy({ $0 != nil }) else { return nil }
-        let fullCodes = codes.compactMap { $0 }
-        func prefix(_ code: String, _ n: Int) -> String {
-            return String(code.prefix(n))
-        }
-        switch fullCodes.count {
-        case 2:
-            return prefix(fullCodes[0], 2) + prefix(fullCodes[1], 2)
-        case 3:
-            return prefix(fullCodes[0], 1) + prefix(fullCodes[1], 1) + prefix(fullCodes[2], 2)
-        default:
-            return prefix(fullCodes[0], 1) + prefix(fullCodes[1], 1)
-                + prefix(fullCodes[2], 1) + prefix(fullCodes[fullCodes.count - 1], 1)
-        }
-    }
+// MARK: - User Dict
 
-    func getUserCandidates() -> [Candidate] {
+extension DictReader {
+    private func getUserCandidates() -> [Candidate] {
         let sql = "select query, text from wb_py_dict where type = '\(CandidateType.user.rawValue)'"
         var candidates: [Candidate] = []
         sqliteQuery(database, sql) { stmt in
@@ -282,68 +319,14 @@ final class DictReader {
         return candidates
     }
 
-    /// 查询原始码表条目数（供 UI 验证重建结果）
-    func queryBaseDictCount() -> Int {
-        let sql = "select count(*) from wb_py_dict where type = 'wb' and version is null"
-        var count = 0
-        sqliteQuery(database, sql) { stmt in
-            count = Int(sqlite3_column_int(stmt, 0))
-        }
-        return count
-    }
-
-    /// 导出完整码表（含用户词），编码 词1 词2 ... 格式
-    ///
-    /// 过滤规则：
-    /// - type='wb' 或 type='user': 五笔词 + 用户词
-    /// - version IS NULL: 排除拆字合并插入的汉字
-    /// - text NOT IN blocked: 排除已屏蔽词
-    func exportFullDictContent() -> String {
-        let sql = """
-            select query, group_concat(text, ' ') as texts from wb_py_dict
-            where type in ('wb', 'user') and version is null
-            and not exists (select 1 from blocked_words b where b.text = wb_py_dict.text)
-            group by query order by query
-        """
-        var lines: [String] = []
-        sqliteQuery(database, sql) { stmt in
-            guard let code = optString(stmt, 0), let texts = optString(stmt, 1) else { return }
-            lines.append("\(code) \(texts)")
-        }
-        return lines.joined(separator: "\n")
-    }
-
-    // 查询所有被屏蔽的词，用于用户词库面板中展示"已屏蔽词"列表
-    func getBlockedWords() -> [String] {
-        let sql = "select text from blocked_words order by text"
-        var words: [String] = []
-        sqliteQuery(database, sql) { stmt in
-            guard let cstr = sqlite3_column_text(stmt, 0) else { return }
-            words.append(String(cString: cstr))
-        }
-        return words
-    }
-
-    // 检查某个词是否已被屏蔽（用于组词时判断）
-    func isBlocked(_ text: String) -> Bool {
-        let sql = "select count(*) from blocked_words where text = ?"
-        var result = false
-        sqliteQuery(database, sql, bind: { stmt in
-            sqlite3_bind_text(stmt, 1, text, -1, SQLITE_TRANSIENT)
-        }) { stmt in
-            result = sqlite3_column_int(stmt, 0) > 0
-        }
-        return result
-    }
-
-    func getUserDictContent() -> String {
+    func exportUserDictContent() -> String {
         // 获取用户候选词(包括调整顺序的词)
         struct UserDictLine {
             let code: String
             var texts: [String]
         }
         let candidates = getUserCandidates()
-        FireLog.dict.debug("exportUserDictToFile candidates: \(candidates.count, privacy: .public)")
+        FireLog.dict.debug("exportUserDictContent candidates: \(candidates.count, privacy: .public)")
         var list: [UserDictLine] = []
         candidates.forEach { candidate in
             let index = list.firstIndex { dictItem in
@@ -377,5 +360,67 @@ final class DictReader {
         }
         return dict.map { (code: $0.key, candidates: $0.value) }
             .sorted { $0.code < $1.code }
+    }
+}
+
+// MARK: - Blocked Words
+
+extension DictReader {
+    // 查询所有被屏蔽的词，用于用户词库面板中展示"已屏蔽词"列表
+    func getBlockedWords() -> [String] {
+        let sql = "select text from blocked_words order by text"
+        var words: [String] = []
+        sqliteQuery(database, sql) { stmt in
+            guard let cstr = sqlite3_column_text(stmt, 0) else { return }
+            words.append(String(cString: cstr))
+        }
+        return words
+    }
+
+    // 检查某个词是否已被屏蔽（用于组词时判断）
+    func isBlocked(_ text: String) -> Bool {
+        let sql = "select count(*) from blocked_words where text = ?"
+        var result = false
+        sqliteQuery(database, sql, bind: { stmt in
+            sqlite3_bind_text(stmt, 1, text, -1, SQLITE_TRANSIENT)
+        }) { stmt in
+            result = sqlite3_column_int(stmt, 0) > 0
+        }
+        return result
+    }
+}
+
+// MARK: - Export
+
+extension DictReader {
+    /// 查询原始码表条目数（供 UI 验证重建结果）
+    func queryBaseDictCount() -> Int {
+        let sql = "select count(*) from wb_py_dict where type = 'wb' and version is null"
+        var count = 0
+        sqliteQuery(database, sql) { stmt in
+            count = Int(sqlite3_column_int(stmt, 0))
+        }
+        return count
+    }
+
+    /// 导出完整码表（含用户词），编码 词1 词2 ... 格式
+    ///
+    /// 过滤规则：
+    /// - type='wb' 或 type='user': 五笔词 + 用户词
+    /// - version IS NULL: 排除拆字合并插入的汉字
+    /// - text NOT IN blocked: 排除已屏蔽词
+    func exportFullDictContent() -> String {
+        let sql = """
+            select query, group_concat(text, ' ') as texts from wb_py_dict
+            where type in ('wb', 'user') and version is null
+            and not exists (select 1 from blocked_words b where b.text = wb_py_dict.text)
+            group by query order by query
+        """
+        var lines: [String] = []
+        sqliteQuery(database, sql) { stmt in
+            guard let code = optString(stmt, 0), let texts = optString(stmt, 1) else { return }
+            lines.append("\(code) \(texts)")
+        }
+        return lines.joined(separator: "\n")
     }
 }

@@ -179,7 +179,7 @@ struct UserDictPane: View {
                         showAlert = true
                     }
                     Button("导出") {
-                        let content = DictManager.shared.getUserDictContent()
+                        let content = DictManager.shared.exportUserDictContent()
                         let panel = NSSavePanel()
                         panel.title = "导出用户词库"
                         panel.nameFieldStringValue = "user_dict.txt"
