@@ -24,6 +24,7 @@ class FireInputController: IMKInputController {
     private var _pendingDeleteCandidate: Candidate?
     // 组词模式下当前组合的字数，非 nil 时处于"快速加词"组词态
     private var _combineCount: Int?
+    private var _state: InputSubState.Type?
     // 方向键移动高亮的候选词索引
     var selectedIndex: Int = 0
     internal var inputMode: InputMode {
@@ -126,6 +127,26 @@ class FireInputController: IMKInputController {
     }
 
     // ---- handlers begin -----
+    private func stateHandler(event: NSEvent) -> Bool? {
+        if let state = _state {
+            let context = InputContext(
+                original: self._originalString,
+                candidates: self._candidates,
+                hasNext: self._hasNext,
+                curPage: self.curPage,
+                selectedIndex: self.selectedIndex,
+                lastInputIsNumber: self._lastInputIsNumber,
+                lastInputText: self._lastInputText
+            )
+            let handled = state.handle(KeyInput.init(event: event), context: context)
+            if handled {
+                return true
+            }
+            self._state = nil
+            return false
+        }
+        return nil
+    }
 
     private func hotkeyHandler(event: NSEvent) -> Bool? {
         FireLog.input.debug("hotkeyHandler")
@@ -364,6 +385,10 @@ class FireInputController: IMKInputController {
             return false
         }
         return nil
+    }
+    
+    private func tryEnterSubStateHandler(event: NSEvent) -> Bool? {
+        if TempEnModeState.tryEnter(event)
     }
 
     private func predictorHandler(event: NSEvent) -> Bool? {

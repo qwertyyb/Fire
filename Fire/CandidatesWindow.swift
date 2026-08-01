@@ -44,6 +44,29 @@ class CandidatesWindow: NSPanel, NSWindowDelegate {
     func setSelectedIndex(_ index: Int) {
         hostingView.rootView.selectedIndex = index
     }
+    
+    func setState(original: String?, candidatesData: CandidatesData?, selectedIndex: Int?) {
+        refreshing = true
+        if let candidatesData = candidatesData {
+            hostingView.rootView.candidates = candidatesData.list
+            hostingView.rootView.hasNext = candidatesData.hasNext
+            hostingView.rootView.hasPrev = candidatesData.hasPrev
+        }
+        if let original = original {
+            hostingView.rootView.origin = original
+        }
+        if let selectedIndex = selectedIndex {
+            hostingView.rootView.selectedIndex = selectedIndex
+        }
+        hostingView.rootView.onCandidateHover = { [weak self] index in
+            guard let self = self, !self.refreshing else { return }
+            self.hostingView.rootView.selectedIndex = index
+            self.inputController?.selectedIndex = index
+        }
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.2) { [weak self] in
+            self?.refreshing = false
+        }
+    }
 
     func setCandidates(
         _ candidatesData: CandidatesData,
