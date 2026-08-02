@@ -12,13 +12,14 @@
 		4569ED0D2C92CE090075CF8F /* CLIServer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4569ED0C2C92CE090075CF8F /* CLIServer.swift */; };
 		4572854E2BD0EAF90048D67E /* Credits.html in Resources */ = {isa = PBXBuildFile; fileRef = 4572854D2BD0EAF90048D67E /* Credits.html */; };
 		45B76CA92AEA6042009AFABD /* PunctuationConversion.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45B76CA82AEA6042009AFABD /* PunctuationConversion.swift */; };
-		45F86EA9301D95920048F934 /* InputSubState.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45F86EA8301D95920048F934 /* InputSubState.swift */; };
+		45F86EA9301D95920048F934 /* InputState.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45F86EA8301D95920048F934 /* InputState.swift */; };
 		45F86EAB301D98380048F934 /* KeyInput.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45F86EAA301D98380048F934 /* KeyInput.swift */; };
 		45F86EAD301D98CD0048F934 /* InputContext.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45F86EAC301D98CD0048F934 /* InputContext.swift */; };
 		45F86EAF301D99160048F934 /* QuickCombineState.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45F86EAE301D99140048F934 /* QuickCombineState.swift */; };
 		45F86EB1301D99530048F934 /* DeleteCandidateState.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45F86EB0301D99470048F934 /* DeleteCandidateState.swift */; };
 		45F86EB3301D996A0048F934 /* TempEnState.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45F86EB2301D995F0048F934 /* TempEnState.swift */; };
-		45F86EB5301DDB4C0048F934 /* Utils.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45F86EB4301DDB3B0048F934 /* Utils.swift */; };
+		45F86EB5301DDB4C0048F934 /* EngineUtils.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45F86EB4301DDB3B0048F934 /* EngineUtils.swift */; };
+		45F86EB9301E2D5E0048F934 /* RootState.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45F86EB8301E2D570048F934 /* RootState.swift */; };
 		5DBA9BFFAF8D649A1C60D5FD /* RadicalFontManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = FCD8E654442EC085F2FF81D5 /* RadicalFontManager.swift */; };
 		67AA47FF2AB733860073AC86 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 67C9A0232AB53ED3000B5281 /* Assets.xcassets */; };
 		67C99FEC2AB53DB2000B5281 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 67C99FEB2AB53DB2000B5281 /* AppDelegate.swift */; };
@@ -73,7 +74,6 @@
 		A1B2C3E12FF9000700A595A7 /* emoji_table.txt in Resources */ = {isa = PBXBuildFile; fileRef = A1B2C3E02FF9000700A595A7 /* emoji_table.txt */; };
 		A2D1C7022FFA000100DICT03 /* DictReader.swift in Sources */ = {isa = PBXBuildFile; fileRef = A2D1C7012FFA000100DICT02 /* DictReader.swift */; };
 		A2D1C7052FFA000100DICT05 /* DictWriter.swift in Sources */ = {isa = PBXBuildFile; fileRef = A2D1C7042FFA000100DICT04 /* DictWriter.swift */; };
-		A2D1C7112FFA000100TEMP02 /* TempEnMode.swift in Sources */ = {isa = PBXBuildFile; fileRef = A2D1C7102FFA000100TEMP01 /* TempEnMode.swift */; };
 		B603472A2FF5751B005E7F9B /* wubi86_spelling.txt in Resources */ = {isa = PBXBuildFile; fileRef = B60347292FF5751B005E7F9B /* wubi86_spelling.txt */; };
 		B603472C2FF5781B005E7F9B /* wubi98_spelling.txt in Resources */ = {isa = PBXBuildFile; fileRef = B603472B2FF5781B005E7F9B /* wubi98_spelling.txt */; };
 		B60347302FF5EB6F005E7F9B /* wubi06_spelling.txt in Resources */ = {isa = PBXBuildFile; fileRef = B603472F2FF5EB6F005E7F9B /* wubi06_spelling.txt */; };
@@ -93,13 +93,14 @@
 		4569ED0C2C92CE090075CF8F /* CLIServer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CLIServer.swift; sourceTree = "<group>"; };
 		4572854D2BD0EAF90048D67E /* Credits.html */ = {isa = PBXFileReference; lastKnownFileType = text.html; path = Credits.html; sourceTree = "<group>"; };
 		45B76CA82AEA6042009AFABD /* PunctuationConversion.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PunctuationConversion.swift; sourceTree = "<group>"; };
-		45F86EA8301D95920048F934 /* InputSubState.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InputSubState.swift; sourceTree = "<group>"; };
+		45F86EA8301D95920048F934 /* InputState.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InputState.swift; sourceTree = "<group>"; };
 		45F86EAA301D98380048F934 /* KeyInput.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KeyInput.swift; sourceTree = "<group>"; };
 		45F86EAC301D98CD0048F934 /* InputContext.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InputContext.swift; sourceTree = "<group>"; };
 		45F86EAE301D99140048F934 /* QuickCombineState.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = QuickCombineState.swift; sourceTree = "<group>"; };
 		45F86EB0301D99470048F934 /* DeleteCandidateState.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DeleteCandidateState.swift; sourceTree = "<group>"; };
 		45F86EB2301D995F0048F934 /* TempEnState.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TempEnState.swift; sourceTree = "<group>"; };
-		45F86EB4301DDB3B0048F934 /* Utils.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Utils.swift; sourceTree = "<group>"; };
+		45F86EB4301DDB3B0048F934 /* EngineUtils.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EngineUtils.swift; sourceTree = "<group>"; };
+		45F86EB8301E2D570048F934 /* RootState.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RootState.swift; sourceTree = "<group>"; };
 		67C99FE82AB53DB2000B5281 /* Fire.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Fire.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		67C99FEB2AB53DB2000B5281 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		67C99FF22AB53DB4000B5281 /* Fire.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = Fire.entitlements; sourceTree = "<group>"; };
@@ -154,7 +155,6 @@
 		A1B2C3E02FF9000700A595A7 /* emoji_table.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = emoji_table.txt; sourceTree = "<group>"; };
 		A2D1C7012FFA000100DICT02 /* DictReader.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DictReader.swift; sourceTree = "<group>"; };
 		A2D1C7042FFA000100DICT04 /* DictWriter.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DictWriter.swift; sourceTree = "<group>"; };
-		A2D1C7102FFA000100TEMP01 /* TempEnMode.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TempEnMode.swift; sourceTree = "<group>"; };
 		B60347292FF5751B005E7F9B /* wubi86_spelling.txt */ = {isa = PBXFileReference; lastKnownFileType = text; path = wubi86_spelling.txt; sourceTree = "<group>"; };
 		B603472B2FF5781B005E7F9B /* wubi98_spelling.txt */ = {isa = PBXFileReference; lastKnownFileType = text; path = wubi98_spelling.txt; sourceTree = "<group>"; };
 		B603472F2FF5EB6F005E7F9B /* wubi06_spelling.txt */ = {isa = PBXFileReference; lastKnownFileType = text; path = wubi06_spelling.txt; sourceTree = "<group>"; };
@@ -268,7 +268,6 @@
 				67C99FF92AB53E62000B5281 /* ToastWindow.swift */,
 				67C99FFA2AB53E62000B5281 /* Statistics.swift */,
 				67C99FFB2AB53E62000B5281 /* TipsWindow.swift */,
-				67C99FFC2AB53E62000B5281 /* ModifierKeyUpChecker.swift */,
 			);
 			path = Utils;
 			sourceTree = "<group>";
@@ -376,14 +375,15 @@
 		A2D1C7202FFA000100ENG001 /* Engine */ = {
 			isa = PBXGroup;
 			children = (
-				45F86EB4301DDB3B0048F934 /* Utils.swift */,
+				45F86EB8301E2D570048F934 /* RootState.swift */,
 				45F86EB2301D995F0048F934 /* TempEnState.swift */,
 				45F86EB0301D99470048F934 /* DeleteCandidateState.swift */,
 				45F86EAE301D99140048F934 /* QuickCombineState.swift */,
 				45F86EAA301D98380048F934 /* KeyInput.swift */,
-				A2D1C7102FFA000100TEMP01 /* TempEnMode.swift */,
-				45F86EA8301D95920048F934 /* InputSubState.swift */,
+				45F86EA8301D95920048F934 /* InputState.swift */,
 				45F86EAC301D98CD0048F934 /* InputContext.swift */,
+				45F86EB4301DDB3B0048F934 /* EngineUtils.swift */,
+				67C99FFC2AB53E62000B5281 /* ModifierKeyUpChecker.swift */,
 			);
 			path = Engine;
 			sourceTree = "<group>";
@@ -512,7 +512,7 @@
 				67C9A00A2AB53E83000B5281 /* InputSource.swift in Sources */,
 				67C9A0352AB53ED3000B5281 /* ThemeConfig.swift in Sources */,
 				A1B2C3D42FF9000200A595B1 /* FireLog.swift in Sources */,
-				45F86EA9301D95920048F934 /* InputSubState.swift in Sources */,
+				45F86EA9301D95920048F934 /* InputState.swift in Sources */,
 				67C99FFE2AB53E62000B5281 /* Statistics.swift in Sources */,
 				67C9A0432AB53ED3000B5281 /* PunctuationPane.swift in Sources */,
 				67C9A0342AB53ED3000B5281 /* FireMenu.swift in Sources */,
@@ -532,15 +532,15 @@
 				A1B2C3DD2FF9000400A595A7 /* CharsetGB2312.swift in Sources */,
 				A1B2C3D72FF9000300A595A7 /* DictTableImporter.swift in Sources */,
 				45F86EAD301D98CD0048F934 /* InputContext.swift in Sources */,
+				45F86EB9301E2D5E0048F934 /* RootState.swift in Sources */,
 				A1B2C3D92FF9000300A595A7 /* DictSpellingMerge.swift in Sources */,
 				67C9A0422AB53ED3000B5281 /* ThesaurusPane.swift in Sources */,
 				67C9A0002AB53E62000B5281 /* ModifierKeyUpChecker.swift in Sources */,
-				45F86EB5301DDB4C0048F934 /* Utils.swift in Sources */,
+				45F86EB5301DDB4C0048F934 /* EngineUtils.swift in Sources */,
 				67C9A0442AB53ED3000B5281 /* CandidatesWindow.swift in Sources */,
 				45F86EB3301D996A0048F934 /* TempEnState.swift in Sources */,
 				B6B720462FF806000A595A7 /* CelebrationEffect.swift in Sources */,
 				45B76CA92AEA6042009AFABD /* PunctuationConversion.swift in Sources */,
-				A2D1C7112FFA000100TEMP02 /* TempEnMode.swift in Sources */,
 				67C9A0362AB53ED3000B5281 /* DictManager.swift in Sources */,
 				45F86EB1301D99530048F934 /* DeleteCandidateState.swift in Sources */,
 				A2D1C7022FFA000100DICT03 /* DictReader.swift in Sources */,

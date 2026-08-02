@@ -1,11 +1,12 @@
 //
-//  Utils.swift
+//  EngineUtils.swift
 //  Fire
 //
 //  Created by qwertyyb on 2026/8/1.
 //
 
 import Carbon
+import Defaults
 
 enum EngineUtils {
     static func isDeleteKey (_ event: KeyInput) -> Bool {
@@ -17,4 +18,6 @@ enum EngineUtils {
         // 按Esc或control+u
         return event.modifiers.isEmpty && event.keyCode == kVK_Escape || event.modifiers == .control && event.keyCode == kVK_ANSI_U
     }
+    
+    static let toggleInputModeKeyUpChecker = ModifierKeyUpChecker()
 }

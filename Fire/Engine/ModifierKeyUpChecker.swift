@@ -8,6 +8,7 @@
 
 import AppKit
 import Carbon
+import Defaults
 
 extension Date {
     static func - (lhs: Date, rhs: Date) -> TimeInterval {
@@ -17,10 +18,11 @@ extension Date {
 }
 
 class ModifierKeyUpChecker {
-    init(_ modifier: ModifierKey) {
-        checkModifierKey = modifier
+    var checkModifierKey: ModifierKey {
+        get {
+            Defaults[.toggleInputModeKey]
+        }
     }
-    let checkModifierKey: ModifierKey
     private var checkModifier: NSEvent.ModifierFlags {
         switch self.checkModifierKey {
         case .command:
@@ -59,10 +61,10 @@ class ModifierKeyUpChecker {
 
     private var lastTime: Date = Date()
 
-    private func checkModifierKeyUp (event: NSEvent) -> Bool {
+    private func checkModifierKeyUp (event: KeyInput) -> Bool {
         guard checkKeyCode.contains(Int(event.keyCode)) else { return false }
         if event.type == .flagsChanged
-            && event.modifierFlags.intersection(.deviceIndependentFlagsMask) == .init(rawValue: 0)
+            && event.modifiers == .init(rawValue: 0)
             && Date() - lastTime <= delayInterval {
             // modifier keyup event
             lastTime = Date(timeInterval: -3600*4, since: Date())
@@ -71,9 +73,9 @@ class ModifierKeyUpChecker {
         return false
     }
 
-    private func checkModifierKeyDown(event: NSEvent) -> Bool {
+    private func checkModifierKeyDown(event: KeyInput) -> Bool {
         let isKeyDown = event.type == .flagsChanged
-            && event.modifierFlags.intersection(.deviceIndependentFlagsMask) == checkModifier
+            && event.modifiers == checkModifier
             && checkKeyCode.contains(Int(event.keyCode))
         if isKeyDown {
             // modifier keydown event
@@ -85,7 +87,7 @@ class ModifierKeyUpChecker {
     }
 
     // 检查修饰键被按下并抬起
-    func check(_ event: NSEvent) -> Bool {
+    func check(_ event: KeyInput) -> Bool {
         return checkModifierKeyUp(event: event) || checkModifierKeyDown(event: event)
     }
 }

@@ -22,8 +22,8 @@ struct KeyInput: Equatable {
     init(event: NSEvent) {
         self.type = event.type == .flagsChanged ? .flagsChanged : .keyDown
         self.keyCode = event.keyCode
-        self.characters = event.characters
-        self.charactersIgnoringModifiers = event.charactersIgnoringModifiers
+        self.characters = event.type == .flagsChanged ? nil : event.characters
+        self.charactersIgnoringModifiers = event.type == .flagsChanged ? nil : event.charactersIgnoringModifiers
         self.modifiers = event.modifierFlags.intersection(.deviceIndependentFlagsMask)
     }
 
