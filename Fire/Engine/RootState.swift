@@ -21,9 +21,16 @@ class RootState: InputState {
         
     }
     
+    init(subState: (any InputState)? = nil, dict: some EngineDictManager) {
+        self.subState = subState
+        self.dict = dict
+    }
+
     private static let letterRegex = try! NSRegularExpression(pattern: "^[a-zA-Z]+$")
     
     var subState: (any InputState)?
+    
+    let dict: any EngineDictManager
     
     func setSubState(_ subState: (any InputState)?, context: inout any InputContext) {
         self.subState?.willExit(&context)
@@ -49,7 +56,7 @@ class RootState: InputState {
                 context.candidates = []
                 context.hasNext = false
             } else {
-                let candidatesData = DictManager.shared.getCandidates(query: context.origin, page: context.curPage)
+                let candidatesData = self.dict.query(context.origin, page: context.curPage)
                 context.candidates = candidatesData.candidates
                 context.hasNext = candidatesData.hasNext
             }
@@ -125,7 +132,7 @@ class RootState: InputState {
     private func enterDeleteCandidateHandler(_ event: KeyInput, context: inout any InputContext) -> Bool? {
         if (DeleteCandidateState.shouldEnter(event, context: context)) {
             let targetIndex = (DeleteCandidateState.digitByKeyCode[event.keyCode] ?? 1) - 1
-            setSubState(DeleteCandidateState(candidate: context.candidates[targetIndex]), context: &context)
+            setSubState(DeleteCandidateState(candidate: context.candidates[targetIndex], dict: self.dict), context: &context)
             return true
         }
         return nil
@@ -134,7 +141,7 @@ class RootState: InputState {
     private func enterQuickCombineHandler(_ event: KeyInput, context: inout any InputContext) -> Bool? {
         if event.modifiers == .control, event.keyCode == UInt16(kVK_ANSI_Equal), context.origin.isEmpty {
             if EngineStore.shared.recentCommittedTexts.count >= 2 {
-                setSubState(QuickCombineState(count: 2), context: &context)
+                setSubState(QuickCombineState(count: 2, dict: self.dict), context: &context)
             } else {
                 Utils.shared.showMessage("请先输入至少两个字，再按 control+= 组词")
             }
@@ -202,7 +209,7 @@ class RootState: InputState {
         if event.modifiers == [.control, .option] &&
             num > 0 && num <= context.candidates.count {
             FireLog.input.debug("hotkey: control + option + \(num)")
-            DictManager.shared.setCandidateToFirst(query: context.origin, candidate: context.candidates[num-1])
+            self.dict.setCandidateToFirst(context.origin, candidate: context.candidates[num-1])
             updateCandidates(&context, page: 1, selectedIndex: 0)
             return true
         }

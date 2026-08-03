@@ -28,7 +28,7 @@ class FireInputController: IMKInputController, InputContext  {
         set(value) { Fire.shared.inputMode = value }
     }
     
-    var state = RootState()
+    var state = RootState(dict: DictManager.shared)
     
     func commit(_ text: String) {
         FireLog.input.debug("commit: \(text)")

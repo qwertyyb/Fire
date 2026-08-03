@@ -335,7 +335,7 @@ struct BlockedWordsList: View {
                             Text(word).font(.callout)
                             Spacer()
                             Button("恢复") {
-                                DictManager.shared.unblockWord(word)
+                                DictManager.shared.unblockText(word)
                                 words.removeAll { $0 == word }
                             }
                             .font(.caption)

@@ -12,6 +12,7 @@
 		4569ED0D2C92CE090075CF8F /* CLIServer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4569ED0C2C92CE090075CF8F /* CLIServer.swift */; };
 		4572854E2BD0EAF90048D67E /* Credits.html in Resources */ = {isa = PBXBuildFile; fileRef = 4572854D2BD0EAF90048D67E /* Credits.html */; };
 		4574D1603020AED500831DCC /* EngineStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4574D15F3020AECF00831DCC /* EngineStore.swift */; };
+		4574D1623020BCE400831DCC /* EngineDictManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4574D1613020BCE000831DCC /* EngineDictManager.swift */; };
 		45B76CA92AEA6042009AFABD /* PunctuationConversion.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45B76CA82AEA6042009AFABD /* PunctuationConversion.swift */; };
 		45F86EA9301D95920048F934 /* InputState.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45F86EA8301D95920048F934 /* InputState.swift */; };
 		45F86EAB301D98380048F934 /* KeyInput.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45F86EAA301D98380048F934 /* KeyInput.swift */; };
@@ -94,6 +95,7 @@
 		4569ED0C2C92CE090075CF8F /* CLIServer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CLIServer.swift; sourceTree = "<group>"; };
 		4572854D2BD0EAF90048D67E /* Credits.html */ = {isa = PBXFileReference; lastKnownFileType = text.html; path = Credits.html; sourceTree = "<group>"; };
 		4574D15F3020AECF00831DCC /* EngineStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EngineStore.swift; sourceTree = "<group>"; };
+		4574D1613020BCE000831DCC /* EngineDictManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EngineDictManager.swift; sourceTree = "<group>"; };
 		45B76CA82AEA6042009AFABD /* PunctuationConversion.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PunctuationConversion.swift; sourceTree = "<group>"; };
 		45F86EA8301D95920048F934 /* InputState.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InputState.swift; sourceTree = "<group>"; };
 		45F86EAA301D98380048F934 /* KeyInput.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KeyInput.swift; sourceTree = "<group>"; };
@@ -377,6 +379,7 @@
 		A2D1C7202FFA000100ENG001 /* Engine */ = {
 			isa = PBXGroup;
 			children = (
+				4574D1613020BCE000831DCC /* EngineDictManager.swift */,
 				4574D15F3020AECF00831DCC /* EngineStore.swift */,
 				45F86EB8301E2D570048F934 /* RootState.swift */,
 				45F86EB2301D995F0048F934 /* TempEnState.swift */,
@@ -530,6 +533,7 @@
 				67C9A0402AB53ED3000B5281 /* ApplicationPane.swift in Sources */,
 				45F86EAB301D98380048F934 /* KeyInput.swift in Sources */,
 				67C9A0132AB53EB0000B5281 /* build.swift in Sources */,
+				4574D1623020BCE400831DCC /* EngineDictManager.swift in Sources */,
 				A1B2C3D52FF9000100A595A7 /* DictGlyphFill.swift in Sources */,
 				A1B2C3DB2FF9000300A595A7 /* DictBuilder.swift in Sources */,
 				A1B2C3DD2FF9000400A595A7 /* CharsetGB2312.swift in Sources */,

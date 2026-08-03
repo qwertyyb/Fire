@@ -28,8 +28,11 @@ struct DeleteCandidateState: InputState {
     private var prevCurPage: Int = 1
     private var prevSelectedIndex = 0
     
-    init(candidate: Candidate) {
+    let dict: any EngineDictManager
+    
+    init(candidate: Candidate, dict: some EngineDictManager) {
         self.candidate = candidate
+        self.dict = dict
     }
     
     mutating func didEnter(_ context: inout any InputContext) {
@@ -52,7 +55,7 @@ struct DeleteCandidateState: InputState {
 
     private func deleteCandidate(_ target: Candidate) {
         FireLog.input.debug("confirmDelete: \(target.text)")
-        DictManager.shared.deleteCandidate(target)
+        self.dict.blockCandidate(target)
         Utils.shared.showMessage("已删除「\(target.text)」")
     }
     

@@ -9,7 +9,7 @@
 import Foundation
 import Defaults
 
-class DictManager {
+class DictManager: EngineDictManager {
     static let shared = DictManager()
     static let userDictUpdated = Notification.Name("DictManager.userDictUpdated")
 
@@ -88,20 +88,20 @@ class DictManager {
         sqlite3_exec(database, "PRAGMA cache_size=-2000;", nil, nil, nil)
     }
 
-    func getCandidates(query: String = String(), page: Int = 1) -> (candidates: [Candidate], hasNext: Bool) {
-        reader.getCandidates(query: query, page: page)
+    func query(_ origin: String, page: Int = 1) -> (candidates: [Candidate], hasNext: Bool) {
+        reader.getCandidates(query: origin, page: page)
     }
 
-    func setCandidateToFirst(query: String, candidate: Candidate) {
+    func setCandidateToFirst(_ query: String, candidate: Candidate) {
         _ = writer.setCandidateToFirst(query: query, candidate: candidate)
         NotificationQueue.default.enqueue(Notification(name: DictManager.userDictUpdated), postingStyle: .whenIdle)
     }
 
-    func prependCandidate(candidate: Candidate) -> Bool {
-        writer.prependCandidate(candidate: candidate)
+    func addUserText(origin: String, text: String) {
+        let _ = writer.prependCandidate(candidate: Candidate(code: origin, text: text, type: .user))
     }
 
-    func deleteCandidate(_ candidate: Candidate) {
+    func blockCandidate(_ candidate: Candidate) {
         writer.deleteCandidate(candidate)
         NotificationQueue.default.enqueue(Notification(name: DictManager.userDictUpdated), postingStyle: .whenIdle)
     }
@@ -142,7 +142,7 @@ class DictManager {
     }
 
     // 取消屏蔽：删除 type='blocked' 记录
-    func unblockWord(_ text: String) {
+    func unblockText(_ text: String) {
         writer.unblockWord(text)
     }
 

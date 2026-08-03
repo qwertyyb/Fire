@@ -14,8 +14,11 @@ struct QuickCombineState: InputState {
     
     private var count: Int = 2
     
-    init(count: Int = 2) {
+    let dict: any EngineDictManager
+    
+    init(count: Int = 2, dict: some EngineDictManager) {
         self.count = 2
+        self.dict = dict
     }
     
     func updateContext(_ context: inout any InputContext) {
@@ -45,11 +48,10 @@ struct QuickCombineState: InputState {
         let text = combineText(self.count)
         if let code = DictManager.shared.queryWubiCode(text) {
             // 如果该词已被屏蔽，取消屏蔽后继续添加为用户词
-            if DictManager.shared.isBlocked(text) {
-                DictManager.shared.unblockWord(text)
+            if self.dict.isBlocked(text) {
+                self.dict.unblockText(text)
             }
-            _ = DictManager.shared.prependCandidate(
-                candidate: Candidate(code: code, text: text, type: .user))
+            self.dict.addUserText(origin: code, text: text)
             // 组词成功时显示编码提示，方便用户验证
             Utils.shared.showMessage("已添加新词【\(text)】\(code)")
             NotificationQueue.default.enqueue(
