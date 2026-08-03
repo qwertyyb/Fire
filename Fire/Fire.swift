@@ -18,9 +18,6 @@ class Fire: NSObject {
     static let inputModeChanged = Notification.Name("Fire.inputModeChanged")
 
     var inputMode: InputMode = .zhhans
-    var lastCommittedText: String = ""
-    // 最近上屏的中文候选词文本，用于"快速加词"组词，仅保留最近若干个
-    var recentCommittedTexts: [String] = []
     // 当前激活的输入控制器，供候选窗鼠标点击等场景使用
     weak var activeInputController: FireInputController?
 
@@ -80,17 +77,6 @@ class Fire: NSObject {
     }
 
     let server: IMKServer = IMKServer.init(name: kConnectionName, bundleIdentifier: Bundle.main.bundleIdentifier)
-    func getCandidates(origin: String = String(), page: Int = 1) -> (candidates: [Candidate], hasNext: Bool) {
-        if origin.isEmpty {
-            return ([], false)
-        }
-        if origin == "z" {
-            let text = lastCommittedText.isEmpty ? "业火五笔输入法" : lastCommittedText
-            let candidate = Candidate(code: "z", text: text, type: .user)
-            return ([candidate], false)
-        }
-        return DictManager.shared.getCandidates(query: origin, page: page)
-    }
 
     static let shared = Fire()
 }

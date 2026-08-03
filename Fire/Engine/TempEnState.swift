@@ -21,13 +21,17 @@ struct TempEnState: InputState {
         var origin = context.origin
         if event.characters == Self.trigger && origin == Self.trigger {
             // 连续两次按了 trigger 键，应当退出临时英文模式，并把trigger转为全角输出
-            let _ = RootState.punctuationKeyHandler(event: event, context: &context)
+            if let result = PunctuationConversion.shared.conversion(origin) {
+                context.commit(result)
+            }
             exitState()
             return false
         }
         if event.keyCode == kVK_Return  {
             // 回车键，把除了第一个触发码外的字符上屏，并退出临时英文模式
-            context.commit(String(origin.dropFirst()))
+            let text = String(origin.dropFirst())
+            EngineStore.shared.recordCommittedText(text)
+            context.commit(text)
             exitState()
             return true
         }

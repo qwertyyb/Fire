@@ -14,10 +14,6 @@ protocol InputContext {
     var curPage: Int { get set }
     var selectedIndex: Int { get set }
     
-    func prevPage()
-    
-    func nextPage()
-    
     func getTextBefore(_ count: Int) -> String
     
     func commit(_ text: String)

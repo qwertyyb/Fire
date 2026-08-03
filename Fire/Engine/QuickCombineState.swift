@@ -38,7 +38,7 @@ struct QuickCombineState: InputState {
     }
     
     func combineText(_ count: Int) -> String {
-        return Fire.shared.recentCommittedTexts.suffix(count).joined()
+        return EngineStore.shared.recentCommittedTexts.suffix(count).joined()
     }
     
     private func confirmCombine() {
@@ -60,7 +60,7 @@ struct QuickCombineState: InputState {
     }
 
     mutating func handle(_ event: KeyInput, context: inout any InputContext, exitState: () -> Void) -> Bool? {
-        let bufCount = Fire.shared.recentCommittedTexts.count
+        let bufCount = EngineStore.shared.recentCommittedTexts.count
         switch Int(event.keyCode) {
         case kVK_LeftArrow:
             self.count = min(count + 1, bufCount)

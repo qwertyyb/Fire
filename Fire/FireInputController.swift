@@ -37,17 +37,8 @@ class FireInputController: IMKInputController, InputContext  {
     
     func commitCandidate(_ candidate: Candidate, confirmed: Bool) {
         self.insertCandidate(candidate, confirmed: confirmed)
-    }
-    
-    func prevPage() {
-        guard curPage > 1 else { return }
-        selectedIndex = 0
-        curPage -= 1
-    }
-    func nextPage() {
-        guard hasNext else { return }
-        selectedIndex = 0
-        curPage += 1
+        self.candidates = []
+        clean()
     }
     
     func getTextBefore(_ count: Int = 1) -> String {
@@ -69,6 +60,19 @@ class FireInputController: IMKInputController, InputContext  {
             return ""
         }
         return client().attributedSubstring(from: NSMakeRange(previousLocation, 1))?.string ?? ""
+    }
+    
+    func prevPage() {
+        var inputContext: any InputContext = self
+        if state.prevPage(&inputContext) {
+            refreshCandidatesWindow()
+        }
+    }
+    func nextPage() {
+        var inputContext: any InputContext = self
+        if state.nextPage(&inputContext) {
+            refreshCandidatesWindow()
+        }
     }
     
     // 字母正则判断：提为 static let 避免热路径（每次按键）重复编译正则表达式，提升输入响应性能
@@ -141,17 +145,12 @@ class FireInputController: IMKInputController, InputContext  {
     // 更新候选窗口
     // 逻辑顺序：获取候选 → 满4码唯一候选自动上屏 → 无候选且不显示输入码时关闭窗口 → 显示候选窗
     func refreshCandidatesWindow() {
-        if Defaults[.wubiAutoCommit] && curPage == 1 && candidates.count == 1 && origin.count >= 4,
-           let candidate = candidates.first, candidate.type != .placeholder {
-            // 满4码唯一候选词自动上屏
-            insertCandidate(candidate, confirmed: false)
-            return
-        }
         if !Defaults[.showCodeInWindow] && candidates.count <= 0 {
             // 不在候选框显示输入码时，如果候选词为空，则不显示候选框
             CandidatesWindow.shared.close()
             return
         }
+        FireLog.input.debug("refreshCandidatesWindow, origin: \(self.origin), \(self.candidates)")
         if origin.isEmpty && candidates.isEmpty {
             CandidatesWindow.shared.close()
             return
@@ -174,15 +173,6 @@ class FireInputController: IMKInputController, InputContext  {
     }
 
     func insertCandidate(_ candidate: Candidate, confirmed: Bool = false) {
-        Fire.shared.lastCommittedText = candidate.text
-        // 记录中文候选词上屏，供"快速加词"组词使用
-        if candidate.type != .placeholder, candidate.text.contains(where: { $0.isChineseChar }) {
-            Fire.shared.recentCommittedTexts.append(candidate.text)
-            if Fire.shared.recentCommittedTexts.count > 20 {
-                Fire.shared.recentCommittedTexts.removeFirst()
-            }
-        }
-
         // 获取光标位置（参考 TipsWindow 定位方式）
         let cursorPoint = getOriginPoint()
 

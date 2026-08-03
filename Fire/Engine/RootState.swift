@@ -7,6 +7,11 @@
 import Carbon
 import Defaults
 
+enum CandidateCommitReason {
+    case keyEvent
+    case auto
+}
+
 class RootState: InputState {
     func didEnter(_ context: inout any InputContext) {
         
@@ -24,6 +29,73 @@ class RootState: InputState {
         self.subState?.willExit(&context)
         self.subState = subState
         self.subState?.didEnter(&context)
+    }
+    
+    func updateCandidates(_ context: inout any InputContext, origin: String? = nil, page: Int? = nil, selectedIndex: Int? = nil) {
+        var shouldQuery = false
+        if let origin = origin {
+            context.origin = origin
+            shouldQuery = true
+        }
+        if let page = page {
+            context.curPage = page
+            shouldQuery = true
+        }
+        if let selectedIndex = selectedIndex {
+            context.selectedIndex = selectedIndex
+        }
+        if shouldQuery {
+            if context.origin.isEmpty {
+                context.candidates = []
+                context.hasNext = false
+            } else {
+                let candidatesData = DictManager.shared.getCandidates(query: context.origin, page: context.curPage)
+                context.candidates = candidatesData.candidates
+                context.hasNext = candidatesData.hasNext
+            }
+        }
+    }
+    
+    func commitText(_ context: inout any InputContext, _ text: String) {
+        EngineStore.shared.recordCommittedText(text)
+        context.commit(text)
+        updateCandidates(&context, origin: "", page: 1, selectedIndex: 0)
+    }
+    
+    func commitCandidate(_ context: inout any InputContext, _ candidate: Candidate, reason: CandidateCommitReason = .keyEvent) {
+        EngineStore.shared.recordCommittedText(candidate.text)
+        context.commit(candidate.text)
+        updateCandidates(&context, origin: "", page: 1, selectedIndex: 0)
+    }
+    
+    @discardableResult
+    func prevPage(_ context: inout any InputContext) -> Bool {
+        guard context.curPage > 1 else { return false }
+        updateCandidates(&context, page: context.curPage - 1, selectedIndex: 0)
+        return true
+    }
+    @discardableResult
+    func nextPage(_ context: inout any InputContext) -> Bool {
+        guard context.hasNext else { return false }
+        updateCandidates(&context, page: context.curPage + 1, selectedIndex: 0)
+        return true
+    }
+    
+    func selectPrev(_ context: inout any InputContext) {
+        if context.selectedIndex > 0 {
+            context.selectedIndex -= 1
+            updateCandidates(&context, selectedIndex: context.selectedIndex - 1)
+        } else if context.curPage > 1 {
+            updateCandidates(&context, page: context.curPage - 1)
+            context.selectedIndex = context.candidates.count - 1
+        }
+    }
+    func selectNext(_ context: inout any InputContext) {
+        if context.selectedIndex < context.candidates.count - 1 {
+            updateCandidates(&context, selectedIndex: context.selectedIndex + 1)
+        } else if context.hasNext {
+            nextPage(&context)
+        }
     }
 
     // MARK: - 子状态
@@ -61,7 +133,7 @@ class RootState: InputState {
     
     private func enterQuickCombineHandler(_ event: KeyInput, context: inout any InputContext) -> Bool? {
         if event.modifiers == .control, event.keyCode == UInt16(kVK_ANSI_Equal), context.origin.isEmpty {
-            if Fire.shared.recentCommittedTexts.count >= 2 {
+            if EngineStore.shared.recentCommittedTexts.count >= 2 {
                 setSubState(QuickCombineState(count: 2), context: &context)
             } else {
                 Utils.shared.showMessage("请先输入至少两个字，再按 control+= 组词")
@@ -81,7 +153,7 @@ class RootState: InputState {
             FireLog.input.info("toggle mode: \(String(describing: inputMode), privacy: .public)")
 
             // 把当前未上屏的原始code上屏处理
-            context.commit(context.origin)
+            commitText(&context, context.origin)
             setSubState(nil, context: &context)
 
             Fire.shared.toggleInputMode()
@@ -131,8 +203,7 @@ class RootState: InputState {
             num > 0 && num <= context.candidates.count {
             FireLog.input.debug("hotkey: control + option + \(num)")
             DictManager.shared.setCandidateToFirst(query: context.origin, candidate: context.candidates[num-1])
-            context.curPage = 1
-            context.selectedIndex = 0
+            updateCandidates(&context, page: 1, selectedIndex: 0)
             return true
         }
         return nil
@@ -146,7 +217,7 @@ class RootState: InputState {
                 (keyCode == kVK_DownArrow && Defaults[.candidatesDirection] == .horizontal) ||
                 (keyCode == kVK_RightArrow && Defaults[.candidatesDirection] == .vertical)
             if shouldNextPage {
-                context.nextPage()
+                nextPage(&context)
                 return true
             }
 
@@ -154,33 +225,21 @@ class RootState: InputState {
                 (keyCode == kVK_UpArrow && Defaults[.candidatesDirection] == .horizontal) ||
                 (keyCode == kVK_LeftArrow && Defaults[.candidatesDirection] == .vertical)
             if needPrevPage {
-                context.prevPage()
+                prevPage(&context)
                 return true
             }
 
             // 移动高亮
-            let isForward = (keyCode == kVK_RightArrow && Defaults[.candidatesDirection] == .horizontal) ||
+            let isMoveNext = (keyCode == kVK_RightArrow && Defaults[.candidatesDirection] == .horizontal) ||
                 (keyCode == kVK_DownArrow && Defaults[.candidatesDirection] == .vertical)
-            let isBackward = (keyCode == kVK_LeftArrow && Defaults[.candidatesDirection] == .horizontal) ||
+            let isMovePrev = (keyCode == kVK_LeftArrow && Defaults[.candidatesDirection] == .horizontal) ||
                 (keyCode == kVK_UpArrow && Defaults[.candidatesDirection] == .vertical)
 
-            if isForward || isBackward {
-                let count = context.candidates.count
-                if isForward {
-                    if context.selectedIndex < count - 1 {
-                        context.selectedIndex += 1
-                    } else if context.hasNext {
-                        context.nextPage()
-                        context.selectedIndex = 0
-                    }
+            if isMoveNext || isMovePrev {
+                if isMoveNext {
+                    selectNext(&context)
                 } else {
-                    if context.selectedIndex > 0 {
-                        context.selectedIndex -= 1
-                    } else if context.curPage > 1 {
-                        context.curPage -= 1
-                        // 方向键到头回绕：高亮定位到上一页的最后一个候选词
-                        context.selectedIndex = Defaults[.candidateCount] - 1
-                    }
+                    selectPrev(&context)
                 }
                 return true
             }
@@ -188,7 +247,7 @@ class RootState: InputState {
         return nil
     }
     
-    private func predictorHandler(event: KeyInput, context: inout any InputContext) -> Bool? {
+    private func predictorHandler(_ event: KeyInput, context: inout any InputContext) -> Bool? {
         // 在数字后输入。号自动转换为小数点
         let textBefore = context.getTextBefore(1)
         if textBefore.isEmpty || Int(textBefore) == nil {
@@ -213,12 +272,24 @@ class RootState: InputState {
         // 删除键删除字符
         if EngineUtils.isDeleteKey(event) {
             if context.origin.count > 0 {
-                context.origin = String(context.origin.dropLast())
-                context.curPage = 1
-                context.selectedIndex = 0
+                updateCandidates(&context, origin: String(context.origin.dropLast()), page: 1, selectedIndex: 0)
                 return true
             }
             return false
+        }
+        return nil
+    }
+    
+    private func zRepetKeyHandler(_ event: KeyInput, context: inout any InputContext) -> Bool? {
+        if context.origin.isEmpty && event.modifiers.isEmpty && event.keyCode == kVK_ANSI_Z {
+            context.origin = "z"
+            context.curPage = 1
+            context.selectedIndex = 0
+            context.hasNext = false
+            var text = EngineStore.shared.getRecentCommitedTexts(1)
+            text = text == "" ? "业火输入法" : text
+            context.candidates = [Candidate(code: "z", text: text, type: .user)]
+            return true
         }
         return nil
     }
@@ -241,24 +312,27 @@ class RootState: InputState {
         }
         // 当前输入的是英文字符,附加到之前
         if match != nil {
+            var origin = context.origin
             // 第五码顶字上屏：五笔方案下，当已有≥4码时，先上屏首选词，再以当前键开始新编码
             if Defaults[.wubiFifthCommit],
                Defaults[.codeMode] == .wubi,
                context.origin.count >= 4,
                let firstCandidate = context.candidates.first,
                firstCandidate.type != .placeholder {
-                context.commitCandidate(firstCandidate, confirmed: false)
-                // insertCandidate → insertText → clean() 已清空 _originalString
+                commitCandidate(&context, firstCandidate, reason: .auto)
                 // 第五码作为下个编码的首码
-                context.origin = string
-                context.curPage = 1
-                context.selectedIndex = 0
-                return true
+                origin = string
+            } else {
+                origin += string
             }
-
-            context.origin += string
-            context.curPage = 1
-            context.selectedIndex = 0
+            
+            updateCandidates(&context, origin: origin, page: 1, selectedIndex: 0)
+            
+            if Defaults[.wubiAutoCommit] && context.curPage == 1 && context.candidates.count == 1 && context.origin.count >= 4,
+               let candidate = context.candidates.first, candidate.type != .placeholder {
+                // 满4码唯一候选词自动上屏
+                commitCandidate(&context, candidate, reason: .auto)
+            }
 
             return true
         }
@@ -273,11 +347,9 @@ class RootState: InputState {
             if context.origin.count > 0 {
                 let index = pos - 1
                 if index >= 0 && index < context.candidates.count {
-                    context.commitCandidate(context.candidates[index], confirmed: true)
+                    commitCandidate(&context, context.candidates[index])
                 } else {
-                    context.origin += char
-                    context.curPage = 1
-                    context.selectedIndex = 0
+                    updateCandidates(&context, origin: context.origin + char, page: 1, selectedIndex: 0)
                 }
                 return true
             }
@@ -320,17 +392,14 @@ class RootState: InputState {
             return nil
         }
 
-        context.commitCandidate(context.candidates[index], confirmed: true)
+        commitCandidate(&context, context.candidates[index])
         return true
     }
 
     private func escKeyHandler(_ event: KeyInput, context: inout any InputContext) -> Bool? {
         // ESC键取消所有输入
         if EngineUtils.isEscapeKey(event), context.origin.count > 0 {
-            context.origin = ""
-            context.candidates = []
-            context.curPage = 1
-            context.selectedIndex = 0
+            updateCandidates(&context, origin: "", page: 1, selectedIndex: 0)
             return true
         }
         return nil
@@ -339,7 +408,7 @@ class RootState: InputState {
     private func enterKeyHandler(_ event: KeyInput, context: inout any InputContext) -> Bool? {
         // 回车键输入原字符
         if event.keyCode == kVK_Return && context.origin.count > 0 {
-            context.commit(context.origin)
+            commitText(&context, context.origin)
             return true
         }
         return nil
@@ -349,24 +418,23 @@ class RootState: InputState {
         FireLog.input.debug("spaceKeyHandler")
         if event.keyCode == kVK_Space && context.candidates.count > 0 {
             if context.selectedIndex < context.candidates.count {
-                context.commitCandidate(context.candidates[context.selectedIndex], confirmed: true)
+                commitCandidate(&context, context.candidates[context.selectedIndex])
             }
             return true
         }
         return nil
     }
     
-    static func punctuationKeyHandler(event: KeyInput, context: inout any InputContext) -> Bool? {
+    func punctuationKeyHandler(event: KeyInput, context: inout any InputContext) -> Bool? {
         // 获取输入的字符
         guard let string = event.characters else { return nil }
-        guard context.inputMode == .zhhans else { return nil }
 
         // 如果输入的字符是标点符号，转换标点符号为中文符号
         if let result = PunctuationConversion.shared.conversion(string) {
             if let first = context.candidates.first,
                first.type != .placeholder {
                 // 首个候选自动上屏
-                context.commitCandidate(first, confirmed: false)
+                commitCandidate(&context, first, reason: .auto)
             }
             context.commit(result)
             return true
@@ -389,26 +457,17 @@ class RootState: InputState {
             pageKeyHandler,
             predictorHandler,
             deleteKeyHandler,
+            zRepetKeyHandler,
             charKeyHandler,
             numberKeyHandler,
             extraCandidateKeyHandler,
             escKeyHandler,
             enterKeyHandler,
             spaceKeyHandler,
-            Self.punctuationKeyHandler, // 需要放在 extraCandidateKeyHandler 后面
+            punctuationKeyHandler, // 需要放在 extraCandidateKeyHandler 后面
         ]
         for handler in codingHandlers {
             if let result = handler(event, &context) {
-                if subState == nil {
-                    if context.origin.isEmpty {
-                        context.candidates = []
-                        context.origin = ""
-                    } else {
-                        let (candidates, hasNext) = Fire.shared.getCandidates(origin: context.origin, page: context.curPage)
-                        context.candidates = candidates
-                        context.hasNext = hasNext
-                    }
-                }
                 return result
             }
         }
