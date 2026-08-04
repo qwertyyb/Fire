@@ -18,6 +18,4 @@ enum EngineUtils {
         // 按Esc或control+u
         return event.modifiers.isEmpty && event.keyCode == kVK_Escape || event.modifiers == .control && event.keyCode == kVK_ANSI_U
     }
-    
-    static let toggleInputModeKeyUpChecker = ModifierKeyUpChecker()
 }

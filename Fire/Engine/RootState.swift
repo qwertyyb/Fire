@@ -5,7 +5,6 @@
 //  Created by qwertyyb on 2026/8/1.
 //
 import Carbon
-import Defaults
 
 enum CandidateCommitReason {
     case keyEvent
@@ -21,9 +20,12 @@ class RootState: InputState {
         
     }
     
-    init(subState: (any InputState)? = nil, dict: some EngineDictManager) {
+    init(subState: (any InputState)? = nil, dict: some EngineDictManager, config: some EngineConfig, store: some EngineStore = DefaultEngineStore.shared, engine: Engine = Engine.shared) {
         self.subState = subState
         self.dict = dict
+        self.config = config
+        self.store = store
+        self.engine = engine
     }
 
     private static let letterRegex = try! NSRegularExpression(pattern: "^[a-zA-Z]+$")
@@ -32,10 +34,32 @@ class RootState: InputState {
     
     let dict: any EngineDictManager
     
+    let config: any EngineConfig
+    
+    var store: any EngineStore
+    
+    var engine: Engine
+    
+    func refetchCandidates(_ context: inout any InputContext) {
+        if context.origin.isEmpty {
+            context.candidates = []
+            context.hasNext = false
+        } else {
+            let candidatesData = self.dict.query(context.origin, page: context.curPage)
+            context.candidates = candidatesData.candidates
+            context.hasNext = candidatesData.hasNext
+        }
+    }
+    
     func setSubState(_ subState: (any InputState)?, context: inout any InputContext) {
         self.subState?.willExit(&context)
-        self.subState = subState
-        self.subState?.didEnter(&context)
+        if let subState = subState {
+            self.subState = subState
+            self.subState?.didEnter(&context)
+        } else {
+            self.subState = nil
+            refetchCandidates(&context)
+        }
     }
     
     func updateCandidates(_ context: inout any InputContext, origin: String? = nil, page: Int? = nil, selectedIndex: Int? = nil) {
@@ -52,25 +76,18 @@ class RootState: InputState {
             context.selectedIndex = selectedIndex
         }
         if shouldQuery {
-            if context.origin.isEmpty {
-                context.candidates = []
-                context.hasNext = false
-            } else {
-                let candidatesData = self.dict.query(context.origin, page: context.curPage)
-                context.candidates = candidatesData.candidates
-                context.hasNext = candidatesData.hasNext
-            }
+            refetchCandidates(&context)
         }
     }
     
     func commitText(_ context: inout any InputContext, _ text: String) {
-        EngineStore.shared.recordCommittedText(text)
+        store.recentCommittedTexts.append(text)
         context.commit(text)
         updateCandidates(&context, origin: "", page: 1, selectedIndex: 0)
     }
     
     func commitCandidate(_ context: inout any InputContext, _ candidate: Candidate, reason: CandidateCommitReason = .keyEvent) {
-        EngineStore.shared.recordCommittedText(candidate.text)
+        store.recentCommittedTexts.append(candidate.text)
         context.commit(candidate.text)
         updateCandidates(&context, origin: "", page: 1, selectedIndex: 0)
     }
@@ -90,7 +107,6 @@ class RootState: InputState {
     
     func selectPrev(_ context: inout any InputContext) {
         if context.selectedIndex > 0 {
-            context.selectedIndex -= 1
             updateCandidates(&context, selectedIndex: context.selectedIndex - 1)
         } else if context.curPage > 1 {
             updateCandidates(&context, page: context.curPage - 1)
@@ -122,8 +138,8 @@ class RootState: InputState {
     
     // 是否进入子状态处理：临时英文、删除候选词、快速组词
     private func enterTempEnHandler(_ event: KeyInput, context: inout any InputContext) -> Bool? {
-        if (TempEnState.shouldEnter(event, context: context)) {
-            setSubState(TempEnState(), context: &context)
+        if (!config.disableTempEnMode && TempEnState.shouldEnter(event, context: context)) {
+            setSubState(TempEnState(store: self.store), context: &context)
             return true
         }
         return nil
@@ -140,10 +156,10 @@ class RootState: InputState {
     
     private func enterQuickCombineHandler(_ event: KeyInput, context: inout any InputContext) -> Bool? {
         if event.modifiers == .control, event.keyCode == UInt16(kVK_ANSI_Equal), context.origin.isEmpty {
-            if EngineStore.shared.recentCommittedTexts.count >= 2 {
-                setSubState(QuickCombineState(count: 2, dict: self.dict), context: &context)
+            if store.recentCommittedTexts.count >= 2 {
+                setSubState(QuickCombineState(count: 2, dict: self.dict, store: self.store), context: &context)
             } else {
-                Utils.shared.showMessage("请先输入至少两个字，再按 control+= 组词")
+                context.showMessage("请先输入至少两个字，再按 control+= 组词")
             }
             return true
         }
@@ -155,15 +171,15 @@ class RootState: InputState {
     func flagsChangeHandler(_ event: KeyInput, context: inout any InputContext) -> Bool? {
         FireLog.input.debug("flagChangedHandler")
         // 只有在shift keyup时，才切换中英文输入, 否则会导致shift+[a-z]大写的功能失效
-        if !Defaults[.disableEnMode] && EngineUtils.toggleInputModeKeyUpChecker.check(event) {
-            let inputMode = context.inputMode
+        if !config.disableEnMode && event.type == .modifierPress && config.toggleInputModeKey.keyCodes().contains(Int(event.keyCode)) {
+            let inputMode = store.inputMode
             FireLog.input.info("toggle mode: \(String(describing: inputMode), privacy: .public)")
 
             // 把当前未上屏的原始code上屏处理
             commitText(&context, context.origin)
             setSubState(nil, context: &context)
 
-            Fire.shared.toggleInputMode()
+            engine.toggleInputMode()
             
             return true
         }
@@ -193,7 +209,7 @@ class RootState: InputState {
     private func enModeHandler(_ event: KeyInput, context: inout any InputContext) -> Bool? {
         FireLog.input.debug("enModeHandler")
         // 英文输入模式, 不做任何处理
-        if context.inputMode == .enUS {
+        if store.inputMode == .enUS {
             return false
         }
         return nil
@@ -218,29 +234,29 @@ class RootState: InputState {
     
     private func pageKeyHandler(_ event: KeyInput, context: inout any InputContext) -> Bool? {
         let keyCode = event.keyCode
-        if context.inputMode == .zhhans && context.origin.count > 0 {
+        if context.origin.count > 0 {
             // 翻页
             let shouldNextPage = keyCode == kVK_ANSI_Equal ||
-                (keyCode == kVK_DownArrow && Defaults[.candidatesDirection] == .horizontal) ||
-                (keyCode == kVK_RightArrow && Defaults[.candidatesDirection] == .vertical)
+                (keyCode == kVK_DownArrow && config.candidatesDirection == .horizontal) ||
+                (keyCode == kVK_RightArrow && config.candidatesDirection == .vertical)
             if shouldNextPage {
                 nextPage(&context)
                 return true
             }
 
             let needPrevPage = keyCode == kVK_ANSI_Minus ||
-                (keyCode == kVK_UpArrow && Defaults[.candidatesDirection] == .horizontal) ||
-                (keyCode == kVK_LeftArrow && Defaults[.candidatesDirection] == .vertical)
+                (keyCode == kVK_UpArrow && config.candidatesDirection == .horizontal) ||
+                (keyCode == kVK_LeftArrow && config.candidatesDirection == .vertical)
             if needPrevPage {
                 prevPage(&context)
                 return true
             }
 
             // 移动高亮
-            let isMoveNext = (keyCode == kVK_RightArrow && Defaults[.candidatesDirection] == .horizontal) ||
-                (keyCode == kVK_DownArrow && Defaults[.candidatesDirection] == .vertical)
-            let isMovePrev = (keyCode == kVK_LeftArrow && Defaults[.candidatesDirection] == .horizontal) ||
-                (keyCode == kVK_UpArrow && Defaults[.candidatesDirection] == .vertical)
+            let isMoveNext = (keyCode == kVK_RightArrow && config.candidatesDirection == .horizontal) ||
+                (keyCode == kVK_DownArrow && config.candidatesDirection == .vertical)
+            let isMovePrev = (keyCode == kVK_LeftArrow && config.candidatesDirection == .horizontal) ||
+                (keyCode == kVK_UpArrow && config.candidatesDirection == .vertical)
 
             if isMoveNext || isMovePrev {
                 if isMoveNext {
@@ -261,12 +277,12 @@ class RootState: InputState {
             return nil
         }
         
-        if Defaults[.enableDotAfterNumber] && event.keyCode == kVK_ANSI_Period {
+        if config.enableDotAfterNumber && event.keyCode == kVK_ANSI_Period {
             context.commit(".")
             return true
         }
         // 在数字后输入“：”，自动转为英文半角冒号
-        if Defaults[.enableColonAfterNumber] && event.keyCode == kVK_ANSI_Semicolon {
+        if config.enableColonAfterNumber && event.keyCode == kVK_ANSI_Semicolon {
             context.commit(":")
             return true
         }
@@ -293,7 +309,7 @@ class RootState: InputState {
             context.curPage = 1
             context.selectedIndex = 0
             context.hasNext = false
-            var text = EngineStore.shared.getRecentCommitedTexts(1)
+            var text = store.recentCommittedTexts.last ?? ""
             text = text == "" ? "业火输入法" : text
             context.candidates = [Candidate(code: "z", text: text, type: .user)]
             return true
@@ -321,8 +337,8 @@ class RootState: InputState {
         if match != nil {
             var origin = context.origin
             // 第五码顶字上屏：五笔方案下，当已有≥4码时，先上屏首选词，再以当前键开始新编码
-            if Defaults[.wubiFifthCommit],
-               Defaults[.codeMode] == .wubi,
+            if config.wubiFifthCommit,
+               config.codeMode == .wubi,
                context.origin.count >= 4,
                let firstCandidate = context.candidates.first,
                firstCandidate.type != .placeholder {
@@ -335,7 +351,7 @@ class RootState: InputState {
             
             updateCandidates(&context, origin: origin, page: 1, selectedIndex: 0)
             
-            if Defaults[.wubiAutoCommit] && context.curPage == 1 && context.candidates.count == 1 && context.origin.count >= 4,
+            if config.wubiAutoCommit && context.curPage == 1 && context.candidates.count == 1 && context.origin.count >= 4,
                let candidate = context.candidates.first, candidate.type != .placeholder {
                 // 满4码唯一候选词自动上屏
                 commitCandidate(&context, candidate, reason: .auto)
@@ -368,13 +384,12 @@ class RootState: InputState {
     }
     
     private func extraCandidateKeyHandler(_ event: KeyInput, context: inout any InputContext) -> Bool? {
-        guard context.inputMode == .zhhans,
-              context.origin.count > 0,
+        guard context.origin.count > 0,
               let string = event.characters else {
             return nil
         }
 
-        let mode = Defaults[.extraCandidateSelectKeys]
+        let mode = config.extraCandidateSelectKeys
         guard mode != .disabled else { return nil }
 
         let index: Int?

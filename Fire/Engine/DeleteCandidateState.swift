@@ -56,13 +56,13 @@ struct DeleteCandidateState: InputState {
     private func deleteCandidate(_ target: Candidate) {
         FireLog.input.debug("confirmDelete: \(target.text)")
         self.dict.blockCandidate(target)
-        Utils.shared.showMessage("已删除「\(target.text)」")
     }
     
     mutating func handle(_ event: KeyInput, context: inout any InputContext, exitState: () -> Void) -> Bool? {
         // 回车确认删除
         if event.keyCode == kVK_Return {
             deleteCandidate(self.candidate)
+            context.showMessage("已删除「\(self.candidate.text)」")
             exitState()
             return true
         }

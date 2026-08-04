@@ -37,11 +37,11 @@ class StatusBar {
     }
 
     @objc func changeInputMode() {
-        Fire.shared.toggleInputMode()
+        Fire.engine.toggleInputMode()
     }
 
     private func refreshTitle() {
-        statusItem.button?.title = Fire.shared.inputMode == .zhhans ? "中" : "英"
+        statusItem.button?.title = Fire.engine.inputMode == .zhhans ? "中" : "英"
     }
 
     private func refreshVisibleStatus() {

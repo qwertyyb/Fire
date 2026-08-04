@@ -171,11 +171,11 @@ extension FireInputController {
             if let url = NSWorkspace.shared.urlForApplication(withBundleIdentifier: bundleID) {
                 displayName = FileManager.default.displayName(atPath: url.path)
             }
-            let title = "设置“\(displayName)”的预设为\(Fire.shared.inputMode == .zhhans ? "中文" : "英文")"
+            let title = "设置“\(displayName)”的预设为\(Fire.engine.inputMode == .zhhans ? "中文" : "英文")"
             let menuItem = NSMenuItem(title: title, action: #selector(setApplicationMode(_:)), keyEquivalent: "")
             menuItem.representedObject = [
                 "bundleID": bundleID,
-                "mode": Fire.shared.inputMode
+                "mode": Fire.engine.inputMode
             ]
             menu.items.append(contentsOf: [
                 NSMenuItem.separator(),

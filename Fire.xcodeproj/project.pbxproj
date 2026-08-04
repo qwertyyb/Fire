@@ -13,6 +13,9 @@
 		4572854E2BD0EAF90048D67E /* Credits.html in Resources */ = {isa = PBXBuildFile; fileRef = 4572854D2BD0EAF90048D67E /* Credits.html */; };
 		4574D1603020AED500831DCC /* EngineStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4574D15F3020AECF00831DCC /* EngineStore.swift */; };
 		4574D1623020BCE400831DCC /* EngineDictManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4574D1613020BCE000831DCC /* EngineDictManager.swift */; };
+		4574D1643021A82600831DCC /* EngineConfig.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4574D1633021A81E00831DCC /* EngineConfig.swift */; };
+		4574D1663021ABD000831DCC /* FireEngineConfig.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4574D1653021ABC800831DCC /* FireEngineConfig.swift */; };
+		4574D1683021D4CB00831DCC /* Engine.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4574D1673021D4CA00831DCC /* Engine.swift */; };
 		45B76CA92AEA6042009AFABD /* PunctuationConversion.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45B76CA82AEA6042009AFABD /* PunctuationConversion.swift */; };
 		45F86EA9301D95920048F934 /* InputState.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45F86EA8301D95920048F934 /* InputState.swift */; };
 		45F86EAB301D98380048F934 /* KeyInput.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45F86EAA301D98380048F934 /* KeyInput.swift */; };
@@ -28,7 +31,7 @@
 		67C99FFD2AB53E62000B5281 /* ToastWindow.swift in Sources */ = {isa = PBXBuildFile; fileRef = 67C99FF92AB53E62000B5281 /* ToastWindow.swift */; };
 		67C99FFE2AB53E62000B5281 /* Statistics.swift in Sources */ = {isa = PBXBuildFile; fileRef = 67C99FFA2AB53E62000B5281 /* Statistics.swift */; };
 		67C99FFF2AB53E62000B5281 /* TipsWindow.swift in Sources */ = {isa = PBXBuildFile; fileRef = 67C99FFB2AB53E62000B5281 /* TipsWindow.swift */; };
-		67C9A0002AB53E62000B5281 /* ModifierKeyUpChecker.swift in Sources */ = {isa = PBXBuildFile; fileRef = 67C99FFC2AB53E62000B5281 /* ModifierKeyUpChecker.swift */; };
+		67C9A0002AB53E62000B5281 /* ModifierKeyPressChecker.swift in Sources */ = {isa = PBXBuildFile; fileRef = 67C99FFC2AB53E62000B5281 /* ModifierKeyPressChecker.swift */; };
 		67C9A0092AB53E83000B5281 /* MainMenu.xib in Resources */ = {isa = PBXBuildFile; fileRef = 67C9A0012AB53E83000B5281 /* MainMenu.xib */; };
 		67C9A00A2AB53E83000B5281 /* InputSource.swift in Sources */ = {isa = PBXBuildFile; fileRef = 67C9A0022AB53E83000B5281 /* InputSource.swift */; };
 		67C9A00B2AB53E83000B5281 /* Utils.swift in Sources */ = {isa = PBXBuildFile; fileRef = 67C9A0032AB53E83000B5281 /* Utils.swift */; };
@@ -96,6 +99,9 @@
 		4572854D2BD0EAF90048D67E /* Credits.html */ = {isa = PBXFileReference; lastKnownFileType = text.html; path = Credits.html; sourceTree = "<group>"; };
 		4574D15F3020AECF00831DCC /* EngineStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EngineStore.swift; sourceTree = "<group>"; };
 		4574D1613020BCE000831DCC /* EngineDictManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EngineDictManager.swift; sourceTree = "<group>"; };
+		4574D1633021A81E00831DCC /* EngineConfig.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EngineConfig.swift; sourceTree = "<group>"; };
+		4574D1653021ABC800831DCC /* FireEngineConfig.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FireEngineConfig.swift; sourceTree = "<group>"; };
+		4574D1673021D4CA00831DCC /* Engine.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Engine.swift; sourceTree = "<group>"; };
 		45B76CA82AEA6042009AFABD /* PunctuationConversion.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PunctuationConversion.swift; sourceTree = "<group>"; };
 		45F86EA8301D95920048F934 /* InputState.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InputState.swift; sourceTree = "<group>"; };
 		45F86EAA301D98380048F934 /* KeyInput.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KeyInput.swift; sourceTree = "<group>"; };
@@ -111,7 +117,7 @@
 		67C99FF92AB53E62000B5281 /* ToastWindow.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ToastWindow.swift; sourceTree = "<group>"; };
 		67C99FFA2AB53E62000B5281 /* Statistics.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Statistics.swift; sourceTree = "<group>"; };
 		67C99FFB2AB53E62000B5281 /* TipsWindow.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TipsWindow.swift; sourceTree = "<group>"; };
-		67C99FFC2AB53E62000B5281 /* ModifierKeyUpChecker.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ModifierKeyUpChecker.swift; sourceTree = "<group>"; };
+		67C99FFC2AB53E62000B5281 /* ModifierKeyPressChecker.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ModifierKeyPressChecker.swift; sourceTree = "<group>"; };
 		67C9A0012AB53E83000B5281 /* MainMenu.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = MainMenu.xib; sourceTree = "<group>"; };
 		67C9A0022AB53E83000B5281 /* InputSource.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = InputSource.swift; sourceTree = "<group>"; };
 		67C9A0032AB53E83000B5281 /* Utils.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Utils.swift; sourceTree = "<group>"; };
@@ -247,6 +253,7 @@
 				67C9A0072AB53E83000B5281 /* FireInputController.swift */,
 				67C9A0222AB53ED3000B5281 /* FireInputServer.swift */,
 				67C9A01A2AB53ED2000B5281 /* FireMenu.swift */,
+				4574D1653021ABC800831DCC /* FireEngineConfig.swift */,
 				45B76CA82AEA6042009AFABD /* PunctuationConversion.swift */,
 				67C9A0022AB53E83000B5281 /* InputSource.swift */,
 				67C9A0012AB53E83000B5281 /* MainMenu.xib */,
@@ -379,6 +386,8 @@
 		A2D1C7202FFA000100ENG001 /* Engine */ = {
 			isa = PBXGroup;
 			children = (
+				4574D1673021D4CA00831DCC /* Engine.swift */,
+				4574D1633021A81E00831DCC /* EngineConfig.swift */,
 				4574D1613020BCE000831DCC /* EngineDictManager.swift */,
 				4574D15F3020AECF00831DCC /* EngineStore.swift */,
 				45F86EB8301E2D570048F934 /* RootState.swift */,
@@ -389,7 +398,7 @@
 				45F86EA8301D95920048F934 /* InputState.swift */,
 				45F86EAC301D98CD0048F934 /* InputContext.swift */,
 				45F86EB4301DDB3B0048F934 /* EngineUtils.swift */,
-				67C99FFC2AB53E62000B5281 /* ModifierKeyUpChecker.swift */,
+				67C99FFC2AB53E62000B5281 /* ModifierKeyPressChecker.swift */,
 			);
 			path = Engine;
 			sourceTree = "<group>";
@@ -536,13 +545,14 @@
 				4574D1623020BCE400831DCC /* EngineDictManager.swift in Sources */,
 				A1B2C3D52FF9000100A595A7 /* DictGlyphFill.swift in Sources */,
 				A1B2C3DB2FF9000300A595A7 /* DictBuilder.swift in Sources */,
+				4574D1643021A82600831DCC /* EngineConfig.swift in Sources */,
 				A1B2C3DD2FF9000400A595A7 /* CharsetGB2312.swift in Sources */,
 				A1B2C3D72FF9000300A595A7 /* DictTableImporter.swift in Sources */,
 				45F86EAD301D98CD0048F934 /* InputContext.swift in Sources */,
 				45F86EB9301E2D5E0048F934 /* RootState.swift in Sources */,
 				A1B2C3D92FF9000300A595A7 /* DictSpellingMerge.swift in Sources */,
 				67C9A0422AB53ED3000B5281 /* ThesaurusPane.swift in Sources */,
-				67C9A0002AB53E62000B5281 /* ModifierKeyUpChecker.swift in Sources */,
+				67C9A0002AB53E62000B5281 /* ModifierKeyPressChecker.swift in Sources */,
 				4574D1603020AED500831DCC /* EngineStore.swift in Sources */,
 				45F86EB5301DDB4C0048F934 /* EngineUtils.swift in Sources */,
 				67C9A0442AB53ED3000B5281 /* CandidatesWindow.swift in Sources */,
@@ -554,6 +564,7 @@
 				A2D1C7022FFA000100DICT03 /* DictReader.swift in Sources */,
 				A2D1C7052FFA000100DICT05 /* DictWriter.swift in Sources */,
 				67C9A0582AB5429B000B5281 /* sqlite3.c in Sources */,
+				4574D1663021ABD000831DCC /* FireEngineConfig.swift in Sources */,
 				67C99FFD2AB53E62000B5281 /* ToastWindow.swift in Sources */,
 				67C9A0412AB53ED3000B5281 /* ThemePane.swift in Sources */,
 				4569ED0D2C92CE090075CF8F /* CLIServer.swift in Sources */,
@@ -566,6 +577,7 @@
 				67C9A0102AB53E83000B5281 /* types.swift in Sources */,
 				67C99FFF2AB53E62000B5281 /* TipsWindow.swift in Sources */,
 				5DBA9BFFAF8D649A1C60D5FD /* RadicalFontManager.swift in Sources */,
+				4574D1683021D4CB00831DCC /* Engine.swift in Sources */,
 				E291A4B12E614A66A584B462 /* KeyCap.swift in Sources */,
 				F1A2B3C52FF9000200A595A7 /* PreferencePickerRow.swift in Sources */,
 			);

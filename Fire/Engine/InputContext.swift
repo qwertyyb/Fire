@@ -6,8 +6,6 @@
 //
 
 protocol InputContext {
-    var inputMode: InputMode { get set }
-    
     var origin: String { get set }
     var candidates: [Candidate] { get set }
     var hasNext: Bool { get set }
@@ -20,5 +18,7 @@ protocol InputContext {
     func commitCandidate(_ candidate: Candidate, confirmed: Bool)
     
     func moveCursor(_ offset: Int)
+    
+    func showMessage(_ message: String)
 }
 

@@ -4,21 +4,29 @@
 //
 //  Created by qwertyyb on 2026/8/3.
 //
+import Defaults
 
-final class EngineStore {
-    static let shared = EngineStore()
+protocol EngineStore {
+    var inputMode: InputMode { get set }
+    var recentCommittedTexts: [String] { get set }
+}
+
+enum InputMode: String, Defaults.Serializable {
+    case zhhans
+    case enUS
+}
+
+final class DefaultEngineStore: EngineStore {
+    static let shared = DefaultEngineStore()
     
     private static let maxRecentCount = 20
     
-    var recentCommittedTexts: [String] = []
-    
-    func recordCommittedText(_ text: String) {
-        recentCommittedTexts.append(text)
-        if recentCommittedTexts.count > Self.maxRecentCount {
-            recentCommittedTexts.removeFirst()
+    var recentCommittedTexts: [String] = [] {
+        didSet (val) {
+            if recentCommittedTexts.count > Self.maxRecentCount {
+                recentCommittedTexts.removeFirst()
+            }
         }
     }
-    func getRecentCommitedTexts(_ count: Int) -> String {
-        recentCommittedTexts.suffix(count).joined()
-    }
+    var inputMode: InputMode = .zhhans
 }

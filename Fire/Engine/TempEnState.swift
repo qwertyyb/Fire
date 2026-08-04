@@ -17,6 +17,12 @@ struct TempEnState: InputState {
         return context.origin.isEmpty && event.characters == Self.trigger
     }
     
+    var store: any EngineStore
+    
+    init(store: any EngineStore) {
+        self.store = store
+    }
+    
     mutating func handle(_ event: KeyInput, context: inout InputContext, exitState: () -> Void) -> Bool? {
         var origin = context.origin
         if event.characters == Self.trigger && origin == Self.trigger {
@@ -30,7 +36,7 @@ struct TempEnState: InputState {
         if event.keyCode == kVK_Return  {
             // 回车键，把除了第一个触发码外的字符上屏，并退出临时英文模式
             let text = String(origin.dropFirst())
-            EngineStore.shared.recordCommittedText(text)
+            store.recentCommittedTexts.append(text)
             context.commit(text)
             exitState()
             return true

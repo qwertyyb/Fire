@@ -16,15 +16,18 @@ struct QuickCombineState: InputState {
     
     let dict: any EngineDictManager
     
-    init(count: Int = 2, dict: some EngineDictManager) {
-        self.count = 2
+    var store: any EngineStore
+    
+    init(count: Int = 2, dict: some EngineDictManager, store: some EngineStore) {
+        self.count = count
         self.dict = dict
+        self.store = store
     }
     
     func updateContext(_ context: inout any InputContext) {
         let text = combineText(self.count)
         // 五笔码显示在候选窗原码区；code 与 origin 保持一致以避免出现多余的"()"
-        let code = DictManager.shared.queryWubiCode(text) ?? "无法取码"
+        let code = dict.queryWubiCode(text) ?? "无法取码"
         let tip = Candidate(
             code: code,
             text: "",
@@ -41,28 +44,26 @@ struct QuickCombineState: InputState {
     }
     
     func combineText(_ count: Int) -> String {
-        return EngineStore.shared.recentCommittedTexts.suffix(count).joined()
+        return store.recentCommittedTexts.suffix(count).joined()
     }
     
-    private func confirmCombine() {
+    private func confirmCombine(_ context: inout any InputContext) {
         let text = combineText(self.count)
-        if let code = DictManager.shared.queryWubiCode(text) {
+        if let code = dict.queryWubiCode(text) {
             // 如果该词已被屏蔽，取消屏蔽后继续添加为用户词
             if self.dict.isBlocked(text) {
                 self.dict.unblockText(text)
             }
             self.dict.addUserText(origin: code, text: text)
             // 组词成功时显示编码提示，方便用户验证
-            Utils.shared.showMessage("已添加新词【\(text)】\(code)")
-            NotificationQueue.default.enqueue(
-                Notification(name: DictManager.userDictUpdated), postingStyle: .whenIdle)
+            context.showMessage("已添加新词【\(text)】\(code)")
         } else {
-            Utils.shared.showMessage("无法为【\(text)】生成五笔码")
+            context.showMessage("无法为【\(text)】生成五笔码")
         }
     }
 
     mutating func handle(_ event: KeyInput, context: inout any InputContext, exitState: () -> Void) -> Bool? {
-        let bufCount = EngineStore.shared.recentCommittedTexts.count
+        let bufCount = store.recentCommittedTexts.count
         switch Int(event.keyCode) {
         case kVK_LeftArrow:
             self.count = min(count + 1, bufCount)
@@ -73,7 +74,7 @@ struct QuickCombineState: InputState {
             updateContext(&context)
             return true
         case kVK_Return:
-            confirmCombine()
+            confirmCombine(&context)
             exitState()
             return true
         case kVK_Escape:

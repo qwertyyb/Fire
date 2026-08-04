@@ -10,6 +10,7 @@ struct KeyInput: Equatable {
     enum EventType: Equatable {
         case keyDown
         case flagsChanged
+        case modifierPress
     }
 
     let type: EventType

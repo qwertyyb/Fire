@@ -23,12 +23,7 @@ class FireInputController: IMKInputController, InputContext  {
     
     var selectedIndex: Int = 0
     
-    var inputMode: InputMode {
-        get { Fire.shared.inputMode }
-        set(value) { Fire.shared.inputMode = value }
-    }
-    
-    var state = RootState(dict: DictManager.shared)
+    var session = Engine.shared.createSession(dict: DictManager.shared, config: FireEngineConfig.shared)
     
     func commit(_ text: String) {
         FireLog.input.debug("commit: \(text)")
@@ -62,15 +57,19 @@ class FireInputController: IMKInputController, InputContext  {
         return client().attributedSubstring(from: NSMakeRange(previousLocation, 1))?.string ?? ""
     }
     
+    func showMessage(_ message: String) {
+        Utils.shared.showMessage(message)
+    }
+    
     func prevPage() {
         var inputContext: any InputContext = self
-        if state.prevPage(&inputContext) {
+        if session.prevPage(&inputContext) {
             refreshCandidatesWindow()
         }
     }
     func nextPage() {
         var inputContext: any InputContext = self
-        if state.nextPage(&inputContext) {
+        if session.nextPage(&inputContext) {
             refreshCandidatesWindow()
         }
     }
@@ -96,15 +95,6 @@ class FireInputController: IMKInputController, InputContext  {
         }
     }
 
-    // ---- handlers begin -----
-    func flagChangedHandler(event: NSEvent) {
-        FireLog.input.debug("flagChangedHandler")
-        var context: any InputContext = self
-        let _ = state.flagsChangeHandler(KeyInput(event: event), context: &context)
-    }
-
-    // ---- handlers end -------
-
     override func recognizedEvents(_ sender: Any!) -> Int {
         // 当在当前应用下输入时　NSEvent.addGlobalMonitorForEvents 回调不会被调用，需要针对当前app, 使用原始的方式处理flagsChanged事件
         let isCurrentApp = client().bundleIdentifier() == Bundle.main.bundleIdentifier
@@ -113,6 +103,19 @@ class FireInputController: IMKInputController, InputContext  {
             events = NSEvent.EventTypeMask(arrayLiteral: .keyDown, .flagsChanged)
         }
         return Int(events.rawValue)
+    }
+    
+    func transformToKeyInput(_ event: NSEvent) -> KeyInput {
+        if Fire.shared.modifierKeyPressChecker.check(event) {
+            return KeyInput(
+                type: .modifierPress,
+                keyCode: event.keyCode,
+                characters: event.characters,
+                charactersIgnoringModifiers: event.charactersIgnoringModifiers,
+                modifiers: event.modifierFlags.intersection(.deviceIndependentFlagsMask)
+            )
+        }
+        return KeyInput(event: event)
     }
 
     override func handle(_ event: NSEvent!, client sender: Any!) -> Bool {
@@ -131,10 +134,11 @@ class FireInputController: IMKInputController, InputContext  {
             CandidatesWindow.shared.inputController = self
         }
         Fire.shared.activeInputController = self
+        
+        let keyInput = transformToKeyInput(event)
+        
         var context: any InputContext = self
-        let result = state.handle(KeyInput(event: event), context: &context) {
-
-        } ?? false
+        let result = session.handle(keyInput, context: &context) {} ?? false
         
         self.markText()
         self.refreshCandidatesWindow()

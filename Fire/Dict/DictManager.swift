@@ -99,6 +99,8 @@ class DictManager: EngineDictManager {
 
     func addUserText(origin: String, text: String) {
         let _ = writer.prependCandidate(candidate: Candidate(code: origin, text: text, type: .user))
+        NotificationQueue.default.enqueue(
+            Notification(name: DictManager.userDictUpdated), postingStyle: .whenIdle)
     }
 
     func blockCandidate(_ candidate: Candidate) {

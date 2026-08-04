@@ -12,17 +12,6 @@ import SwiftUI
 
 internal let SQLITE_TRANSIENT = unsafeBitCast(-1, to: sqlite3_destructor_type.self)
 
-enum CandidatesDirection: Int, Decodable, Encodable, Defaults.Serializable {
-    case vertical
-    case horizontal
-}
-
-enum ExtraCandidateSelectKeys: String, Codable, Defaults.Serializable {
-    case disabled
-    case semicolonQuote
-    case commaPeriod
-}
-
 // 候选词提示模式：控制候选词旁显示什么额外信息
 enum CandidateHintMode: String, Codable, Defaults.Serializable {
     case none       // 不提示
@@ -42,16 +31,6 @@ enum AppInputModeTipShowTime: Int, Decodable, Encodable, Defaults.Serializable {
     case onlyChanged // 仅在切换后的输入模式与之前不一致时显示
     case always // 应用切换即显示，无论有没有变化
     case none // 不显示
-}
-
-enum ModifierKey: String, Codable, Defaults.Serializable {
-  case shift
-  case leftShift
-  case rightShift
-  case control
-  case command
-  case option
-  case function
 }
 
 
@@ -97,12 +76,6 @@ class ApplicationSettingItem: ObservableObject, Codable, Identifiable, Defaults.
 
 // MARK: - Defaults 键值定义
 
-
-enum InputMode: String, Defaults.Serializable {
-    case zhhans
-    case enUS
-}
-
 enum InputModeSetting: String, Codable {
     case zhhans
     case enUS
@@ -136,12 +109,6 @@ struct Candidate: Hashable {
         self.spelling = spelling
         self.pinyin = pinyin
     }
-}
-
-enum CodeMode: Int, CaseIterable, Decodable, Encodable, Defaults.Serializable {
-    case wubi
-    case pinyin
-    case wubiPinyin
 }
 
 
