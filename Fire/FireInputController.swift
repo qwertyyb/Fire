@@ -145,6 +145,14 @@ class FireInputController: IMKInputController, InputContext  {
         
         return result
     }
+    
+    override func commitComposition(_ sender: Any!) {
+        FireLog.input.debug("commitComposition")
+        if let first = candidates.first {
+            var inputContext: any InputContext = self
+            session.commitCandidate(&inputContext, first, reason: .auto)
+        }
+    }
 
     // 更新候选窗口
     // 逻辑顺序：获取候选 → 满4码唯一候选自动上屏 → 无候选且不显示输入码时关闭窗口 → 显示候选窗
@@ -257,6 +265,8 @@ class FireInputController: IMKInputController, InputContext  {
         FireLog.input.debug("clean")
         origin = ""
         curPage = 1
+        selectedIndex = 0
+        candidates = []
         CandidatesWindow.shared.close()
     }
 }

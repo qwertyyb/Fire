@@ -45,6 +45,7 @@ class Fire: NSObject {
             .sink { notification in
                 if notification.userInfo?["val"] as? InputMode == InputMode.enUS {
                     self.activeInputController?.insertOriginText()
+                    self.activeInputController?.clean()
                 }
                 StatusBar.shared.refresh()
                 self.toastCurrentMode()
