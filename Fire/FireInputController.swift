@@ -148,10 +148,8 @@ class FireInputController: IMKInputController, InputContext  {
     
     override func commitComposition(_ sender: Any!) {
         FireLog.input.debug("commitComposition")
-        if let first = candidates.first {
-            var inputContext: any InputContext = self
-            session.commitCandidate(&inputContext, first, reason: .auto)
-        }
+        var inputContext: any InputContext = self
+        session.commitSelected(&inputContext, reason: .auto)
     }
 
     // 更新候选窗口
@@ -206,7 +204,7 @@ class FireInputController: IMKInputController, InputContext  {
 
     // 往输入框插入当前字符
     func insertText(_ text: String) {
-        FireLog.input.debug("insertText: \(text)")
+        FireLog.input.debug("insertText: \(text), \(self.client()?.bundleIdentifier() ?? "")")
         if text.count > 0 {
             var newText = text
             let textBefore = getTextBefore(1)
@@ -215,6 +213,7 @@ class FireInputController: IMKInputController, InputContext  {
                 FireLog.input.debug("insertCandidate should append whitespace: \(newText)")
             }
             let value = NSAttributedString(string: newText)
+            FireLog.input.debug("insertText, \(self.replacementRange())")
             client()?.insertText(value, replacementRange: replacementRange())
             if PunctuationConversion.shared.isPair(newText) {
                 DispatchQueue.main.async {

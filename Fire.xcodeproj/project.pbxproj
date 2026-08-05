@@ -279,6 +279,7 @@
 				67C99FF92AB53E62000B5281 /* ToastWindow.swift */,
 				67C99FFA2AB53E62000B5281 /* Statistics.swift */,
 				67C99FFB2AB53E62000B5281 /* TipsWindow.swift */,
+				67C99FFC2AB53E62000B5281 /* ModifierKeyPressChecker.swift */,
 			);
 			path = Utils;
 			sourceTree = "<group>";
@@ -398,7 +399,6 @@
 				45F86EA8301D95920048F934 /* InputState.swift */,
 				45F86EAC301D98CD0048F934 /* InputContext.swift */,
 				45F86EB4301DDB3B0048F934 /* EngineUtils.swift */,
-				67C99FFC2AB53E62000B5281 /* ModifierKeyPressChecker.swift */,
 			);
 			path = Engine;
 			sourceTree = "<group>";

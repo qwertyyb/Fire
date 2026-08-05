@@ -115,6 +115,7 @@ class InputSource {
                      // 1. 在当前输入法是 ABC 英文输入法时，在应用启动后第一次切换到当前输入法时，此回调不会调用，此问题暂时无法处理
                      // 2. 在此回调中直接获取当前输入法是否被选择，可能不准确（状态尚未更新），需要 asyncAfter 0.1s 后再获取状态
                      // 3. 此事件有可能会被重复调用，比如切换到搜狗输入法时，所以事件需要过滤一下
+                     // 4. 有时切换输入法，这个事件不会触发
                      DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
                          let selected = self.isSelected()
                          FireLog.app.debug("onSelectChanged callback: \(String(describing: self.selected), privacy: .public), \(selected, privacy: .public)")

@@ -23,6 +23,7 @@ class Fire: NSObject {
     weak var activeInputController: FireInputController?
     var cancellables: [AnyCancellable] = []
     let modifierKeyPressChecker: ModifierKeyPressChecker
+    let inputSource = InputSource.shared
 
     override init() {
         modifierKeyPressChecker = ModifierKeyPressChecker(modifierKey: Defaults[.toggleInputModeKey]) { event in

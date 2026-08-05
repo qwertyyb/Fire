@@ -92,6 +92,12 @@ class RootState: InputState {
         updateCandidates(&context, origin: "", page: 1, selectedIndex: 0)
     }
     
+    func commitSelected(_ context: inout any InputContext, reason: CandidateCommitReason = .keyEvent) {
+        if context.selectedIndex < context.candidates.count && context.candidates[context.selectedIndex].type != .placeholder {
+            commitCandidate(&context, context.candidates[context.selectedIndex])
+        }
+    }
+    
     @discardableResult
     func prevPage(_ context: inout any InputContext) -> Bool {
         guard context.curPage > 1 else { return false }
@@ -138,7 +144,7 @@ class RootState: InputState {
     
     // 是否进入子状态处理：临时英文、删除候选词、快速组词
     private func enterTempEnHandler(_ event: KeyInput, context: inout any InputContext) -> Bool? {
-        if (!config.disableTempEnMode && TempEnState.shouldEnter(event, context: context)) {
+        if (!config.disableTempEnMode && store.inputMode == .zhhans && TempEnState.shouldEnter(event, context: context)) {
             setSubState(TempEnState(store: self.store), context: &context)
             return true
         }
@@ -146,7 +152,7 @@ class RootState: InputState {
     }
     
     private func enterDeleteCandidateHandler(_ event: KeyInput, context: inout any InputContext) -> Bool? {
-        if (DeleteCandidateState.shouldEnter(event, context: context)) {
+        if (store.inputMode == .zhhans && DeleteCandidateState.shouldEnter(event, context: context)) {
             let targetIndex = (DeleteCandidateState.digitByKeyCode[event.keyCode] ?? 1) - 1
             setSubState(DeleteCandidateState(candidate: context.candidates[targetIndex], dict: self.dict), context: &context)
             return true
@@ -155,7 +161,7 @@ class RootState: InputState {
     }
     
     private func enterQuickCombineHandler(_ event: KeyInput, context: inout any InputContext) -> Bool? {
-        if event.modifiers == .control, event.keyCode == UInt16(kVK_ANSI_Equal), context.origin.isEmpty {
+        if store.inputMode == .zhhans, event.modifiers == .control, event.keyCode == UInt16(kVK_ANSI_Equal), context.origin.isEmpty {
             if store.recentCommittedTexts.count >= 2 {
                 setSubState(QuickCombineState(count: 2, dict: self.dict, store: self.store), context: &context)
             } else {
@@ -194,6 +200,7 @@ class RootState: InputState {
         //   - Shift+字母由 charKeyHandler 处理(commit 0b51393 起，大写字母会被附加到原码而不直接上屏)
         // .deviceIndependentFlagsMask 用来过滤低位"设备相关"标志，避免极少数键盘场景下的脏数据误判。
         // 关联 issue #149 #152，回归源 commit 2d66064。
+        FireLog.input.info("flagChangeHandler, modifiers: \(String(describing: event.modifiers))")
         let modifiers = event.modifiers
             .subtracting([.shift, .capsLock])
         if event.type == .flagsChanged || (
@@ -327,39 +334,43 @@ class RootState: InputState {
             options: [],
             range: NSRange(location: 0, length: string.utf16.count)
         )
-
-        // 当前没有输入非字符并且之前没有输入字符,不做处理
-        if  context.origin.isEmpty && match == nil {
-            FireLog.input.debug("非字符,不做处理")
+        
+        if match == nil {
             return nil
         }
-        // 当前输入的是英文字符,附加到之前
-        if match != nil {
-            var origin = context.origin
-            // 第五码顶字上屏：五笔方案下，当已有≥4码时，先上屏首选词，再以当前键开始新编码
-            if config.wubiFifthCommit,
-               config.codeMode == .wubi,
-               context.origin.count >= 4,
-               let firstCandidate = context.candidates.first,
-               firstCandidate.type != .placeholder {
-                commitCandidate(&context, firstCandidate, reason: .auto)
-                // 第五码作为下个编码的首码
-                origin = string
-            } else {
-                origin += string
-            }
-            
-            updateCandidates(&context, origin: origin, page: 1, selectedIndex: 0)
-            
-            if config.wubiAutoCommit && context.curPage == 1 && context.candidates.count == 1 && context.origin.count >= 4,
-               let candidate = context.candidates.first, candidate.type != .placeholder {
-                // 满4码唯一候选词自动上屏
-                commitCandidate(&context, candidate, reason: .auto)
-            }
 
+        // 输入大写字母，则自动 commit 首个候选词
+        if string >= "A" && string <= "Z" {
+            if let first = context.candidates.first, first.type != .placeholder {
+                commitSelected(&context, reason: .auto)
+            }
+            context.commit(string)
             return true
         }
-        return nil
+        
+        var origin = context.origin
+        // 第五码顶字上屏：五笔方案下，当已有≥4码时，先上屏首选词，再以当前键开始新编码
+        if config.wubiFifthCommit,
+           config.codeMode == .wubi,
+           context.origin.count >= 4,
+           let firstCandidate = context.candidates.first,
+           firstCandidate.type != .placeholder {
+            commitCandidate(&context, firstCandidate, reason: .auto)
+            // 第五码作为下个编码的首码
+            origin = string
+        } else {
+            origin += string
+        }
+        
+        updateCandidates(&context, origin: origin, page: 1, selectedIndex: 0)
+        
+        if config.wubiAutoCommit && context.curPage == 1 && context.candidates.count == 1 && context.origin.count >= 4,
+           let candidate = context.candidates.first, candidate.type != .placeholder {
+            // 满4码唯一候选词自动上屏
+            commitCandidate(&context, candidate, reason: .auto)
+        }
+
+        return true
     }
 
     private func numberKeyHandler(_ event: KeyInput, context: inout any InputContext) -> Bool? {
@@ -439,25 +450,20 @@ class RootState: InputState {
     private func spaceKeyHandler(_ event: KeyInput, context: inout any InputContext) -> Bool? {
         FireLog.input.debug("spaceKeyHandler")
         if event.keyCode == kVK_Space && context.candidates.count > 0 {
-            if context.selectedIndex < context.candidates.count {
-                commitCandidate(&context, context.candidates[context.selectedIndex])
-            }
+            commitSelected(&context)
             return true
         }
         return nil
     }
     
     func punctuationKeyHandler(event: KeyInput, context: inout any InputContext) -> Bool? {
+        FireLog.input.debug("punctuationKeyHandler")
         // 获取输入的字符
         guard let string = event.characters else { return nil }
 
         // 如果输入的字符是标点符号，转换标点符号为中文符号
         if let result = PunctuationConversion.shared.conversion(string) {
-            if let first = context.candidates.first,
-               first.type != .placeholder {
-                // 首个候选自动上屏
-                commitCandidate(&context, first, reason: .auto)
-            }
+            commitSelected(&context)
             context.commit(result)
             return true
         }
@@ -471,11 +477,11 @@ class RootState: InputState {
             enterTempEnHandler,
             enterDeleteCandidateHandler,
             enterQuickCombineHandler,
+            hotkeyHandler,
             
             flagsChangeHandler,
             enModeHandler,
             
-            hotkeyHandler,
             pageKeyHandler,
             predictorHandler,
             deleteKeyHandler,
