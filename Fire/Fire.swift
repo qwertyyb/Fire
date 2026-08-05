@@ -25,8 +25,10 @@ class Fire: NSObject {
     let modifierKeyPressChecker: ModifierKeyPressChecker
 
     override init() {
-        modifierKeyPressChecker = ModifierKeyPressChecker(modifierKey: Defaults[.toggleInputModeKey]) { modifierKey in
-            Self.engine.toggleInputMode()
+        modifierKeyPressChecker = ModifierKeyPressChecker(modifierKey: Defaults[.toggleInputModeKey]) { event in
+            if InputSource.shared.isSelected() {
+                Self.engine.toggleInputMode()
+            }
         }
         super.init()
         _ = InputSource.shared.onSelectChanged { selected in

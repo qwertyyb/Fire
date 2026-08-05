@@ -60,7 +60,7 @@ class ModifierKeyPressChecker {
     private func checkModifierKeyUp (event: NSEvent) -> Bool {
         guard checkKeyCode.contains(Int(event.keyCode)) else { return false }
         if event.type == .flagsChanged
-            && event.modifierFlags == .init(rawValue: 0)
+            && event.modifierFlags.intersection(.deviceIndependentFlagsMask).isEmpty
             && Date() - lastTime <= delayInterval {
             // modifier keyup event
             lastTime = Date(timeInterval: -3600*4, since: Date())
@@ -71,7 +71,7 @@ class ModifierKeyPressChecker {
 
     private func checkModifierKeyDown(event: NSEvent) -> Bool {
         let isKeyDown = event.type == .flagsChanged
-            && event.modifierFlags == checkModifier
+            && event.modifierFlags.intersection(.deviceIndependentFlagsMask) == checkModifier
             && checkKeyCode.contains(Int(event.keyCode))
         if isKeyDown {
             // modifier keydown event
