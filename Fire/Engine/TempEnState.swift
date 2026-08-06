@@ -31,7 +31,7 @@ struct TempEnState: InputState {
                 context.commit(result)
             }
             exitState()
-            return false
+            return true
         }
         if event.keyCode == kVK_Return  {
             // 回车键，把除了第一个触发码外的字符上屏，并退出临时英文模式
