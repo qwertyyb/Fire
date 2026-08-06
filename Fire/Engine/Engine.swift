@@ -12,7 +12,7 @@ class Engine {
     
     static let inputModeChanged = Notification.Name("Fire.inputModeChanged")
     
-    var store: some EngineStore = DefaultEngineStore.shared
+    var store: any EngineStore = DefaultEngineStore.shared
     func createSession(dict: some EngineDictManager, config: some EngineConfig) -> RootState {
         return RootState(dict: dict, config: config, store: store)
     }
