@@ -54,6 +54,9 @@ jobs:
     - name: prepare sqlcipher
       run: ./scripts/0_prepare_sqlcipher.sh
 
+    - name: run unit tests
+      run: ./scripts/e_run_unit_tests.sh
+
     - name: build Fire.app
       run: ./scripts/a_build_app.sh
 
