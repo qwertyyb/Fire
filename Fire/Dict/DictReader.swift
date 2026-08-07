@@ -138,15 +138,6 @@ extension DictReader {
             .replacingOccurrences(of: "z", with: "?")) + suffix
     }
 
-    /// 字面量匹配 pattern（不把 z 换成 ?），供 SQL zrank 优先用户词等真实含 z 的编码
-    private func getQueryRaw(_ origin: String) -> String {
-        if origin.isEmpty {
-            return origin
-        }
-        let suffix = Defaults[.enableExactMatch] ? "" : "*"
-        return origin + suffix
-    }
-
     func getCandidates(
         query: String,
         page: Int
@@ -164,7 +155,6 @@ extension DictReader {
         FireLog.dict.debug("getCandidates origin: \(query)")
         let startTime = CFAbsoluteTimeGetCurrent()
         let queryLike = getQueryLike(query)
-        let queryRaw = getQueryRaw(query)
         var candidates: [Candidate] = []
         sqlite3_reset(queryStatement)
         sqlite3_clear_bindings(queryStatement)
@@ -175,7 +165,7 @@ extension DictReader {
         )
         sqlite3_bind_text(queryStatement,
                           sqlite3_bind_parameter_index(queryStatement, ":queryRaw"),
-                          queryRaw, -1,
+                          query, -1,
                           SQLITE_TRANSIENT
         )
         sqlite3_bind_int(queryStatement,
