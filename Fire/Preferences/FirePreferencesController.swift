@@ -88,6 +88,8 @@ class FirePreferencesController: NSObject, NSWindowDelegate, ObservableObject {
     func windowWillClose(_ notification: Notification) {
         window?.contentViewController = nil
         window = nil
+        // 关闭后回到默认面板，避免下次打开仍停在上一页（如统计页在窗口尚未可见时加载导致空数据）
+        selectedPane = "基本"
         // 关闭偏好窗口后隐藏 Dock 图标，恢复输入法应有的后台运行状态
         NSApp.setActivationPolicy(.accessory)
     }

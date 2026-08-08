@@ -44,6 +44,29 @@ class CandidatesWindow: NSPanel, NSWindowDelegate {
     func setSelectedIndex(_ index: Int) {
         hostingView.rootView.selectedIndex = index
     }
+    
+    func setState(original: String?, candidatesData: CandidatesData?, selectedIndex: Int?) {
+        refreshing = true
+        if let candidatesData = candidatesData {
+            hostingView.rootView.candidates = candidatesData.list
+            hostingView.rootView.hasNext = candidatesData.hasNext
+            hostingView.rootView.hasPrev = candidatesData.hasPrev
+        }
+        if let original = original {
+            hostingView.rootView.origin = original
+        }
+        if let selectedIndex = selectedIndex {
+            hostingView.rootView.selectedIndex = selectedIndex
+        }
+        hostingView.rootView.onCandidateHover = { [weak self] index in
+            guard let self = self, !self.refreshing else { return }
+            self.hostingView.rootView.selectedIndex = index
+            self.inputController?.selectedIndex = index
+        }
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.2) { [weak self] in
+            self?.refreshing = false
+        }
+    }
 
     func setCandidates(
         _ candidatesData: CandidatesData,
@@ -85,30 +108,12 @@ class CandidatesWindow: NSPanel, NSWindowDelegate {
             }),
             (CandidatesView.prevPageBtnTapped, { [weak self] _ in self?.inputController?.prevPage() }),
             (CandidatesView.nextPageBtnTapped, { [weak self] _ in self?.inputController?.nextPage() }),
-            (Fire.inputModeChanged, { [weak self] notification in
-                if notification.userInfo?["val"] as? InputMode == InputMode.enUS {
-                    self?.inputController?.insertOriginText()
-                }
-            })
         ]
         // 保存 observer token 以便 deinit 时移除，防止通知回调悬挂导致崩溃
         events.forEach { (observer) in
             let token = NotificationCenter.default.addObserver(
                 forName: observer.name, object: nil, queue: nil, using: observer.callback)
             notificationObservers.append(token)
-        }
-        // 由于使用IMKInputController recognizedEvents在一些场景下不能监听到flagChanged事件，比如保存文件和lanchPad场景
-        // 所以这里需要使用NSEvent.addGlobalMonitorForEvents监听shift键被按下
-        // 保存 globalMonitor 引用，用于 deinit 时移除
-        // 全局 flagsChanged 监视器在后台线程回调，需派发到主线程再操作 UI
-        globalMonitor = NSEvent.addGlobalMonitorForEvents(matching: .flagsChanged) { [weak self] (event) in
-            FireLog.input.debug("globalMonitorForEvents flagsChanged: \(String(describing: event), privacy: .public)")
-            if !InputSource.shared.isSelected() {
-                return
-            }
-            DispatchQueue.main.async {
-                _ = self?.inputController?.flagChangedHandler(event: event)
-            }
         }
     }
 

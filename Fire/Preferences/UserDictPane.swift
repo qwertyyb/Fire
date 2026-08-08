@@ -179,7 +179,7 @@ struct UserDictPane: View {
                         showAlert = true
                     }
                     Button("导出") {
-                        let content = DictManager.shared.getUserDictContent()
+                        let content = DictManager.shared.exportUserDictContent()
                         let panel = NSSavePanel()
                         panel.title = "导出用户词库"
                         panel.nameFieldStringValue = "user_dict.txt"
@@ -200,6 +200,27 @@ struct UserDictPane: View {
                         let lines = content.split(separator: "\n").count
                         alertMessage = "含用户词的码表已导出（\(lines) 条编码）"
                         showAlert = true
+                    }
+                }
+                VStack(alignment: .leading, spacing: 6) {
+                    HStack(spacing: 6) {
+                        Text("可使用日期和时间占位符作为候选词：")
+                            .font(.caption2)
+                            .foregroundStyle(.tertiary)
+                    }
+                    HStack(spacing: 6) {
+                        Text("示例：")
+                            .font(.caption2)
+                            .foregroundStyle(.tertiary)
+                        Text("{yyyy}-{MM}-{dd} {HH}:{mm}:{ss}")
+                            .font(.caption)
+                            .padding(.horizontal, 5)
+                            .padding(.vertical, 2)
+                            .background(Color(.sRGB, red: 0.5, green: 0.5, blue: 0.5, opacity: 0.2))
+                            .cornerRadius(3)
+                        Text(" →  2026-02-20 23:45:30")
+                            .font(.caption2)
+                            .foregroundStyle(.tertiary)
                     }
                 }
             } header: {
@@ -314,7 +335,7 @@ struct BlockedWordsList: View {
                             Text(word).font(.callout)
                             Spacer()
                             Button("恢复") {
-                                DictManager.shared.unblockWord(word)
+                                DictManager.shared.unblockText(word)
                                 words.removeAll { $0 == word }
                             }
                             .font(.caption)

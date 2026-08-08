@@ -14,7 +14,16 @@ enum InputSourceUsage {
     case selected
 }
 
+extension TISInputSource {
+    func value<T>(forProperty propertyKey: CFString, type: T.Type) -> T? {
+        guard let value = TISGetInputSourceProperty(self, propertyKey) else { return nil }
+        return Unmanaged<AnyObject>.fromOpaque(value).takeUnretainedValue() as? T
+    }
+}
+
 class InputSource {
+    static let selectChanged = Notification.Name("InputSource.selectChanged")
+    
     let installLocation = "/Library/Input Methods/Fire.app"
     let kSourceID = Bundle.main.bundleIdentifier ?? "com.qwertyyb.inputmethod.Fire"
     var selected: Bool? = nil
@@ -103,43 +112,33 @@ class InputSource {
         FireLog.app.info("Disable input source")
     }
 
-    func onSelectChanged(callback: @escaping (Bool) -> Void) -> NSObjectProtocol {
+    func startSelectChangedMonitor() {
         FireLog.app.debug("onSelectChanged")
-        let observer = DistributedNotificationCenter.default()
-            .addObserver(
-                forName: .init(String(kTISNotifySelectedKeyboardInputSourceChanged)),
-                 object: nil,
-                 queue: nil,
-                 using: { _ in
-                     // 这个回调发现两个问题
-                     // 1. 在当前输入法是 ABC 英文输入法时，在应用启动后第一次切换到当前输入法时，此回调不会调用，此问题暂时无法处理
-                     // 2. 在此回调中直接获取当前输入法是否被选择，可能不准确（状态尚未更新），需要 asyncAfter 0.1s 后再获取状态
-                     // 3. 此事件有可能会被重复调用，比如切换到搜狗输入法时，所以事件需要过滤一下
-                     DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
-                         let selected = self.isSelected()
-                         FireLog.app.debug("onSelectChanged callback: \(String(describing: self.selected), privacy: .public), \(selected, privacy: .public)")
-                         // 此事件会重复触发，此处判断需要过滤一下
-                         if (selected != self.selected) {
-                             self.selected = selected
-                             callback(self.selected!)
-                         }
-                     }
-                }
-            )
-        return observer
+        DistributedNotificationCenter.default()
+            .addObserver(self,
+                         selector: #selector(selectedKeyboardInputSourceChanged),
+                         name: NSNotification.Name(kTISNotifySelectedKeyboardInputSourceChanged as String),
+                         object: nil,
+                         suspensionBehavior: .deliverImmediately)
+    }
+    
+    @objc func selectedKeyboardInputSourceChanged() {
+        let selected = self.isSelected()
+        if selected != self.selected {
+            self.selected = selected
+            NotificationCenter.default.post(
+                name: Self.selectChanged,
+                object: nil,
+                userInfo: [
+                    "selected": selected
+                ])
+        }
     }
 
     func isSelected() -> Bool {
-        guard let result = findInputSource(forUsage: .selected) else {
-            return false
-        }
-        let unsafeIsSelected = TISGetInputSourceProperty(
-            result,
-            kTISPropertyInputSourceIsSelected
-        ).assumingMemoryBound(to: CFBoolean.self)
-        let isSelected = CFBooleanGetValue(Unmanaged<CFBoolean>.fromOpaque(unsafeIsSelected).takeUnretainedValue())
-
-        return isSelected
+        let source = TISCopyCurrentKeyboardInputSource().takeRetainedValue()
+        let id = source.value(forProperty: kTISPropertyInputSourceID, type: String.self)
+        return id != nil && id == kSourceID
     }
 
     func isEnabled() -> Bool {

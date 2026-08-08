@@ -22,6 +22,7 @@ struct GeneralPane: View {
     @Default(.wubiFifthCommit) private var wubiFifthCommit
     @Default(.candidateHintMode) private var candidateHintMode
     @Default(.enableGBK) private var enableGBK
+    @Default(.enableEmoji) private var enableEmoji
     @Default(.showCodeInWindow) private var showCodeInWindow
     @Default(.candidatesDirection) private var candidatesDirection
     @Default(.extraCandidateSelectKeys) private var extraCandidateSelectKeys
@@ -32,7 +33,6 @@ struct GeneralPane: View {
     @Default(.disableTempEnMode) private var disableTempEnMode
     @Default(.showInputModeStatus) private var showInputModeStatus
     @Default(.enableWhitespaceBetweenZhEn) private var enableWhitespaceBetweenZhEn
-    @Default(.spellingScheme) private var spellingScheme
     @Default(.enableExactMatch) private var enableExactMatch
     @Default(.celebrationEffect) private var celebrationEffect
 
@@ -56,21 +56,13 @@ struct GeneralPane: View {
                     }
                     .labelsHidden()
                 }
-                PreferencePickerRow(title: "拆字版本", caption: "仅五笔拆字提示生效") {
-                    Picker("", selection: $spellingScheme) {
-                        Text("86").tag(SpellingScheme.wubi86)
-                        Text("98").tag(SpellingScheme.wubi98)
-                        Text("06").tag(SpellingScheme.wubi06)
-                    }
-                    .labelsHidden()
-                    .disabled(candidateHintMode != .spelling)
-                }
                 PreferenceToggleRow(title: "4码唯一上屏", isOn: $wubiAutoCommit)
                 PreferenceToggleRow(title: "第5码顶字上屏", caption: "仅五笔方案生效", isOn: $wubiFifthCommit)
                     .disabled(code != .wubi)
                 PreferenceToggleRow(title: "精确匹配候选词", caption: "禁用逐码匹配", isOn: $enableExactMatch)
                 PreferenceToggleRow(title: "Z键匹配查询", caption: "万能键", isOn: $zKeyQuery)
                 PreferenceToggleRow(title: "显示生僻字", isOn: $enableGBK)
+                PreferenceToggleRow(title: "显示 Emoji", isOn: $enableEmoji)
             } header: {
                 Text("编码")
             }

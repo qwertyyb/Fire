@@ -8,6 +8,7 @@
 
 import AppKit
 import Carbon
+import Defaults
 
 extension Date {
     static func - (lhs: Date, rhs: Date) -> TimeInterval {
@@ -16,11 +17,8 @@ extension Date {
 
 }
 
-class ModifierKeyUpChecker {
-    init(_ modifier: ModifierKey) {
-        checkModifierKey = modifier
-    }
-    let checkModifierKey: ModifierKey
+class ModifierKeyPressChecker {
+    var checkModifierKey: ModifierKey
     private var checkModifier: NSEvent.ModifierFlags {
         switch self.checkModifierKey {
         case .command:
@@ -62,7 +60,7 @@ class ModifierKeyUpChecker {
     private func checkModifierKeyUp (event: NSEvent) -> Bool {
         guard checkKeyCode.contains(Int(event.keyCode)) else { return false }
         if event.type == .flagsChanged
-            && event.modifierFlags.intersection(.deviceIndependentFlagsMask) == .init(rawValue: 0)
+            && event.modifierFlags.intersection(.deviceIndependentFlagsMask).isEmpty
             && Date() - lastTime <= delayInterval {
             // modifier keyup event
             lastTime = Date(timeInterval: -3600*4, since: Date())
@@ -87,5 +85,41 @@ class ModifierKeyUpChecker {
     // 检查修饰键被按下并抬起
     func check(_ event: NSEvent) -> Bool {
         return checkModifierKeyUp(event: event) || checkModifierKeyDown(event: event)
+    }
+    
+    private func handler(event: NSEvent) {
+        if check(event) {
+            callback(event)
+        }
+    }
+    
+    private var monitors: [Any?] = []
+    private let callback: (NSEvent) -> Void
+    
+    init(modifierKey: ModifierKey, callback: @escaping (NSEvent) -> Void) {
+        self.checkModifierKey = modifierKey
+        self.callback = callback
+        // 由于使用IMKInputController recognizedEvents在一些场景下不能监听到flagChanged事件，比如保存文件和lanchPad场景
+        // 所以这里需要使用NSEvent.addGlobalMonitorForEvents监听shift键被按下
+        // 保存 globalMonitor 引用，用于 deinit 时移除
+        // 必须先完成全部存储属性初始化，再在闭包里捕获 self
+        startMonitoring()
+    }
+    
+    private func startMonitoring() {
+        monitors = [
+            NSEvent.addGlobalMonitorForEvents(matching: .flagsChanged) { [weak self] (event) in
+                FireLog.input.debug("globalMonitorForEvents flagsChanged: \(String(describing: event), privacy: .public)")
+                self?.handler(event: event)
+            }
+        ]
+    }
+    
+    deinit {
+        monitors.forEach { monitor in
+            if let monitor = monitor {
+                NSEvent.removeMonitor(monitor)
+            }
+        }
     }
 }

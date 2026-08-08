@@ -36,9 +36,27 @@ extension FireInputController {
     // 字根表窗口弱引用：关闭后自动置 nil，确保窗口释放时图片内存被回收
     private static weak var wubiRootWindow: NSWindow?
 
-    /// 打开五笔字根表窗口
+    /// 内置码表对应的字根表资源名；自定义码表返回 nil（不提供字根表）
+    private static func builtInWubiRootTableName() -> String? {
+        let path = Defaults[.wbTablePath]
+        let standardized = URL(fileURLWithPath: path).standardizedFileURL
+        let resourceURL = Bundle.main.resourceURL
+        let mapping: [(String, String)] = [
+            ("wb_table.txt", "86版五笔字型"),
+            ("wb_98_table.txt", "98版五笔字型"),
+            ("wb_06_table.txt", "06（新世纪）版五笔字型"),
+        ]
+        for (file, title) in mapping {
+            if let p = resourceURL?.appendingPathComponent(file).path,
+               URL(fileURLWithPath: p).standardizedFileURL == standardized {
+                return title
+            }
+        }
+        return nil
+    }
+
+    /// 打开五笔字根表窗口（仅内置 86/98/06 码表可用）
     ///
-    /// 根据当前选中的拆字版本（86/98/06）加载对应的字根表图片。
     /// 同一时间只允许打开一个字根表窗口，通过弱引用而非遍历 NSApp.windows 实现：
     ///   - 同版本窗口已存在 → 激活前置
     ///   - 不同版本窗口已存在 → 关闭旧窗口（weak 引用自动失效），加载新版
@@ -46,11 +64,9 @@ extension FireInputController {
     ///   - 切换版本时 → 先释放 contentView 释放图片内存，再关闭旧窗口
     @objc func showWubiRootTable(_ sender: Any!) {
         NSApp.activateAsAccessory()
-        let fileName: String
-        switch Defaults[.spellingScheme] {
-        case .wubi86: fileName = "86版五笔字型"
-        case .wubi98: fileName = "98版五笔字型"
-        case .wubi06: fileName = "06（新世纪）版五笔字型"
+        guard let fileName = Self.builtInWubiRootTableName() else {
+            FireLog.input.info("wubi root table unavailable for custom wb table")
+            return
         }
         // 复用现有窗口：同版本激活，不同版本替换内容
         if let existing = Self.wubiRootWindow {
@@ -127,10 +143,14 @@ extension FireInputController {
         menu.items = [
             NSMenuItem(title: "首选项", action: #selector(showPreferences(_:)), keyEquivalent: ""),
             NSMenuItem(title: "用户词库", action: #selector(showUserDictPrefs(_:)), keyEquivalent: ""),
-            // 查看五笔字根表：根据当前拆字版本加载对应字根图，同一时间仅开一个窗口
-            NSMenuItem(title: "查看五笔字根表", action: #selector(showWubiRootTable(_:)), keyEquivalent: ""),
-            NSMenuItem.separator()
         ]
+        // 查看五笔字根表：仅内置 86/98/06 码表提供
+        if Self.builtInWubiRootTableName() != nil {
+            menu.items.append(
+                NSMenuItem(title: "查看五笔字根表", action: #selector(showWubiRootTable(_:)), keyEquivalent: "")
+            )
+        }
+        menu.items.append(NSMenuItem.separator())
         let current = Defaults[.codeMode]
         let modeItems: [(String, CodeMode)] = [
             ("拼音", .pinyin),
@@ -151,11 +171,11 @@ extension FireInputController {
             if let url = NSWorkspace.shared.urlForApplication(withBundleIdentifier: bundleID) {
                 displayName = FileManager.default.displayName(atPath: url.path)
             }
-            let title = "设置“\(displayName)”的预设为\(Fire.shared.inputMode == .zhhans ? "中文" : "英文")"
+            let title = "设置“\(displayName)”的预设为\(Fire.engine.inputMode == .zhhans ? "中文" : "英文")"
             let menuItem = NSMenuItem(title: title, action: #selector(setApplicationMode(_:)), keyEquivalent: "")
             menuItem.representedObject = [
                 "bundleID": bundleID,
-                "mode": Fire.shared.inputMode
+                "mode": Fire.engine.inputMode
             ]
             menu.items.append(contentsOf: [
                 NSMenuItem.separator(),
