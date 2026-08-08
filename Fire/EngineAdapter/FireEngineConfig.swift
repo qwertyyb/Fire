@@ -18,6 +18,10 @@ struct FireEngineConfig: EngineConfig {
     var candidatesDirection: CandidatesDirection {
         Defaults[.candidatesDirection]
     }
+
+    var candidateCount: Int {
+        Defaults[.candidateCount]
+    }
     
     var enableDotAfterNumber: Bool {
         Defaults[.enableDotAfterNumber]
@@ -45,6 +49,10 @@ struct FireEngineConfig: EngineConfig {
     
     var disableTempEnMode: Bool {
         Defaults[.disableTempEnMode]
+    }
+
+    var enablePunctuationAutoPair: Bool {
+        Defaults[.enablePunctuationAutoPair]
     }
     
     static let shared = FireEngineConfig()

@@ -57,6 +57,9 @@ extension View {
 
 // MARK: - Liquid Glass Background
 func getShownCode(candidate: Candidate, origin: String) -> String {
+    if candidate.code.isEmpty {
+        return ""
+    }
     if candidate.type == CandidateType.py || !candidate.code.hasPrefix(origin) {
         return "(\(candidate.code))"
     }
@@ -113,7 +116,7 @@ struct CandidateView: View {
                     .font(Font.custom(RadicalFontManager.fontName, size: 12))
                     .foregroundStyle(Color(codeColor))
             }
-            if hintMode == .wubiCode {
+            if hintMode == .wubiCode && !getShownCode(candidate: candidate, origin: origin).isEmpty {
                 Text(getShownCode(candidate: candidate, origin: origin))
                     .font(.system(size: CGFloat(effectiveConfig.codeFontSize)))
                     .foregroundStyle(Color(codeColor))

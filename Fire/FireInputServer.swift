@@ -82,9 +82,6 @@ extension FireInputController {
     override func deactivateServer(_ sender: Any!) {
         insertOriginText()
         clean()
-        // 跨会话重置标点配对状态（引号/括号计数归零），
-        // 避免切换 App 后延续上一次会话的配对状态，导致开闭颠倒
-        PunctuationConversion.shared.reset()
 //        saveClientInputMode()
         FireLog.input.info("deactivate server: \(self.client()?.bundleIdentifier() ?? "no client deactivate", privacy: .public)")
     }

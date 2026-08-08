@@ -215,7 +215,7 @@ class FireInputController: IMKInputController, InputContext  {
             let value = NSAttributedString(string: newText)
             FireLog.input.debug("insertText, \(self.replacementRange())")
             client()?.insertText(value, replacementRange: replacementRange())
-            if PunctuationConversion.shared.isPair(newText) {
+            if Engine.isPair(newText) {
                 DispatchQueue.main.async {
                     self.moveCursor(-1)
                 }

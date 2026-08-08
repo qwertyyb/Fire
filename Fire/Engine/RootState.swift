@@ -20,12 +20,19 @@ class RootState: InputState {
         
     }
     
-    init(subState: (any InputState)? = nil, dict: some EngineDictManager, config: some EngineConfig, store: some EngineStore = DefaultEngineStore.shared, engine: Engine = Engine.shared) {
+    init(subState: (any InputState)? = nil,
+         dict: some EngineDictManager,
+         config: some EngineConfig,
+         store: some EngineStore = DefaultEngineStore.shared,
+         engine: Engine = Engine.shared,
+         punctuationTransformer: any PunctuationTransformer
+    ) {
         self.subState = subState
         self.dict = dict
         self.config = config
         self.store = store
         self.engine = engine
+        self.punctuationHandler = PunctuationHandler(transformer: punctuationTransformer)
     }
 
     private static let letterRegex = try! NSRegularExpression(pattern: "^[a-zA-Z]+$")
@@ -37,6 +44,8 @@ class RootState: InputState {
     let config: any EngineConfig
     
     var store: any EngineStore
+    
+    var punctuationHandler: PunctuationHandler
     
     var engine: Engine
     
@@ -145,7 +154,10 @@ class RootState: InputState {
     // 是否进入子状态处理：临时英文、删除候选词、快速组词
     private func enterTempEnHandler(_ event: KeyInput, context: inout any InputContext) -> Bool? {
         if (!config.disableTempEnMode && store.inputMode == .zhhans && TempEnState.shouldEnter(event, context: context)) {
-            setSubState(TempEnState(store: self.store), context: &context)
+            setSubState(
+                TempEnState(store: self.store, config: config, punctuationHandler: punctuationHandler),
+                context: &context
+            )
             return true
         }
         return nil
@@ -240,37 +252,25 @@ class RootState: InputState {
     }
     
     private func pageKeyHandler(_ event: KeyInput, context: inout any InputContext) -> Bool? {
-        let keyCode = event.keyCode
         if context.origin.count > 0 {
             // 翻页
-            let shouldNextPage = keyCode == kVK_ANSI_Equal ||
-                (keyCode == kVK_DownArrow && config.candidatesDirection == .horizontal) ||
-                (keyCode == kVK_RightArrow && config.candidatesDirection == .vertical)
-            if shouldNextPage {
+            if EngineUtils.isNextPageKey(event, config: config) {
                 nextPage(&context)
                 return true
             }
 
-            let needPrevPage = keyCode == kVK_ANSI_Minus ||
-                (keyCode == kVK_UpArrow && config.candidatesDirection == .horizontal) ||
-                (keyCode == kVK_LeftArrow && config.candidatesDirection == .vertical)
-            if needPrevPage {
+            if EngineUtils.isPrevPageKey(event, config: config) {
                 prevPage(&context)
                 return true
             }
 
             // 移动高亮
-            let isMoveNext = (keyCode == kVK_RightArrow && config.candidatesDirection == .horizontal) ||
-                (keyCode == kVK_DownArrow && config.candidatesDirection == .vertical)
-            let isMovePrev = (keyCode == kVK_LeftArrow && config.candidatesDirection == .horizontal) ||
-                (keyCode == kVK_UpArrow && config.candidatesDirection == .vertical)
-
-            if isMoveNext || isMovePrev {
-                if isMoveNext {
-                    selectNext(&context)
-                } else {
-                    selectPrev(&context)
-                }
+            if EngineUtils.isNextSelectKey(event, config: config) {
+                selectNext(&context)
+                return true
+            }
+            if EngineUtils.isPrevSelectKey(event, config: config){
+                selectPrev(&context)
                 return true
             }
         }
@@ -396,32 +396,8 @@ class RootState: InputState {
     
     private func extraCandidateKeyHandler(_ event: KeyInput, context: inout any InputContext) -> Bool? {
         guard context.origin.count > 0,
-              let string = event.characters else {
-            return nil
-        }
-
-        let mode = config.extraCandidateSelectKeys
-        guard mode != .disabled else { return nil }
-
-        let index: Int?
-        switch mode {
-        case .semicolonQuote:
-            switch string {
-            case ";": index = 1
-            case "'": index = 2
-            default: index = nil
-            }
-        case .commaPeriod:
-            switch string {
-            case ",": index = 1
-            case ".": index = 2
-            default: index = nil
-            }
-        case .disabled:
-            index = nil
-        }
-
-        guard let index = index, index < context.candidates.count else {
+              let index = EngineUtils.extraCandidateIndex(for: event, config: config),
+              index < context.candidates.count else {
             return nil
         }
 
@@ -462,12 +438,19 @@ class RootState: InputState {
         guard let string = event.characters else { return nil }
 
         // 如果输入的字符是标点符号，转换标点符号为中文符号
-        if let result = PunctuationConversion.shared.conversion(string) {
+        guard let result = punctuationHandler.handle(string, config: config) else { return nil }
+        switch result {
+        case .commit(let text):
             commitSelected(&context)
-            context.commit(result)
+            context.commit(text)
+            return true
+        case .candidates(let list):
+            commitSelected(&context)
+            context.origin = string
+            let candidates = list.map { Candidate(code: "", text: $0, type: .unknown) }
+            setSubState(PunctuationCandidateState(candidates, config: config), context: &context)
             return true
         }
-        return nil
     }
     
     func handle(_ event: KeyInput, context: inout any InputContext, exitState: () -> Void) -> Bool? {

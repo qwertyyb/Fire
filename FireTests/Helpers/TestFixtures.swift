@@ -8,7 +8,13 @@ enum TestFixtures {
     ) -> (root: RootState, store: MockEngineStore, dict: MockEngineDictManager, config: MockEngineConfig) {
         let engine = Engine()
         engine.store = store
-        let root = RootState(dict: dict, config: config, store: store, engine: engine)
+        let root = RootState(
+            dict: dict,
+            config: config,
+            store: store,
+            engine: engine,
+            punctuationTransformer: FirePunctuationTransformer()
+        )
         return (root, store, dict, config)
     }
 

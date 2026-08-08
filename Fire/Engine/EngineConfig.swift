@@ -17,6 +17,9 @@ protocol EngineConfig {
     
     /** 候选词方向  */
     var candidatesDirection: CandidatesDirection { get }
+    
+    /** 每页候选词数量 */
+    var candidateCount: Int { get }
 
     /** 数字后句号转为小数点 */
     var enableDotAfterNumber: Bool { get }
@@ -38,6 +41,10 @@ protocol EngineConfig {
     
     /** 禁用临时英文模式 */
     var disableTempEnMode: Bool { get }
+    
+    // MARK: - 符号配置
+    /** 自动配对 */
+    var enablePunctuationAutoPair: Bool { get }
 }
 
 enum CandidatesDirection: Int, Decodable, Encodable, Defaults.Serializable {
@@ -55,6 +62,18 @@ enum ExtraCandidateSelectKeys: String, Codable, Defaults.Serializable {
     case disabled
     case semicolonQuote
     case commaPeriod
+}
+
+// 标点符号模式：半角 / 全角（全角下再通过 punctuationMappingType 选择默认或自定义映射）
+enum PunctuationMode: String, Codable, Defaults.Serializable, Equatable {
+    case enUs
+    case zhhans
+
+    init(from decoder: Decoder) throws {
+        let container = try decoder.singleValueContainer()
+        let value = try container.decode(String.self)
+        self = Self(rawValue: value) ?? .zhhans
+    }
 }
 
 enum ModifierKey: String, Codable, Defaults.Serializable {

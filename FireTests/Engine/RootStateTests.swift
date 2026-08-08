@@ -3,6 +3,14 @@ import Carbon
 import Testing
 @testable import Fire
 
+private struct StubPunctuationTransformer: PunctuationTransformer {
+    let results: [String: PunctuationMapping]
+
+    func transform(_ origin: String) -> PunctuationMapping? {
+        results[origin]
+    }
+}
+
 struct RootStateTests {
     @Test func charKey_appendsOriginAndFetchesCandidates() {
         let (root, _, dict, _) = TestFixtures.makeRootState()
@@ -143,13 +151,50 @@ struct RootStateTests {
         #expect(dict.setFirstCalls.first?.candidate.text == "阿")
     }
 
+    @Test func punctuationKeyHandler_entersCandidateSubState() {
+        let transformer = StubPunctuationTransformer(results: [
+            "[": .candidates(["[", "【", "「"]),
+        ])
+        var config = MockEngineConfig()
+        config.enablePunctuationAutoPair = false
+        let store = MockEngineStore()
+        store.inputMode = .zhhans
+        let engine = Engine()
+        engine.store = store
+        let root = RootState(
+            dict: MockEngineDictManager(),
+            config: config,
+            store: store,
+            engine: engine,
+            punctuationTransformer: transformer
+        )
+        let mock = MockInputContext()
+        var context: any InputContext = mock
+
+        let handled = root.handle(
+            Key.keyDown(keyCode: kVK_ANSI_LeftBracket, characters: "["),
+            context: &context,
+            exitState: {}
+        )
+
+        #expect(handled == true)
+        #expect(mock.origin == "[")
+        #expect(mock.candidates.map(\.text) == ["[", "【", "「"])
+    }
+
     @Test func flagsChangeHandler_shiftToggle_commitsOriginAndSwitchesMode() {
         var config = MockEngineConfig()
         config.toggleInputModeKey = .shift
         let store = MockEngineStore()
         let engine = Engine()
         engine.store = store
-        let root = RootState(dict: MockEngineDictManager(), config: config, store: store, engine: engine)
+        let root = RootState(
+            dict: MockEngineDictManager(),
+            config: config,
+            store: store,
+            engine: engine,
+            punctuationTransformer: FirePunctuationTransformer()
+        )
         let mock = MockInputContext()
         mock.origin = "abc"
         var context: any InputContext = mock

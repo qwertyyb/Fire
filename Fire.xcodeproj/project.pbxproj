@@ -16,7 +16,10 @@
 		4574D1643021A82600831DCC /* EngineConfig.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4574D1633021A81E00831DCC /* EngineConfig.swift */; };
 		4574D1663021ABD000831DCC /* FireEngineConfig.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4574D1653021ABC800831DCC /* FireEngineConfig.swift */; };
 		4574D1683021D4CB00831DCC /* Engine.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4574D1673021D4CA00831DCC /* Engine.swift */; };
-		45B76CA92AEA6042009AFABD /* PunctuationConversion.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45B76CA82AEA6042009AFABD /* PunctuationConversion.swift */; };
+		45D5B97030261F53000C4155 /* PunctuationTransformer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45D5B96F30261F30000C4155 /* PunctuationTransformer.swift */; };
+		45D5B97430271692000C4155 /* PunctuationHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45D5B9733027168D000C4155 /* PunctuationHandler.swift */; };
+		45D5B976302716C8000C4155 /* PunctuationCandidateState.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45D5B975302716BF000C4155 /* PunctuationCandidateState.swift */; };
+		45D5B97E302727EC000C4155 /* FirePunctuationTransformer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45D5B97D302727E0000C4155 /* FirePunctuationTransformer.swift */; };
 		45F86EA9301D95920048F934 /* InputState.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45F86EA8301D95920048F934 /* InputState.swift */; };
 		45F86EAB301D98380048F934 /* KeyInput.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45F86EAA301D98380048F934 /* KeyInput.swift */; };
 		45F86EAD301D98CD0048F934 /* InputContext.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45F86EAC301D98CD0048F934 /* InputContext.swift */; };
@@ -113,7 +116,10 @@
 		4574D1653021ABC800831DCC /* FireEngineConfig.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FireEngineConfig.swift; sourceTree = "<group>"; };
 		4574D1673021D4CA00831DCC /* Engine.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Engine.swift; sourceTree = "<group>"; };
 		4574D16D30244EFA00831DCC /* FireTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = FireTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
-		45B76CA82AEA6042009AFABD /* PunctuationConversion.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PunctuationConversion.swift; sourceTree = "<group>"; };
+		45D5B96F30261F30000C4155 /* PunctuationTransformer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PunctuationTransformer.swift; sourceTree = "<group>"; };
+		45D5B9733027168D000C4155 /* PunctuationHandler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PunctuationHandler.swift; sourceTree = "<group>"; };
+		45D5B975302716BF000C4155 /* PunctuationCandidateState.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PunctuationCandidateState.swift; sourceTree = "<group>"; };
+		45D5B97D302727E0000C4155 /* FirePunctuationTransformer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FirePunctuationTransformer.swift; sourceTree = "<group>"; };
 		45F86EA8301D95920048F934 /* InputState.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InputState.swift; sourceTree = "<group>"; };
 		45F86EAA301D98380048F934 /* KeyInput.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KeyInput.swift; sourceTree = "<group>"; };
 		45F86EAC301D98CD0048F934 /* InputContext.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InputContext.swift; sourceTree = "<group>"; };
@@ -234,6 +240,25 @@
 			path = cli;
 			sourceTree = "<group>";
 		};
+		45D5B97130271610000C4155 /* Punctuation */ = {
+			isa = PBXGroup;
+			children = (
+				45D5B975302716BF000C4155 /* PunctuationCandidateState.swift */,
+				45D5B9733027168D000C4155 /* PunctuationHandler.swift */,
+				45D5B96F30261F30000C4155 /* PunctuationTransformer.swift */,
+			);
+			path = Punctuation;
+			sourceTree = "<group>";
+		};
+		45D5B97B30272778000C4155 /* EngineAdapter */ = {
+			isa = PBXGroup;
+			children = (
+				45D5B97D302727E0000C4155 /* FirePunctuationTransformer.swift */,
+				4574D1653021ABC800831DCC /* FireEngineConfig.swift */,
+			);
+			path = EngineAdapter;
+			sourceTree = "<group>";
+		};
 		67C99FDF2AB53DB2000B5281 = {
 			isa = PBXGroup;
 			children = (
@@ -265,6 +290,7 @@
 				B6B720452FF806000A595A7 /* CelebrationEffect.swift */,
 				A2D1C7002FFA000100DICT01 /* Dict */,
 				A2D1C7202FFA000100ENG001 /* Engine */,
+				45D5B97B30272778000C4155 /* EngineAdapter */,
 				67C9A0142AB53ED2000B5281 /* en.lproj */,
 				67C9A0192AB53ED2000B5281 /* Info.plist */,
 				67C9A0242AB53ED3000B5281 /* Preferences */,
@@ -277,8 +303,6 @@
 				67C9A0072AB53E83000B5281 /* FireInputController.swift */,
 				67C9A0222AB53ED3000B5281 /* FireInputServer.swift */,
 				67C9A01A2AB53ED2000B5281 /* FireMenu.swift */,
-				4574D1653021ABC800831DCC /* FireEngineConfig.swift */,
-				45B76CA82AEA6042009AFABD /* PunctuationConversion.swift */,
 				67C9A0022AB53E83000B5281 /* InputSource.swift */,
 				67C9A0012AB53E83000B5281 /* MainMenu.xib */,
 				67F0B0D22AFFC282006F835D /* StatusBarController.swift */,
@@ -411,6 +435,7 @@
 		A2D1C7202FFA000100ENG001 /* Engine */ = {
 			isa = PBXGroup;
 			children = (
+				45D5B97130271610000C4155 /* Punctuation */,
 				4574D1673021D4CA00831DCC /* Engine.swift */,
 				4574D1633021A81E00831DCC /* EngineConfig.swift */,
 				4574D1613020BCE000831DCC /* EngineDictManager.swift */,
@@ -624,10 +649,12 @@
 				67C9A0442AB53ED3000B5281 /* CandidatesWindow.swift in Sources */,
 				45F86EB3301D996A0048F934 /* TempEnState.swift in Sources */,
 				B6B720462FF806000A595A7 /* CelebrationEffect.swift in Sources */,
-				45B76CA92AEA6042009AFABD /* PunctuationConversion.swift in Sources */,
+				45D5B97E302727EC000C4155 /* FirePunctuationTransformer.swift in Sources */,
+				45D5B976302716C8000C4155 /* PunctuationCandidateState.swift in Sources */,
 				67C9A0362AB53ED3000B5281 /* DictManager.swift in Sources */,
 				45F86EB1301D99530048F934 /* DeleteCandidateState.swift in Sources */,
 				A2D1C7022FFA000100DICT03 /* DictReader.swift in Sources */,
+				45D5B97430271692000C4155 /* PunctuationHandler.swift in Sources */,
 				A2D1C7052FFA000100DICT05 /* DictWriter.swift in Sources */,
 				67C9A0582AB5429B000B5281 /* sqlite3.c in Sources */,
 				4574D1663021ABD000831DCC /* FireEngineConfig.swift in Sources */,
@@ -637,6 +664,7 @@
 				67C9A03E2AB53ED3000B5281 /* UserDictPane.swift in Sources */,
 				67C9A03F2AB53ED3000B5281 /* GeneralPane.swift in Sources */,
 				67C9A05D2AB53ED3000B5281 /* NativePreferencesView.swift in Sources */,
+				45D5B97030261F53000C4155 /* PunctuationTransformer.swift in Sources */,
 				451A556A2AF9F92D00AF57C1 /* InputModeCache.swift in Sources */,
 				67C9A00E2AB53E83000B5281 /* Fire.swift in Sources */,
 				45F86EAF301D99160048F934 /* QuickCombineState.swift in Sources */,

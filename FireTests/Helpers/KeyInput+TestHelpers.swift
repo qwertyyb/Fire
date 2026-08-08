@@ -30,6 +30,8 @@ enum Key {
     static func minus() -> KeyInput { keyDown(keyCode: kVK_ANSI_Minus, characters: "-") }
     static func leftArrow() -> KeyInput { keyDown(keyCode: kVK_LeftArrow) }
     static func rightArrow() -> KeyInput { keyDown(keyCode: kVK_RightArrow) }
+    static func upArrow() -> KeyInput { keyDown(keyCode: kVK_UpArrow) }
+    static func downArrow() -> KeyInput { keyDown(keyCode: kVK_DownArrow) }
 
     static func digit(_ n: Int) -> KeyInput {
         let keyCodes = [

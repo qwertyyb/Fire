@@ -9,13 +9,6 @@
 import Foundation
 import Defaults
 
-// 标点符号模式
-enum PunctuationMode: Codable, Defaults.Serializable {
-    case enUs     // 半角
-    case zhhans   // 全角
-    case custom   // 自定义
-}
-
 // 上屏庆祝效果类型
 enum CelebrationEffectType: String, Codable, Defaults.Serializable {
     case none     // 不显示
@@ -55,8 +48,12 @@ extension Defaults.Keys {
     static let keepAppInputMode_cache = Key<[String: InputMode]>("keepAppInputMode_cache", default: [:])
     static let appInputModeTipShowTime = Key<AppInputModeTipShowTime>("appInputModeTipShowTime", default: .onlyChanged)
     static let appSettings = Key<[String: ApplicationSettingItem]>("AppSettings", default: [:])
-    static let punctuationMode = Key<PunctuationMode>("punctuationMode", default: .custom)
-    static let customPunctuationSettings = Key<[String: String]>("customPunctuationSettings", default: fullwidthPunctuation)
+    static let punctuationMode = Key<PunctuationMode>("punctuationMode", default: .zhhans)
+    static let punctuationMappingType = Key<PunctuationMappingType>("punctuationMappingType", default: .default)
+    static let punctuationCustomMapping = Key<[String: PunctuationMapping]>(
+        "punctuationCustomMapping",
+        default: defaultPunctuationMapping
+    )
     static let enableDotAfterNumber = Key<Bool>("enableDotAfterNumber", default: true)
     static let enableColonAfterNumber = Key<Bool>("enableColonAfterNumber", default: true)
     static let enablePunctuationAutoPair = Key<Bool>("enablePunctuationAutoPair", default: true)

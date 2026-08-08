@@ -10,11 +10,20 @@ import Foundation
 class Engine {
     static let shared = Engine()
     
+    static func isPair(_ text: String) -> Bool {
+        return PunctuationHandler.isPair(text)
+    }
+    
     static let inputModeChanged = Notification.Name("Fire.inputModeChanged")
     
     var store: any EngineStore = DefaultEngineStore.shared
     func createSession(dict: some EngineDictManager, config: some EngineConfig) -> RootState {
-        return RootState(dict: dict, config: config, store: store)
+        return RootState(
+            dict: dict,
+            config: config,
+            store: store,
+            punctuationTransformer: FirePunctuationTransformer()
+        )
     }
     var inputMode: InputMode {
         self.store.inputMode
