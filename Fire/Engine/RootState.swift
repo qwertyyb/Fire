@@ -140,15 +140,17 @@ class RootState: InputState {
     // 处理子状态
     private func subStateHandler(_ event: KeyInput, context: inout any InputContext) -> Bool? {
         guard var subState = self.subState else { return nil }
-        var shouldExitSubState = false
-        let result = subState.handle(event, context: &context, exitState: {
-            shouldExitSubState = true
-        })
-        self.subState = subState
-        if shouldExitSubState {
+        let subStateResult = subState.handle(event, context: &context)
+        switch subStateResult {
+        case .stay(let result):
+            return result
+        case .exit(let result):
             setSubState(nil, context: &context)
+            return result
+        case .transition(let newState, let result):
+            setSubState(newState, context: &context)
+            return result
         }
-        return result
     }
     
     // 是否进入子状态处理：临时英文、删除候选词、快速组词
@@ -453,7 +455,7 @@ class RootState: InputState {
         }
     }
     
-    func handle(_ event: KeyInput, context: inout any InputContext, exitState: () -> Void) -> Bool? {
+    func handle(_ event: KeyInput, context: inout any InputContext) -> HandleResult {
         let codingHandlers = [
             subStateHandler,
             
@@ -479,9 +481,9 @@ class RootState: InputState {
         ]
         for handler in codingHandlers {
             if let result = handler(event, &context) {
-                return result
+                return .stay(result)
             }
         }
-        return nil
+        return .stay(false)
     }
 }

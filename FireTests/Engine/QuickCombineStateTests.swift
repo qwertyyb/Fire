@@ -22,8 +22,10 @@ struct QuickCombineStateTests {
         var context: any InputContext = mock
         state.didEnter(&context)
 
-        _ = state.handle(Key.leftArrow(), context: &context, exitState: {})
+        let result = state.handle(Key.leftArrow(), context: &context)
 
+        #expect(result.isStay)
+        #expect(result.handled)
         #expect(mock.origin == "abcd")
     }
 
@@ -36,11 +38,11 @@ struct QuickCombineStateTests {
         let mock = MockInputContext()
         var context: any InputContext = mock
         state.didEnter(&context)
-        var didExit = false
 
-        _ = state.handle(Key.returnKey(), context: &context, exitState: { didExit = true })
+        let result = state.handle(Key.returnKey(), context: &context)
 
-        #expect(didExit)
+        #expect(result.isExit)
+        #expect(result.handled)
         #expect(dict.addedUserTexts.count == 1)
         #expect(dict.addedUserTexts[0].origin == "wq")
         #expect(dict.addedUserTexts[0].text == "你好")
@@ -56,11 +58,11 @@ struct QuickCombineStateTests {
         let mock = MockInputContext()
         var context: any InputContext = mock
         state.didEnter(&context)
-        var didExit = false
 
-        _ = state.handle(Key.escape(), context: &context, exitState: { didExit = true })
+        let result = state.handle(Key.escape(), context: &context)
 
-        #expect(didExit)
+        #expect(result.isExit)
+        #expect(result.handled)
         #expect(dict.addedUserTexts.isEmpty)
     }
 }

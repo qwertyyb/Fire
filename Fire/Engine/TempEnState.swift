@@ -32,22 +32,16 @@ struct TempEnState: InputState {
         self.punctuationHandler = punctuationHandler
     }
 
-    mutating func handle(_ event: KeyInput, context: inout any InputContext, exitState: () -> Void) -> Bool? {
-        if let result = subStateHandler(event, context: &context, exitState: exitState) {
-            return result
-        }
-
+    mutating func handle(_ event: KeyInput, context: inout any InputContext) -> HandleResult {
         var origin = context.origin
         if event.characters == Self.trigger && origin == Self.trigger {
-            handleDoubleTrigger(&context, exitState: exitState)
-            return true
+            return handleDoubleTrigger(&context)
         }
         if event.keyCode == kVK_Return {
             let text = String(origin.dropFirst())
             store.recentCommittedTexts.append(text)
             context.commit(text)
-            exitState()
-            return true
+            return .exit(true)
         }
         if EngineUtils.isEscapeKey(event) {
             origin = ""
@@ -58,12 +52,11 @@ struct TempEnState: InputState {
         }
         context.origin = origin
         if origin.isEmpty {
-            exitState()
-            return true
+            return .exit(true)
         }
 
         updatePlaceholder(&context)
-        return true
+        return .stay(true)
     }
 
     mutating func didEnter(_ context: inout any InputContext) {
@@ -72,54 +65,24 @@ struct TempEnState: InputState {
     }
 
     mutating func willExit(_ context: inout any InputContext) {
-        setSubState(nil, context: &context)
         context.origin = ""
         context.curPage = 1
         context.candidates = []
     }
 
-    private mutating func handleDoubleTrigger(_ context: inout any InputContext, exitState: () -> Void) {
+    private mutating func handleDoubleTrigger(_ context: inout any InputContext) -> HandleResult {
         guard let result = punctuationHandler.handle(Self.trigger, config: config) else {
             context.commit(Self.trigger)
-            exitState()
-            return
+            return .exit(true)
         }
         switch result {
         case .commit(let text):
             context.commit(text)
-            exitState()
+            return .exit(true)
         case .candidates(let list):
             context.origin = Self.trigger
             let candidates = list.map { Candidate(code: "", text: $0, type: .unknown) }
-            setSubState(PunctuationCandidateState(candidates, config: config), context: &context)
-        }
-    }
-
-    private mutating func subStateHandler(
-        _ event: KeyInput,
-        context: inout any InputContext,
-        exitState: () -> Void
-    ) -> Bool? {
-        guard var inner = subState else { return nil }
-        var shouldExitInner = false
-        let result = inner.handle(event, context: &context, exitState: {
-            shouldExitInner = true
-        })
-        subState = inner
-        if shouldExitInner {
-            setSubState(nil, context: &context)
-            exitState()
-        }
-        return result
-    }
-
-    private mutating func setSubState(_ newState: (any InputState)?, context: inout any InputContext) {
-        subState?.willExit(&context)
-        if let newState {
-            subState = newState
-            subState?.didEnter(&context)
-        } else {
-            subState = nil
+            return .transition(PunctuationCandidateState(candidates, config: config), output: true)
         }
     }
 

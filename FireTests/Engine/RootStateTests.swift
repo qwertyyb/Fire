@@ -18,9 +18,10 @@ struct RootStateTests {
         let mock = MockInputContext()
         var context: any InputContext = mock
 
-        let handled = root.handle(Key.a(), context: &context, exitState: {})
+        let result = root.handle(Key.a(), context: &context)
 
-        #expect(handled == true)
+        #expect(result.isStay)
+        #expect(result.handled)
         #expect(mock.origin == "a")
         #expect(mock.candidates.first?.text == "啊")
     }
@@ -31,9 +32,10 @@ struct RootStateTests {
         mock.origin = "ab"
         var context: any InputContext = mock
 
-        let handled = root.handle(Key.delete(), context: &context, exitState: {})
+        let result = root.handle(Key.delete(), context: &context)
 
-        #expect(handled == true)
+        #expect(result.isStay)
+        #expect(result.handled)
         #expect(mock.origin == "a")
         #expect(mock.curPage == 1)
     }
@@ -43,9 +45,10 @@ struct RootStateTests {
         let mock = MockInputContext()
         var context: any InputContext = mock
 
-        let handled = root.handle(Key.delete(), context: &context, exitState: {})
+        let result = root.handle(Key.delete(), context: &context)
 
-        #expect(handled == false)
+        #expect(result.isStay)
+        #expect(!result.handled)
     }
 
     @Test func escKey_clearsOrigin() {
@@ -54,9 +57,10 @@ struct RootStateTests {
         mock.origin = "abc"
         var context: any InputContext = mock
 
-        let handled = root.handle(Key.escape(), context: &context, exitState: {})
+        let result = root.handle(Key.escape(), context: &context)
 
-        #expect(handled == true)
+        #expect(result.isStay)
+        #expect(result.handled)
         #expect(mock.origin.isEmpty)
     }
 
@@ -66,9 +70,10 @@ struct RootStateTests {
         mock.origin = "abc"
         var context: any InputContext = mock
 
-        let handled = root.handle(Key.returnKey(), context: &context, exitState: {})
+        let result = root.handle(Key.returnKey(), context: &context)
 
-        #expect(handled == true)
+        #expect(result.isStay)
+        #expect(result.handled)
         #expect(mock.committed == ["abc"])
         #expect(mock.origin.isEmpty)
     }
@@ -81,9 +86,10 @@ struct RootStateTests {
         mock.selectedIndex = 0
         var context: any InputContext = mock
 
-        let handled = root.handle(Key.space(), context: &context, exitState: {})
+        let result = root.handle(Key.space(), context: &context)
 
-        #expect(handled == true)
+        #expect(result.isStay)
+        #expect(result.handled)
         #expect(mock.committed == ["啊"])
         #expect(store.recentCommittedTexts == ["啊"])
         #expect(mock.origin.isEmpty)
@@ -99,9 +105,10 @@ struct RootStateTests {
         ]
         var context: any InputContext = mock
 
-        let handled = root.handle(Key.digit(2), context: &context, exitState: {})
+        let result = root.handle(Key.digit(2), context: &context)
 
-        #expect(handled == true)
+        #expect(result.isStay)
+        #expect(result.handled)
         #expect(mock.committed == ["阿"])
         #expect(mock.origin.isEmpty)
     }
@@ -112,9 +119,10 @@ struct RootStateTests {
         mock.textBefore = "3"
         var context: any InputContext = mock
 
-        let handled = root.handle(Key.period(), context: &context, exitState: {})
+        let result = root.handle(Key.period(), context: &context)
 
-        #expect(handled == true)
+        #expect(result.isStay)
+        #expect(result.handled)
         #expect(mock.committed == ["."])
     }
 
@@ -144,9 +152,10 @@ struct RootStateTests {
         mock.candidates = [first, second]
         var context: any InputContext = mock
 
-        let handled = root.handle(Key.ctrlOptionDigit(2), context: &context, exitState: {})
+        let result = root.handle(Key.ctrlOptionDigit(2), context: &context)
 
-        #expect(handled == true)
+        #expect(result.isStay)
+        #expect(result.handled)
         #expect(dict.setFirstCalls.count == 1)
         #expect(dict.setFirstCalls.first?.candidate.text == "阿")
     }
@@ -171,15 +180,51 @@ struct RootStateTests {
         let mock = MockInputContext()
         var context: any InputContext = mock
 
-        let handled = root.handle(
+        let result = root.handle(
             Key.keyDown(keyCode: kVK_ANSI_LeftBracket, characters: "["),
-            context: &context,
-            exitState: {}
+            context: &context
         )
 
-        #expect(handled == true)
+        #expect(result.isStay)
+        #expect(result.handled)
         #expect(mock.origin == "[")
         #expect(mock.candidates.map(\.text) == ["[", "【", "「"])
+        #expect(root.subState is PunctuationCandidateState)
+    }
+
+    @Test func tempEn_doubleTrigger_candidates_selectThenExits() {
+        let transformer = StubPunctuationTransformer(results: [
+            ";": .candidates([";", "；"]),
+        ])
+        var config = MockEngineConfig()
+        config.disableTempEnMode = false
+        let store = MockEngineStore()
+        store.inputMode = .zhhans
+        let engine = Engine()
+        engine.store = store
+        let root = RootState(
+            dict: MockEngineDictManager(),
+            config: config,
+            store: store,
+            engine: engine,
+            punctuationTransformer: transformer
+        )
+        let mock = MockInputContext()
+        var context: any InputContext = mock
+
+        _ = root.handle(Key.semicolon(), context: &context)
+        #expect(root.subState is TempEnState)
+
+        _ = root.handle(Key.semicolon(), context: &context)
+        #expect(root.subState is PunctuationCandidateState)
+        #expect(mock.candidates.map(\.text) == [";", "；"])
+
+        let result = root.handle(Key.digit(2), context: &context)
+
+        #expect(result.isStay)
+        #expect(result.handled)
+        #expect(root.subState == nil)
+        #expect(mock.committed == ["；"])
     }
 
     @Test func flagsChangeHandler_shiftToggle_commitsOriginAndSwitchesMode() {
@@ -199,9 +244,10 @@ struct RootStateTests {
         mock.origin = "abc"
         var context: any InputContext = mock
 
-        let handled = root.handle(Key.shiftModifierPress(), context: &context, exitState: {})
+        let result = root.handle(Key.shiftModifierPress(), context: &context)
 
-        #expect(handled == true)
+        #expect(result.isStay)
+        #expect(result.handled)
         #expect(mock.committed == ["abc"])
         #expect(mock.origin.isEmpty)
         #expect(store.inputMode == .enUS)
@@ -224,8 +270,9 @@ struct RootStateTests {
         let mock = MockInputContext()
         var context: any InputContext = mock
 
-        let handled = root.handle(Key.a(), context: &context, exitState: {})
+        let result = root.handle(Key.a(), context: &context)
 
-        #expect(handled == false)
+        #expect(result.isStay)
+        #expect(!result.handled)
     }
 }

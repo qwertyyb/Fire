@@ -62,26 +62,24 @@ struct QuickCombineState: InputState {
         }
     }
 
-    mutating func handle(_ event: KeyInput, context: inout any InputContext, exitState: () -> Void) -> Bool? {
+    mutating func handle(_ event: KeyInput, context: inout any InputContext) -> HandleResult {
         let bufCount = store.recentCommittedTexts.count
         switch Int(event.keyCode) {
         case kVK_LeftArrow:
             self.count = min(count + 1, bufCount)
             updateContext(&context)
-            return true
+            return .stay(true)
         case kVK_RightArrow:
             self.count = max(count - 1, 2)
             updateContext(&context)
-            return true
+            return .stay(true)
         case kVK_Return:
             confirmCombine(&context)
-            exitState()
-            return true
+            return .exit(true)
         case kVK_Escape:
-            exitState()
-            return true
+            return .exit(true)
         default:
-            return true
+            return .stay(true)
         }
     }
     

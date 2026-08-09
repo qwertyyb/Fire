@@ -51,8 +51,10 @@ struct TempEnStateTests {
         var context: any InputContext = mock
         state.didEnter(&context)
 
-        _ = state.handle(Key.a(), context: &context, exitState: {})
+        let result = state.handle(Key.a(), context: &context)
 
+        #expect(result.isStay)
+        #expect(result.handled)
         #expect(mock.origin == ";a")
     }
 
@@ -61,11 +63,11 @@ struct TempEnStateTests {
         let mock = MockInputContext()
         var context: any InputContext = mock
         state.didEnter(&context)
-        var didExit = false
 
-        _ = state.handle(Key.escape(), context: &context, exitState: { didExit = true })
+        let result = state.handle(Key.escape(), context: &context)
 
-        #expect(didExit)
+        #expect(result.isExit)
+        #expect(result.handled)
         #expect(mock.origin.isEmpty)
     }
 
@@ -75,12 +77,12 @@ struct TempEnStateTests {
         let mock = MockInputContext()
         var context: any InputContext = mock
         state.didEnter(&context)
-        _ = state.handle(Key.a(), context: &context, exitState: {})
-        var didExit = false
+        _ = state.handle(Key.a(), context: &context)
 
-        _ = state.handle(Key.returnKey(), context: &context, exitState: { didExit = true })
+        let result = state.handle(Key.returnKey(), context: &context)
 
-        #expect(didExit)
+        #expect(result.isExit)
+        #expect(result.handled)
         #expect(mock.committed == ["a"])
         #expect(store.recentCommittedTexts == ["a"])
     }
@@ -90,40 +92,28 @@ struct TempEnStateTests {
         let mock = MockInputContext()
         var context: any InputContext = mock
         state.didEnter(&context)
-        var didExit = false
 
-        _ = state.handle(Key.semicolon(), context: &context, exitState: { didExit = true })
+        let result = state.handle(Key.semicolon(), context: &context)
 
-        #expect(didExit)
+        #expect(result.isExit)
+        #expect(result.handled)
         #expect(mock.committed == ["；"])
     }
 
-    @Test func handle_doubleTrigger_candidates_entersInnerState() {
+    @Test func handle_doubleTrigger_candidates_transitionsToPunctuationCandidateState() {
         var state = makeTempEnState(results: [";": .candidates([";", "；"])])
         let mock = MockInputContext()
         var context: any InputContext = mock
         state.didEnter(&context)
-        var didExit = false
 
-        _ = state.handle(Key.semicolon(), context: &context, exitState: { didExit = true })
+        let result = state.handle(Key.semicolon(), context: &context)
 
-        #expect(!didExit)
+        #expect(result.isTransition)
+        #expect(result.handled)
         #expect(mock.origin == ";")
+
+        guard case .transition(var newState, _) = result else { return }
+        newState.didEnter(&context)
         #expect(mock.candidates.map(\.text) == [";", "；"])
-    }
-
-    @Test func handle_doubleTrigger_candidates_selectThenExitsTempEn() {
-        var state = makeTempEnState(results: [";": .candidates([";", "；"])])
-        let mock = MockInputContext()
-        var context: any InputContext = mock
-        state.didEnter(&context)
-        var didExit = false
-        let exit = { didExit = true }
-
-        _ = state.handle(Key.semicolon(), context: &context, exitState: exit)
-        _ = state.handle(Key.digit(2), context: &context, exitState: exit)
-
-        #expect(didExit)
-        #expect(mock.committed == ["；"])
     }
 }

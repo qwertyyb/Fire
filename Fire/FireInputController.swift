@@ -138,12 +138,19 @@ class FireInputController: IMKInputController, InputContext  {
         let keyInput = transformToKeyInput(event)
         
         var context: any InputContext = self
-        let result = session.handle(keyInput, context: &context) {} ?? false
+        let result = session.handle(keyInput, context: &context)
         
         self.markText()
         self.refreshCandidatesWindow()
         
-        return result
+        // 根状态只有可能返回 .stay
+        if case .stay(let handled) = result {
+            return handled
+        }
+        
+        FireLog.input.error("handle return not expected, expect .stay(Bool)")
+        
+        return false
     }
     
     override func commitComposition(_ sender: Any!) {

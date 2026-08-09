@@ -47,11 +47,11 @@ struct PunctuationCandidateStateTests {
         mock.origin = "["
         var context: any InputContext = mock
         state.didEnter(&context)
-        var didExit = false
 
-        _ = state.handle(Key.digit(2), context: &context, exitState: { didExit = true })
+        let result = state.handle(Key.digit(2), context: &context)
 
-        #expect(didExit)
+        #expect(result.isExit)
+        #expect(result.handled)
         #expect(mock.committed == ["【"])
     }
 
@@ -62,11 +62,11 @@ struct PunctuationCandidateStateTests {
         var context: any InputContext = mock
         state.didEnter(&context)
         mock.selectedIndex = 1
-        var didExit = false
 
-        _ = state.handle(Key.space(), context: &context, exitState: { didExit = true })
+        let result = state.handle(Key.space(), context: &context)
 
-        #expect(didExit)
+        #expect(result.isExit)
+        #expect(result.handled)
         #expect(mock.committed == ["【"])
     }
 
@@ -76,11 +76,11 @@ struct PunctuationCandidateStateTests {
         mock.origin = "["
         var context: any InputContext = mock
         state.didEnter(&context)
-        var didExit = false
 
-        _ = state.handle(Key.returnKey(), context: &context, exitState: { didExit = true })
+        let result = state.handle(Key.returnKey(), context: &context)
 
-        #expect(didExit)
+        #expect(result.isExit)
+        #expect(result.handled)
         #expect(mock.committed == ["["])
     }
 
@@ -90,11 +90,11 @@ struct PunctuationCandidateStateTests {
         mock.origin = "["
         var context: any InputContext = mock
         state.didEnter(&context)
-        var didExit = false
 
-        _ = state.handle(Key.escape(), context: &context, exitState: { didExit = true })
+        let result = state.handle(Key.escape(), context: &context)
 
-        #expect(didExit)
+        #expect(result.isExit)
+        #expect(result.handled)
         #expect(mock.committed.isEmpty)
     }
 
@@ -104,11 +104,11 @@ struct PunctuationCandidateStateTests {
         mock.origin = "["
         var context: any InputContext = mock
         state.didEnter(&context)
-        var didExit = false
 
-        _ = state.handle(Key.delete(), context: &context, exitState: { didExit = true })
+        let result = state.handle(Key.delete(), context: &context)
 
-        #expect(didExit)
+        #expect(result.isExit)
+        #expect(result.handled)
         #expect(mock.committed.isEmpty)
     }
 
@@ -120,8 +120,10 @@ struct PunctuationCandidateStateTests {
         var context: any InputContext = mock
         state.didEnter(&context)
 
-        _ = state.handle(Key.downArrow(), context: &context, exitState: {})
+        let result = state.handle(Key.downArrow(), context: &context)
 
+        #expect(result.isStay)
+        #expect(result.handled)
         #expect(mock.curPage == 2)
         #expect(mock.candidates.map(\.text) == ["「", "『"])
         #expect(!mock.hasNext)
@@ -135,10 +137,12 @@ struct PunctuationCandidateStateTests {
         let mock = MockInputContext()
         var context: any InputContext = mock
         state.didEnter(&context)
-        _ = state.handle(Key.downArrow(), context: &context, exitState: {})
+        _ = state.handle(Key.downArrow(), context: &context)
 
-        _ = state.handle(Key.upArrow(), context: &context, exitState: {})
+        let result = state.handle(Key.upArrow(), context: &context)
 
+        #expect(result.isStay)
+        #expect(result.handled)
         #expect(mock.curPage == 1)
         #expect(mock.candidates.map(\.text) == ["[", "【"])
         #expect(mock.hasNext)
@@ -151,11 +155,11 @@ struct PunctuationCandidateStateTests {
         let mock = MockInputContext()
         var context: any InputContext = mock
         state.didEnter(&context)
-        var didExit = false
 
-        _ = state.handle(Key.semicolon(), context: &context, exitState: { didExit = true })
+        let result = state.handle(Key.semicolon(), context: &context)
 
-        #expect(didExit)
+        #expect(result.isExit)
+        #expect(result.handled)
         #expect(mock.committed == ["【"])
     }
 

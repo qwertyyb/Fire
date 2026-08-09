@@ -58,19 +58,17 @@ struct DeleteCandidateState: InputState {
         self.dict.blockCandidate(target)
     }
     
-    mutating func handle(_ event: KeyInput, context: inout any InputContext, exitState: () -> Void) -> Bool? {
+    mutating func handle(_ event: KeyInput, context: inout any InputContext) -> HandleResult {
         // 回车确认删除
         if event.keyCode == kVK_Return {
             deleteCandidate(self.candidate)
             context.showMessage("已删除「\(self.candidate.text)」")
-            exitState()
-            return true
+            return .exit(true)
         }
         if EngineUtils.isEscapeKey(event) {
-            exitState()
-            return true
+            return .exit(true)
         }
-        return true
+        return .stay(true)
     }
     
     func willExit(_ context: inout any InputContext) {

@@ -29,11 +29,11 @@ struct DeleteCandidateStateTests {
         mock.origin = "a"
         var context: any InputContext = mock
         state.didEnter(&context)
-        var didExit = false
 
-        _ = state.handle(Key.returnKey(), context: &context, exitState: { didExit = true })
+        let result = state.handle(Key.returnKey(), context: &context)
 
-        #expect(didExit)
+        #expect(result.isExit)
+        #expect(result.handled)
         #expect(dict.blockedCandidates.map(\.text) == ["啊"])
         #expect(mock.messages.first?.contains("啊") == true)
     }
@@ -45,11 +45,11 @@ struct DeleteCandidateStateTests {
         let mock = MockInputContext()
         var context: any InputContext = mock
         state.didEnter(&context)
-        var didExit = false
 
-        _ = state.handle(Key.escape(), context: &context, exitState: { didExit = true })
+        let result = state.handle(Key.escape(), context: &context)
 
-        #expect(didExit)
+        #expect(result.isExit)
+        #expect(result.handled)
         #expect(dict.blockedCandidates.isEmpty)
     }
 

@@ -36,29 +36,24 @@ struct PunctuationCandidateState: InputState {
         context.hasNext = page < totalPage
     }
 
-    private mutating func commitCandidate(_ context: inout any InputContext, _ candidate: Candidate, exitState: () -> Void) {
-        context.commit(candidate.text)
-        exitState()
-    }
-
-    private mutating func commitSelected(_ context: inout any InputContext, exitState: () -> Void) {
+    private mutating func commitSelected(_ context: inout any InputContext) {
         guard context.selectedIndex < context.candidates.count else { return }
-        commitCandidate(&context, context.candidates[context.selectedIndex], exitState: exitState)
+        context.commit(context.candidates[context.selectedIndex].text)
     }
 
-    mutating func handle(_ event: KeyInput, context: inout any InputContext, exitState: () -> Void) -> Bool? {
+    mutating func handle(_ event: KeyInput, context: inout any InputContext) -> HandleResult {
         if EngineUtils.isNextPageKey(event, config: config) {
             if context.hasNext {
                 updatePage(&context, page: context.curPage + 1)
             }
-            return true
+            return .stay(true)
         }
 
         if EngineUtils.isPrevPageKey(event, config: config) {
             if context.curPage > 1 {
                 updatePage(&context, page: context.curPage - 1)
             }
-            return true
+            return .stay(true)
         }
 
         if EngineUtils.isNextSelectKey(event, config: config) {
@@ -67,7 +62,7 @@ struct PunctuationCandidateState: InputState {
             } else if context.hasNext {
                 updatePage(&context, page: context.curPage + 1)
             }
-            return true
+            return .stay(true)
         }
 
         if EngineUtils.isPrevSelectKey(event, config: config) {
@@ -77,45 +72,43 @@ struct PunctuationCandidateState: InputState {
                 updatePage(&context, page: context.curPage - 1)
                 context.selectedIndex = context.candidates.count - 1
             }
-            return true
+            return .stay(true)
         }
 
         if let char = event.characters, let pos = Int(char), pos > 0 {
             let index = pos - 1
             if index < context.candidates.count {
-                commitCandidate(&context, context.candidates[index], exitState: exitState)
+                context.commit(context.candidates[index].text)
+                return .exit(true)
             }
-            return true
+            return .stay(true)
         }
 
         if let index = EngineUtils.extraCandidateIndex(for: event, config: config),
            index < context.candidates.count {
-            commitCandidate(&context, context.candidates[index], exitState: exitState)
-            return true
+            context.commit(context.candidates[index].text)
+            return .exit(true)
         }
 
         if event.keyCode == kVK_Space {
-            commitSelected(&context, exitState: exitState)
-            return true
+            commitSelected(&context)
+            return .exit(true)
         }
 
         if event.keyCode == kVK_Return {
             context.commit(context.origin)
-            exitState()
-            return true
+            return .exit(true)
         }
 
         if EngineUtils.isEscapeKey(event) {
-            exitState()
-            return true
+            return .exit(true)
         }
 
         if EngineUtils.isDeleteKey(event) {
-            exitState()
-            return true
+            return .exit(true)
         }
 
-        return true
+        return .stay(true)
     }
 
     mutating func didEnter(_ context: inout any InputContext) {
