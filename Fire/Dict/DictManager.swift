@@ -113,11 +113,6 @@ class DictManager: EngineDictManager {
         reader.queryWubiCode(text)
     }
 
-    /// 批量插入用户词，使用参数化查询防止 SQL 注入
-    func prependCandidates(candidates: [Candidate]) {
-        writer.prependCandidates(candidates: candidates)
-    }
-
     func updateUserDict(_ dictContent: String) {
         writer.updateUserDict(dictContent)
         NotificationQueue.default.enqueue(Notification(name: DictManager.userDictUpdated), postingStyle: .whenIdle)
