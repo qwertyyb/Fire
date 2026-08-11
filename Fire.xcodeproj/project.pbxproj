@@ -436,10 +436,6 @@
 			isa = PBXGroup;
 			children = (
 				45D5B97130271610000C4155 /* Punctuation */,
-				4574D1673021D4CA00831DCC /* Engine.swift */,
-				4574D1633021A81E00831DCC /* EngineConfig.swift */,
-				4574D1613020BCE000831DCC /* EngineDictManager.swift */,
-				4574D15F3020AECF00831DCC /* EngineStore.swift */,
 				45F86EB8301E2D570048F934 /* RootState.swift */,
 				45F86EB2301D995F0048F934 /* TempEnState.swift */,
 				45F86EB0301D99470048F934 /* DeleteCandidateState.swift */,
@@ -447,6 +443,10 @@
 				45F86EAA301D98380048F934 /* KeyInput.swift */,
 				45F86EA8301D95920048F934 /* InputState.swift */,
 				45F86EAC301D98CD0048F934 /* InputContext.swift */,
+				4574D1673021D4CA00831DCC /* Engine.swift */,
+				4574D15F3020AECF00831DCC /* EngineStore.swift */,
+				4574D1633021A81E00831DCC /* EngineConfig.swift */,
+				4574D1613020BCE000831DCC /* EngineDictManager.swift */,
 				45F86EB4301DDB3B0048F934 /* EngineUtils.swift */,
 			);
 			path = Engine;
