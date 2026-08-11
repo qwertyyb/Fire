@@ -139,8 +139,8 @@ class RootState: InputState {
     // MARK: - 子状态
     // 处理子状态
     private func subStateHandler(_ event: KeyInput, context: inout any InputContext) -> Bool? {
-        guard var subState = self.subState else { return nil }
-        let subStateResult = subState.handle(event, context: &context)
+        guard self.subState != nil else { return nil }
+        let subStateResult = self.subState!.handle(event, context: &context)
         switch subStateResult {
         case .stay(let result):
             return result

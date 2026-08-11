@@ -29,6 +29,71 @@ struct QuickCombineStateTests {
         #expect(mock.origin == "abcd")
     }
 
+    @Test func handle_leftArrow_twice_increasesCountToFour() {
+        let store = MockEngineStore()
+        store.recentCommittedTexts = ["A", "你", "好", "世"]
+        let dict = MockEngineDictManager()
+        dict.wubiCodes["好世"] = "abc"
+        dict.wubiCodes["你好世"] = "abcd"
+        dict.wubiCodes["A你好世"] = "abcde"
+        var state = QuickCombineState(count: 2, dict: dict, store: store)
+        let mock = MockInputContext()
+        var context: any InputContext = mock
+        state.didEnter(&context)
+
+        _ = state.handle(Key.leftArrow(), context: &context)
+        let result = state.handle(Key.leftArrow(), context: &context)
+
+        #expect(result.isStay)
+        #expect(result.handled)
+        #expect(mock.origin == "abcde")
+    }
+
+    @Test func handle_rightArrow_decreasesCount() {
+        let store = MockEngineStore()
+        store.recentCommittedTexts = ["A", "你", "好", "世"]
+        let dict = MockEngineDictManager()
+        dict.wubiCodes["好世"] = "abc"
+        dict.wubiCodes["你好世"] = "abcd"
+        var state = QuickCombineState(count: 2, dict: dict, store: store)
+        let mock = MockInputContext()
+        var context: any InputContext = mock
+        state.didEnter(&context)
+
+        _ = state.handle(Key.leftArrow(), context: &context)
+        let result = state.handle(Key.rightArrow(), context: &context)
+
+        #expect(result.isStay)
+        #expect(result.handled)
+        #expect(mock.origin == "abc")
+    }
+
+    @Test func viaRootState_leftArrowTwice_persistsCount() {
+        let store = MockEngineStore()
+        store.inputMode = .zhhans
+        store.recentCommittedTexts = ["A", "你", "好", "世"]
+        let dict = MockEngineDictManager()
+        dict.wubiCodes["好世"] = "abc"
+        dict.wubiCodes["你好世"] = "abcd"
+        dict.wubiCodes["A你好世"] = "abcde"
+        let (root, _, _, _) = TestFixtures.makeRootState(store: store, dict: dict)
+        let mock = MockInputContext()
+        var context: any InputContext = mock
+
+        _ = root.handle(Key.ctrlEqual(), context: &context)
+        #expect(root.subState is QuickCombineState)
+        #expect(mock.origin == "abc")
+
+        _ = root.handle(Key.leftArrow(), context: &context)
+        #expect(mock.origin == "abcd")
+
+        let result = root.handle(Key.leftArrow(), context: &context)
+
+        #expect(result.isStay)
+        #expect(result.handled)
+        #expect(mock.origin == "abcde")
+    }
+
     @Test func handle_return_addsUserTextAndExits() {
         let store = MockEngineStore()
         store.recentCommittedTexts = ["你", "好"]
