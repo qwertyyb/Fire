@@ -22,8 +22,6 @@ class Utils {
     // enDigitPrefix: 判断本次输入以英文或数字开头
     private static let enDigitPrefix = try! NSRegularExpression(pattern: "^[a-zA-Z0-9]")
 
-    var toggleInputModeKeyUpChecker = ModifierKeyUpChecker(Defaults[.toggleInputModeKey])
-
     var toast: ToastWindowProtocol?
 
     // 用于删除/组词等操作的小字文本提示，独立于中英文切换提示，不受 inputModeTipWindowType 影响
@@ -50,11 +48,6 @@ class Utils {
     init() {
         Defaults.observe(keys: .inputModeTipWindowType, .candidateCount) { () in
             self.initToastWindow()
-        }.tieToLifetime(of: self)
-        Defaults.observe(.toggleInputModeKey) { (val) in
-            let modifier = val.newValue
-            FireLog.utils.debug("modifier: \(String(describing: modifier), privacy: .public)")
-            self.toggleInputModeKeyUpChecker = ModifierKeyUpChecker(modifier)
         }.tieToLifetime(of: self)
     }
     func processHandlers<T>(

@@ -15,19 +15,19 @@ extension FireInputController {
     * 根据当前输入的应用改变输入模式
     */
     private func restoreCurrentClientInputMode() -> Bool {
-        let currentMode = Fire.shared.inputMode
+        let currentMode = Fire.engine.inputMode
         guard let identifier = client()?.bundleIdentifier() else { return false }
         if let appSetting = Defaults[.appSettings][identifier],
          let mode = InputMode(rawValue: appSetting.inputModeSetting.rawValue) {
             FireLog.input.info("restoreClientInputMode from setting: \(identifier, privacy: .public), \(String(describing: mode), privacy: .public)")
-            Fire.shared.toggleInputMode(mode, showTip: false)
-            return currentMode != Fire.shared.inputMode
+            Fire.engine.toggleInputMode(mode)
+            return currentMode != Fire.engine.inputMode
         }
         // 启用APP缓存设置
         if Defaults[.keepAppInputMode], let mode = InputModeCache.shared.get(identifier) {
             FireLog.input.info("restoreClientInputMode from cache: \(identifier, privacy: .public), \(String(describing: mode), privacy: .public)")
-            Fire.shared.toggleInputMode(mode, showTip: false)
-            return currentMode != Fire.shared.inputMode
+            Fire.engine.toggleInputMode(mode)
+            return currentMode != Fire.engine.inputMode
         }
         return false
     }
@@ -37,9 +37,9 @@ extension FireInputController {
            let controller = CandidatesWindow.shared.inputController,
            let identifier = controller.client()?.bundleIdentifier(),
            Defaults[.appSettings][identifier] == nil {
-            FireLog.input.debug("saveClientInputMode \(identifier, privacy: .public), \(String(describing: self.inputMode), privacy: .public)")
+            FireLog.input.debug("saveClientInputMode \(identifier, privacy: .public), \(String(describing: Fire.engine.inputMode), privacy: .public)")
             // 缓存当前输入模式
-            InputModeCache.shared.put(identifier, inputMode)
+            InputModeCache.shared.put(identifier, Fire.engine.inputMode)
         }
     }
 
@@ -59,13 +59,13 @@ extension FireInputController {
              * 但在删除系统 ABC 输入法的情况下，仍然有可能会调用到第三方输入法 https://github.com/qwertyyb/Fire/issues/158
              * 在这种情况下，输入法需要切换到英文模式，避免影响用户输入密码
              */
-            Fire.shared.toggleInputMode(.enUS, showTip: Fire.shared.inputMode != .enUS)
+            Fire.engine.toggleInputMode(.enUS)
             return
         }
 
         if Defaults[.disableEnMode] {
             // 由于 disableEnMode 为 true，所以需要切换到中文模式
-            Fire.shared.toggleInputMode(.zhhans, showTip: Fire.shared.inputMode != .zhhans)
+            Fire.engine.toggleInputMode(.zhhans)
             return
         }
 
@@ -82,9 +82,6 @@ extension FireInputController {
     override func deactivateServer(_ sender: Any!) {
         insertOriginText()
         clean()
-        // 跨会话重置标点配对状态（引号/括号计数归零），
-        // 避免切换 App 后延续上一次会话的配对状态，导致开闭颠倒
-        PunctuationConversion.shared.reset()
 //        saveClientInputMode()
         FireLog.input.info("deactivate server: \(self.client()?.bundleIdentifier() ?? "no client deactivate", privacy: .public)")
     }

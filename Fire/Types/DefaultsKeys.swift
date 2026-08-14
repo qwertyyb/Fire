@@ -9,13 +9,6 @@
 import Foundation
 import Defaults
 
-// 标点符号模式
-enum PunctuationMode: Codable, Defaults.Serializable {
-    case enUs     // 半角
-    case zhhans   // 全角
-    case custom   // 自定义
-}
-
 // 上屏庆祝效果类型
 enum CelebrationEffectType: String, Codable, Defaults.Serializable {
     case none     // 不显示
@@ -56,15 +49,20 @@ extension Defaults.Keys {
     static let appInputModeTipShowTime = Key<AppInputModeTipShowTime>("appInputModeTipShowTime", default: .onlyChanged)
     static let appSettings = Key<[String: ApplicationSettingItem]>("AppSettings", default: [:])
     static let punctuationMode = Key<PunctuationMode>("punctuationMode", default: .zhhans)
-    static let customPunctuationSettings = Key<[String: String]>("customPunctuationSettings", default: punctuation)
+    static let punctuationMappingType = Key<PunctuationMappingType>("punctuationMappingType", default: .default)
+    static let punctuationCustomMapping = Key<[String: PunctuationMapping]>(
+        "punctuationCustomMapping",
+        default: defaultPunctuationMapping
+    )
     static let enableDotAfterNumber = Key<Bool>("enableDotAfterNumber", default: true)
     static let enableColonAfterNumber = Key<Bool>("enableColonAfterNumber", default: true)
     static let enablePunctuationAutoPair = Key<Bool>("enablePunctuationAutoPair", default: true)
     static let enableWhitespaceBetweenZhEn = Key<Bool>("enableWhitespaceBetweenZhEn", default: true)
     static let wbTablePath = Key<String>("wbTableURL", default: Bundle.main.resourceURL?.appendingPathComponent("wb_table.txt").path ?? "")
     static let pyTablePath = Key<String>("pyTableURL", default: Bundle.main.resourceURL?.appendingPathComponent("py_table.txt").path ?? "")
-    static let spellingScheme = Key<SpellingScheme>("spellingScheme", default: .wubi86)
+    static let wbSpellPath = Key<String>("wbSpellPath", default: Bundle.main.resourceURL?.appendingPathComponent("wubi86_spelling.txt").path ?? "")
     static let enableGBK = Key<Bool>("enableGBK", default: true)
+    static let enableEmoji = Key<Bool>("enableEmoji", default: false)
     static let enableExactMatch = Key<Bool>("enableExactMatch", default: false)
     static let enableStatistics = Key<Bool>("enableStatistics", default: true)
     static let celebrationEffect = Key<CelebrationEffectType>("celebrationEffect", default: .none)

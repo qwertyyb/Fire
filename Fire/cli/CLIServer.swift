@@ -17,7 +17,7 @@ class FireCLIServer {
             // DispatchQueue 属于 GCD（Grand Central Dispatch）
             // 是苹果底层并发调度框架，隶属于 libdispatch，iOS/macOS 全平台通用。
             DispatchQueue.main.async {
-                self.reply(Fire.shared.inputMode.rawValue)
+                self.reply(Fire.engine.inputMode.rawValue)
             }
         }
         setModSubscribe = DistributedNotificationCenter.default().publisher(for: FireCLI.setModeNotificationName).sink { notification in
@@ -31,7 +31,7 @@ class FireCLIServer {
                     return
                 }
                 let showTip = notification.userInfo?["showTip"] as? Bool
-                Fire.shared.toggleInputMode(inputMode, showTip: showTip ?? true)
+                Fire.engine.toggleInputMode(inputMode)
                 self.reply(nil)
             }
         }
