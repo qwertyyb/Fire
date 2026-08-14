@@ -3,21 +3,43 @@
     <channel>
         <title>业火输入法</title>
         <item>
-            <title>v0.27.0</title>
-            <pubDate>Fri, 05 Jun 2026 12:46:24 +0000</pubDate>
+            <title>v0.30.0</title>
+            <pubDate>Fri, 14 Aug 2026 12:09:27 +0000</pubDate>
             <sparkle:minimumSystemVersion>11.0</sparkle:minimumSystemVersion>
             <description><![CDATA[
-                <h3 id=features>Features</h3> <ul> <li>增加密码自动切换至英文模式功能 (<a href=https://github.com/qwertyyb/Fire/commit/e8f73558ea612903b3d80ded88820b236e5b6623>e8f7355</a>)</li> <li>支持数字后输入全角冒号时自动转为半角 (<a href=https://github.com/qwertyyb/Fire/commit/7e79416023bc3402ba285538305e922f361a0f40>7e79416</a>)</li> </ul>
-                <h3 id="">💰 打赏支持</h3>
-  <p>如果本项目对你有帮助，欢迎<a href="https://github.com/qwertyyb/Fire#-打赏支持">请作者喝杯咖啡</a>，你的支持是持续更新的动力~</p>
-  <p><img alt="微信赞赏码" src="https://cdn.qwertyyb.cn/static/wx.jpg" width="200"></p>
+                <h3 id="bugfixes">Bug Fixes</h3>
+<ul>
+<li>修复"筕"拼音错误的问题 (<a href="https://github.com/qwertyyb/Fire/commit/ec585f8d675b694537e09c6b89bb7e35d721e079">ec585f8</a>)</li>
+<li>修复关闭首选项再次打开时统计数据为空的问题；高级菜单改名为系统词库，并调整其位置 (<a href="https://github.com/qwertyyb/Fire/commit/6855db70d91b6249761a8637defaaa1d15e4ce5d">6855db7</a>)</li>
+<li>修复切换输入法时状态栏图标偶现不显示或不隐藏的问题 (<a href="https://github.com/qwertyyb/Fire/commit/dac2d377eb3b5b8f0ddd88b98f03bed18468db89">dac2d37</a>)</li>
+<li>修复原码清空后，候选窗没有关闭的问题 (<a href="https://github.com/qwertyyb/Fire/commit/05a3cf30fe77dc0ad85644a728d6a93ff65ec952">05a3cf3</a>)</li>
+<li>修复用户词库输入码中有 z 键时被排到最后的问题 (<a href="https://github.com/qwertyyb/Fire/commit/7a09bbc15f423910f1d675734d10e312292d01ab">7a09bbc</a>)</li>
+<li>修复问题 (<a href="https://github.com/qwertyyb/Fire/commit/34b7def867ce20aef8431c2446816eb46a47e83a">34b7def</a>)</li>
+</ul>
+<h3 id="features">Features</h3>
+<ul>
+<li>try state (<a href="https://github.com/qwertyyb/Fire/commit/16c7140069f4011d1c0e8f2f561aecca03a90b5a">16c7140</a>)</li>
+<li>优化查询性能，加快查询速度，性能加速为 1.7 倍左右 (<a href="https://github.com/qwertyyb/Fire/commit/6d9df241c27535c80c0eb3d0b227e72403db738b">6d9df24</a>)</li>
+<li><strong>偏好设置:</strong> 在用户词典面板中添加日期和时间占位符说明 (<a href="https://github.com/qwertyyb/Fire/commit/075d7a1dc5c9cbe831c58acdc6477020ed338a7c">075d7a1</a>)</li>
+<li>判断gb2312 逻辑调整 (<a href="https://github.com/qwertyyb/Fire/commit/3ba096775ac29cb22c260d7ebfb98ce9349aaf1b">3ba0967</a>)</li>
+<li>提高查询性能 (<a href="https://github.com/qwertyyb/Fire/commit/8f581c76431f4f0c592d7b59543ce381a26df877">8f581c7</a>)</li>
+<li>支持 emoji (<a href="https://github.com/qwertyyb/Fire/commit/fd69b60a7eab9dda0ef7ad5e7e522af242afdcd3">fd69b60</a>)</li>
+<li>新增新世纪版五笔输入法支持 (<a href="https://github.com/qwertyyb/Fire/commit/f6e8d02ecaf06c0b9005183fcc8b4882dab155d8">f6e8d02</a>)</li>
+<li>符号映射方案的候选和自定义映射方案分开 (<a href="https://github.com/qwertyyb/Fire/commit/06a4e09fa2c95ce5bffcc3452a2a30025b0a9be0">06a4e09</a>)</li>
+<li>词库构建改为单列 spell/pinyin (<a href="https://github.com/qwertyyb/Fire/commit/544856c69aa39615ac55a05793df58416ef3805d">544856c</a>)</li>
+<li>调整状态转换逻辑 (<a href="https://github.com/qwertyyb/Fire/commit/00e233dbae1d4f3a5b69181b04aff851f7e86428">00e233d</a>)</li>
+<li>重构词库构建 (<a href="https://github.com/qwertyyb/Fire/commit/67697e8c04df5e4584bd2937118b695625f9b2ac">67697e8</a>)</li>
+</ul>
+<h3 id="">💰 打赏支持</h3>
+<p>如果本项目对你有帮助，欢迎<a href="https://github.com/qwertyyb/Fire#-打赏支持">请作者喝杯咖啡</a>，你的支持是持续更新的动力~</p>
+<p><img alt="微信赞赏码" src="https://cdn.qwertyyb.cn/static/wx.jpg" width="200"></p>
             ]]>
             </description>
             <enclosure url="https://github.com/qwertyyb/Fire/releases/latest/download/FireInstaller.zip"
-              sparkle:version="20260605124434"
-              sparkle:shortVersionString="v0.27.0"
-              length="5821440"
-              sparkle:edSignature="OxohD4XOS0Ag1V0sgHrF/XQS3phchQkwXjAjWnZ5QmTrBb2KalM63ZxWh36SmgEPqhNaDsoHW06DSFleGzrYCQ=="
+              sparkle:version="20260814120654"
+              sparkle:shortVersionString="v0.30.0"
+              length="15404194"
+              sparkle:edSignature="E+vcDy1C2bbYkQr608gg5ydeUfnIp2qvclAs94r4LCGKTUcGx9HSsXF9udifz/L46dSU83WmHbECUt0n6haGBg=="
               type="application/octet-stream"/>
         </item>
     </channel>
