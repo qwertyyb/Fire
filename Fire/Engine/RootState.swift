@@ -166,8 +166,10 @@ class RootState: InputState {
     }
     
     private func enterDeleteCandidateHandler(_ event: KeyInput, context: inout any InputContext) -> Bool? {
-        if (store.inputMode == .zhhans && DeleteCandidateState.shouldEnter(event, context: context)) {
-            let targetIndex = (DeleteCandidateState.digitByKeyCode[event.keyCode] ?? 1) - 1
+        if store.inputMode == .zhhans,
+           let shortcut = config.deleteCandidateShortcut,
+           DeleteCandidateState.shouldEnter(event, context: context, shortcut: shortcut) {
+            let targetIndex = (InputShortcut.digitByKeyCode[event.keyCode] ?? 1) - 1
             setSubState(DeleteCandidateState(candidate: context.candidates[targetIndex], dict: self.dict), context: &context)
             return true
         }
@@ -175,11 +177,14 @@ class RootState: InputState {
     }
     
     private func enterQuickCombineHandler(_ event: KeyInput, context: inout any InputContext) -> Bool? {
-        if store.inputMode == .zhhans, event.modifiers == .control, event.keyCode == UInt16(kVK_ANSI_Equal), context.origin.isEmpty {
+        if store.inputMode == .zhhans,
+           let shortcut = config.quickCombineShortcut,
+           shortcut.matches(event),
+           context.origin.isEmpty {
             if store.recentCommittedTexts.count >= 2 {
                 setSubState(QuickCombineState(count: 2, dict: self.dict, store: self.store), context: &context)
             } else {
-                context.showMessage("请先输入至少两个字，再按 control+= 组词")
+                context.showMessage("请先输入至少两个字，再按 \(shortcut.displayLabel) 组词")
             }
             return true
         }
@@ -237,20 +242,18 @@ class RootState: InputState {
     }
     
     // MARK: - 中文输入模式下的按键处理: 翻页键、删除键、字符键、数字键、esc键、enter键、space键
-    private func hotkeyHandler(_ event: KeyInput, context: inout any InputContext) -> Bool? {
-        FireLog.input.debug("hotkeyHandler")
-        guard let chars = event.charactersIgnoringModifiers, let num = Int(chars) else {
+    private func pinCandidateHandler(_ event: KeyInput, context: inout any InputContext) -> Bool? {
+        FireLog.input.debug("pinCandidateHandler")
+        guard let shortcut = config.pinCandidateShortcut,
+              shortcut.matches(event),
+              let num = InputShortcut.digitByKeyCode[event.keyCode],
+              num > 0, num <= context.candidates.count else {
             return nil
         }
-        // Ctrl+Option+数字：置顶候选词
-        if event.modifiers == [.control, .option] &&
-            num > 0 && num <= context.candidates.count {
-            FireLog.input.debug("hotkey: control + option + \(num)")
-            self.dict.setCandidateToFirst(context.origin, candidate: context.candidates[num-1])
-            updateCandidates(&context, page: 1, selectedIndex: 0)
-            return true
-        }
-        return nil
+        FireLog.input.debug("pinCandidate: \(shortcut.displayLabel) + \(num)")
+        self.dict.setCandidateToFirst(context.origin, candidate: context.candidates[num - 1])
+        updateCandidates(&context, page: 1, selectedIndex: 0)
+        return true
     }
     
     private func pageKeyHandler(_ event: KeyInput, context: inout any InputContext) -> Bool? {
@@ -462,7 +465,7 @@ class RootState: InputState {
             enterTempEnHandler,
             enterDeleteCandidateHandler,
             enterQuickCombineHandler,
-            hotkeyHandler,
+            pinCandidateHandler,
             
             flagsChangeHandler,
             enModeHandler,

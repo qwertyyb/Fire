@@ -51,6 +51,18 @@ struct FireEngineConfig: EngineConfig {
         Defaults[.disableTempEnMode]
     }
 
+    var quickCombineShortcut: InputShortcut? {
+        Defaults[.quickCombineShortcut].value
+    }
+
+    var pinCandidateShortcut: DigitInputShortcut? {
+        Defaults[.pinCandidateShortcut].value
+    }
+
+    var deleteCandidateShortcut: DigitInputShortcut? {
+        Defaults[.deleteCandidateShortcut].value
+    }
+
     var enablePunctuationAutoPair: Bool {
         Defaults[.enablePunctuationAutoPair]
     }

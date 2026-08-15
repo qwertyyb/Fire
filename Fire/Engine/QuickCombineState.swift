@@ -8,10 +8,6 @@ import Carbon
 import AppKit
 
 struct QuickCombineState: InputState {
-    // control+= 快速组词
-    static let shortcutModifier: NSEvent.ModifierFlags = .control
-    static let shortcutKeyCode = kVK_ANSI_Equal
-    
     private var count: Int = 2
     
     let dict: any EngineDictManager

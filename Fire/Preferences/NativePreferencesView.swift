@@ -32,6 +32,7 @@ struct NativePreferencesView: View {
 
     private let panes: [PaneItem] = [
         PaneItem(id: "基本", icon: "gearshape", title: "基本", tint: .gray),
+        PaneItem(id: "快捷键", icon: "keyboard", title: "快捷键", tint: .cyan),
         PaneItem(id: "标点符号", icon: "text.quote", title: "标点符号", tint: .teal),
         PaneItem(id: "用户词库", icon: "book", title: "用户词库", tint: .blue),
         PaneItem(id: "系统词库", icon: "books.vertical", title: "系统词库", tint: .brown),
@@ -45,18 +46,19 @@ struct NativePreferencesView: View {
             List(selection: $localSelection) {
                 Section("编码与输入") {
                     row(for: panes[0])
+                    row(for: panes[1])
                 }
                 Section("符号与词库") {
-                    row(for: panes[1])
                     row(for: panes[2])
                     row(for: panes[3])
+                    row(for: panes[4])
                 }
                 Section("应用与外观") {
-                    row(for: panes[4])
                     row(for: panes[5])
+                    row(for: panes[6])
                 }
                 Section("数据与系统") {
-                    row(for: panes[6])
+                    row(for: panes[7])
                 }
             }
             .listStyle(.sidebar)
@@ -113,6 +115,7 @@ struct NativePreferencesView: View {
     private func detail(for id: String) -> some View {
         switch id {
         case "基本": GeneralPane()
+        case "快捷键": ShortcutsPane()
         case "标点符号": PunctuationPane()
         case "用户词库": UserDictPane()
         case "应用": ApplicationPane()

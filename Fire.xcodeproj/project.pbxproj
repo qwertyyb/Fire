@@ -91,9 +91,13 @@
 		B6B720432FF74FD100A3066B /* 98版五笔字型.png in Resources */ = {isa = PBXBuildFile; fileRef = B6B720402FF74FD100A3066B /* 98版五笔字型.png */; };
 		B6B720442FF74FD100A3066B /* 86版五笔字型.png in Resources */ = {isa = PBXBuildFile; fileRef = B6B7203F2FF74FD100A3066B /* 86版五笔字型.png */; };
 		B6B720462FF806000A595A7 /* CelebrationEffect.swift in Sources */ = {isa = PBXBuildFile; fileRef = B6B720452FF806000A595A7 /* CelebrationEffect.swift */; };
+		C0FFEE012FF9000300A595A7 /* IMKAppBypass.m in Sources */ = {isa = PBXBuildFile; fileRef = C0FFEE002FF9000300A595A7 /* IMKAppBypass.m */; };
 		E291A4B12E614A66A584B462 /* KeyCap.swift in Sources */ = {isa = PBXBuildFile; fileRef = CEE3257C88BD4ECD92819A9B /* KeyCap.swift */; };
 		F1A2B3C52FF9000200A595A7 /* PreferencePickerRow.swift in Sources */ = {isa = PBXBuildFile; fileRef = F1A2B3C42FF9000200A595A7 /* PreferencePickerRow.swift */; };
-		C0FFEE012FF9000300A595A7 /* IMKAppBypass.m in Sources */ = {isa = PBXBuildFile; fileRef = C0FFEE002FF9000300A595A7 /* IMKAppBypass.m */; };
+		D1SC0DE12FF9000100A595A1 /* InputShortcut.swift in Sources */ = {isa = PBXBuildFile; fileRef = D1SC0DE02FF9000100A595A1 /* InputShortcut.swift */; };
+		D1SC0DE22FF9000100A595A2 /* ShortcutsPane.swift in Sources */ = {isa = PBXBuildFile; fileRef = D1SC0DE02FF9000100A595A2 /* ShortcutsPane.swift */; };
+		D1SC0DE32FF9000100A595A3 /* PreferenceShortcutRow.swift in Sources */ = {isa = PBXBuildFile; fileRef = D1SC0DE02FF9000100A595A3 /* PreferenceShortcutRow.swift */; };
+		D1SC0DE42FF9000100A595A4 /* InputShortcutRecorder.swift in Sources */ = {isa = PBXBuildFile; fileRef = D1SC0DE02FF9000100A595A4 /* InputShortcutRecorder.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -192,10 +196,14 @@
 		B6B7203F2FF74FD100A3066B /* 86版五笔字型.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "86版五笔字型.png"; sourceTree = "<group>"; };
 		B6B720402FF74FD100A3066B /* 98版五笔字型.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "98版五笔字型.png"; sourceTree = "<group>"; };
 		B6B720452FF806000A595A7 /* CelebrationEffect.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CelebrationEffect.swift; sourceTree = "<group>"; };
-		CEE3257C88BD4ECD92819A9B /* KeyCap.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KeyCap.swift; sourceTree = "<group>"; };
-		F1A2B3C42FF9000200A595A7 /* PreferencePickerRow.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PreferencePickerRow.swift; sourceTree = "<group>"; };
 		C0FFEE002FF9000300A595A7 /* IMKAppBypass.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = IMKAppBypass.m; sourceTree = "<group>"; };
 		C0FFEE022FF9000300A595A7 /* IMKAppBypass.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = IMKAppBypass.h; sourceTree = "<group>"; };
+		CEE3257C88BD4ECD92819A9B /* KeyCap.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KeyCap.swift; sourceTree = "<group>"; };
+		F1A2B3C42FF9000200A595A7 /* PreferencePickerRow.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PreferencePickerRow.swift; sourceTree = "<group>"; };
+		D1SC0DE02FF9000100A595A1 /* InputShortcut.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InputShortcut.swift; sourceTree = "<group>"; };
+		D1SC0DE02FF9000100A595A2 /* ShortcutsPane.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShortcutsPane.swift; sourceTree = "<group>"; };
+		D1SC0DE02FF9000100A595A3 /* PreferenceShortcutRow.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PreferenceShortcutRow.swift; sourceTree = "<group>"; };
+		D1SC0DE02FF9000100A595A4 /* InputShortcutRecorder.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InputShortcutRecorder.swift; sourceTree = "<group>"; };
 		FCD8E654442EC085F2FF81D5 /* RadicalFontManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RadicalFontManager.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -230,6 +238,7 @@
 			isa = PBXGroup;
 			children = (
 				9D66CC3B495E421AA61AC9C7 /* DefaultsKeys.swift */,
+				D1SC0DE02FF9000100A595A1 /* InputShortcut.swift */,
 			);
 			path = Types;
 			sourceTree = "<group>";
@@ -398,6 +407,9 @@
 				67C9A05C2AB53ED3000B5281 /* NativePreferencesView.swift */,
 				CEE3257C88BD4ECD92819A9B /* KeyCap.swift */,
 				F1A2B3C42FF9000200A595A7 /* PreferencePickerRow.swift */,
+				D1SC0DE02FF9000100A595A2 /* ShortcutsPane.swift */,
+				D1SC0DE02FF9000100A595A3 /* PreferenceShortcutRow.swift */,
+				D1SC0DE02FF9000100A595A4 /* InputShortcutRecorder.swift */,
 			);
 			path = Preferences;
 			sourceTree = "<group>";
@@ -680,6 +692,10 @@
 				4574D1683021D4CB00831DCC /* Engine.swift in Sources */,
 				E291A4B12E614A66A584B462 /* KeyCap.swift in Sources */,
 				F1A2B3C52FF9000200A595A7 /* PreferencePickerRow.swift in Sources */,
+				D1SC0DE12FF9000100A595A1 /* InputShortcut.swift in Sources */,
+				D1SC0DE22FF9000100A595A2 /* ShortcutsPane.swift in Sources */,
+				D1SC0DE32FF9000100A595A3 /* PreferenceShortcutRow.swift in Sources */,
+				D1SC0DE42FF9000100A595A4 /* InputShortcutRecorder.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

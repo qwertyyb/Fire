@@ -66,4 +66,16 @@ extension Defaults.Keys {
     static let enableExactMatch = Key<Bool>("enableExactMatch", default: false)
     static let enableStatistics = Key<Bool>("enableStatistics", default: true)
     static let celebrationEffect = Key<CelebrationEffectType>("celebrationEffect", default: .none)
+    static let quickCombineShortcut = Key<StoredInputShortcut>(
+        "quickCombineShortcut",
+        default: .init(active: .defaultQuickCombine)
+    )
+    static let pinCandidateShortcut = Key<StoredDigitInputShortcut>(
+        "pinCandidateShortcut",
+        default: .init(active: .defaultPinCandidate)
+    )
+    static let deleteCandidateShortcut = Key<StoredDigitInputShortcut>(
+        "deleteCandidateShortcut",
+        default: .init(active: .defaultDeleteCandidate)
+    )
 }

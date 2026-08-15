@@ -57,6 +57,18 @@ enum Key {
         digit(n).withModifiers([.control, .option])
     }
 
+    static func withShortcut(_ shortcut: InputShortcut) -> KeyInput {
+        keyDown(
+            keyCode: Int(shortcut.keyCode),
+            characters: InputShortcutFormatting.keyLabel(for: shortcut.keyCode),
+            modifiers: shortcut.modifierFlags
+        )
+    }
+
+    static func withDigitShortcut(_ shortcut: DigitInputShortcut, digit n: Int) -> KeyInput {
+        digit(n).withModifiers(shortcut.modifierFlags)
+    }
+
     static func ctrlEqual() -> KeyInput {
         equal().withModifiers(.control)
     }

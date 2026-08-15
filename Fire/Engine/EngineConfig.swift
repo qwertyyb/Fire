@@ -41,6 +41,15 @@ protocol EngineConfig {
     
     /** 禁用临时英文模式 */
     var disableTempEnMode: Bool { get }
+
+    /** 快速组词快捷键，nil 表示未配置 */
+    var quickCombineShortcut: InputShortcut? { get }
+
+    /** 候选词置顶快捷键（修饰键 + 数字），nil 表示未配置 */
+    var pinCandidateShortcut: DigitInputShortcut? { get }
+
+    /** 删除候选词快捷键（修饰键 + 数字），nil 表示未配置 */
+    var deleteCandidateShortcut: DigitInputShortcut? { get }
     
     // MARK: - 符号配置
     /** 自动配对 */

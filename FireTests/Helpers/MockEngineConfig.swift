@@ -13,4 +13,7 @@ struct MockEngineConfig: EngineConfig {
     var extraCandidateSelectKeys: ExtraCandidateSelectKeys = .disabled
     var disableTempEnMode = false
     var enablePunctuationAutoPair = true
+    var quickCombineShortcut: InputShortcut? = .defaultQuickCombine
+    var pinCandidateShortcut: DigitInputShortcut? = .defaultPinCandidate
+    var deleteCandidateShortcut: DigitInputShortcut? = .defaultDeleteCandidate
 }
