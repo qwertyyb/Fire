@@ -25,12 +25,10 @@ struct GeneralPane: View {
     @Default(.enableEmoji) private var enableEmoji
     @Default(.showCodeInWindow) private var showCodeInWindow
     @Default(.candidatesDirection) private var candidatesDirection
-    @Default(.extraCandidateSelectKeys) private var extraCandidateSelectKeys
     @Default(.inputModeTipWindowType) private var inputModeTipWindowType
     @Default(.zKeyQuery) private var zKeyQuery
     @Default(.toggleInputModeKey) private var toggleInputModeKey
     @Default(.disableEnMode) private var disableEnMode
-    @Default(.disableTempEnMode) private var disableTempEnMode
     @Default(.showInputModeStatus) private var showInputModeStatus
     @Default(.enableWhitespaceBetweenZhEn) private var enableWhitespaceBetweenZhEn
     @Default(.enableExactMatch) private var enableExactMatch
@@ -87,14 +85,6 @@ struct GeneralPane: View {
                     }
                     .labelsHidden()
                 }
-                PreferencePickerRow(title: "二三候选词额外选择键") {
-                    Picker("", selection: $extraCandidateSelectKeys) {
-                        Text("禁用").tag(ExtraCandidateSelectKeys.disabled)
-                        Text(";'").tag(ExtraCandidateSelectKeys.semicolonQuote)
-                        Text(",.").tag(ExtraCandidateSelectKeys.commaPeriod)
-                    }
-                    .labelsHidden()
-                }
                 PreferencePickerRow(title: "上屏庆祝效果") {
                     Picker("", selection: $celebrationEffect) {
                         Text("不显示").tag(CelebrationEffectType.none)
@@ -141,7 +131,6 @@ struct GeneralPane: View {
                     .disabled(disableEnMode)
                 }
                 PreferenceToggleRow(title: "中文与英文或数字之间插入空格", isOn: $enableWhitespaceBetweenZhEn)
-                PreferenceToggleRow(title: "禁用;键临时英文模式", isOn: $disableTempEnMode)
             } header: {
                 Text("状态切换")
             }

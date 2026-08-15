@@ -12,6 +12,8 @@ struct ShortcutsPane: View {
     @Default(.quickCombineShortcut) private var storedQuickCombineShortcut
     @Default(.pinCandidateShortcut) private var storedPinCandidateShortcut
     @Default(.deleteCandidateShortcut) private var storedDeleteCandidateShortcut
+    @Default(.extraCandidateSelectKeys) private var extraCandidateSelectKeys
+    @Default(.disableTempEnMode) private var disableTempEnMode
 
     var body: some View {
         Form {
@@ -47,6 +49,19 @@ struct ShortcutsPane: View {
                 Text("快捷键")
             } footer: {
                 Text("置顶与删词需在按住修饰键后按数字 1–9 确认。")
+            }
+            Section {
+                PreferencePickerRow(title: "二三候选词额外选择键") {
+                    Picker("", selection: $extraCandidateSelectKeys) {
+                        Text("禁用").tag(ExtraCandidateSelectKeys.disabled)
+                        Text(";'").tag(ExtraCandidateSelectKeys.semicolonQuote)
+                        Text(",.").tag(ExtraCandidateSelectKeys.commaPeriod)
+                    }
+                    .labelsHidden()
+                }
+                PreferenceToggleRow(title: "禁用;键临时英文模式", isOn: $disableTempEnMode)
+            } header: {
+                Text("其它")
             }
         }
         .formStyle(.grouped)
