@@ -9,7 +9,7 @@ import Defaults
 let defaultPunctuationMapping: [String: PunctuationMapping] = [
     ",": .commit("，"),
     ".": .commit("。"),
-    "/": .commit("、"),
+    "/": .commit("/"),
     ";": .commit("；"),
     "[": .candidates(["[", "【", "「", "『", "〔"]),
     "]": .candidates(["]", "】", "」", "』", "〕"]),
