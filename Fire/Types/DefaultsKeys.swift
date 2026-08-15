@@ -68,14 +68,14 @@ extension Defaults.Keys {
     static let celebrationEffect = Key<CelebrationEffectType>("celebrationEffect", default: .none)
     static let quickCombineShortcut = Key<StoredInputShortcut>(
         "quickCombineShortcut",
-        default: .init(active: .defaultQuickCombine)
+        default: .init(active: FireEngineConfig.defaultQuickCombine)
     )
     static let pinCandidateShortcut = Key<StoredDigitInputShortcut>(
         "pinCandidateShortcut",
-        default: .init(active: .defaultPinCandidate)
+        default: .init(active: FireEngineConfig.defaultPinCandidate)
     )
     static let deleteCandidateShortcut = Key<StoredDigitInputShortcut>(
         "deleteCandidateShortcut",
-        default: .init(active: .defaultDeleteCandidate)
+        default: .init(active: FireEngineConfig.defaultDeleteCandidate)
     )
 }

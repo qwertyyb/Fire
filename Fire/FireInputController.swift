@@ -23,7 +23,7 @@ class FireInputController: IMKInputController, InputContext  {
     
     var selectedIndex: Int = 0
     
-    var session = Engine.shared.createSession(dict: DictManager.shared, config: FireEngineConfig.shared)
+    var session = Fire.shared.createSession()
     
     func commit(_ text: String) {
         FireLog.input.debug("commit: \(text)")

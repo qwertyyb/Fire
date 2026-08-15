@@ -17,12 +17,12 @@ class Engine {
     static let inputModeChanged = Notification.Name("Fire.inputModeChanged")
     
     var store: any EngineStore = DefaultEngineStore.shared
-    func createSession(dict: some EngineDictManager, config: some EngineConfig) -> RootState {
+    func createSession(dict: some EngineDictManager, config: some EngineConfig, punctuationTransformer: any PunctuationTransformer) -> RootState {
         return RootState(
             dict: dict,
             config: config,
             store: store,
-            punctuationTransformer: FirePunctuationTransformer()
+            punctuationTransformer: punctuationTransformer
         )
     }
     var inputMode: InputMode {

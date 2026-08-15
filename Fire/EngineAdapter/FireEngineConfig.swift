@@ -4,6 +4,8 @@
 //
 //  Created by qwertyyb on 2026/8/4.
 //
+import AppKit
+import Carbon
 import Defaults
 
 struct FireEngineConfig: EngineConfig {
@@ -68,4 +70,13 @@ struct FireEngineConfig: EngineConfig {
     }
     
     static let shared = FireEngineConfig()
+}
+
+extension FireEngineConfig {
+    static let defaultQuickCombine = InputShortcut(
+        keyCode: UInt16(kVK_ANSI_Equal),
+        modifiers: .control
+    )
+    static let defaultPinCandidate = DigitInputShortcut(modifiers: [.control, .option])
+    static let defaultDeleteCandidate = DigitInputShortcut(modifiers: [.control, .shift])
 }

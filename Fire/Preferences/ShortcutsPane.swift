@@ -55,21 +55,21 @@ struct ShortcutsPane: View {
     private var quickCombineShortcutBinding: Binding<InputShortcut?> {
         Binding(
             get: { storedQuickCombineShortcut.value },
-            set: { storedQuickCombineShortcut = StoredInputShortcut(value: $0, placeholder: .defaultQuickCombine) }
+            set: { storedQuickCombineShortcut = StoredInputShortcut(value: $0, placeholder: FireEngineConfig.defaultQuickCombine) }
         )
     }
 
     private var pinCandidateShortcutBinding: Binding<DigitInputShortcut?> {
         Binding(
             get: { storedPinCandidateShortcut.value },
-            set: { storedPinCandidateShortcut = StoredDigitInputShortcut(value: $0, placeholder: .defaultPinCandidate) }
+            set: { storedPinCandidateShortcut = StoredDigitInputShortcut(value: $0, placeholder: FireEngineConfig.defaultPinCandidate) }
         )
     }
 
     private var deleteCandidateShortcutBinding: Binding<DigitInputShortcut?> {
         Binding(
             get: { storedDeleteCandidateShortcut.value },
-            set: { storedDeleteCandidateShortcut = StoredDigitInputShortcut(value: $0, placeholder: .defaultDeleteCandidate) }
+            set: { storedDeleteCandidateShortcut = StoredDigitInputShortcut(value: $0, placeholder: FireEngineConfig.defaultDeleteCandidate) }
         )
     }
 }

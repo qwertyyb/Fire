@@ -95,6 +95,8 @@
 		E291A4B12E614A66A584B462 /* KeyCap.swift in Sources */ = {isa = PBXBuildFile; fileRef = CEE3257C88BD4ECD92819A9B /* KeyCap.swift */; };
 		F1A2B3C52FF9000200A595A7 /* PreferencePickerRow.swift in Sources */ = {isa = PBXBuildFile; fileRef = F1A2B3C42FF9000200A595A7 /* PreferencePickerRow.swift */; };
 		D1SC0DE12FF9000100A595A1 /* InputShortcut.swift in Sources */ = {isa = PBXBuildFile; fileRef = D1SC0DE02FF9000100A595A1 /* InputShortcut.swift */; };
+		E5G1N0012FFA000100ENG01 /* Candidate.swift in Sources */ = {isa = PBXBuildFile; fileRef = E5G1N0002FFA000100ENG01 /* Candidate.swift */; };
+		E5G1N0032FFA000100PRF01 /* InputShortcutFormatting.swift in Sources */ = {isa = PBXBuildFile; fileRef = E5G1N0022FFA000100PRF01 /* InputShortcutFormatting.swift */; };
 		D1SC0DE22FF9000100A595A2 /* ShortcutsPane.swift in Sources */ = {isa = PBXBuildFile; fileRef = D1SC0DE02FF9000100A595A2 /* ShortcutsPane.swift */; };
 		D1SC0DE32FF9000100A595A3 /* PreferenceShortcutRow.swift in Sources */ = {isa = PBXBuildFile; fileRef = D1SC0DE02FF9000100A595A3 /* PreferenceShortcutRow.swift */; };
 		D1SC0DE42FF9000100A595A4 /* InputShortcutRecorder.swift in Sources */ = {isa = PBXBuildFile; fileRef = D1SC0DE02FF9000100A595A4 /* InputShortcutRecorder.swift */; };
@@ -201,6 +203,8 @@
 		CEE3257C88BD4ECD92819A9B /* KeyCap.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KeyCap.swift; sourceTree = "<group>"; };
 		F1A2B3C42FF9000200A595A7 /* PreferencePickerRow.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PreferencePickerRow.swift; sourceTree = "<group>"; };
 		D1SC0DE02FF9000100A595A1 /* InputShortcut.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InputShortcut.swift; sourceTree = "<group>"; };
+		E5G1N0002FFA000100ENG01 /* Candidate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Candidate.swift; sourceTree = "<group>"; };
+		E5G1N0022FFA000100PRF01 /* InputShortcutFormatting.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InputShortcutFormatting.swift; sourceTree = "<group>"; };
 		D1SC0DE02FF9000100A595A2 /* ShortcutsPane.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShortcutsPane.swift; sourceTree = "<group>"; };
 		D1SC0DE02FF9000100A595A3 /* PreferenceShortcutRow.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PreferenceShortcutRow.swift; sourceTree = "<group>"; };
 		D1SC0DE02FF9000100A595A4 /* InputShortcutRecorder.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InputShortcutRecorder.swift; sourceTree = "<group>"; };
@@ -238,7 +242,6 @@
 			isa = PBXGroup;
 			children = (
 				9D66CC3B495E421AA61AC9C7 /* DefaultsKeys.swift */,
-				D1SC0DE02FF9000100A595A1 /* InputShortcut.swift */,
 			);
 			path = Types;
 			sourceTree = "<group>";
@@ -410,6 +413,7 @@
 				D1SC0DE02FF9000100A595A2 /* ShortcutsPane.swift */,
 				D1SC0DE02FF9000100A595A3 /* PreferenceShortcutRow.swift */,
 				D1SC0DE02FF9000100A595A4 /* InputShortcutRecorder.swift */,
+				E5G1N0022FFA000100PRF01 /* InputShortcutFormatting.swift */,
 			);
 			path = Preferences;
 			sourceTree = "<group>";
@@ -453,6 +457,8 @@
 			isa = PBXGroup;
 			children = (
 				45D5B97130271610000C4155 /* Punctuation */,
+				E5G1N0002FFA000100ENG01 /* Candidate.swift */,
+				D1SC0DE02FF9000100A595A1 /* InputShortcut.swift */,
 				45F86EB8301E2D570048F934 /* RootState.swift */,
 				45F86EB2301D995F0048F934 /* TempEnState.swift */,
 				45F86EB0301D99470048F934 /* DeleteCandidateState.swift */,
@@ -693,6 +699,8 @@
 				E291A4B12E614A66A584B462 /* KeyCap.swift in Sources */,
 				F1A2B3C52FF9000200A595A7 /* PreferencePickerRow.swift in Sources */,
 				D1SC0DE12FF9000100A595A1 /* InputShortcut.swift in Sources */,
+				E5G1N0012FFA000100ENG01 /* Candidate.swift in Sources */,
+				E5G1N0032FFA000100PRF01 /* InputShortcutFormatting.swift in Sources */,
 				D1SC0DE22FF9000100A595A2 /* ShortcutsPane.swift in Sources */,
 				D1SC0DE32FF9000100A595A3 /* PreferenceShortcutRow.swift in Sources */,
 				D1SC0DE42FF9000100A595A4 /* InputShortcutRecorder.swift in Sources */,

@@ -10,29 +10,29 @@ import Testing
 
 struct InputShortcutTests {
     @Test func quickCombineDefault_matchesControlEqual() {
-        let shortcut = InputShortcut.defaultQuickCombine
+        let shortcut = FireEngineConfig.defaultQuickCombine
         #expect(shortcut.matches(Key.ctrlEqual()))
     }
 
     @Test func pinCandidateDefault_matchesControlOptionDigit() {
-        let shortcut = DigitInputShortcut.defaultPinCandidate
+        let shortcut = FireEngineConfig.defaultPinCandidate
         #expect(shortcut.matches(Key.ctrlOptionDigit(2)))
         #expect(!shortcut.matches(Key.ctrlShiftDigit(2)))
     }
 
     @Test func deleteCandidateDefault_matchesControlShiftDigit() {
-        let shortcut = DigitInputShortcut.defaultDeleteCandidate
+        let shortcut = FireEngineConfig.defaultDeleteCandidate
         #expect(shortcut.matches(Key.ctrlShiftDigit(2)))
         #expect(!shortcut.matches(Key.ctrlOptionDigit(2)))
     }
 
     @Test func displayLabel_quickCombine() {
-        let shortcut = InputShortcut.defaultQuickCombine
+        let shortcut = FireEngineConfig.defaultQuickCombine
         #expect(shortcut.displayLabel == "control+=")
     }
 
     @Test func displayLabel_digitShortcut() {
-        let shortcut = DigitInputShortcut.defaultPinCandidate
+        let shortcut = FireEngineConfig.defaultPinCandidate
         #expect(shortcut.displayLabel == "control+option+数字")
     }
 
@@ -40,7 +40,7 @@ struct InputShortcutTests {
         let pin = DigitInputShortcut(modifiers: [.control, .shift])
         let delete = DigitInputShortcut(modifiers: [.control, .shift])
         let conflict = InputShortcutFormatting.conflicts(
-            quickCombine: .defaultQuickCombine,
+            quickCombine: FireEngineConfig.defaultQuickCombine,
             pinCandidate: pin,
             deleteCandidate: delete
         )
@@ -49,24 +49,24 @@ struct InputShortcutTests {
 
     @Test func conflicts_allowsDistinctDefaults() {
         #expect(InputShortcutFormatting.conflicts(
-            quickCombine: .defaultQuickCombine,
-            pinCandidate: .defaultPinCandidate,
-            deleteCandidate: .defaultDeleteCandidate
+            quickCombine: FireEngineConfig.defaultQuickCombine,
+            pinCandidate: FireEngineConfig.defaultPinCandidate,
+            deleteCandidate: FireEngineConfig.defaultDeleteCandidate
         ) == nil)
     }
 
     @Test func conflicts_ignoresNilShortcuts() {
         #expect(InputShortcutFormatting.conflicts(
             quickCombine: nil,
-            pinCandidate: .defaultPinCandidate,
+            pinCandidate: FireEngineConfig.defaultPinCandidate,
             deleteCandidate: nil
         ) == nil)
     }
 
     @Test func storedShortcut_cleared_persistsAsNil() {
-        let stored = StoredInputShortcut(value: nil, placeholder: .defaultQuickCombine)
+        let stored = StoredInputShortcut(value: nil, placeholder: FireEngineConfig.defaultQuickCombine)
         #expect(stored.value == nil)
-        let active = StoredInputShortcut(value: .defaultQuickCombine, placeholder: .defaultQuickCombine)
-        #expect(active.value == .defaultQuickCombine)
+        let active = StoredInputShortcut(value: FireEngineConfig.defaultQuickCombine, placeholder: FireEngineConfig.defaultQuickCombine)
+        #expect(active.value == FireEngineConfig.defaultQuickCombine)
     }
 }

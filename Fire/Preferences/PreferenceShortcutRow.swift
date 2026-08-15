@@ -219,11 +219,11 @@ struct PreferenceShortcutRow: View {
         hintMessage = nil
         switch role {
         case .quickCombine:
-            quickCombineShortcut = .defaultQuickCombine
+            quickCombineShortcut = FireEngineConfig.defaultQuickCombine
         case .pinCandidate:
-            pinCandidateShortcut = .defaultPinCandidate
+            pinCandidateShortcut = FireEngineConfig.defaultPinCandidate
         case .deleteCandidate:
-            deleteCandidateShortcut = .defaultDeleteCandidate
+            deleteCandidateShortcut = FireEngineConfig.defaultDeleteCandidate
         }
     }
 }
