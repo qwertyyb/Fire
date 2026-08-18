@@ -51,7 +51,8 @@ class FireInputController: IMKInputController, InputContext  {
             // selectedRange的location在组字区前
             previousLocation = selectedRange.location - 1
         }
-        if previousLocation <= 0 {
+        FireLog.input.debug("getTextBefore, markedRange: \(markedRange), selectedRange: \(selectedRange), previousLocation: \(previousLocation)")
+        if previousLocation < 0 {
             return ""
         }
         return client().attributedSubstring(from: NSMakeRange(previousLocation, 1))?.string ?? ""
