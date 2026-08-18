@@ -47,8 +47,6 @@ struct ShortcutsPane: View {
                 )
             } header: {
                 Text("快捷键")
-            } footer: {
-                Text("置顶与删词需在按住修饰键后按数字 1–9 确认。")
             }
             Section {
                 PreferencePickerRow(title: "二三候选词额外选择键") {
