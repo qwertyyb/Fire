@@ -430,8 +430,13 @@ class RootState: InputState {
 
     private func spaceKeyHandler(_ event: KeyInput, context: inout any InputContext) -> Bool? {
         FireLog.input.debug("spaceKeyHandler")
-        if event.keyCode == kVK_Space && context.candidates.count > 0 {
-            commitSelected(&context)
+        if event.keyCode == kVK_Space && context.origin.count > 0 {
+            if context.candidates.count > 0 {
+                commitSelected(&context)
+            } else {
+                context.origin += " "
+                updateCandidates(&context, origin: context.origin, page: 1, selectedIndex: 0)
+            }
             return true
         }
         return nil
