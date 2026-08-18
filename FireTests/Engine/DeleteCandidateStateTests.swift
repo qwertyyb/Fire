@@ -9,7 +9,7 @@ struct DeleteCandidateStateTests {
             TestFixtures.candidate("阿"),
         ]
 
-        #expect(DeleteCandidateState.shouldEnter(Key.ctrlShiftDigit(2), context: context))
+        #expect(DeleteCandidateState.shouldEnter(Key.ctrlShiftDigit(2), context: context, shortcut: FireEngineConfig.defaultDeleteCandidate))
     }
 
     @Test func shouldEnter_rejectsPlaceholderCandidate() {
@@ -18,7 +18,7 @@ struct DeleteCandidateStateTests {
             Candidate(code: "x", text: "", type: .placeholder, label: "提示"),
         ]
 
-        #expect(!DeleteCandidateState.shouldEnter(Key.ctrlShiftDigit(1), context: context))
+        #expect(!DeleteCandidateState.shouldEnter(Key.ctrlShiftDigit(1), context: context, shortcut: FireEngineConfig.defaultDeleteCandidate))
     }
 
     @Test func handle_return_blocksCandidateAndExits() {

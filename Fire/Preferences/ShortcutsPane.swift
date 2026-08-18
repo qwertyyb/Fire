@@ -1,0 +1,92 @@
+//
+//  ShortcutsPane.swift
+//  Fire
+//
+//  Created by qwertyyb on 2026/8/15.
+//
+
+import Defaults
+import SwiftUI
+
+struct ShortcutsPane: View {
+    @Default(.quickCombineShortcut) private var storedQuickCombineShortcut
+    @Default(.pinCandidateShortcut) private var storedPinCandidateShortcut
+    @Default(.deleteCandidateShortcut) private var storedDeleteCandidateShortcut
+    @Default(.extraCandidateSelectKeys) private var extraCandidateSelectKeys
+    @Default(.disableTempEnMode) private var disableTempEnMode
+
+    var body: some View {
+        Form {
+            Section {
+                PreferenceShortcutRow(
+                    title: "快速组词",
+                    caption: "无输入码时触发",
+                    role: .quickCombine,
+                    mode: .fullKey,
+                    quickCombineShortcut: quickCombineShortcutBinding,
+                    pinCandidateShortcut: pinCandidateShortcutBinding,
+                    deleteCandidateShortcut: deleteCandidateShortcutBinding
+                )
+                PreferenceShortcutRow(
+                    title: "候选词置顶",
+                    caption: "修饰键 + 数字 1–9",
+                    role: .pinCandidate,
+                    mode: .digit,
+                    quickCombineShortcut: quickCombineShortcutBinding,
+                    pinCandidateShortcut: pinCandidateShortcutBinding,
+                    deleteCandidateShortcut: deleteCandidateShortcutBinding
+                )
+                PreferenceShortcutRow(
+                    title: "删除候选词",
+                    caption: "修饰键 + 数字 1–9",
+                    role: .deleteCandidate,
+                    mode: .digit,
+                    quickCombineShortcut: quickCombineShortcutBinding,
+                    pinCandidateShortcut: pinCandidateShortcutBinding,
+                    deleteCandidateShortcut: deleteCandidateShortcutBinding
+                )
+            } header: {
+                Text("快捷键")
+            }
+            Section {
+                PreferencePickerRow(title: "二三候选词额外选择键") {
+                    Picker("", selection: $extraCandidateSelectKeys) {
+                        Text("禁用").tag(ExtraCandidateSelectKeys.disabled)
+                        Text(";'").tag(ExtraCandidateSelectKeys.semicolonQuote)
+                        Text(",.").tag(ExtraCandidateSelectKeys.commaPeriod)
+                    }
+                    .labelsHidden()
+                }
+                PreferenceToggleRow(title: "禁用;键临时英文模式", isOn: $disableTempEnMode)
+            } header: {
+                Text("其它")
+            }
+        }
+        .formStyle(.grouped)
+    }
+
+    private var quickCombineShortcutBinding: Binding<InputShortcut?> {
+        Binding(
+            get: { storedQuickCombineShortcut.value },
+            set: { storedQuickCombineShortcut = StoredInputShortcut(value: $0, placeholder: FireEngineConfig.defaultQuickCombine) }
+        )
+    }
+
+    private var pinCandidateShortcutBinding: Binding<DigitInputShortcut?> {
+        Binding(
+            get: { storedPinCandidateShortcut.value },
+            set: { storedPinCandidateShortcut = StoredDigitInputShortcut(value: $0, placeholder: FireEngineConfig.defaultPinCandidate) }
+        )
+    }
+
+    private var deleteCandidateShortcutBinding: Binding<DigitInputShortcut?> {
+        Binding(
+            get: { storedDeleteCandidateShortcut.value },
+            set: { storedDeleteCandidateShortcut = StoredDigitInputShortcut(value: $0, placeholder: FireEngineConfig.defaultDeleteCandidate) }
+        )
+    }
+}
+
+#Preview {
+    ShortcutsPane()
+}

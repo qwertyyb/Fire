@@ -7,22 +7,16 @@
 import Carbon
 
 struct DeleteCandidateState: InputState {
-    // control+shift+数字，删除选词
-    static func shouldEnter(_ event: KeyInput, context: any InputContext) -> Bool {
-        if event.modifiers == [.control, .shift],
-           let deleteIndex = Self.digitByKeyCode[event.keyCode],
+    // 修饰键+数字，删除选词
+    static func shouldEnter(_ event: KeyInput, context: any InputContext, shortcut: DigitInputShortcut) -> Bool {
+        if shortcut.matches(event),
+           let deleteIndex = InputShortcut.digitByKeyCode[event.keyCode],
            deleteIndex <= context.candidates.count && deleteIndex > 0,
            context.candidates[deleteIndex - 1].type != .placeholder {
             return true
         }
         return false
     }
-    
-    static var digitByKeyCode: [UInt16: Int] = [
-        UInt16(kVK_ANSI_1): 1, UInt16(kVK_ANSI_2): 2, UInt16(kVK_ANSI_3): 3,
-        UInt16(kVK_ANSI_4): 4, UInt16(kVK_ANSI_5): 5, UInt16(kVK_ANSI_6): 6,
-        UInt16(kVK_ANSI_7): 7, UInt16(kVK_ANSI_8): 8, UInt16(kVK_ANSI_9): 9
-    ]
     
     private let candidate: Candidate
     private var prevCurPage: Int = 1

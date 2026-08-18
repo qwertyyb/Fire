@@ -35,33 +35,9 @@ struct UserDictPane: View {
     var body: some View {
         Form {
             Section {
-                // 快捷键说明
-                VStack(alignment: .leading, spacing: 6) {
-                    HStack(spacing: 6) {
-                        KeyCap("control", icon: "control")
-                        Text("+")
-                            .font(.caption2)
-                            .foregroundStyle(.tertiary)
-                        KeyCap("=")
-                        Text("引导快速组合新词并置顶")
-                            .font(.caption2)
-                            .foregroundStyle(.tertiary)
-                    }
-                    HStack(spacing: 6) {
-                        KeyCap("control", icon: "control")
-                        Text("+")
-                            .font(.caption2)
-                            .foregroundStyle(.tertiary)
-                        KeyCap("option", icon: "option")
-                        Text("+")
-                            .font(.caption2)
-                            .foregroundStyle(.tertiary)
-                        KeyCap("N")
-                        Text("手动调整候选词顺序（置顶）")
-                            .font(.caption2)
-                            .foregroundStyle(.tertiary)
-                    }
-                }
+                Text("组词与候选词管理相关的快捷键可在「快捷键」面板中配置。")
+                    .font(.caption)
+                    .foregroundStyle(.tertiary)
                 // 用户词表格
                 List {
                     ForEach(Array(rows.enumerated()), id: \.element.id) { (index, _) in

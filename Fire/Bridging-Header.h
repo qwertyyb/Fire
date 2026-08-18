@@ -10,5 +10,6 @@
 #define Bridging_Header_h
 
 #import "SQLCipher/sqlite3.h"
+#import "IMKAppBypass.h"
 
 #endif /* Bridging_Header_h */

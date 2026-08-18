@@ -86,6 +86,10 @@ class Fire: NSObject {
 
         Utils.shared.toast?.show(text, position: position)
     }
+    
+    func createSession() -> RootState {
+        return Self.engine.createSession(dict: DictManager.shared, config: FireEngineConfig.shared, punctuationTransformer: FirePunctuationTransformer())
+    }
 
     let server: IMKServer = IMKServer.init(name: kConnectionName, bundleIdentifier: Bundle.main.bundleIdentifier)
 
