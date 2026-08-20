@@ -37,21 +37,8 @@ class FireInputController: IMKInputController, InputContext  {
     }
     
     func getTextBefore(_ count: Int = 1) -> String {
-        // 中文输入模式下，markedRange 会跟随输入字符变化
-        // 不同APP下，对selectedRange的location处理不同，有的把location放在组字区后，比如备忘录APP，有的把location放在组字区前，比如Chrome浏览器，此处根据大小判断一下
-        let selectedRange = client().selectedRange()
-        var markedRange = client().markedRange()
-        // 默认认为 location 在组字区后
-        if markedRange.location == NSNotFound {
-            markedRange = NSRange(location: 0, length: 0)
-        }
-        var previousLocation = selectedRange.location - markedRange.length - 1
-        // 某些场景下，markedRange的location和length不正常，此处按大小判断一下
-        if selectedRange.location < markedRange.location + markedRange.length {
-            // selectedRange的location在组字区前
-            previousLocation = selectedRange.location - 1
-        }
-        FireLog.input.debug("getTextBefore, markedRange: \(markedRange), selectedRange: \(selectedRange), previousLocation: \(previousLocation)")
+        let previousLocation = getCursorOffset() - 1
+        FireLog.input.debug("cursor offset: \(previousLocation)")
         if previousLocation < 0 {
             return ""
         }
@@ -85,13 +72,13 @@ class FireInputController: IMKInputController, InputContext  {
     }
 
     private func markText() {
-        let attrs = mark(forStyle: kTSMHiliteConvertedText, at: NSRange(location: NSNotFound, length: 0))
-        if let attributes = attrs as? [NSAttributedString.Key: Any] {
-            var selected = self.origin
-            if Defaults[.showCodeInWindow] {
-                selected = self.origin.count > 0 ? " " : ""
-            }
-            let text = NSAttributedString(string: selected, attributes: attributes)
+        var selected = self.origin
+        if Defaults[.showCodeInWindow] {
+            selected = self.origin.count > 0 ? " " : ""
+        }
+        let attrs = mark(forStyle: kTSMHiliteConvertedText, at: NSRange(location: NSNotFound, length: selected.count))  as? [NSAttributedString.Key: Any]
+        if let attrs = attrs {
+            let text = NSAttributedString(string: selected, attributes: attrs)
             client()?.setMarkedText(text, selectionRange: selectionRange(), replacementRange: replacementRange())
         }
     }
@@ -221,15 +208,41 @@ class FireInputController: IMKInputController, InputContext  {
                 FireLog.input.debug("insertCandidate should append whitespace: \(newText)")
             }
             let value = NSAttributedString(string: newText)
-            FireLog.input.debug("insertText, \(self.replacementRange())")
+            FireLog.input.debug("insertText before, \(String(describing: self.client()?.selectedRange())), \(String(describing: self.client()?.markedRange()))")
+            let cursor = getCursorOffset()
             client()?.insertText(value, replacementRange: replacementRange())
             if Engine.isPair(newText) {
-                DispatchQueue.main.async {
+                Utils.retryUntil(interval: 0.1, timeout: 0.3) {
+                    guard cursor < self.getCursorOffset() else { return false }
                     self.moveCursor(-1)
+                    return true
                 }
             }
         }
         clean()
+    }
+    // 光标位置，不考虑组字区
+    func getCursorOffset() -> Int {
+        // 中文输入模式下，markedRange 会跟随输入字符变化
+        // 不同APP下，对selectedRange的location处理不同，有的把location放在组字区后，比如备忘录APP，有的把location放在组字区前，比如Chrome浏览器，此处根据大小判断一下
+        let selectedRange = client().selectedRange()
+        var markedRange = client().markedRange()
+
+        // 有些应用中，有时markedRange会返回无效位置，此处检测到无效位置后，给一个默认值
+        if markedRange.location == NSNotFound {
+            markedRange = NSRange(location: 0, length: 0)
+        }
+        
+        // 默认按 selectedRange.location 在组字区后处理，计算获得前一个文字的位置
+        var cur = selectedRange.location - markedRange.length
+
+        if selectedRange.location + selectedRange.length < markedRange.location {
+            // selectedRange的location在组字区前
+            FireLog.input.info("selectedRange is before markedRange, markedRange: \(markedRange), selectedRange: \(selectedRange)")
+            // vscode 下 selectedRange 有时会跳到行开头，所以此处用 markedRange.location 来计算当前光标位置
+            cur = markedRange.location - selectedRange.length
+        }
+        return cur
     }
     
     func moveCursor(_ offset: Int) {
