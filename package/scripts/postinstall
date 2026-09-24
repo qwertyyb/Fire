@@ -6,8 +6,8 @@ EXE="/Library/Input Methods/${TARGET}.app/Contents/MacOS/${TARGET}"
 
 login_user=$(/usr/bin/stat -f%Su /dev/console)
 
-/usr/bin/sudo -u "${login_user}" /usr/bin/pkill -9 "${TARGET}" || true
+pkill -9 -f "Fire.app/Contents/MacOS/Fire" 2>/dev/null || true
 
 "${EXE}" --register-input-source
-/usr/bin/sudo -u "${login_user}" "${EXE}" --enable-input-source
-/usr/bin/sudo -u "${login_user}" "${EXE}" --select-input-source
+/usr/bin/sudo -u "${login_user}" "${EXE}" --enable || true
+/usr/bin/sudo -u "${login_user}" "${EXE}" --select || true

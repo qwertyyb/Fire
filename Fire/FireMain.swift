@@ -13,10 +13,14 @@ struct FireMain {
             switch args[1] {
             case "--install", "--register-input-source":
                 exit(InputSource.shared.registerInputSource() ? EXIT_SUCCESS : EXIT_FAILURE)
-            case "--enable-input-source":
+            case "--enable":
                 exit(InputSource.shared.enableInputSource() ? EXIT_SUCCESS : EXIT_FAILURE)
-            case "--select-input-source":
+            case "--select":
                 exit(InputSource.shared.selectInputSource() ? EXIT_SUCCESS : EXIT_FAILURE)
+            case "--ensure-select":
+                exit(InputSource.shared.ensureSelectInputSource() ? EXIT_SUCCESS : EXIT_FAILURE)
+            case "--enabled":
+                exit(InputSource.shared.isEnabled() ? EXIT_SUCCESS : EXIT_FAILURE)
             default:
                 break
             }

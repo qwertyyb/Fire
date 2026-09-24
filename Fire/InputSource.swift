@@ -25,6 +25,7 @@ class InputSource {
     static let selectChanged = Notification.Name("InputSource.selectChanged")
     
     let installLocation = "/Library/Input Methods/Fire.app"
+    let bundleID = Bundle.main.bundleIdentifier ?? "com.qwertyyb.inputmethod.Fire"
     let kSourceID = (Bundle.main.bundleIdentifier ?? "com.qwertyyb.inputmethod.Fire") + ".Hans"
     var selected: Bool? = nil
 
@@ -46,11 +47,11 @@ class InputSource {
         return err == noErr
     }
 
-    private func findInputSource(forUsage: InputSourceUsage = .enable)
+    private func findInputSource(forUsage: InputSourceUsage = .enable, all: Bool = false)
         -> TISInputSource? {
         let conditions = NSMutableDictionary()
         conditions.setValue(kSourceID, forKey: kTISPropertyInputSourceID as String)
-        guard let sourceList = TISCreateInputSourceList(conditions, true)?.takeRetainedValue() as? [TISInputSource] else {
+        guard let sourceList = TISCreateInputSourceList(conditions, all)?.takeRetainedValue() as? [TISInputSource] else {
             return nil
         }
 
@@ -68,30 +69,49 @@ class InputSource {
                 return inputSource
             }
         }
+        if all == false {
+            return findInputSource(forUsage: forUsage, all: true)
+        }
         return nil
     }
 
-    func enableInputSource(timeout: TimeInterval = 30, interval: TimeInterval = 0.2) -> Bool {
-        let deadline = Date().addingTimeInterval(timeout)
-        while Date() < deadline {
-            guard let source = findInputSource(forUsage: .enable) else {
-                Thread.sleep(forTimeInterval: interval)
-                continue
+    // enable 会拉起系统设置，并弹窗确认是否启用此输入法，用户点击确认启用后就可以选中此输入法
+    func enableInputSource() -> Bool {
+        let conditions = NSMutableDictionary()
+        conditions.setValue(bundleID, forKey: kTISPropertyInputSourceID as String)
+        guard let sourceList = TISCreateInputSourceList(conditions, true)?.takeRetainedValue() as? [TISInputSource] else {
+            return false
+        }
+        sourceList.forEach({ source in
+            let capable = source.value(forProperty: kTISPropertyInputSourceIsEnableCapable, type: Bool.self) ?? false
+            // 坑：TISEnableInputSource之后，kTISPropertyInputSourceIsEnabled的值在当前进程不会更新
+            let enabled = source.value(forProperty: kTISPropertyInputSourceIsEnabled, type: Bool.self) ?? false
+            // 如果已经 enabled，就不要再enable，会导致重复弹窗
+            if capable && !enabled {
+                let err = TISEnableInputSource(source)
+                FireLog.app.info("enable input source: \(err, privacy: .public)")
             }
-            if getBoolProperty(source, kTISPropertyInputSourceIsEnabled) {
-                return true
-            }
-            let err = TISEnableInputSource(source)
-            FireLog.app.info("enable input source: \(err, privacy: .public)")
-            if err == noErr {
-                return true
-            }
-            Thread.sleep(forTimeInterval: interval)
+        })
+        return true
+    }
+
+    // select 会选中此输入法，需要注意的是，必须先 enable 输入法添加到候选列表，才能选中
+    func selectInputSource() -> Bool {
+        guard let source = findInputSource(forUsage: .selected) else {
+            return false
+        }
+        if getBoolProperty(source, kTISPropertyInputSourceIsSelected) {
+            return true
+        }
+        let err = TISSelectInputSource(source)
+        FireLog.app.info("select input source: \(err, privacy: .public)")
+        if err == noErr || getBoolProperty(source, kTISPropertyInputSourceIsSelected) {
+            return true
         }
         return false
     }
-
-    func selectInputSource(timeout: TimeInterval = 30, interval: TimeInterval = 0.2) -> Bool {
+    
+    func ensureSelectInputSource(timeout: TimeInterval = 30, interval: TimeInterval = 0.2) -> Bool {
         let deadline = Date().addingTimeInterval(timeout)
         while Date() < deadline {
             guard let source = findInputSource(forUsage: .selected) else {
@@ -155,7 +175,8 @@ class InputSource {
         guard let result = findInputSource(forUsage: .enable) else {
             return false
         }
-        return getBoolProperty(result, kTISPropertyInputSourceIsEnabled)
+        let enabled = getBoolProperty(result, kTISPropertyInputSourceIsEnabled)
+        return enabled
     }
 
     static let shared = InputSource()

@@ -73,7 +73,7 @@
       </BuildableProductRunnable>
       <CommandLineArguments>
          <CommandLineArgument
-            argument = "--install"
+            argument = "--ensure-select"
             isEnabled = "YES">
          </CommandLineArgument>
       </CommandLineArguments>
