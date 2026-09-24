@@ -25,7 +25,7 @@ class InputSource {
     static let selectChanged = Notification.Name("InputSource.selectChanged")
     
     let installLocation = "/Library/Input Methods/Fire.app"
-    let kSourceID = Bundle.main.bundleIdentifier ?? "com.qwertyyb.inputmethod.Fire"
+    let kSourceID = (Bundle.main.bundleIdentifier ?? "com.qwertyyb.inputmethod.Fire") + ".Hans"
     var selected: Bool? = nil
 
     /// 从 TISInputSource 属性中读取 CFBoolean 值
@@ -35,13 +35,15 @@ class InputSource {
         return CFBooleanGetValue(Unmanaged<CFBoolean>.fromOpaque(raw).takeUnretainedValue())
     }
 
-    func registerInputSource() {
-        if !isEnabled() {
-            // 全新安装或未启用过，需要Register, 已启用的，不需要再次启用
-            let installedLocationURL = NSURL(fileURLWithPath: installLocation)
-            let err = TISRegisterInputSource(installedLocationURL as CFURL)
-            FireLog.app.error("register input source: \(err, privacy: .public)")
+    @discardableResult
+    func registerInputSource() -> Bool {
+        if isEnabled() {
+            return true
         }
+        let installedLocationURL = NSURL(fileURLWithPath: installLocation)
+        let err = TISRegisterInputSource(installedLocationURL as CFURL)
+        FireLog.app.info("register input source: \(err, privacy: .public)")
+        return err == noErr
     }
 
     private func findInputSource(forUsage: InputSourceUsage = .enable)
@@ -69,38 +71,46 @@ class InputSource {
         return nil
     }
 
-    func selectInputSource(callback: @escaping (Bool) -> Void) {
-        let maxTryTimes = 30
-        var tryTimes = 0
-        Timer.scheduledTimer(withTimeInterval: 1, repeats: true) { timer in
-            if tryTimes > maxTryTimes {
-                timer.invalidate()
-                callback(false)
-                return
+    func enableInputSource(timeout: TimeInterval = 30, interval: TimeInterval = 0.2) -> Bool {
+        let deadline = Date().addingTimeInterval(timeout)
+        while Date() < deadline {
+            guard let source = findInputSource(forUsage: .enable) else {
+                Thread.sleep(forTimeInterval: interval)
+                continue
             }
-            tryTimes += 1
-            guard let result = self.findInputSource(forUsage: .selected) else {
-                return
+            if getBoolProperty(source, kTISPropertyInputSourceIsEnabled) {
+                return true
             }
-            let err = TISSelectInputSource(result)
-            FireLog.app.error("select input source: \(err, privacy: .public)")
-            let isSelected = self.getBoolProperty(result, kTISPropertyInputSourceIsSelected)
-            if isSelected {
-                timer.invalidate()
-                callback(true)
+            let err = TISEnableInputSource(source)
+            FireLog.app.info("enable input source: \(err, privacy: .public)")
+            if err == noErr {
+                return true
             }
+            Thread.sleep(forTimeInterval: interval)
         }
+        return false
     }
 
-    func activateInputSource() {
-        guard let result = findInputSource() else {
-            return
+    func selectInputSource(timeout: TimeInterval = 30, interval: TimeInterval = 0.2) -> Bool {
+        let deadline = Date().addingTimeInterval(timeout)
+        while Date() < deadline {
+            guard let source = findInputSource(forUsage: .selected) else {
+                Thread.sleep(forTimeInterval: interval)
+                continue
+            }
+            if !getBoolProperty(source, kTISPropertyInputSourceIsEnabled) {
+                TISEnableInputSource(source)
+            }
+            if !getBoolProperty(source, kTISPropertyInputSourceIsSelected) {
+                let err = TISSelectInputSource(source)
+                FireLog.app.info("select input source: \(err, privacy: .public)")
+            }
+            if getBoolProperty(source, kTISPropertyInputSourceIsSelected) {
+                return true
+            }
+            Thread.sleep(forTimeInterval: interval)
         }
-        let enabled = getBoolProperty(result, kTISPropertyInputSourceIsEnabled)
-        if !enabled {
-            let err = TISEnableInputSource(result)
-            FireLog.app.error("Enabled input source: \(err, privacy: .public)")
-        }
+        return false
     }
 
     func deactivateInputSource() {
@@ -145,13 +155,7 @@ class InputSource {
         guard let result = findInputSource(forUsage: .enable) else {
             return false
         }
-        let unsafeIsEnabled = TISGetInputSourceProperty(
-            result,
-            kTISPropertyInputSourceIsEnabled
-        ).assumingMemoryBound(to: CFBoolean.self)
-        let isEnabled = CFBooleanGetValue(Unmanaged<CFBoolean>.fromOpaque(unsafeIsEnabled).takeUnretainedValue())
-
-        return isEnabled
+        return getBoolProperty(result, kTISPropertyInputSourceIsEnabled)
     }
 
     static let shared = InputSource()

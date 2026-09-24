@@ -9,22 +9,12 @@
 import AppKit
 import InputMethodKit
 
-@main  // Swift 5.3+ 推荐入口标记，替代 @NSApplicationMain
 class AppDelegate: NSObject, NSApplicationDelegate {
 
     var fire: Fire!
     var statistics: Statistics!
     var statusBar: StatusBar!
     var cliServer: FireCLIServer!
-
-    func installInputSource() {
-        FireLog.app.info("install input source")
-        InputSource.shared.registerInputSource()
-        InputSource.shared.activateInputSource()
-        InputSource.shared.selectInputSource { _ in
-            NSApp.terminate(self)
-        }
-    }
 
     func stop() {
         InputSource.shared.deactivateInputSource()
@@ -34,11 +24,6 @@ class AppDelegate: NSObject, NSApplicationDelegate {
     private func commandHandler() -> Bool {
         if CommandLine.arguments.count > 1 {
             let command = CommandLine.arguments[1]
-            if command == "--install" {
-                FireLog.app.info("launch argument: \(command, privacy: .public)")
-                installInputSource()
-                return false
-            }
             if command == "--build-dict" {
                 FireLog.app.info("launch argument: \(command, privacy: .public)")
                 FireLog.app.info("build dict")
