@@ -30,8 +30,8 @@ class FireInputController: IMKInputController, InputContext  {
         self.insertText(text)
     }
     
-    func commitCandidate(_ candidate: Candidate, confirmed: Bool) {
-        self.insertCandidate(candidate, confirmed: confirmed)
+    func commitCandidate(_ candidate: Candidate, reason: CandidateCommitReason) {
+        self.insertCandidate(candidate, confirmed: reason == .keyEvent)
         self.candidates = []
         clean()
     }

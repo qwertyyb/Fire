@@ -6,11 +6,6 @@
 //
 import Carbon
 
-enum CandidateCommitReason {
-    case keyEvent
-    case auto
-}
-
 class RootState: InputState {
     func didEnter(_ context: inout any InputContext) {
         
@@ -97,13 +92,13 @@ class RootState: InputState {
     
     func commitCandidate(_ context: inout any InputContext, _ candidate: Candidate, reason: CandidateCommitReason = .keyEvent) {
         store.recentCommittedTexts.append(candidate.text)
-        context.commit(candidate.text)
+        context.commitCandidate(candidate, reason: reason)
         updateCandidates(&context, origin: "", page: 1, selectedIndex: 0)
     }
     
     func commitSelected(_ context: inout any InputContext, reason: CandidateCommitReason = .keyEvent) {
         if context.selectedIndex < context.candidates.count && context.candidates[context.selectedIndex].type != .placeholder {
-            commitCandidate(&context, context.candidates[context.selectedIndex])
+            commitCandidate(&context, context.candidates[context.selectedIndex], reason: reason)
         }
     }
     
