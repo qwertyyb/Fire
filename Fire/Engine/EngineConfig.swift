@@ -9,10 +9,7 @@ import Defaults
 import Carbon
 
 protocol EngineConfig {
-    /** 禁用英文输入模式 */
-    var disableEnMode: Bool { get }
-    
-    /** 切换中英文模式的按键 */
+    /** 切换中英文模式的按键。.disabled 表示不使用快捷键切换，菜单栏和应用预设仍可切换 */
     var toggleInputModeKey: ModifierKey { get }
     
     /** 候选词方向  */
@@ -86,6 +83,7 @@ enum PunctuationMode: String, Codable, Defaults.Serializable, Equatable {
 }
 
 enum ModifierKey: String, Codable, Defaults.Serializable {
+    case disabled
     case shift
     case leftShift
     case rightShift
@@ -96,6 +94,8 @@ enum ModifierKey: String, Codable, Defaults.Serializable {
     
     func keyCodes() -> [Int] {
         switch self {
+        case .disabled:
+            return []
         case .shift:
             return [kVK_Shift, kVK_RightShift]
         case .leftShift:

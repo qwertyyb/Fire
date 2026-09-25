@@ -27,11 +27,15 @@ class Fire: NSObject {
 
     override init() {
         modifierKeyPressChecker = ModifierKeyPressChecker(modifierKey: Defaults[.toggleInputModeKey]) { event in
-            if InputSource.shared.isSelected() {
-                Self.engine.toggleInputMode()
-            }
+            guard Defaults[.toggleInputModeKey] != .disabled, InputSource.shared.isSelected() else { return }
+            Self.engine.toggleInputMode()
         }
         super.init()
+        Defaults.publisher(.toggleInputModeKey)
+            .sink { [weak self] _ in
+                self?.modifierKeyPressChecker.checkModifierKey = Defaults[.toggleInputModeKey]
+            }
+            .store(in: &cancellables)
 //        _ = InputSource.shared.onSelectChanged { selected in
 //            FireLog.app.info("onSelectChanged: \(selected, privacy: .public)")
 //            if selected {

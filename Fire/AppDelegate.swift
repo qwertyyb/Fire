@@ -60,6 +60,7 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         if !commandHandler() {
             return
         }
+        LegacyPreferenceMigration.migrateDisableEnMode()
         _ = RadicalFontManager.shared
         FireLog.app.info("app is running")
         fire = Fire.shared
