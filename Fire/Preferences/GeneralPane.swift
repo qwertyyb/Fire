@@ -28,7 +28,6 @@ struct GeneralPane: View {
     @Default(.inputModeTipWindowType) private var inputModeTipWindowType
     @Default(.zKeyQuery) private var zKeyQuery
     @Default(.toggleInputModeKey) private var toggleInputModeKey
-    @Default(.disableEnMode) private var disableEnMode
     @Default(.showInputModeStatus) private var showInputModeStatus
     @Default(.enableWhitespaceBetweenZhEn) private var enableWhitespaceBetweenZhEn
     @Default(.enableExactMatch) private var enableExactMatch
@@ -105,11 +104,10 @@ struct GeneralPane: View {
                 Text("候选窗")
             }
             Section {
-                PreferenceToggleRow(title: "禁止切换英文", isOn: $disableEnMode)
                 PreferenceToggleRow(title: "显示中英文状态", isOn: $showInputModeStatus)
-                    .disabled(disableEnMode)
                 PreferencePickerRow(title: "中英文切换快捷键") {
                     Picker("", selection: $toggleInputModeKey) {
+                        Text("禁用").tag(ModifierKey.disabled)
                         Label("control", systemImage: "control").tag(ModifierKey.control)
                         Label("shift", systemImage: "shift").tag(ModifierKey.shift)
                         Label("左shift", systemImage: "shift").tag(ModifierKey.leftShift)
@@ -119,7 +117,6 @@ struct GeneralPane: View {
                         Label("fn", systemImage: "globe").tag(ModifierKey.function)
                     }
                     .labelsHidden()
-                    .disabled(disableEnMode)
                 }
                 PreferencePickerRow(title: "中英文状态提示位置") {
                     Picker("", selection: $inputModeTipWindowType) {
@@ -128,7 +125,6 @@ struct GeneralPane: View {
                         Text("不显示").tag(InputModeTipWindowType.none)
                     }
                     .labelsHidden()
-                    .disabled(disableEnMode)
                 }
                 PreferenceToggleRow(title: "中文与英文或数字之间插入空格", isOn: $enableWhitespaceBetweenZhEn)
             } header: {

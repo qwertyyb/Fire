@@ -13,7 +13,7 @@ final class MockInputContext: InputContext {
 
     func getTextBefore(_ count: Int) -> String { textBefore }
     func commit(_ text: String) { committed.append(text) }
-    func commitCandidate(_ candidate: Candidate, confirmed: Bool) { committed.append(candidate.text) }
+    func commitCandidate(_ candidate: Candidate, reason: CandidateCommitReason) { committed.append(candidate.text) }
     func moveCursor(_ offset: Int) {}
     func showMessage(_ message: String) { messages.append(message) }
 }

@@ -253,6 +253,32 @@ struct RootStateTests {
         #expect(store.inputMode == .enUS)
     }
 
+    @Test func flagsChangeHandler_disabledToggleKey_keepsOriginAndMode() {
+        var config = MockEngineConfig()
+        config.toggleInputModeKey = .disabled
+        let store = MockEngineStore()
+        let engine = Engine()
+        engine.store = store
+        let root = RootState(
+            dict: MockEngineDictManager(),
+            config: config,
+            store: store,
+            engine: engine,
+            punctuationTransformer: FirePunctuationTransformer()
+        )
+        let mock = MockInputContext()
+        mock.origin = "abc"
+        var context: any InputContext = mock
+
+        let result = root.handle(Key.shiftModifierPress(), context: &context)
+
+        #expect(result.isStay)
+        #expect(!result.handled)
+        #expect(mock.committed.isEmpty)
+        #expect(mock.origin == "abc")
+        #expect(store.inputMode == .zhhans)
+    }
+
     @Test func flagsChangeHandler_commandModifier_returnsFalse() {
         let (root, _, _, _) = TestFixtures.makeRootState()
         let mock = MockInputContext()

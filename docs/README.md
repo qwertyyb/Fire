@@ -8,4 +8,5 @@
 
 | 日期 | 标题 | 关联 issue |
 | --- | --- | --- |
+| 2026-09-23 | [首次安装后未出现在「添加输入法」候选列表](./dev-logs/2026-09-23-input-source-missing-from-add-list.md) | |
 | 2026-05-10 | [全角标点不生效（仅 `,` `.` 转换）问题分析](./dev-logs/2026-05-10-shifted-punctuation-not-converted.md) | [#152](https://github.com/qwertyyb/Fire/issues/152)、[#149](https://github.com/qwertyyb/Fire/issues/149) |
