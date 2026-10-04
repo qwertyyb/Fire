@@ -6,11 +6,6 @@
 //
 import Carbon
 
-enum CandidateCommitReason {
-    case keyEvent
-    case auto
-}
-
 class RootState: InputState {
     func didEnter(_ context: inout any InputContext) {
         
@@ -97,13 +92,13 @@ class RootState: InputState {
     
     func commitCandidate(_ context: inout any InputContext, _ candidate: Candidate, reason: CandidateCommitReason = .keyEvent) {
         store.recentCommittedTexts.append(candidate.text)
-        context.commit(candidate.text)
+        context.commitCandidate(candidate, reason: reason)
         updateCandidates(&context, origin: "", page: 1, selectedIndex: 0)
     }
     
     func commitSelected(_ context: inout any InputContext, reason: CandidateCommitReason = .keyEvent) {
         if context.selectedIndex < context.candidates.count && context.candidates[context.selectedIndex].type != .placeholder {
-            commitCandidate(&context, context.candidates[context.selectedIndex])
+            commitCandidate(&context, context.candidates[context.selectedIndex], reason: reason)
         }
     }
     
@@ -196,7 +191,7 @@ class RootState: InputState {
     func flagsChangeHandler(_ event: KeyInput, context: inout any InputContext) -> Bool? {
         FireLog.input.debug("flagChangedHandler")
         // 只有在shift keyup时，才切换中英文输入, 否则会导致shift+[a-z]大写的功能失效
-        if !config.disableEnMode && event.type == .modifierPress && config.toggleInputModeKey.keyCodes().contains(Int(event.keyCode)) {
+        if config.toggleInputModeKey != .disabled && event.type == .modifierPress && config.toggleInputModeKey.keyCodes().contains(Int(event.keyCode)) {
             let inputMode = store.inputMode
             FireLog.input.info("toggle mode: \(String(describing: inputMode), privacy: .public)")
 

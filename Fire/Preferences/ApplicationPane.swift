@@ -70,7 +70,6 @@ struct ApplicationSettingItemView: View {
 struct ApplicationPane: View {
     @Default(.keepAppInputMode) private var keepAppInputMode
     @Default(.appSettings) private var appSettings
-    @Default(.disableEnMode) private var disableEnMode
     @Default(.appInputModeTipShowTime) private var appInputModeTipShowTime
 
     private func addApp() {
@@ -147,7 +146,6 @@ struct ApplicationPane: View {
             } header: {
                 Text("应用设置")
             }
-            .disabled(disableEnMode)
         }
         .formStyle(.grouped)
     }

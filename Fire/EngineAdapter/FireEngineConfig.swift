@@ -9,10 +9,6 @@ import Carbon
 import Defaults
 
 struct FireEngineConfig: EngineConfig {
-    var disableEnMode: Bool {
-        Defaults[.disableEnMode]
-    }
-    
     var toggleInputModeKey: ModifierKey {
         Defaults[.toggleInputModeKey]
     }

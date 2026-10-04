@@ -164,8 +164,7 @@ extension FireInputController {
             return item
         })
         
-        if !Defaults[.disableEnMode],
-            let controller = CandidatesWindow.shared.inputController,
+        if let controller = CandidatesWindow.shared.inputController,
             let bundleID = controller.client()?.bundleIdentifier() {
             var displayName = bundleID
             if let url = NSWorkspace.shared.urlForApplication(withBundleIdentifier: bundleID) {

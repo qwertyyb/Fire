@@ -21,6 +21,8 @@ class ModifierKeyPressChecker {
     var checkModifierKey: ModifierKey
     private var checkModifier: NSEvent.ModifierFlags {
         switch self.checkModifierKey {
+        case .disabled:
+            return []
         case .command:
             return NSEvent.ModifierFlags.command
         case .control:
@@ -36,6 +38,8 @@ class ModifierKeyPressChecker {
     }
     var checkKeyCode: [Int] {
         switch self.checkModifierKey {
+        case .disabled:
+            return []
         case .shift:
             return [kVK_Shift, kVK_RightShift]
         case .leftShift:

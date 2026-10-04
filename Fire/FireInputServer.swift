@@ -63,12 +63,6 @@ extension FireInputController {
             return
         }
 
-        if Defaults[.disableEnMode] {
-            // 由于 disableEnMode 为 true，所以需要切换到中文模式
-            Fire.engine.toggleInputMode(.zhhans)
-            return
-        }
-
         let changed = restoreCurrentClientInputMode()
 
         if (changed && Defaults[.appInputModeTipShowTime] != .none) || Defaults[.appInputModeTipShowTime] == .always {

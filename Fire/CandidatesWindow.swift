@@ -74,6 +74,18 @@ class CandidatesWindow: NSPanel, NSWindowDelegate {
         topLeft: NSPoint,
         selectedIndex: Int = 0
     ) {
+        // 从 Fire.shared 获取当前激活的 inputController，确保鼠标点击选词时能找到
+        if inputController == nil {
+            inputController = Fire.shared.activeInputController
+        }
+        FireLog.input.debug("origin top left: \(String(describing: topLeft), privacy: .public)")
+        FireLog.input.debug("candidates: \(String(describing: candidatesData))")
+        // 只改选中项时不重设原点，避免贴边窗口先回到光标处再被拉回
+        if isVisible && sameContent(candidatesData, originalString: originalString) {
+            hostingView.rootView.selectedIndex = selectedIndex
+            orderFrontRegardless()
+            return
+        }
         refreshing = true
         hostingView.rootView.candidates = candidatesData.list
         hostingView.rootView.origin = originalString
@@ -88,15 +100,28 @@ class CandidatesWindow: NSPanel, NSWindowDelegate {
         DispatchQueue.main.asyncAfter(deadline: .now() + 0.2) { [weak self] in
             self?.refreshing = false
         }
-        // 从 Fire.shared 获取当前激活的 inputController，确保鼠标点击选词时能找到
-        if inputController == nil {
-            inputController = Fire.shared.activeInputController
-        }
-        FireLog.input.debug("origin top left: \(String(describing: topLeft), privacy: .public)")
-        FireLog.input.debug("candidates: \(String(describing: candidatesData))")
-        self.setFrameTopLeftPoint(topLeft)
+        placeAtClampedTopLeft(topLeft)
         self.orderFrontRegardless()
 //        NSApp.setActivationPolicy(.prohibited)
+    }
+
+    /// 候选列表、输入码和翻页状态都未变，仅选中下标可能变化
+    private func sameContent(_ candidatesData: CandidatesData, originalString: String) -> Bool {
+        let root = hostingView.rootView
+        return root.origin == originalString
+            && root.candidates == candidatesData.list
+            && root.hasNext == candidatesData.hasNext
+            && root.hasPrev == candidatesData.hasPrev
+    }
+
+    /// 直接放到贴边后的位置。已经在该位置时不再 setFrame，避免先移出屏幕再被异步拉回。
+    private func placeAtClampedTopLeft(_ topLeft: NSPoint) {
+        let target = clampedTopLeft(topLeft, size: frame.size)
+        let current = NSPoint(x: frame.minX, y: frame.maxY)
+        if abs(current.x - target.x) < 0.5 && abs(current.y - target.y) < 0.5 {
+            return
+        }
+        setFrameTopLeftPoint(target)
     }
 
     func bindEvents() {
@@ -147,8 +172,12 @@ class CandidatesWindow: NSPanel, NSWindowDelegate {
     }
 
     private func limitFrameInScreen() {
-       let origin = self.transformTopLeft(originalTopLeft: NSPoint(x: self.frame.minX, y: self.frame.maxY))
-       self.setFrameTopLeftPoint(origin)
+        let current = NSPoint(x: frame.minX, y: frame.maxY)
+        let origin = clampedTopLeft(current, size: frame.size)
+        if abs(origin.x - current.x) < 0.5 && abs(origin.y - current.y) < 0.5 {
+            return
+        }
+        setFrameTopLeftPoint(origin)
     }
 
     private func setSizePolicy() {
@@ -166,6 +195,10 @@ class CandidatesWindow: NSPanel, NSWindowDelegate {
     }
 
     private func transformTopLeft(originalTopLeft: NSPoint) -> NSPoint {
+        clampedTopLeft(originalTopLeft, size: frame.size)
+    }
+
+    private func clampedTopLeft(_ originalTopLeft: NSPoint, size: NSSize) -> NSPoint {
         FireLog.input.debug("transformTopLeft: \(String(describing: self.frame), privacy: .public)")
 
         let screenPadding: CGFloat = 6
@@ -175,11 +208,11 @@ class CandidatesWindow: NSPanel, NSWindowDelegate {
         if let curScreen = Utils.shared.getScreenFromPoint(originalTopLeft) {
             let screen = curScreen.frame
 
-            if originalTopLeft.x + frame.width > screen.maxX - screenPadding {
-                left = screen.maxX - frame.width - screenPadding
+            if originalTopLeft.x + size.width > screen.maxX - screenPadding {
+                left = screen.maxX - size.width - screenPadding
             }
-            if originalTopLeft.y - frame.height < screen.minY + screenPadding {
-                top = screen.minY + frame.height + screenPadding
+            if originalTopLeft.y - size.height < screen.minY + screenPadding {
+                top = screen.minY + size.height + screenPadding
             }
         }
         return NSPoint(x: left, y: top)

@@ -1,7 +1,6 @@
 @testable import Fire
 
 struct MockEngineConfig: EngineConfig {
-    var disableEnMode = false
     var toggleInputModeKey: ModifierKey = .shift
     var candidatesDirection: CandidatesDirection = .horizontal
     var candidateCount = 5

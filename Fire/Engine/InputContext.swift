@@ -5,6 +5,11 @@
 //  Created by qwertyyb on 2026/8/1.
 //
 
+enum CandidateCommitReason {
+    case keyEvent
+    case auto
+}
+
 protocol InputContext {
     var origin: String { get set }
     var candidates: [Candidate] { get set }
@@ -15,7 +20,7 @@ protocol InputContext {
     func getTextBefore(_ count: Int) -> String
     
     func commit(_ text: String)
-    func commitCandidate(_ candidate: Candidate, confirmed: Bool)
+    func commitCandidate(_ candidate: Candidate, reason: CandidateCommitReason)
     
     func moveCursor(_ offset: Int)
     

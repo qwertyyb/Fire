@@ -35,7 +35,6 @@ extension Defaults.Keys {
     static let candidateCount = Key<Int>("candidateCount", default: 5)
     static let extraCandidateSelectKeys = Key<ExtraCandidateSelectKeys>("extraCandidateSelectKeys", default: .semicolonQuote)
     static let codeMode = Key<CodeMode>("codeMode", default: CodeMode.wubiPinyin)
-    static let disableEnMode = Key<Bool>("diableEnMode", default: false)
     static let disableTempEnMode = Key<Bool>("disableTempEnMode", default: false)
     static let toggleInputModeKey = Key<ModifierKey>("toggleInputModeKey", default: .shift)
     static let inputModeTipWindowType = Key<InputModeTipWindowType>("inputModeTipWindowType", default: .centerScreen)
@@ -78,4 +77,18 @@ extension Defaults.Keys {
         "deleteCandidateShortcut",
         default: .init(active: FireEngineConfig.defaultDeleteCandidate)
     )
+}
+
+enum LegacyPreferenceMigration {
+    /// 旧版「禁止切换英文」存在拼写错误的键名 `diableEnMode`。
+    /// 为真时把中英文切换快捷键迁成禁用，然后删除旧键，避免之后再改快捷键时被盖回。
+    static let disableEnModeKey = "diableEnMode"
+
+    static func migrateDisableEnMode(defaults: UserDefaults = .standard) {
+        guard defaults.object(forKey: disableEnModeKey) != nil else { return }
+        if defaults.bool(forKey: disableEnModeKey) {
+            Defaults[.toggleInputModeKey] = .disabled
+        }
+        defaults.removeObject(forKey: disableEnModeKey)
+    }
 }

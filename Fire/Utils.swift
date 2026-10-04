@@ -93,6 +93,24 @@ class Utils {
     }
 
     static let shared = Utils()
+
+    /// 在主线程重复执行 callback，直到返回 true 或超过 timeout。
+    /// 首次在下一个 runloop 执行；返回 false 时按 interval 重试；超时后不再执行。
+    static func retryUntil(
+        interval: TimeInterval,
+        timeout: TimeInterval,
+        callback: @escaping () -> Bool
+    ) {
+        let deadline = Date().addingTimeInterval(timeout)
+
+        func attempt() {
+            if callback() { return }
+            guard Date() < deadline else { return }
+            DispatchQueue.main.asyncAfter(deadline: .now() + interval, execute: attempt)
+        }
+
+        DispatchQueue.main.async(execute: attempt)
+    }
 }
 
 // MARK: - SQLite 公共辅助函数

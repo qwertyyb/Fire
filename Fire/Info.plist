@@ -17,7 +17,7 @@
 	<key>CFBundlePackageType</key>
 	<string>APPL</string>
 	<key>CFBundleShortVersionString</key>
-	<string>v0.17.2</string>
+	<string>v0.31.0</string>
 	<key>CFBundleURLTypes</key>
 	<array>
 		<dict>
@@ -30,15 +30,15 @@
 		</dict>
 	</array>
 	<key>CFBundleVersion</key>
-	<string>20230918181732</string>
+	<string>20260924124344</string>
 	<key>ComponentInputModeDict</key>
 	<dict>
 		<key>tsInputModeListKey</key>
 		<dict>
-			<key>com.qwertyyb.inputmethod.Fire</key>
+			<key>com.qwertyyb.inputmethod.Fire.Hans</key>
 			<dict>
 				<key>TISInputSourceID</key>
-				<string>com.qwertyyb.inputmethod.Fire</string>
+				<string>com.qwertyyb.inputmethod.Fire.Hans</string>
 				<key>TISIntendedLanguage</key>
 				<string>zh-Hans</string>
 				<key>tsInputModeAlternateMenuIconFileKey</key>
@@ -65,7 +65,7 @@
 		</dict>
 		<key>tsVisibleInputModeOrderedArrayKey</key>
 		<array>
-			<string>com.qwertyyb.inputmethod.Fire</string>
+			<string>com.qwertyyb.inputmethod.Fire.Hans</string>
 		</array>
 	</dict>
 	<key>InputMethodConnectionName</key>
@@ -97,6 +97,8 @@
 	<string>https://qwertyyb.github.io/Fire/appcast.xml</string>
 	<key>SUPublicEDKey</key>
 	<string>tR/BZ1M7WhteABLgJDf3f/bsxUHYMPABoY9PuPvI0TE=</string>
+	<key>TISInputSourceID</key>
+	<string>com.qwertyyb.inputmethod.Fire</string>
 	<key>TICapsLockLanguageSwitchCapable</key>
 	<true/>
 	<key>tsInputMethodCharacterRepertoireKey</key>
