@@ -3,20 +3,23 @@
     <channel>
         <title>业火输入法</title>
         <item>
-            <title>v0.31.0</title>
-            <pubDate>Tue, 18 Aug 2026 06:22:21 +0000</pubDate>
+            <title>v0.32.0</title>
+            <pubDate>Sun, 04 Oct 2026 09:51:58 +0000</pubDate>
             <sparkle:minimumSystemVersion>11.0</sparkle:minimumSystemVersion>
             <description><![CDATA[
                 <h3 id="bugfixes">Bug Fixes</h3>
 <ul>
-<li>修复没有候选词时，空格键被交由系统处理的问题 fix <a href="https://github.com/qwertyyb/Fire/issues/195">#195</a> (<a href="https://github.com/qwertyyb/Fire/commit/a812f68a2b52a70df2771f4d44f858cbf645b582">a812f68</a>)</li>
-<li>修复输入框中首个字符是数字，后输入的句号不会转为小数点的问题。fix <a href="https://github.com/qwertyyb/Fire/issues/196">#196</a> (<a href="https://github.com/qwertyyb/Fire/commit/c17afc77910a5822c107d1bd009894c8b4d5cfbc">c17afc7</a>)</li>
+<li>修复 vscode 数字开头时使用一级简码会产生多余空格的问题 fix <a href="https://github.com/qwertyyb/Fire/issues/200">#200</a> (<a href="https://github.com/qwertyyb/Fire/commit/77f836da4b11d813efb0a99d2b02defb35a68713">77f836d</a>)</li>
+<li>修复在 firefox 等应用下，成对符号配对输出时，光标不会移动到成对符号中间的问题。fix <a href="https://github.com/qwertyyb/Fire/issues/198">#198</a> (<a href="https://github.com/qwertyyb/Fire/commit/c313c7b73c8ed76084c1c678a81c50697fc4895a">c313c7b</a>)</li>
+<li>修复在屏幕边缘时，切换选中候选词时窗口闪烁的问题 (<a href="https://github.com/qwertyyb/Fire/commit/9acc0d123cc1bcde47b5e0c659ee6c46372bb6ea">9acc0d1</a>)</li>
+<li>修复首次安装无法启用输入法的问题 (<a href="https://github.com/qwertyyb/Fire/commit/ff8c1bfb155c6d2cec451fd930a425db873105b5">ff8c1bf</a>)</li>
+<li>候选词上屏时走 commitCandidate，恢复统计记录 (<a href="https://github.com/qwertyyb/Fire/commit/c38e7fb77ea3bab99981bc125d79e706849131e0">c38e7fb</a>)</li>
+<li>尝试修复首次安装问题 (<a href="https://github.com/qwertyyb/Fire/commit/ff7c3a034a11047325b735390325dc1e96ddc485">ff7c3a0</a>)</li>
 </ul>
 <h3 id="features">Features</h3>
 <ul>
-<li>debug (<a href="https://github.com/qwertyyb/Fire/commit/05e9793a6df9ec7a936b60ed32ea705288cd18b9">05e9793</a>)</li>
-<li>支持自定义快捷键 (<a href="https://github.com/qwertyyb/Fire/commit/7a3aac4a7ceaf6b2f949382abbd13ad1e1c9dcb7">7a3aac4</a>)</li>
-<li>调整“/”的默认映射方案为半角 <a href="https://github.com/qwertyyb/Fire/issues/189">#189</a> (<a href="https://github.com/qwertyyb/Fire/commit/d17a34ef73d7539121a16b6988488e52c4810c5c">d17a34e</a>)</li>
+<li>候选词过长时自动换行 (<a href="https://github.com/qwertyyb/Fire/commit/834284812fcd5a54f66c279d49f7eddde55d008f">8342848</a>)</li>
+<li>禁用中英文切换与切换中英文快捷键配置合并；修复修改切换中英文快捷键需要重启生效的问题 <a href="https://github.com/qwertyyb/Fire/issues/204">#204</a> (<a href="https://github.com/qwertyyb/Fire/commit/ea281eabf98c73bd8f9a390d8a6b251b176f2bdd">ea281ea</a>)</li>
 </ul>
 <h3 id="">💰 打赏支持</h3>
 <p>如果本项目对你有帮助，欢迎<a href="https://github.com/qwertyyb/Fire#-打赏支持">请作者喝杯咖啡</a>，你的支持是持续更新的动力~</p>
@@ -24,10 +27,10 @@
             ]]>
             </description>
             <enclosure url="https://github.com/qwertyyb/Fire/releases/latest/download/FireInstaller.zip"
-              sparkle:version="20260818061919"
-              sparkle:shortVersionString="v0.31.0"
-              length="15464672"
-              sparkle:edSignature="fc2Ediv4KG3tmwKgYC+FL7coRtzfzeCXX/GHtfiTj++tJHeQmFtKwZLRq7vxfIbwR8sVLIILiAC+YRVhGxXKDA=="
+              sparkle:version="20261004095015"
+              sparkle:shortVersionString="v0.32.0"
+              length="15505823"
+              sparkle:edSignature="k8B2OdQCF/Q/Sp4fomA8XoRH4fLDcs8qAyYaaiTH8Os2b9fPbtCWSHXoEPsvRtR/7zw9zSu72oAK6A+3MOioBQ=="
               type="application/octet-stream"/>
         </item>
     </channel>
